@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/constants.dart';
+import '../../../utils/svg_loader.dart';
 import '../model/report.dart';
 
 class QuickReport extends StatelessWidget {
@@ -80,24 +81,18 @@ class QuickReport extends StatelessWidget {
                           children: [
                             Text(
                               'Hôm nay',
-                              style: subInfoStyMedium400,
+                              style: subInfoStyLarge500,
                             ),
                           ],
                         ),
                         Row(
                           children: [
-                            SvgPicture.asset(
-                              'svg/small_chart.svg',
-                              semanticsLabel: 'Quản lý',
-                            ),
+                            LoadSvg(assetPath: 'svg/small_chart.svg'),
                             const Text(
                               'Báo cáo lãi lỗ',
-                              style: subInfoStyMediumHight400,
+                              style: headStyleMediumHigh,
                             ),
-                            SvgPicture.asset(
-                              'svg/navigate_next.svg',
-                              semanticsLabel: 'Báo cáo',
-                            ),
+                            LoadSvg(assetPath: 'svg/navigate_next.svg'),
                           ],
                         )
                       ],
@@ -117,21 +112,19 @@ class QuickReport extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SvgPicture.asset(
-                                    rp.iconHeader,
-                                  ),
+                                  LoadSvg(assetPath: rp.iconHeader),
                                   SizedBox(
                                     width: 3,
                                   ),
                                   Text(
                                     rp.title,
-                                    style: subInfoStyMedium400,
+                                    style: subInfoStyMedium500,
                                   ),
                                 ],
                               ),
                               Text(
                                 rp.content,
-                                style: subInfoStyMedium600,
+                                style: subInfoStyLarge600,
                               ),
                             ],
                           );

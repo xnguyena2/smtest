@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/constants.dart';
+import '../../../utils/svg_loader.dart';
 
 const List<Map<String, String>> listMainFunction = [
   {
@@ -53,9 +54,9 @@ class MainFunction extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SvgPicture.asset(
+                LoadSvg(
+                  assetPath: item['icon'].toString(),
                   width: 40,
-                  item['icon'].toString(),
                 ),
                 Text(
                   item['name'].toString(),

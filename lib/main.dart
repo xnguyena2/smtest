@@ -5,6 +5,8 @@ import 'my_custom_scroll_behavior.dart';
 import 'utils/constants.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 

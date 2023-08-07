@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/constants.dart';
+import '../../../utils/svg_loader.dart';
 
 class Guide extends StatelessWidget {
   const Guide({
@@ -23,14 +24,10 @@ class Guide extends StatelessWidget {
                     'Hướng dẫn sử dụng',
                     style: headStyleLarge,
                   ),
-                  SvgPicture.asset(
-                    'svg/guide.svg',
-                  ),
+                  LoadSvg(assetPath: 'svg/guide.svg'),
                 ],
               ),
-              SvgPicture.asset(
-                'svg/close.svg',
-              ),
+              LoadSvg(assetPath: 'svg/close.svg'),
             ],
           ),
           Container(
@@ -40,7 +37,7 @@ class Guide extends StatelessWidget {
               borderRadius: defaultBorder,
               image: const DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage("images/background_guide.png"),
+                image: AssetImage("assets/images/background_guide.png"),
               ),
             ),
             child: ListView.separated(
@@ -83,13 +80,14 @@ class Guide extends StatelessWidget {
               style: subInfoStyLarge400,
             ),
           ),
-          SvgPicture.asset(
-            width: 20,
-            height: 20,
-            colorFilter: const ColorFilter.mode(Black, BlendMode.srcIn),
-            'svg/navigate_next.svg',
-            semanticsLabel: 'Báo cáo',
-          ),
+          LoadSvg(
+              assetPath: 'svg/navigate_next.svg',
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Black,
+                BlendMode.srcIn,
+              )),
         ],
       ),
     );
