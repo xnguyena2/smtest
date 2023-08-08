@@ -4,6 +4,7 @@ import 'package:sales_management/utils/constants.dart';
 
 import '../compoment/guide.dart';
 import '../compoment/main_function.dart';
+import '../compoment/monthly_report.dart';
 import '../compoment/quick_report.dart';
 
 class Management extends StatefulWidget {
@@ -23,6 +24,16 @@ class _ManagementState extends State<Management> {
           QuickReport(),
           Guide(),
           MainFunction(),
+          AspectRatio(
+            aspectRatio: 1.23,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16, left: 6),
+              child: MonthlyReport(),
+            ),
+          ),
+          SizedBox(
+            height: 2000,
+          )
         ],
       ),
     );

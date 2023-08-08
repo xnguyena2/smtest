@@ -41,8 +41,9 @@ class Guide extends StatelessWidget {
               ),
             ),
             child: ListView.separated(
-              padding: EdgeInsets.all(10),
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.all(10),
               itemBuilder: (context, index) {
                 return guideItem(index + 1, 'Thêm sản phẩm mới.');
               },

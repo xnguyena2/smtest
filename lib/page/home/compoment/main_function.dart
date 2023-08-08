@@ -33,11 +33,12 @@ class MainFunction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
       child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 100,
+          maxCrossAxisExtent: 80,
           childAspectRatio: 1 / 1,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
@@ -47,10 +48,14 @@ class MainFunction extends StatelessWidget {
           var item = listMainFunction[index];
           return Container(
             decoration: BoxDecoration(
-              color: White,
-              borderRadius: defaultBorder,
-              border: Border.all(color: borderColor, width: 1),
-            ),
+                color: White,
+                borderRadius: defaultBorder,
+                boxShadow: const [
+                  BoxShadow(
+                      color: borderColorLight,
+                      blurRadius: 2,
+                      offset: Offset(0, 2))
+                ]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

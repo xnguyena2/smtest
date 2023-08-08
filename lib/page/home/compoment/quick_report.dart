@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 import '../model/report.dart';
+import 'navigation_next.dart';
 
 class QuickReport extends StatelessWidget {
   const QuickReport({
@@ -24,7 +24,7 @@ class QuickReport extends StatelessWidget {
             Positioned(
               bottom: 0,
               child: Transform.translate(
-                offset: Offset(0, screenWidth * 0.28 - 145),
+                offset: Offset(0, screenWidth * 0.28 - 130),
                 child: ClipOval(
                   child: Container(
                     height: screenWidth,
@@ -47,8 +47,8 @@ class QuickReport extends StatelessWidget {
                 offset: Offset(0, 1),
                 child: Container(
                   width: screenWidth,
-                  height: 40,
-                  color: White,
+                  height: 30,
+                  color: BackgroundColor,
                 ),
               ),
             ),
@@ -58,8 +58,7 @@ class QuickReport extends StatelessWidget {
                 height: 120,
                 width: screenWidth - 30,
                 margin: const EdgeInsets.all(5),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.5, vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: defaultBorder,
                   color: White,
@@ -74,27 +73,19 @@ class QuickReport extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           children: [
+                            SizedBox(width: 8.5),
                             Text(
                               'Hôm nay',
                               style: subInfoStyLarge500,
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            LoadSvg(assetPath: 'svg/small_chart.svg'),
-                            const Text(
-                              'Báo cáo lãi lỗ',
-                              style: headStyleMediumHigh,
-                            ),
-                            LoadSvg(assetPath: 'svg/navigate_next.svg'),
-                          ],
-                        )
+                        NavigationNext(title: 'Báo cáo lãi lỗ')
                       ],
                     ),
                     Expanded(
@@ -104,29 +95,32 @@ class QuickReport extends StatelessWidget {
                         itemBuilder: (context, index) {
                           report rp = exampleReport[index];
 
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  LoadSvg(assetPath: rp.iconHeader),
-                                  SizedBox(
-                                    width: 3,
-                                  ),
-                                  Text(
-                                    rp.title,
-                                    style: subInfoStyMedium500,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                rp.content,
-                                style: subInfoStyLarge600,
-                              ),
-                            ],
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    LoadSvg(assetPath: rp.iconHeader),
+                                    const SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text(
+                                      rp.title,
+                                      style: subInfoStyMedium500,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  rp.content,
+                                  style: headStyleMedium600,
+                                ),
+                              ],
+                            ),
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) =>
@@ -135,9 +129,7 @@ class QuickReport extends StatelessWidget {
                           children: [
                             SizedBox(
                               height: 30,
-                              child: VerticalDivider(
-                                width: 50,
-                              ),
+                              child: VerticalDivider(),
                             ),
                           ],
                         ),

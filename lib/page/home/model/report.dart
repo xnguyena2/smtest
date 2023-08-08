@@ -14,6 +14,26 @@ const List<report> exampleReport = [
     iconHeader: 'svg/order_repo.svg',
     content: '100000',
   ),
+  report(
+    title: 'Đơn hàng',
+    iconHeader: 'svg/order_repo.svg',
+    content: '100000',
+  ),
+  report(
+    title: 'Đơn hàng',
+    iconHeader: 'svg/order_repo.svg',
+    content: '100000',
+  ),
+  report(
+    title: 'Đơn hàng',
+    iconHeader: 'svg/order_repo.svg',
+    content: '100000',
+  ),
+  report(
+    title: 'Đơn hàng',
+    iconHeader: 'svg/order_repo.svg',
+    content: '100000',
+  ),
 ];
 
 class report {

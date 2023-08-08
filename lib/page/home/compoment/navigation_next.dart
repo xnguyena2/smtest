@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+
+import '../../../utils/constants.dart';
+import '../../../utils/svg_loader.dart';
+
+class NavigationNext extends StatelessWidget {
+  final String title;
+  const NavigationNext({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        LoadSvg(assetPath: 'svg/small_chart.svg'),
+        Text(
+          title,
+          style: headStyleMediumHigh,
+        ),
+        LoadSvg(assetPath: 'svg/navigate_next.svg'),
+        const SizedBox(width: 8.5),
+      ],
+    );
+  }
+}
