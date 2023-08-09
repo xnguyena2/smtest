@@ -87,7 +87,10 @@ class QuickReport extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            NavigationNext(title: 'Báo cáo lãi lỗ'),
+                            NavigationNext(
+                              title: 'Báo cáo lãi lỗ',
+                              assetPath: 'svg/small_chart.svg',
+                            ),
                             SizedBox(width: 8.5),
                           ],
                         ),

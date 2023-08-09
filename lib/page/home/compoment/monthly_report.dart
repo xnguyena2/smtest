@@ -4,6 +4,7 @@ import 'package:sales_management/page/home/compoment/navigation_next.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
+import 'header.dart';
 
 class MonthlyReport extends StatelessWidget {
   const MonthlyReport({super.key});
@@ -25,16 +26,16 @@ class MonthlyReport extends StatelessWidget {
   LineTouchData get lineTouchData1 => LineTouchData(
         getTouchedSpotIndicator: (barData, spotIndexes) => spotIndexes.map(
           (int index) {
-            final line =
+            const line =
                 FlLine(color: borderColor, strokeWidth: 1, dashArray: [2, 4]);
-            return TouchedSpotIndicatorData(
+            return const TouchedSpotIndicatorData(
               line,
               FlDotData(show: false),
             );
           },
         ).toList(),
         handleBuiltInTouches: true,
-        touchTooltipData: LineTouchTooltipData(
+        touchTooltipData: const LineTouchTooltipData(
           tooltipBgColor: White,
           tooltipBorder: BorderSide(color: borderColor, width: 0.5),
         ),
@@ -205,24 +206,13 @@ class MonthlyReport extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Báo cáo tháng này',
-                    style: headStyleLarge,
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  LoadSvg(assetPath: 'svg/report_header.svg'),
-                ],
-              ),
-              const NavigationNext(title: 'Xem chi tiết')
-            ],
-          ),
+          const header(
+              title: 'Báo cáo tháng này',
+              titleImg: 'svg/report_header.svg',
+              endChild: NavigationNext(
+                title: 'Xem chi tiết',
+                assetPath: 'svg/small_chart.svg',
+              )),
           AspectRatio(
             aspectRatio: 1.23,
             child: Container(

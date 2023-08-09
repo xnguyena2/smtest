@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sales_management/page/home/compoment/header.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -15,20 +16,10 @@ class Guide extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Hướng dẫn sử dụng',
-                    style: headStyleLarge,
-                  ),
-                  LoadSvg(assetPath: 'svg/guide.svg'),
-                ],
-              ),
-              LoadSvg(assetPath: 'svg/close.svg'),
-            ],
+          header(
+            title: 'Hướng dẫn sử dụng',
+            titleImg: 'svg/guide.svg',
+            endChild: LoadSvg(assetPath: 'svg/close.svg'),
           ),
           Container(
             margin: EdgeInsets.only(top: 10),

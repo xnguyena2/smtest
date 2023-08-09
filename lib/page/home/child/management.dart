@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sales_management/page/home/compoment/order_list.dart';
 import 'package:sales_management/utils/constants.dart';
 
 import '../compoment/guide.dart';
@@ -25,6 +26,7 @@ class _ManagementState extends State<Management> {
           Guide(),
           MainFunction(),
           MonthlyReport(),
+          OrderList(),
           SizedBox(
             height: 2000,
           )
