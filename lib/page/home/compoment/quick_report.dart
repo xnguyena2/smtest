@@ -85,7 +85,12 @@ class QuickReport extends StatelessWidget {
                             ),
                           ],
                         ),
-                        NavigationNext(title: 'Báo cáo lãi lỗ')
+                        Row(
+                          children: [
+                            NavigationNext(title: 'Báo cáo lãi lỗ'),
+                            SizedBox(width: 8.5),
+                          ],
+                        ),
                       ],
                     ),
                     Expanded(

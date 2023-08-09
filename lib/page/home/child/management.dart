@@ -24,13 +24,7 @@ class _ManagementState extends State<Management> {
           QuickReport(),
           Guide(),
           MainFunction(),
-          AspectRatio(
-            aspectRatio: 1.23,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16, left: 6),
-              child: MonthlyReport(),
-            ),
-          ),
+          MonthlyReport(),
           SizedBox(
             height: 2000,
           )

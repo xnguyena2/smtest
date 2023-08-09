@@ -58,6 +58,11 @@ const TextStyle subInfoStyWhiteMedium = TextStyle(
   fontWeight: FontWeight.w300,
 );
 
+const TextStyle subInfoStyBlackMedium = TextStyle(
+  fontSize: 11,
+  fontWeight: FontWeight.w300,
+);
+
 const TextStyle subInfoStyMedium400 = TextStyle(
   color: Colors.black,
   fontSize: 11,

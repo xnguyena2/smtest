@@ -1,5 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:sales_management/page/home/compoment/navigation_next.dart';
+
+import '../../../utils/constants.dart';
+import '../../../utils/svg_loader.dart';
 
 class MonthlyReport extends StatelessWidget {
   const MonthlyReport({super.key});
@@ -19,9 +23,20 @@ class MonthlyReport extends StatelessWidget {
       );
 
   LineTouchData get lineTouchData1 => LineTouchData(
+        getTouchedSpotIndicator: (barData, spotIndexes) => spotIndexes.map(
+          (int index) {
+            final line =
+                FlLine(color: borderColor, strokeWidth: 1, dashArray: [2, 4]);
+            return TouchedSpotIndicatorData(
+              line,
+              FlDotData(show: false),
+            );
+          },
+        ).toList(),
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+          tooltipBgColor: White,
+          tooltipBorder: BorderSide(color: borderColor, width: 0.5),
         ),
       );
 
@@ -47,10 +62,7 @@ class MonthlyReport extends StatelessWidget {
       ];
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
+    const style = subInfoStyBlackMedium;
     String text;
     switch (value.toInt()) {
       case 1:
@@ -83,10 +95,7 @@ class MonthlyReport extends StatelessWidget {
       );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-    );
+    const style = subInfoStyMedium400;
     Widget text;
     switch (value.toInt()) {
       case 2:
@@ -112,17 +121,22 @@ class MonthlyReport extends StatelessWidget {
 
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
-        reservedSize: 32,
+        reservedSize: 25,
         interval: 1,
         getTitlesWidget: bottomTitleWidgets,
       );
 
-  FlGridData get gridData => const FlGridData(show: true);
+  FlGridData get gridData => FlGridData(
+        show: true,
+        drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) =>
+            FlLine(strokeWidth: 1, dashArray: [2, 4], color: borderColor),
+      );
 
   FlBorderData get borderData => FlBorderData(
         show: true,
         border: Border(
-          bottom: BorderSide(color: Colors.red.withOpacity(0.2), width: 4),
+          bottom: BorderSide(color: Colors.red.withOpacity(0.2), width: 1),
           left: const BorderSide(color: Colors.transparent),
           right: const BorderSide(color: Colors.transparent),
           top: const BorderSide(color: Colors.transparent),
@@ -132,10 +146,12 @@ class MonthlyReport extends StatelessWidget {
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
         isCurved: true,
         color: Colors.green,
-        barWidth: 8,
+        barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
         spots: const [
           FlSpot(1, 1),
           FlSpot(3, 1.5),
@@ -150,7 +166,7 @@ class MonthlyReport extends StatelessWidget {
   LineChartBarData get lineChartBarData1_2 => LineChartBarData(
         isCurved: true,
         color: Colors.pink,
-        barWidth: 8,
+        barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(
@@ -170,7 +186,7 @@ class MonthlyReport extends StatelessWidget {
   LineChartBarData get lineChartBarData1_3 => LineChartBarData(
         isCurved: true,
         color: Colors.cyan,
-        barWidth: 8,
+        barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
@@ -185,9 +201,45 @@ class MonthlyReport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      sampleData1,
-      duration: const Duration(milliseconds: 250),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Báo cáo tháng này',
+                    style: headStyleLarge,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  LoadSvg(assetPath: 'svg/report_header.svg'),
+                ],
+              ),
+              const NavigationNext(title: 'Xem chi tiết')
+            ],
+          ),
+          AspectRatio(
+            aspectRatio: 1.23,
+            child: Container(
+              margin: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+              decoration: BoxDecoration(
+                color: White,
+                borderRadius: defaultBorder,
+              ),
+              child: LineChart(
+                sampleData1,
+                duration: const Duration(milliseconds: 250),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

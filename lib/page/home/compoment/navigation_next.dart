@@ -20,7 +20,6 @@ class NavigationNext extends StatelessWidget {
           style: headStyleMediumHigh,
         ),
         LoadSvg(assetPath: 'svg/navigate_next.svg'),
-        const SizedBox(width: 8.5),
       ],
     );
   }
