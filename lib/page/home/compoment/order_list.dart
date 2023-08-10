@@ -43,6 +43,7 @@ class OrderList extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: White,
+                    borderRadius: defaultBorder,
                     boxShadow: const [defaultShadow],
                   ),
                   child: Row(
