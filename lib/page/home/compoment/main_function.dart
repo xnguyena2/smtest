@@ -50,12 +50,7 @@ class MainFunction extends StatelessWidget {
             decoration: BoxDecoration(
                 color: White,
                 borderRadius: defaultBorder,
-                boxShadow: const [
-                  BoxShadow(
-                      color: borderColorLight,
-                      blurRadius: 2,
-                      offset: Offset(0, 2))
-                ]),
+                boxShadow: const [defaultShadow]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

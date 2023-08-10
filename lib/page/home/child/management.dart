@@ -27,9 +27,9 @@ class _ManagementState extends State<Management> {
           MainFunction(),
           MonthlyReport(),
           OrderList(),
-          SizedBox(
-            height: 2000,
-          )
+          // SizedBox(
+          //   height: 2000,
+          // )
         ],
       ),
     );
