@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/home/home_page.dart';
+import 'package:sales_management/page/product_selector/product_selector_page.dart';
 
 import 'my_custom_scroll_behavior.dart';
 import 'utils/constants.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: const ProductSelectorPage(),
     );
   }
 }

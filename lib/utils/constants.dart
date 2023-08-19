@@ -19,6 +19,11 @@ const BoxShadow defaultShadow = BoxShadow(
   offset: Offset(0, 2),
 );
 
+const TextStyle headStyleXLarge = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleLargeWhite = TextStyle(
   color: White,
   fontSize: 14,
