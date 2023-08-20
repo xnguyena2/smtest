@@ -60,7 +60,7 @@ class QuickReport extends StatelessWidget {
                 margin: const EdgeInsets.all(5),
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  borderRadius: defaultBorder,
+                  borderRadius: defaultBorderRadius,
                   color: White,
                   boxShadow: const [
                     BoxShadow(

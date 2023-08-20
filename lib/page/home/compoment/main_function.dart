@@ -49,7 +49,7 @@ class MainFunction extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
                 color: White,
-                borderRadius: defaultBorder,
+                borderRadius: defaultBorderRadius,
                 boxShadow: const [defaultShadow]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

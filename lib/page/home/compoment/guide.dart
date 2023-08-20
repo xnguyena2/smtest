@@ -25,7 +25,7 @@ class Guide extends StatelessWidget {
             margin: EdgeInsets.only(top: 10),
             height: 250,
             decoration: BoxDecoration(
-              borderRadius: defaultBorder,
+              borderRadius: defaultBorderRadius,
               image: const DecorationImage(
                 fit: BoxFit.cover,
                 image: AssetImage("assets/images/background_guide.png"),
@@ -53,7 +53,8 @@ class Guide extends StatelessWidget {
     return Container(
       height: 40,
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(borderRadius: defaultBorder, color: White),
+      decoration:
+          BoxDecoration(borderRadius: defaultBorderRadius, color: White),
       child: Row(
         children: [
           CircleAvatar(

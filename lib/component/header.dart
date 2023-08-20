@@ -5,7 +5,13 @@ import '../utils/constants.dart';
 
 class Header extends StatelessWidget {
   final String title;
-  const Header({super.key, required this.title});
+  final Widget funcWidget;
+  final Widget extendsWidget;
+  const Header(
+      {super.key,
+      required this.title,
+      required this.funcWidget,
+      required this.extendsWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -16,41 +22,9 @@ class Header extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              HeaderTitle(title: title),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    LoadSvg(assetPath: 'svg/sort_by.svg'),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    LoadSvg(assetPath: 'svg/grid.svg'),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    LoadSvg(assetPath: 'svg/grid_left_panel.svg'),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    LoadSvg(assetPath: 'svg/list_ul.svg'),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    LoadSvg(
-                        assetPath: 'svg/order.svg',
-                        width: 27,
-                        height: 27,
-                        colorFilter: const ColorFilter.mode(
-                          Black,
-                          BlendMode.srcIn,
-                        )),
-                  ],
-                ),
-              )
-            ],
-          )
+            children: [HeaderTitle(title: title), funcWidget],
+          ),
+          Expanded(child: extendsWidget)
         ],
       ),
     );

@@ -6,12 +6,26 @@ const Color White = Colors.white;
 const Color Black = Colors.black;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
 const Color HighColor = Color(0xFF0080A9);
+const Color MainHighColor = Color(0xFF0080A9);
 const Color borderColor = Color.fromARGB(102, 0, 0, 0);
 const Color borderColorLight = Color.fromARGB(25, 0, 0, 0);
 const Color ShowdownColor = Color.fromARGB(56, 0, 0, 0);
 const Color ShowdownColor25 = Color.fromARGB(64, 0, 0, 0);
 
-final BorderRadius defaultBorder = BorderRadius.circular(8);
+const Color textNormalLightColor = Color(0xFF323232);
+
+const Color searchBorderColor = Color(0xFFD7D7D7);
+const Color searchBackgroundColor = Color(0xFFF3F3F3);
+
+final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
+
+final Border defaultBorder = Border.all(color: searchBorderColor);
+
+final Border normalBorder = Border.all(color: Black);
+
+final Border mainHighBorder = Border.all(color: HighColor);
+
+final Border categoryBorder = Border.all(color: Color(0xFFB8B8B8));
 
 const BoxShadow defaultShadow = BoxShadow(
   color: borderColorLight,
@@ -37,6 +51,12 @@ const TextStyle headStyleLarge = TextStyle(
 
 const TextStyle headStyleMediumHigh = TextStyle(
   color: HighColor,
+  fontSize: 13,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle headStyleMediumNormalLight = TextStyle(
+  color: textNormalLightColor,
   fontSize: 13,
   fontWeight: FontWeight.w400,
 );

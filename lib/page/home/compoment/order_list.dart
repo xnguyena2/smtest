@@ -29,7 +29,7 @@ class OrderList extends StatelessWidget {
             margin: const EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
               color: White,
-              borderRadius: defaultBorder,
+              borderRadius: defaultBorderRadius,
             ),
             child: ListView.separated(
               shrinkWrap: true,
@@ -43,7 +43,7 @@ class OrderList extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: White,
-                    borderRadius: defaultBorder,
+                    borderRadius: defaultBorderRadius,
                     boxShadow: const [defaultShadow],
                   ),
                   child: Row(

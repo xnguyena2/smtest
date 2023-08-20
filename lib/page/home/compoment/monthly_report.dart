@@ -220,7 +220,7 @@ class MonthlyReport extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
               decoration: BoxDecoration(
                 color: White,
-                borderRadius: defaultBorder,
+                borderRadius: defaultBorderRadius,
               ),
               child: LineChart(
                 sampleData1,
