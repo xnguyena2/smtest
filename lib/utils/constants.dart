@@ -98,6 +98,12 @@ const TextStyle subInfoStyLarge400 = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle subInfoStyLargeHigh400 = TextStyle(
+  color: HighColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle subInfoStyWhiteMedium = TextStyle(
   color: White,
   fontSize: 11,

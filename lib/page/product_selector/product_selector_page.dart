@@ -78,94 +78,135 @@ class ProductSelectorPage extends StatelessWidget {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
-              itemCount: listMainFunction.length,
+              itemCount: listMainFunction.length + 1,
               itemBuilder: (context, index) {
-                var item = listMainFunction[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: White,
-                    borderRadius: defaultBorderRadius,
-                    border: defaultBorder,
-                    image: DecorationImage(
-                      image: AssetImage(
-                        'assets/images/shop_logo.png',
+                if (index == listMainFunction.length)
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: White,
+                      borderRadius: defaultBorderRadius,
+                      border: defaultBorder,
+                    ),
+                    child: Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        clipBehavior: Clip.none,
+                        children: [
+                          LoadSvg(
+                            assetPath: 'svg/plus.svg',
+                            colorFilter: ColorFilter.mode(
+                              MainHighColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -25,
+                            child: Text(
+                              'Thêm sản phẩm',
+                              style: subInfoStyLargeHigh400,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 2, vertical: 8),
-                        margin: EdgeInsets.only(top: 12, left: 6, right: 6),
-                        decoration: BoxDecoration(
-                            color: White,
-                            borderRadius: defaultBorderRadius,
-                            border: defaultBorder),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            LoadSvg(assetPath: 'svg/minus.svg'),
-                            SizedBox(
-                              width: 18,
-                              child: TextFormField(
-                                initialValue: '99',
-                                maxLines: 1,
-                                style: headStyleLarge,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  isDense: true,
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                            LoadSvg(
-                                assetPath: 'svg/plus.svg',
-                                colorFilter: ColorFilter.mode(
-                                  MainHighColor,
-                                  BlendMode.srcIn,
-                                ))
-                          ],
-                        ),
-                      ),
-                      ClipRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 4.0,
-                            sigmaY: 4.0,
-                          ),
-                          child: Container(
-                            color: Color.fromRGBO(214, 214, 214, 0.40),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text(
-                                      'Mỳ hảo hảo',
-                                      style: subInfoStyLarge400,
-                                    ),
-                                    Text(
-                                      '15.000',
-                                      style: subInfoStyLarge600,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                  );
+                var item = listMainFunction[index];
+                return ProductSelectorItem();
               },
             ),
           ],
         ),
       ),
     ));
+  }
+}
+
+class ProductSelectorItem extends StatelessWidget {
+  const ProductSelectorItem({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: White,
+        borderRadius: defaultBorderRadius,
+        border: defaultBorder,
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/images/shop_logo.png',
+          ),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+            margin: EdgeInsets.only(top: 12, left: 6, right: 6),
+            decoration: BoxDecoration(
+                color: White,
+                borderRadius: defaultBorderRadius,
+                border: defaultBorder),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                LoadSvg(assetPath: 'svg/minus.svg'),
+                SizedBox(
+                  width: 18,
+                  child: TextFormField(
+                    initialValue: '99',
+                    maxLines: 1,
+                    style: headStyleLarge,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                LoadSvg(
+                  assetPath: 'svg/plus.svg',
+                  colorFilter: ColorFilter.mode(
+                    MainHighColor,
+                    BlendMode.srcIn,
+                  ),
+                )
+              ],
+            ),
+          ),
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 4.0,
+                sigmaY: 4.0,
+              ),
+              child: Container(
+                color: Color.fromRGBO(214, 214, 214, 0.40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'Mỳ hảo hảo',
+                          style: subInfoStyLarge400,
+                        ),
+                        Text(
+                          '15.000',
+                          style: subInfoStyLarge600,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
