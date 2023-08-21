@@ -8,7 +8,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final TextStyle headStyle = Theme.of(context).textTheme.titleLarge!;
     return Container(
       height: 60,
       decoration: BoxDecoration(

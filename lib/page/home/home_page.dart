@@ -39,9 +39,9 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     LoadSvg(assetPath: 'svg/home_bar.svg'),
-                    Text(
+                    const Text(
                       'Quản lý',
-                      style: TextStyle(fontSize: 9),
+                      style: subInfoStySmall,
                     )
                   ],
                 ),
@@ -61,9 +61,9 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     LoadSvg(assetPath: 'svg/in_out_bar.svg'),
-                    Text(
+                    const Text(
                       'Thu chi',
-                      style: TextStyle(fontSize: 9),
+                      style: subInfoStySmall,
                     )
                   ],
                 ),

@@ -25,15 +25,9 @@ class MyApp extends StatelessWidget {
             .copyWith(background: BackgroundColor),
         useMaterial3: true,
         textTheme: const TextTheme(
-          headlineMedium: TextStyle(
-            color: White,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+          headlineMedium: headStyleLargeWhite,
           titleLarge: TextStyle(fontSize: 36, fontStyle: FontStyle.italic),
-          bodyMedium: TextStyle(
-            fontSize: 14,
-          ),
+          bodyMedium: headStyleLarge,
         ),
       ),
       home: const ProductSelectorPage(),

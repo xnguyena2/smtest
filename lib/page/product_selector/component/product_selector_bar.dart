@@ -87,7 +87,7 @@ class SearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               maxLines: 1,
-              style: TextStyle(fontSize: 15),
+              style: headStyleSemiLarge,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.zero,
                 isDense: true,

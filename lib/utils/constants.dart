@@ -38,13 +38,21 @@ const TextStyle headStyleXLarge = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleSemiLarge = TextStyle(
+  fontSize: 15,
+);
+
+const TextStyle headStyleLarge = TextStyle(
+  fontSize: 14,
+);
+
 const TextStyle headStyleLargeWhite = TextStyle(
   color: White,
   fontSize: 14,
   fontWeight: FontWeight.w600,
 );
 
-const TextStyle headStyleLarge = TextStyle(
+const TextStyle headStyleLargeHigh = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w600,
 );
@@ -129,4 +137,8 @@ const TextStyle subInfoStyMedium600 = TextStyle(
   color: Colors.black,
   fontSize: 11,
   fontWeight: FontWeight.w600,
+);
+
+const TextStyle subInfoStySmall = TextStyle(
+  fontSize: 9,
 );

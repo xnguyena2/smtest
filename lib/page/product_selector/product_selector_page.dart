@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -71,7 +73,7 @@ class ProductSelectorPage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 100,
+                maxCrossAxisExtent: 120,
                 childAspectRatio: 1 / 1,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
@@ -86,22 +88,75 @@ class ProductSelectorPage extends StatelessWidget {
                     border: defaultBorder,
                     image: DecorationImage(
                       image: AssetImage(
-                        'assets/images/black-rocks.jpeg',
+                        'assets/images/shop_logo.png',
                       ),
-                      fit: BoxFit.fill,
                     ),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      LoadSvg(
-                        assetPath: item['icon'].toString(),
-                        width: 40,
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                        margin: EdgeInsets.only(top: 12, left: 6, right: 6),
+                        decoration: BoxDecoration(
+                            color: White,
+                            borderRadius: defaultBorderRadius,
+                            border: defaultBorder),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LoadSvg(assetPath: 'svg/minus.svg'),
+                            SizedBox(
+                              width: 18,
+                              child: TextFormField(
+                                initialValue: '99',
+                                maxLines: 1,
+                                style: headStyleLarge,
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  isDense: true,
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            LoadSvg(
+                                assetPath: 'svg/plus.svg',
+                                colorFilter: ColorFilter.mode(
+                                  MainHighColor,
+                                  BlendMode.srcIn,
+                                ))
+                          ],
+                        ),
                       ),
-                      Text(
-                        item['name'].toString(),
-                        style: subInfoStyLarge400,
-                      )
+                      ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 4.0,
+                            sigmaY: 4.0,
+                          ),
+                          child: Container(
+                            color: Color.fromRGBO(214, 214, 214, 0.40),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Mỳ hảo hảo',
+                                      style: subInfoStyLarge400,
+                                    ),
+                                    Text(
+                                      '15.000',
+                                      style: subInfoStyLarge600,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 );
