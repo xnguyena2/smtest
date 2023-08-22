@@ -19,6 +19,8 @@ const Color searchBackgroundColor = Color(0xFFF3F3F3);
 
 final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
 
+final BorderRadius defaultSquareBorderRadius = BorderRadius.circular(5);
+
 final Border defaultBorder = Border.all(color: searchBorderColor);
 
 final Border normalBorder = Border.all(color: Black);

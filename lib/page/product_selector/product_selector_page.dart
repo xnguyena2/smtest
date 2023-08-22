@@ -143,11 +143,11 @@ class ProductSelectorItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
             margin: EdgeInsets.only(top: 12, left: 6, right: 6),
             decoration: BoxDecoration(
                 color: White,
-                borderRadius: defaultBorderRadius,
+                borderRadius: defaultSquareBorderRadius,
                 border: defaultBorder),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
