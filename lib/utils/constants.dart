@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 // color
 const Color BackgroundColor = Color(0xFFF5F5F5);
+const Color BackgroundColorLigh = Color(0xFFFEFEFE);
 const Color White = Colors.white;
 const Color Black = Colors.black;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
 const Color HighColor = Color(0xFF0080A9);
 const Color MainHighColor = Color(0xFF0080A9);
+const Color TableHighColor = Color(0xFF26B074);
+const Color TableHighBGColor = Color(0xFF239A66);
+const Color TableHeaderBGColor = Color(0xFFE4E4E4);
 const Color borderColor = Color.fromARGB(102, 0, 0, 0);
 const Color borderColorLight = Color.fromARGB(25, 0, 0, 0);
 const Color ShowdownColor = Color.fromARGB(56, 0, 0, 0);
@@ -26,6 +30,8 @@ final Border defaultBorder = Border.all(color: searchBorderColor);
 final Border normalBorder = Border.all(color: Black);
 
 final Border mainHighBorder = Border.all(color: HighColor);
+
+final Border tableHighBorder = Border.all(color: TableHighColor);
 
 final Border categoryBorder = Border.all(color: Color(0xFFB8B8B8));
 
@@ -59,6 +65,11 @@ const TextStyle headStyleLargeHigh = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle headStyleMedium = TextStyle(
+  fontSize: 13,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle headStyleMediumHigh = TextStyle(
   color: HighColor,
   fontSize: 13,
@@ -71,37 +82,52 @@ const TextStyle headStyleMediumNormalLight = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle headStyleMediumNormaWhite = TextStyle(
+  color: White,
+  fontSize: 13,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle headStyleMedium600 = TextStyle(
   fontSize: 13,
   fontWeight: FontWeight.w600,
 );
 
 const TextStyle subInfoStyLarge600High = TextStyle(
-  color: Color(0xFF26B074),
+  color: TableHighColor,
   fontSize: 12,
   fontWeight: FontWeight.w600,
 );
 
 const TextStyle subInfoStyLarge600 = TextStyle(
-  color: Colors.black,
   fontSize: 12,
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle subInfoStyLarge500High = TextStyle(
+  color: TableHighColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle subInfoStyLarge500 = TextStyle(
-  color: Colors.black,
   fontSize: 12,
   fontWeight: FontWeight.w500,
 );
 
 const TextStyle subInfoStyLarge400 = TextStyle(
-  color: Colors.black,
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );
 
 const TextStyle subInfoStyLargeHigh400 = TextStyle(
   color: HighColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle subInfoStyLargeTable400 = TextStyle(
+  color: TableHighBGColor,
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );
@@ -118,7 +144,6 @@ const TextStyle subInfoStyBlackMedium = TextStyle(
 );
 
 const TextStyle subInfoStyMedium400 = TextStyle(
-  color: Colors.black,
   fontSize: 11,
   fontWeight: FontWeight.w400,
 );
@@ -130,19 +155,11 @@ const TextStyle subInfoStyMedium400Light = TextStyle(
 );
 
 const TextStyle subInfoStyMedium500 = TextStyle(
-  color: Colors.black,
   fontSize: 11,
   fontWeight: FontWeight.w500,
 );
 
-const TextStyle subInfoStyMediumHight400 = TextStyle(
-  color: Color(0xFF45C816),
-  fontSize: 11,
-  fontWeight: FontWeight.w400,
-);
-
 const TextStyle subInfoStyMedium600 = TextStyle(
-  color: Colors.black,
   fontSize: 11,
   fontWeight: FontWeight.w600,
 );

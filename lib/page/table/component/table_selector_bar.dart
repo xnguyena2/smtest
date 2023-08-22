@@ -5,36 +5,19 @@ import '../../../component/app_search_bar.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
-class ProductSelectorBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  const ProductSelectorBar({super.key});
+class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
+  const TableSelectorBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
-        title: 'Bán hàng',
+        title: 'Quản lý bàn',
         funcWidget: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
           child: Row(
             children: [
-              LoadSvg(assetPath: 'svg/sort_by.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/grid.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/grid_left_panel.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/list_ul.svg'),
-              const SizedBox(
-                width: 20,
-              ),
               LoadSvg(
                 assetPath: 'svg/order.svg',
                 width: 27,
@@ -48,7 +31,7 @@ class ProductSelectorBar extends StatelessWidget
           ),
         ),
         extendsWidget: AppSearchBar(
-          hint: 'Tìm theo tên, code, ...',
+          hint: 'Tìm theo tên',
         ),
       ),
     );

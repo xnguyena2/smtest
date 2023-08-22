@@ -3,6 +3,7 @@ import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 
 import 'my_custom_scroll_behavior.dart';
+import 'page/table/table_page.dart';
 import 'utils/constants.dart';
 
 void main() {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: const ProductSelectorPage(),
+      home: const TablePage(),
     );
   }
 }

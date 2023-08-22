@@ -5,6 +5,8 @@ import 'package:sales_management/page/product_selector/component/product_selecto
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
+import '../../component/category_selector.dart';
+
 const List<String> listCategory = ['Mỳ ăn liền', 'Đồ ăn'];
 
 const List<Map<String, String>> listMainFunction = [
@@ -44,30 +46,8 @@ class ProductSelectorPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 60,
-              child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return LoadSvg(assetPath: 'svg/grid_horizontal.svg');
-                    }
-                    if (index == 1) {
-                      return CategoryItem(
-                        txt: 'Tất cả',
-                        isActive: true,
-                      );
-                    }
-                    return CategoryItem(
-                      txt: listCategory[index - 2],
-                      isActive: false,
-                    );
-                  },
-                  separatorBuilder: (context, index) => SizedBox(
-                        width: 10,
-                      ),
-                  itemCount: listCategory.length + 2),
+            CategorySelector(
+              listCategory: listCategory,
             ),
             GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
