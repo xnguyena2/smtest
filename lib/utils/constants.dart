@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // color
 const Color BackgroundColor = Color(0xFFF5F5F5);
 const Color BackgroundColorLigh = Color(0xFFFEFEFE);
+const Color BackgroundRed = Color(0xFFFFF2F2);
 const Color White = Colors.white;
 const Color Black = Colors.black;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
@@ -15,6 +16,7 @@ const Color borderColor = Color.fromARGB(102, 0, 0, 0);
 const Color borderColorLight = Color.fromARGB(25, 0, 0, 0);
 const Color ShowdownColor = Color.fromARGB(56, 0, 0, 0);
 const Color ShowdownColor25 = Color.fromARGB(64, 0, 0, 0);
+const Color AlertColor = Color(0xFFC20202);
 
 const Color textNormalLightColor = Color(0xFF323232);
 
@@ -70,6 +72,12 @@ const TextStyle headStyleMedium = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle headStyleMediumAlert500 = TextStyle(
+  color: AlertColor,
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleMediumHigh = TextStyle(
   color: HighColor,
   fontSize: 13,
@@ -86,6 +94,11 @@ const TextStyle headStyleMediumNormaWhite = TextStyle(
   color: White,
   fontSize: 13,
   fontWeight: FontWeight.w400,
+);
+
+const TextStyle headStyleMedium500 = TextStyle(
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
 );
 
 const TextStyle headStyleMedium600 = TextStyle(
@@ -120,6 +133,12 @@ const TextStyle subInfoStyLarge400 = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle subInfoStyLargeLigh400 = TextStyle(
+  color: Black70,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle subInfoStyLargeHigh400 = TextStyle(
   color: HighColor,
   fontSize: 12,
@@ -128,6 +147,12 @@ const TextStyle subInfoStyLargeHigh400 = TextStyle(
 
 const TextStyle subInfoStyLargeTable400 = TextStyle(
   color: TableHighBGColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle subInfoStyLargeWhite400 = TextStyle(
+  color: White,
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );
@@ -144,6 +169,12 @@ const TextStyle subInfoStyBlackMedium = TextStyle(
 );
 
 const TextStyle subInfoStyMedium400 = TextStyle(
+  fontSize: 11,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle subInfoStyMediumAlert400 = TextStyle(
+  color: AlertColor,
   fontSize: 11,
   fontWeight: FontWeight.w400,
 );

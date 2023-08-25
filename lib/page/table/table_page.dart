@@ -29,11 +29,16 @@ class TablePage extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              Area(),
-              SizedBox(
-                height: 10,
-              ),
-              Area(),
+              ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Area();
+                  },
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: 10,
+                      ),
+                  itemCount: 2),
             ],
           ),
         ),
@@ -173,12 +178,12 @@ class TableItem extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          LoadSvg(assetPath: 'svg/time_filled.svg'),
+                          LoadSvg(assetPath: 'svg/money_alt.svg'),
                           SizedBox(
                             width: 5,
                           ),
                           Text(
-                            '18 giờ',
+                            '15.000',
                             style: subInfoStyLargeTable400,
                           )
                         ],
