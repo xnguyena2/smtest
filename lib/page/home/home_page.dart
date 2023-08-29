@@ -22,14 +22,8 @@ class _HomePageState extends State<HomePage> {
         appBar: HomeAppBar(),
         bottomNavigationBar: Container(
           height: 46,
-          decoration: const BoxDecoration(color: White, boxShadow: [
-            BoxShadow(
-              color: ShowdownColor,
-              blurRadius: 4,
-              offset: Offset(0, 0),
-              spreadRadius: 0,
-            )
-          ]),
+          decoration:
+              const BoxDecoration(color: White, boxShadow: [wholeShadow]),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

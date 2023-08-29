@@ -62,14 +62,7 @@ class QuickReport extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: defaultBorderRadius,
                   color: White,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: ShowdownColor25,
-                      blurRadius: 4,
-                      offset: Offset(0, 1),
-                      spreadRadius: 0,
-                    )
-                  ],
+                  boxShadow: const [wholeShadow],
                 ),
                 child: Column(
                   children: [

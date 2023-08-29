@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
 
+import '../../component/text_round.dart';
 import 'component/order_list_bar.dart';
 
 class OrderListPage extends StatelessWidget {
@@ -189,31 +190,6 @@ class OrderListPage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TextRound extends StatelessWidget {
-  final String txt;
-  final bool isHigh;
-  const TextRound({
-    super.key,
-    required this.txt,
-    required this.isHigh,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: BackgroundRed,
-        borderRadius: defaultBorderRadius,
-      ),
-      child: Text(
-        txt,
-        style: headStyleMediumAlert500,
       ),
     );
   }
