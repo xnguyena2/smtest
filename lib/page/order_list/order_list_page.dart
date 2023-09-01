@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/btn/approve_btn.dart';
+import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
 import '../../component/text_round.dart';
@@ -136,40 +138,22 @@ class OrderListPage extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: TextButton(
-                                        onPressed: () {},
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: White,
-                                          shape: RoundedRectangleBorder(
-                                            side:
-                                                BorderSide(color: borderColor),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Hủy bỏ',
-                                          style: subInfoStyLarge400,
-                                        ),
+                                      child: CancelBtn(
+                                        txt: 'Hủy bỏ',
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 14),
+                                        isSmallTxt: true,
                                       ),
                                     ),
                                     SizedBox(
                                       width: 10,
                                     ),
                                     Expanded(
-                                      child: TextButton(
-                                        onPressed: () {},
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: TableHighColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Đã giao',
-                                          style: subInfoStyLargeWhite400,
-                                        ),
+                                      child: ApproveBtn(
+                                        txt: 'Đã giao',
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 14),
+                                        isSmallTxt: true,
                                       ),
                                     ),
                                   ],

@@ -9,6 +9,7 @@ const Color White = Colors.white;
 const Color Black = Colors.black;
 const Color Red = Colors.red;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
+const Color Black40 = Color.fromARGB(80, 0, 0, 0);
 const Color HighColor = Color(0xFF0080A9);
 const Color MainHighColor = Color(0xFF0080A9);
 const Color TableHighColor = Color(0xFF26B074);
@@ -31,6 +32,8 @@ final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
 final BorderRadius defaultSquareBorderRadius = BorderRadius.circular(5);
 
 final Border defaultBorder = Border.all(color: searchBorderColor);
+
+final Border lightBorder = Border.all(color: Black40);
 
 final Border normalBorder = Border.all(color: Black);
 
@@ -85,6 +88,16 @@ const TextStyle headStyleXLargeLigh = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleXLargehightUnderline = TextStyle(
+  decoration: TextDecoration.underline,
+  decorationStyle: TextDecorationStyle.dashed,
+  decorationColor: TableHighColor,
+  height: 2,
+  color: TableHighColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleXLarge400 = TextStyle(
   fontSize: 17,
   fontWeight: FontWeight.w400,
@@ -95,7 +108,30 @@ const TextStyle customerNameBig = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle customerNameBigHight = TextStyle(
+  color: TableHighColor,
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleSemiLarge = TextStyle(
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLarge500 = TextStyle(
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLargeLigh500 = TextStyle(
+  color: Black70,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLargeHigh500 = TextStyle(
+  color: TableHighColor,
+  fontWeight: FontWeight.w500,
   fontSize: 15,
 );
 
@@ -201,6 +237,12 @@ const TextStyle subInfoStyLarge600 = TextStyle(
 
 const TextStyle subInfoStyLarge500High = TextStyle(
   color: TableHighColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle subInfoStyLargeLight500 = TextStyle(
+  color: Black70,
   fontSize: 12,
   fontWeight: FontWeight.w500,
 );
