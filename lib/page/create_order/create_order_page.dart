@@ -47,7 +47,9 @@ class CreateOrderPage extends StatelessWidget {
                 SizedBox(
                   height: 15,
                 ),
-                TotalPrice(),
+                TotalPrice(
+                  isEditting: true,
+                ),
                 SizedBox(
                   height: 15,
                 ),
@@ -57,7 +59,48 @@ class CreateOrderPage extends StatelessWidget {
                 ),
                 Progress(),
                 SizedBox(
-                  height: 50,
+                  height: 15,
+                ),
+                DefaultPaddingContainer(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: borderColor),
+                            ),
+                          ),
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            initialValue: 'ghi chu',
+                            maxLines: 1,
+                            style: customerNameBigHight,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              isDense: true,
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                            borderRadius: defaultBorderRadius,
+                            border: mainHighBorder),
+                        child: LoadSvg(assetPath: 'svg/picture_o.svg'),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 70,
                 ),
               ],
             ),

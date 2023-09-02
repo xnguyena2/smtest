@@ -238,9 +238,19 @@ class ProductItem extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
-                                      '30.000',
-                                      style: customerNameBigHight,
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        initialValue: '30.000',
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
                                     ),
                                     LoadSvg(
                                         assetPath:
@@ -269,9 +279,19 @@ class ProductItem extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
-                                      '30.000',
-                                      style: customerNameBigHight,
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        initialValue: '30.000',
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
                                     ),
                                     LoadSvg(
                                         assetPath:
@@ -293,9 +313,19 @@ class ProductItem extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
-                                      'ghi chú ở đây',
-                                      style: customerNameBigHight,
+                                    SizedBox(
+                                      width: 100,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        initialValue: 'ghi chú ở đây',
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
                                     ),
                                     LoadSvg(
                                         assetPath:

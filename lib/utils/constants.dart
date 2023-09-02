@@ -72,7 +72,7 @@ const TextStyle totalMoneyHeaderStylexXLarge = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
-const TextStyle headStylexXLarge = TextStyle(
+const TextStyle headStyleXXLarge = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w500,
 );
@@ -94,6 +94,12 @@ const TextStyle headStyleXLargehightUnderline = TextStyle(
   decorationColor: TableHighColor,
   height: 2,
   color: TableHighColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleXLargeHigh = TextStyle(
+  color: HighColor,
   fontSize: 17,
   fontWeight: FontWeight.w500,
 );
