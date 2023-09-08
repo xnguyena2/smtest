@@ -25,58 +25,48 @@ class CreateOrderPage extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: CreateOrderBar(),
-      body: Stack(children: [
-        Container(
-          // padding: EdgeInsets.symmetric(vertical: 10),
-          color: BackgroundColor,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SelectAreaAndDeliver(),
-                SizedBox(
-                  height: 10,
-                ),
-                OrderMainInfo(),
-                SizedBox(
-                  height: 15,
-                ),
-                CustomerInfo(),
-                SizedBox(
-                  height: 15,
-                ),
-                ListProduct(),
-                SizedBox(
-                  height: 15,
-                ),
-                TotalPrice(
-                  isEditting: true,
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Transaction(),
-                SizedBox(
-                  height: 15,
-                ),
-                Progress(),
-                SizedBox(
-                  height: 15,
-                ),
-                OrderNote(),
-                SizedBox(
-                  height: 70,
-                ),
-              ],
-            ),
+      body: Container(
+        // padding: EdgeInsets.symmetric(vertical: 10),
+        color: BackgroundColor,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SelectAreaAndDeliver(),
+              SizedBox(
+                height: 10,
+              ),
+              OrderMainInfo(),
+              SizedBox(
+                height: 15,
+              ),
+              CustomerInfo(),
+              SizedBox(
+                height: 15,
+              ),
+              ListProduct(),
+              SizedBox(
+                height: 15,
+              ),
+              TotalPrice(
+                isEditting: true,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Transaction(),
+              SizedBox(
+                height: 15,
+              ),
+              Progress(),
+              SizedBox(
+                height: 15,
+              ),
+              OrderNote(),
+            ],
           ),
         ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: BottomBar(),
-        ),
-      ]),
+      ),
+      bottomNavigationBar: BottomBar(),
     ));
   }
 }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/component/btn/simple_switch_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
-class SwitchBtn extends StatelessWidget {
+class SwitchBigBtn extends StatelessWidget {
   final String firstTxt;
   final String secondTxt;
-  const SwitchBtn({
+  const SwitchBigBtn({
     super.key,
     required this.firstTxt,
     required this.secondTxt,
@@ -17,20 +17,20 @@ class SwitchBtn extends StatelessWidget {
       backGroundWidget: Row(
         children: [
           Padding(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.symmetric(vertical: 11, horizontal: 9),
             child: Text(
               firstTxt,
-              style: subInfoStyLargeLight500,
+              style: headStyleBigMediumBlackLight,
             ),
           ),
           SizedBox(
-            width: 3,
+            width: 5,
           ),
           Padding(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.symmetric(vertical: 11, horizontal: 9),
             child: Text(
               secondTxt,
-              style: subInfoStyLargeLight500,
+              style: headStyleBigMediumBlackLight,
             ),
           )
         ],
@@ -38,25 +38,27 @@ class SwitchBtn extends StatelessWidget {
       onSelected: (bool) {},
       selectedWidget: [
         Container(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
               color: White,
+              border: tableHighBorder,
               borderRadius: defaultSquareBorderRadius,
               boxShadow: [defaultShadow]),
           child: Text(
             firstTxt,
-            style: subInfoStyLarge500High,
+            style: headStyleBigMediumHigh,
           ),
         ),
         Container(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           decoration: BoxDecoration(
               color: White,
+              border: tableHighBorder,
               borderRadius: defaultSquareBorderRadius,
               boxShadow: [defaultShadow]),
           child: Text(
             secondTxt,
-            style: subInfoStyLarge500High,
+            style: headStyleBigMediumHigh,
           ),
         ),
       ],

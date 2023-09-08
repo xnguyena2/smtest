@@ -10,7 +10,9 @@ const Color Black = Colors.black;
 const Color Red = Colors.red;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
 const Color Black40 = Color.fromARGB(80, 0, 0, 0);
+const Color Black15 = Color.fromARGB(38, 0, 0, 0);
 const Color HighColor = Color(0xFF0080A9);
+const Color HighColor15 = Color(0x260080A9);
 const Color MainHighColor = Color(0xFF0080A9);
 const Color TableHighColor = Color(0xFF26B074);
 const Color TableHighBGColor = Color(0xFF239A66);
@@ -120,6 +122,17 @@ const TextStyle customerNameBigHight = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle customerNameBigLight400 = TextStyle(
+  color: Black40,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle customerNameBig400 = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle headStyleSemiLarge = TextStyle(
   fontSize: 15,
 );
@@ -141,6 +154,29 @@ const TextStyle headStyleSemiLargeHigh500 = TextStyle(
   fontSize: 15,
 );
 
+const TextStyle headStyleSemiLargeAlert500 = TextStyle(
+  color: Red,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLarge400 = TextStyle(
+  fontWeight: FontWeight.w400,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLargeLight400 = TextStyle(
+  color: textNormalLightColor,
+  fontWeight: FontWeight.w400,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLargeHigh400 = TextStyle(
+  color: TableHighColor,
+  fontWeight: FontWeight.w400,
+  fontSize: 15,
+);
+
 const TextStyle headStyleLarge = TextStyle(
   fontSize: 14,
 );
@@ -158,6 +194,12 @@ const TextStyle headStyleBigMedium = TextStyle(
 
 const TextStyle headStyleBigMediumWhite = TextStyle(
   color: White,
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle headStyleBigMediumHigh = TextStyle(
+  color: TableHighColor,
   fontSize: 14,
   fontWeight: FontWeight.w400,
 );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
+import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 
 import 'my_custom_scroll_behavior.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: const CreateOrderPage(),
+      home: const ProductInfo(),
     );
   }
 }
