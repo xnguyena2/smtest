@@ -9,8 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sales_management/main.dart';
+import 'package:sales_management/page/account/api/account_api.dart';
 
 void main() {
+  testWidgets('signin test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await signin();
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

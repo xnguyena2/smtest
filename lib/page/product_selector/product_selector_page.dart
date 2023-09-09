@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -37,6 +38,8 @@ class ProductSelectorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    signin();
+    // me();
     return SafeArea(
         child: Scaffold(
       appBar: ProductSelectorBar(),

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: const ProductInfo(),
+      home: const ProductSelectorPage(),
     );
   }
 }
