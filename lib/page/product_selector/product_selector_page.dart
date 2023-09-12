@@ -1,7 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
+import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -10,95 +13,99 @@ import '../../component/category_selector.dart';
 
 const List<String> listCategory = ['Mỳ ăn liền', 'Đồ ăn'];
 
-const List<Map<String, String>> listMainFunction = [
-  {
-    'icon': 'svg/order_food.svg',
-    'name': 'Tạo đơn',
-  },
-  {
-    'icon': 'svg/table_order.svg',
-    'name': 'Quản lý bàn',
-  },
-  {
-    'icon': 'svg/order_manage.svg',
-    'name': 'Đơn hàng',
-  },
-  {
-    'icon': 'svg/goods.svg',
-    'name': 'Sản phẩm',
-  },
-  {
-    'icon': 'svg/report.svg',
-    'name': 'Báo cáo',
-  },
-];
-
 class ProductSelectorPage extends StatelessWidget {
   const ProductSelectorPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    signin();
+    // getall().then((value) {
+    //   print(value.count);
+    // }).catchError((e) {
+    //   print('Got error: $e');
+    //   signin().then((value) {
+    //     print(value.token);
+    //   });
+    // });
+    // signin().then((value) {
+    //   print(value.token);
+    // });
     // me();
     return SafeArea(
         child: Scaffold(
       appBar: ProductSelectorBar(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        color: BackgroundColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CategorySelector(
-              listCategory: listCategory,
-            ),
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 120,
-                childAspectRatio: 1 / 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+      body: FutureBuilder<SearchResult<BeerSubmitData>>(
+        future: getall(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+          if (snapshot.hasData) {
+            final data = snapshot.data!;
+            final results = data.result;
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              color: BackgroundColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CategorySelector(
+                    listCategory: listCategory,
+                  ),
+                  GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 120,
+                      childAspectRatio: 1 / 1,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: results.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == results.length)
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: White,
+                            borderRadius: defaultBorderRadius,
+                            border: defaultBorder,
+                          ),
+                          child: Center(
+                            child: Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
+                              children: [
+                                LoadSvg(
+                                  assetPath: 'svg/plus.svg',
+                                  colorFilter: ColorFilter.mode(
+                                    MainHighColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: -25,
+                                  child: Text(
+                                    'Thêm sản phẩm',
+                                    style: subInfoStyLargeHigh400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      return ProductSelectorItem();
+                    },
+                  ),
+                ],
               ),
-              itemCount: listMainFunction.length + 1,
-              itemBuilder: (context, index) {
-                if (index == listMainFunction.length)
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: White,
-                      borderRadius: defaultBorderRadius,
-                      border: defaultBorder,
-                    ),
-                    child: Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        clipBehavior: Clip.none,
-                        children: [
-                          LoadSvg(
-                            assetPath: 'svg/plus.svg',
-                            colorFilter: ColorFilter.mode(
-                              MainHighColor,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: -25,
-                            child: Text(
-                              'Thêm sản phẩm',
-                              style: subInfoStyLargeHigh400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                var item = listMainFunction[index];
-                return ProductSelectorItem();
-              },
-            ),
-          ],
-        ),
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     ));
   }

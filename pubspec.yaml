@@ -38,9 +38,6 @@ dependencies:
   fl_chart: ^0.63.0
   http: ^1.1.0
   crypto: ^3.0.3
-  dio: ^5.3.2
-  dio_cookie_manager: ^3.1.0+1
-  cookie_jar: ^4.0.8
 
 dev_dependencies:
   flutter_test:
