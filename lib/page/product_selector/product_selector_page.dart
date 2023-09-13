@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/search_result.dart';
+import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
 import '../../component/category_selector.dart';
 
@@ -26,9 +28,9 @@ class ProductSelectorPage extends StatelessWidget {
     //     print(value.token);
     //   });
     // });
-    // signin().then((value) {
-    //   print(value.token);
-    // });
+    signin().then((value) {
+      print(value.token);
+    });
     // me();
     return SafeArea(
         child: Scaffold(
@@ -43,62 +45,70 @@ class ProductSelectorPage extends StatelessWidget {
           }
           if (snapshot.hasData) {
             final data = snapshot.data!;
-            final results = data.result;
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              color: BackgroundColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CategorySelector(
-                    listCategory: listCategory,
-                  ),
-                  GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 120,
-                      childAspectRatio: 1 / 1,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+            final results = flatten<BeerSubmitData>(data.result.map(
+              (e) {
+                return e.flatUnit();
+              },
+            ));
+            return SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                color: BackgroundColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CategorySelector(
+                      listCategory: listCategory,
                     ),
-                    itemCount: results.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == results.length)
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: White,
-                            borderRadius: defaultBorderRadius,
-                            border: defaultBorder,
-                          ),
-                          child: Center(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              clipBehavior: Clip.none,
-                              children: [
-                                LoadSvg(
-                                  assetPath: 'svg/plus.svg',
-                                  colorFilter: ColorFilter.mode(
-                                    MainHighColor,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: -25,
-                                  child: Text(
-                                    'Thêm sản phẩm',
-                                    style: subInfoStyLargeHigh400,
-                                  ),
-                                ),
-                              ],
+                    GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 120,
+                        childAspectRatio: 1 / 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: results.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == results.length)
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: White,
+                              borderRadius: defaultBorderRadius,
+                              border: defaultBorder,
                             ),
-                          ),
+                            child: Center(
+                              child: Stack(
+                                alignment: Alignment.center,
+                                clipBehavior: Clip.none,
+                                children: [
+                                  LoadSvg(
+                                    assetPath: 'svg/plus.svg',
+                                    colorFilter: ColorFilter.mode(
+                                      MainHighColor,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: -25,
+                                    child: Text(
+                                      'Thêm sản phẩm',
+                                      style: subInfoStyLargeHigh400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        return ProductSelectorItem(
+                          productData: results[index],
                         );
-                      return ProductSelectorItem();
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -111,10 +121,28 @@ class ProductSelectorPage extends StatelessWidget {
   }
 }
 
-class ProductSelectorItem extends StatelessWidget {
+class ProductSelectorItem extends StatefulWidget {
+  final BeerSubmitData productData;
   const ProductSelectorItem({
     super.key,
+    required this.productData,
   });
+
+  @override
+  State<ProductSelectorItem> createState() => _ProductSelectorItemState();
+}
+
+class _ProductSelectorItemState extends State<ProductSelectorItem> {
+  late final String? imgUrl;
+  late final String name;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    imgUrl = widget.productData.images?[0].medium;
+    name = widget.productData.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,9 +152,11 @@ class ProductSelectorItem extends StatelessWidget {
         borderRadius: defaultBorderRadius,
         border: defaultBorder,
         image: DecorationImage(
-          image: AssetImage(
-            'assets/images/shop_logo.png',
-          ),
+          image: (imgUrl == null
+              ? const AssetImage(
+                  'assets/images/shop_logo.png',
+                )
+              : NetworkImage(imgUrl!)) as ImageProvider,
         ),
       ),
       child: Column(
@@ -174,21 +204,22 @@ class ProductSelectorItem extends StatelessWidget {
               ),
               child: Container(
                 color: Color.fromRGBO(214, 214, 214, 0.40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Column(
+                    Text(
+                      name,
+                      style: subInfoStyLarge400,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Mỳ hảo hảo',
-                          style: subInfoStyLarge400,
-                        ),
                         Text(
                           '15.000',
                           style: subInfoStyLarge600,
-                        )
+                        ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),

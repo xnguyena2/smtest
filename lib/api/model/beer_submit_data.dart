@@ -27,7 +27,9 @@ class BeerSubmitData extends ResultInterface {
     detail = null;
     category = json['category'];
     status = json['status'];
-    images = null;
+    images = json['images'] == null
+        ? null
+        : List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     listUnit =
         List.from(json['listUnit']).map((e) => ListUnit.fromJson(e)).toList();
   }
@@ -49,7 +51,7 @@ class BeerSubmitData extends ResultInterface {
     return BeerSubmitData(
       groupId: groupId,
       beerSecondID: beerSecondID,
-      name: name,
+      name: '$name(${unit.name})',
       category: category,
       status: status,
       listUnit: [unit],

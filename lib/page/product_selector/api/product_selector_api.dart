@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:sales_management/api/http.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/search_result.dart';
@@ -17,7 +18,7 @@ Future<SearchResult<BeerSubmitData>> getall() async {
 
   print(response.statusCode);
   if (response.statusCode == 200) {
-    print(response.body);
+    debugPrint(response.body, wrapWidth: 1024);
     return SearchResult<BeerSubmitData>.fromJson(
         jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
