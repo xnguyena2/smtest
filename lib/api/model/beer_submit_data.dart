@@ -24,7 +24,7 @@ class BeerSubmitData extends ResultInterface {
     groupId = json['group_id'];
     beerSecondID = json['beerSecondID'];
     name = json['name'];
-    detail = null;
+    detail = json['name'];
     category = json['category'];
     status = json['status'];
     images = json['images'] == null
@@ -54,13 +54,19 @@ class BeerSubmitData extends ResultInterface {
       name: '$name(${unit.name})',
       category: category,
       status: status,
+      detail: detail,
+      images: images,
       listUnit: [unit],
     );
   }
 
   List<BeerSubmitData> flatUnit() {
-    return listUnit.map((e) => cloneMainData(e)).toList();
+    return listUnit.map((e) => cloneMainData(e.correctPrice())).toList();
   }
+
+  String? get getFristLargeImg => images?[0].medium;
+
+  double get getRealPrice => listUnit[0].realPrice;
 }
 
 class Images {
@@ -135,6 +141,13 @@ class ListUnit {
   late final double? weight;
   late final String beerUnitSecondId;
   late final String status;
+
+  double realPrice = 0;
+
+  ListUnit correctPrice() {
+    realPrice = price * (1 - discount / 100);
+    return this;
+  }
 
   ListUnit.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];

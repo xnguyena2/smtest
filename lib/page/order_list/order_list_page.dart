@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/constants.dart';
 
 import '../../component/text_round.dart';
@@ -11,6 +12,7 @@ class OrderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getAllPackage(groupID);
     return SafeArea(
       child: Scaffold(
         appBar: OrderListBar(),
@@ -141,7 +143,7 @@ class OrderListPage extends StatelessWidget {
                                       child: CancelBtn(
                                         txt: 'Hủy bỏ',
                                         padding:
-                                            EdgeInsets.symmetric(vertical: 14),
+                                            EdgeInsets.symmetric(vertical: 10),
                                         isSmallTxt: true,
                                       ),
                                     ),
@@ -152,7 +154,7 @@ class OrderListPage extends StatelessWidget {
                                       child: ApproveBtn(
                                         txt: 'Đã giao',
                                         padding:
-                                            EdgeInsets.symmetric(vertical: 14),
+                                            EdgeInsets.symmetric(vertical: 10),
                                         isSmallTxt: true,
                                       ),
                                     ),

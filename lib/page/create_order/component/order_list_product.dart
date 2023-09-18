@@ -123,44 +123,42 @@ class ProductItem extends StatelessWidget {
                         'Mỳ hảo hảo',
                         style: headStyleXLarge,
                       ),
-                      isEditting
-                          ? Container(
-                              width: 127,
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  borderRadius: defaultBorderRadius,
-                                  border: defaultBorder),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  LoadSvg(
-                                      assetPath: 'svg/minus.svg',
-                                      width: 20,
-                                      height: 20),
-                                  Expanded(
-                                    child: TextFormField(
-                                      textAlign: TextAlign.center,
-                                      initialValue: '99',
-                                      maxLines: 1,
-                                      style: headStyleSemiLarge500,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        isDense: true,
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
+                      if (isEditting)
+                        Container(
+                          width: 127,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              borderRadius: defaultBorderRadius,
+                              border: defaultBorder),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LoadSvg(
+                                  assetPath: 'svg/minus.svg',
+                                  width: 20,
+                                  height: 20),
+                              Expanded(
+                                child: TextFormField(
+                                  textAlign: TextAlign.center,
+                                  initialValue: '99',
+                                  maxLines: 1,
+                                  style: headStyleSemiLarge500,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    isDense: true,
+                                    border: InputBorder.none,
                                   ),
-                                  LoadSvg(
-                                      assetPath: 'svg/plus.svg',
-                                      width: 20,
-                                      height: 20,
-                                      colorFilter: ColorFilter.mode(
-                                          TableHighColor, BlendMode.srcIn))
-                                ],
+                                ),
                               ),
-                            )
-                          : SizedBox()
+                              LoadSvg(
+                                  assetPath: 'svg/plus.svg',
+                                  width: 20,
+                                  height: 20,
+                                  colorFilter: ColorFilter.mode(
+                                      TableHighColor, BlendMode.srcIn))
+                            ],
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -168,18 +166,16 @@ class ProductItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    isEditting
-                        ? SizedBox()
-                        : Text(
-                            '15.000',
-                            style: headStyleBigMediumBlackLight,
-                          ),
-                    isEditting
-                        ? SizedBox()
-                        : Text(
-                            'x6',
-                            style: headStyleBigMedium,
-                          ),
+                    if (!isEditting) ...[
+                      Text(
+                        '15.000',
+                        style: headStyleBigMediumBlackLight,
+                      ),
+                      Text(
+                        'x6',
+                        style: headStyleBigMedium,
+                      )
+                    ],
                     isEditting
                         ? Stack(
                             clipBehavior: Clip.none,
@@ -211,137 +207,133 @@ class ProductItem extends StatelessWidget {
               ],
             ),
           ),
-          isEditting
-              ? SizedBox(
-                  height: 130,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: 7,
-                      ),
-                      Divider(),
-                      Expanded(
-                        child: Column(
+          if (isEditting)
+            SizedBox(
+              height: 130,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: 7,
+                  ),
+                  Divider(),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Giá bán',
-                                      style: headStyleSemiLargeLigh500,
-                                    ),
-                                  ],
+                                Text(
+                                  'Giá bán',
+                                  style: headStyleSemiLargeLigh500,
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 60,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        initialValue: '30.000',
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    LoadSvg(
-                                        assetPath:
-                                            'svg/edit_pencil_line_01.svg')
-                                  ],
-                                )
                               ],
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Chiết khấu',
-                                      style: headStyleSemiLargeLigh500,
+                                SizedBox(
+                                  width: 60,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.right,
+                                    initialValue: '30.000',
+                                    maxLines: 1,
+                                    style: customerNameBigHight,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true,
+                                      border: InputBorder.none,
                                     ),
-                                    SizedBox(
-                                      width: 18,
-                                    ),
-                                    SwitchBtn(
-                                      firstTxt: 'VND',
-                                      secondTxt: '%',
-                                    )
-                                  ],
+                                  ),
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 60,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        initialValue: '30.000',
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    LoadSvg(
-                                        assetPath:
-                                            'svg/edit_pencil_line_01.svg')
-                                  ],
-                                )
+                                LoadSvg(
+                                    assetPath: 'svg/edit_pencil_line_01.svg')
                               ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Ghi chú',
-                                      style: headStyleSemiLargeLigh500,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 100,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        initialValue: 'ghi chú ở đây',
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    LoadSvg(
-                                        assetPath:
-                                            'svg/edit_pencil_line_01.svg')
-                                  ],
-                                )
-                              ],
-                            ),
+                            )
                           ],
                         ),
-                      ),
-                      LoadSvg(assetPath: 'svg/collapse.svg')
-                    ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Chiết khấu',
+                                  style: headStyleSemiLargeLigh500,
+                                ),
+                                SizedBox(
+                                  width: 18,
+                                ),
+                                SwitchBtn(
+                                  firstTxt: 'VND',
+                                  secondTxt: '%',
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 60,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.right,
+                                    initialValue: '30.000',
+                                    maxLines: 1,
+                                    style: customerNameBigHight,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true,
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                LoadSvg(
+                                    assetPath: 'svg/edit_pencil_line_01.svg')
+                              ],
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Ghi chú',
+                                  style: headStyleSemiLargeLigh500,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 100,
+                                  child: TextFormField(
+                                    textAlign: TextAlign.right,
+                                    initialValue: 'ghi chú ở đây',
+                                    maxLines: 1,
+                                    style: customerNameBigHight,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true,
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                LoadSvg(
+                                    assetPath: 'svg/edit_pencil_line_01.svg')
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                )
-              : SizedBox()
+                  LoadSvg(assetPath: 'svg/collapse.svg')
+                ],
+              ),
+            ),
         ],
       ),
     );

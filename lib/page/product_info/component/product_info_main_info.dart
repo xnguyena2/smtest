@@ -143,17 +143,14 @@ class CategoryItem extends StatelessWidget {
                 ? headStyleSemiLargeHigh400
                 : headStyleSemiLargeLight400,
           ),
-          isSelected
-              ? SizedBox(
-                  width: 10,
-                )
-              : SizedBox(),
-          isSelected
-              ? LoadSvg(
-                  colorFilter:
-                      ColorFilter.mode(TableHighColor, BlendMode.srcIn),
-                  assetPath: 'svg/close_circle.svg')
-              : SizedBox(),
+          if (isSelected) ...[
+            SizedBox(
+              width: 10,
+            ),
+            LoadSvg(
+                colorFilter: ColorFilter.mode(TableHighColor, BlendMode.srcIn),
+                assetPath: 'svg/close_circle.svg')
+          ],
         ],
       ),
     );

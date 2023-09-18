@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/api/model/product_package.dart';
 import 'package:sales_management/api/model/search_result.dart';
+import 'package:sales_management/api/model/user_info_query.dart';
 import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
@@ -28,10 +30,13 @@ class ProductSelectorPage extends StatelessWidget {
     //     print(value.token);
     //   });
     // });
-    signin().then((value) {
-      print(value.token);
-    });
+    // signin().then((value) {
+    //   print(value.token);
+    // });
     // me();
+    fetchPackage(UserInfoQuery(
+            group_id: groupID, id: deviceID, page: 0, size: 10000))
+        .then((value) => null);
     return SafeArea(
         child: Scaffold(
       appBar: ProductSelectorBar(),
@@ -135,13 +140,18 @@ class ProductSelectorItem extends StatefulWidget {
 class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late final String? imgUrl;
   late final String name;
+  late final double price;
+  bool processing = false;
+  late ListUnit unit;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    imgUrl = widget.productData.images?[0].medium;
+    unit = widget.productData.listUnit[0];
+    imgUrl = widget.productData.getFristLargeImg;
     name = widget.productData.name;
+    price = widget.productData.getRealPrice;
   }
 
   @override
@@ -163,8 +173,8 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-            margin: EdgeInsets.only(top: 12, left: 6, right: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+            margin: const EdgeInsets.only(top: 12, left: 6, right: 6),
             decoration: BoxDecoration(
                 color: White,
                 borderRadius: defaultSquareBorderRadius,
@@ -172,13 +182,22 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                LoadSvg(assetPath: 'svg/minus.svg'),
+                GestureDetector(
+                  child: LoadSvg(assetPath: 'svg/minus.svg'),
+                  onTap: () => changePackage(unit, -1),
+                ),
                 SizedBox(
                   width: 18,
                   child: TextFormField(
                     initialValue: '99',
                     maxLines: 1,
                     style: headStyleLarge,
+                    onEditingComplete: () {
+                      print('onEditingComplete');
+                    },
+                    onFieldSubmitted: (value) {
+                      print('onFieldSubmitted');
+                    },
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
@@ -186,11 +205,14 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                     ),
                   ),
                 ),
-                LoadSvg(
-                  assetPath: 'svg/plus.svg',
-                  colorFilter: ColorFilter.mode(
-                    MainHighColor,
-                    BlendMode.srcIn,
+                GestureDetector(
+                  onTap: () => changePackage(unit, 1),
+                  child: LoadSvg(
+                    assetPath: 'svg/plus.svg',
+                    colorFilter: const ColorFilter.mode(
+                      MainHighColor,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 )
               ],
@@ -215,7 +237,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '15.000',
+                          MoneyFormater.format(price),
                           style: subInfoStyLarge600,
                         ),
                       ],
@@ -227,6 +249,32 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
           ),
         ],
       ),
+    );
+  }
+
+  void changePackage(ListUnit unit, int diff) {
+    setState(() {
+      processing = true;
+    });
+    addToPackage(
+      ProductPackage(
+          group_id: groupID,
+          beerID: unit.beer,
+          beerUnits: [
+            BeerUnits(beerUnitID: unit.beerUnitSecondId, numberUnit: diff)
+          ],
+          deviceID: deviceID),
+    ).then((value) {
+      processing = false;
+      // widget.item.numberUnit += diff;
+      // widget.updateItemCount.call();
+    }).catchError(
+      (error, stackTrace) {
+        setState(() {
+          processing = false;
+        });
+        print("Error: $error");
+      },
     );
   }
 }

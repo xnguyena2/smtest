@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const String host =
     'http://192.168.1.8:5000'; //"https://product-sell.onrender.com";
+
+const String deviceID = 'admintestting';
+const String groupID = 'trumbien_store';
+
+//formater
+final MoneyFormater = NumberFormat("#,##0", "en_US");
 
 // color
 const Color BackgroundColor = Color(0xFFF5F5F5);

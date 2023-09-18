@@ -29,12 +29,11 @@ class InputFiledWithHeader extends StatelessWidget {
                   SizedBox(
                     width: 5,
                   ),
-                  isImportance
-                      ? Text(
-                          '*',
-                          style: headStyleSemiLargeAlert500,
-                        )
-                      : SizedBox(),
+                  if (isImportance)
+                    Text(
+                      '*',
+                      style: headStyleSemiLargeAlert500,
+                    ),
                 ],
               ),
               SizedBox(
