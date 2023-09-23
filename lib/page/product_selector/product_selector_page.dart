@@ -5,6 +5,7 @@ import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/product_package.dart';
 import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/api/model/user_info_query.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
@@ -40,85 +41,74 @@ class ProductSelectorPage extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: ProductSelectorBar(),
-      body: FutureBuilder<SearchResult<BeerSubmitData>>(
+      body: FetchAPI<SearchResult<BeerSubmitData>>(
         future: getall(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
-          if (snapshot.hasData) {
-            final data = snapshot.data!;
-            final results = flatten<BeerSubmitData>(data.result.map(
-              (e) {
-                return e.flatUnit();
-              },
-            ));
-            return SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                color: BackgroundColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CategorySelector(
-                      listCategory: listCategory,
+        successBuilder: (SearchResult<BeerSubmitData> data) {
+          final results = flatten<BeerSubmitData>(data.result.map(
+            (e) {
+              return e.flatUnit();
+            },
+          ));
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              color: BackgroundColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CategorySelector(
+                    listCategory: listCategory,
+                  ),
+                  GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 120,
+                      childAspectRatio: 1 / 1,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
                     ),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 120,
-                        childAspectRatio: 1 / 1,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: results.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == results.length)
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: White,
-                              borderRadius: defaultBorderRadius,
-                              border: defaultBorder,
-                            ),
-                            child: Center(
-                              child: Stack(
-                                alignment: Alignment.center,
-                                clipBehavior: Clip.none,
-                                children: [
-                                  LoadSvg(
-                                    assetPath: 'svg/plus.svg',
-                                    colorFilter: ColorFilter.mode(
-                                      MainHighColor,
-                                      BlendMode.srcIn,
-                                    ),
+                    itemCount: results.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == results.length)
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: White,
+                            borderRadius: defaultBorderRadius,
+                            border: defaultBorder,
+                          ),
+                          child: Center(
+                            child: Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
+                              children: [
+                                LoadSvg(
+                                  assetPath: 'svg/plus.svg',
+                                  colorFilter: ColorFilter.mode(
+                                    MainHighColor,
+                                    BlendMode.srcIn,
                                   ),
-                                  Positioned(
-                                    bottom: -25,
-                                    child: Text(
-                                      'Thêm sản phẩm',
-                                      style: subInfoStyLargeHigh400,
-                                    ),
+                                ),
+                                Positioned(
+                                  bottom: -25,
+                                  child: Text(
+                                    'Thêm sản phẩm',
+                                    style: subInfoStyLargeHigh400,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        return ProductSelectorItem(
-                          productData: results[index],
+                          ),
                         );
-                      },
-                    ),
-                  ],
-                ),
+                      return ProductSelectorItem(
+                        productData: results[index],
+                      );
+                    },
+                  ),
+                ],
               ),
-            );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
+            ),
           );
         },
       ),
