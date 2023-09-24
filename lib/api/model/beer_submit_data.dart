@@ -18,7 +18,7 @@ class BeerSubmitData extends ResultInterface {
   late final String category;
   late final String status;
   late final List<Images>? images;
-  late final List<ListUnit> listUnit;
+  late final List<BeerUnit> listUnit;
 
   BeerSubmitData.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];
@@ -31,7 +31,7 @@ class BeerSubmitData extends ResultInterface {
         ? null
         : List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     listUnit =
-        List.from(json['listUnit']).map((e) => ListUnit.fromJson(e)).toList();
+        List.from(json['listUnit']).map((e) => BeerUnit.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +47,7 @@ class BeerSubmitData extends ResultInterface {
     return _data;
   }
 
-  BeerSubmitData cloneMainData(ListUnit unit) {
+  BeerSubmitData cloneMainData(BeerUnit unit) {
     return BeerSubmitData(
       groupId: groupId,
       beerSecondID: beerSecondID,
@@ -118,8 +118,8 @@ class Images {
   }
 }
 
-class ListUnit {
-  ListUnit({
+class BeerUnit {
+  BeerUnit({
     required this.groupId,
     required this.beer,
     required this.name,
@@ -144,12 +144,12 @@ class ListUnit {
 
   double realPrice = 0;
 
-  ListUnit correctPrice() {
+  BeerUnit correctPrice() {
     realPrice = price * (1 - discount / 100);
     return this;
   }
 
-  ListUnit.fromJson(Map<String, dynamic> json) {
+  BeerUnit.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];
     beer = json['beer'];
     name = json['name'];

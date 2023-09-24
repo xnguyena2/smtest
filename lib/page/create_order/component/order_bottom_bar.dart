@@ -24,6 +24,7 @@ class BottomBar extends StatelessWidget {
             child: CancelBtn(
               txt: 'Hủy',
               padding: EdgeInsets.symmetric(vertical: 18),
+              onPressed: () {},
             ),
           ),
           SizedBox(
@@ -33,6 +34,7 @@ class BottomBar extends StatelessWidget {
             child: ApproveBtn(
               txt: 'Đã giao',
               padding: EdgeInsets.symmetric(vertical: 18),
+              onPressed: () {},
             ),
           ),
         ],

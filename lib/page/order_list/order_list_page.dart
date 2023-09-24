@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sales_management/api/model/package_data_response.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
@@ -45,32 +45,36 @@ class Body extends StatelessWidget {
         children: [
           ColoredBox(
             color: White,
-            child: TabBar(
-              padding: EdgeInsets.zero,
-              labelPadding: EdgeInsets.zero,
-              isScrollable: true,
-              indicatorColor: HighColor,
-              labelColor: HighColor,
-              labelStyle: headStyleMedium500,
-              indicatorWeight: 1,
-              // indicator: UnderlineTabIndicator(
-              //   borderSide: BorderSide(
-              //     width: 2,
-              //     color: HighColor,
-              //   ),
-              // ),
-              tabs: [
-                Tab(
-                  child: SizedBox(
-                    width: 200,
-                    child: Center(child: Text('Tất cả')),
-                  ),
-                ),
-                Tab(
-                  child: SizedBox(
-                    width: 200,
-                    child: Center(child: Text('Chờ xác nhận')),
-                  ),
+            child: Row(
+              children: [
+                TabBar(
+                  padding: EdgeInsets.zero,
+                  labelPadding: EdgeInsets.zero,
+                  isScrollable: true,
+                  indicatorColor: HighColor,
+                  labelColor: HighColor,
+                  labelStyle: headStyleMedium500,
+                  indicatorWeight: 1,
+                  // indicator: UnderlineTabIndicator(
+                  //   borderSide: BorderSide(
+                  //     width: 2,
+                  //     color: HighColor,
+                  //   ),
+                  // ),
+                  tabs: [
+                    Tab(
+                      child: SizedBox(
+                        width: 200,
+                        child: Center(child: Text('Tất cả')),
+                      ),
+                    ),
+                    Tab(
+                      child: SizedBox(
+                        width: 200,
+                        child: Center(child: Text('Chờ xác nhận')),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -131,7 +135,7 @@ class PackageItemDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Buyer? buyer = data.buyer;
+    BuyerData? buyer = data.buyer;
     String? headerTxtNull = (data.areaName == null || data.tableName == null)
         ? buyer?.reciverFullname
         : ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
@@ -221,6 +225,7 @@ class PackageItemDetail extends StatelessWidget {
                   txt: 'Hủy bỏ',
                   padding: EdgeInsets.symmetric(vertical: 10),
                   isSmallTxt: true,
+                  onPressed: () {},
                 ),
               ),
               SizedBox(
@@ -231,6 +236,7 @@ class PackageItemDetail extends StatelessWidget {
                   txt: 'Đã giao',
                   padding: EdgeInsets.symmetric(vertical: 10),
                   isSmallTxt: true,
+                  onPressed: () {},
                 ),
               ),
             ],

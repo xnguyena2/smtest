@@ -5,16 +5,18 @@ class CancelBtn extends StatelessWidget {
   final String txt;
   final EdgeInsetsGeometry padding;
   final bool isSmallTxt;
+  final VoidCallback onPressed;
   const CancelBtn(
       {super.key,
       required this.txt,
       required this.padding,
-      this.isSmallTxt = false});
+      this.isSmallTxt = false,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: padding,

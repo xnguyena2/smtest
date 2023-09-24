@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/api/http.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package_result.dart';
-import 'package:sales_management/api/model/product_package.dart';
+import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/api/model/response_result.dart';
 import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/api/model/user_info_query.dart';

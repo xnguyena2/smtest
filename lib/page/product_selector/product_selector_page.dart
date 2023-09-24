@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
-import 'package:sales_management/api/model/product_package.dart';
+import 'package:sales_management/api/model/package/buyer.dart';
+import 'package:sales_management/api/model/package/product_package.dart';
+import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/api/model/user_info_query.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -132,7 +134,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late final String name;
   late final double price;
   bool processing = false;
-  late ListUnit unit;
+  late BeerUnit unit;
 
   @override
   void initState() {
@@ -242,18 +244,38 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     );
   }
 
-  void changePackage(ListUnit unit, int diff) {
+  void changePackage(BeerUnit unit, int diff) {
     setState(() {
       processing = true;
     });
     addToPackage(
       ProductPackage(
-          group_id: groupID,
-          beerID: unit.beer,
-          beerUnits: [
-            BeerUnits(beerUnitID: unit.beerUnitSecondId, numberUnit: diff)
-          ],
-          deviceID: deviceID),
+        groupId: '',
+        buyer: Buyer(
+            regionId: 0,
+            districtId: 0,
+            wardId: 0,
+            realPrice: 0,
+            totalPrice: 0,
+            shipPrice: 0,
+            pointsDiscount: 0,
+            groupId: '',
+            createat: '',
+            deviceId: ''),
+        productUnits: [
+          UserPackage(
+              groupId: '',
+              createat: '',
+              packageSecondId: '',
+              deviceId: '',
+              productSecondId: unit.beer,
+              productUnitSecondId: unit.beerUnitSecondId,
+              numberUnit: diff,
+              price: 0,
+              discountAmount: 0,
+              discountPercent: 0)
+        ],
+      ),
     ).then((value) {
       processing = false;
       // widget.item.numberUnit += diff;

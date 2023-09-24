@@ -76,6 +76,7 @@ class OrderMainInfo extends StatelessWidget {
               ApproveBtn(
                 txt: 'Gửi hóa đơn',
                 padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+                onPressed: () {},
               ),
             ],
           ),
