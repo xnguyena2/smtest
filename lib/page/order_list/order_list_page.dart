@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/constants.dart';
 
@@ -140,108 +142,135 @@ class PackageItemDetail extends StatelessWidget {
         ? buyer?.reciverFullname
         : ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
     String headerTxt = headerTxtNull ?? 'Khách lẻ';
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: White,
-        borderRadius: defaultBorderRadius,
-        boxShadow: const [defaultShadow],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    headerTxt,
-                    style: headStyleMedium500,
-                  ),
-                  if (headerTxtNull != null) ...[
+    bool isDone = data.status == 'DONE';
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateOrderPage(
+              data: data,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: White,
+          borderRadius: defaultBorderRadius,
+          boxShadow: const [defaultShadow],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      headerTxt,
+                      style: headStyleMedium500,
+                    ),
+                    if (headerTxtNull != null) ...[
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        buyer?.reciverFullname ?? 'Khách lẻ',
+                        style: subInfoStyLargeLigh400,
+                      ),
+                    ],
                     SizedBox(
                       height: 6,
                     ),
                     Text(
-                      buyer?.reciverFullname ?? 'Khách lẻ',
+                      '${data.localTimeTxt} - ${data.id}' ??
+                          '16:08 14/08/2023 TZJZDB',
                       style: subInfoStyLargeLigh400,
                     ),
                   ],
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    data.createat ?? '16:08 14/08/2023 TZJZDB',
-                    style: subInfoStyLargeLigh400,
-                  ),
-                ],
+                ),
+                TextRound(
+                  txt: isDone ? 'Đã giao' : 'Đang xử lý',
+                  isHigh: isDone,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(),
+            SizedBox(
+              height: 9,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Tổng cộng',
+                  style: subInfoStyLarge400,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      data.price.toString() ?? '75.000',
+                      style: headStyleMedium500,
+                    ),
+                    Text(
+                      isDone ? 'Đã thanh toán' : 'Chưa thanh toán',
+                      style: isDone
+                          ? subInfoStyMediumHigh400
+                          : subInfoStyMediumAlert400,
+                    )
+                  ],
+                )
+              ],
+            ),
+            if (!isDone) ...[
+              SizedBox(
+                height: 10,
               ),
-              TextRound(
-                txt: data.status == 'DONE' ? 'Đã giao' : 'Đang xử lý',
-                isHigh: false,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Divider(),
-          SizedBox(
-            height: 9,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tổng cộng',
-                style: subInfoStyLarge400,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    data.price.toString() ?? '75.000',
-                    style: headStyleMedium500,
+                  Expanded(
+                    child: CancelBtn(
+                      txt: 'Hủy bỏ',
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      isSmallTxt: true,
+                      onPressed: () {
+                        data.status = 'CREATE';
+                        updatePackage(
+                            ProductPackage.fromPackageDataResponse(data));
+                      },
+                    ),
                   ),
-                  Text(
-                    'Chưa thanh toán',
-                    style: subInfoStyMediumAlert400,
-                  )
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: ApproveBtn(
+                      txt: 'Đã giao',
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      isSmallTxt: true,
+                      onPressed: () {
+                        print('update package: ${data.packageSecondId}');
+                        data.status = 'DONE';
+                        updatePackage(
+                            ProductPackage.fromPackageDataResponse(data));
+                      },
+                    ),
+                  ),
                 ],
               )
             ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: CancelBtn(
-                  txt: 'Hủy bỏ',
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  isSmallTxt: true,
-                  onPressed: () {},
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: ApproveBtn(
-                  txt: 'Đã giao',
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  isSmallTxt: true,
-                  onPressed: () {},
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

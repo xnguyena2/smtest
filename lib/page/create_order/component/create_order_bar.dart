@@ -5,7 +5,8 @@ import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
 class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
-  const CreateOrderBar({super.key});
+  final VoidCallback onBackPressed;
+  const CreateOrderBar({super.key, required this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         extendsWidget: SizedBox(),
+        onBackPressed: onBackPressed,
       ),
     );
   }

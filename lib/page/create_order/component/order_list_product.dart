@@ -4,10 +4,17 @@ import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class ListProduct extends StatelessWidget {
+class ListProduct extends StatefulWidget {
   const ListProduct({
     super.key,
   });
+
+  @override
+  State<ListProduct> createState() => _ListProductState();
+}
+
+class _ListProductState extends State<ListProduct> {
+  String currentPriceType = '';
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +62,25 @@ class ListProduct extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    CheckRadioItem(isCheck: false, txt: 'Giá lẻ'),
+                    CheckRadioItem<String>(
+                      txt: 'Giá lẻ',
+                      groupValue: currentPriceType,
+                      value: 'retailprice',
+                      onChanged: (value) {
+                        currentPriceType = 'retailprice';
+                      },
+                    ),
                     SizedBox(
                       width: 20,
                     ),
-                    CheckRadioItem(isCheck: true, txt: 'Giá sỉ')
+                    CheckRadioItem<String>(
+                      txt: 'Giá sỉ',
+                      groupValue: currentPriceType,
+                      value: 'wholesale',
+                      onChanged: (value) {
+                        currentPriceType = 'wholesale';
+                      },
+                    )
                   ],
                 )
               ],

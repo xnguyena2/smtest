@@ -250,8 +250,10 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     });
     addToPackage(
       ProductPackage(
+        id: 0,
         groupId: '',
         buyer: Buyer(
+            id: 0,
             regionId: 0,
             districtId: 0,
             wardId: 0,
@@ -264,6 +266,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
             deviceId: ''),
         productUnits: [
           UserPackage(
+              id: 0,
               groupId: '',
               createat: '',
               packageSecondId: '',

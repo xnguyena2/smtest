@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class SelectAreaAndDeliver extends StatelessWidget {
+class SelectAreaAndDeliver extends StatefulWidget {
+  final PackageDataResponse data;
   const SelectAreaAndDeliver({
     super.key,
+    required this.data,
   });
+
+  @override
+  State<SelectAreaAndDeliver> createState() => _SelectAreaAndDeliverState();
+}
+
+class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
+  String? currentPackgeType;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currentPackgeType = widget.data.packageType;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +37,38 @@ class SelectAreaAndDeliver extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CheckRadioItem(
-                isCheck: false,
+              CheckRadioItem<String>(
                 txt: 'Ăn tại bàn',
+                groupValue: currentPackgeType,
+                value: 'eat_here',
+                onChanged: (value) {
+                  print(value);
+                  setState(() {
+                    currentPackgeType = value;
+                  });
+                },
               ),
-              CheckRadioItem(
-                isCheck: false,
+              CheckRadioItem<String>(
                 txt: 'Mang về',
+                groupValue: currentPackgeType,
+                value: 'bringtohome',
+                onChanged: (value) {
+                  print(value);
+                  setState(() {
+                    currentPackgeType = value;
+                  });
+                },
               ),
-              CheckRadioItem(
-                isCheck: true,
+              CheckRadioItem<String>(
                 txt: 'Giao hàng',
+                groupValue: currentPackgeType,
+                value: 'deliver',
+                onChanged: (value) {
+                  print(value);
+                  setState(() {
+                    currentPackgeType = value;
+                  });
+                },
               )
             ],
           ),

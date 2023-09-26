@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
 
-class CheckRadioItem extends StatelessWidget {
-  final bool isCheck;
+class CheckRadioItem<T> extends StatelessWidget {
+  final void Function(T?) onChanged;
+  final T? groupValue;
+  final T value;
   final String txt;
   const CheckRadioItem({
     super.key,
-    required this.isCheck,
     required this.txt,
+    required this.groupValue,
+    required this.value,
+    required this.onChanged,
   });
 
   @override
@@ -23,15 +27,15 @@ class CheckRadioItem extends StatelessWidget {
             shape: CircleBorder(
               side: BorderSide(
                 width: 1,
-                color: isCheck ? HighColor : borderColor,
+                color: groupValue == value ? HighColor : borderColor,
               ),
             ),
           ),
-          child: isCheck
-              ? CircleAvatar(
-                  backgroundColor: HighColor,
-                )
-              : SizedBox(),
+          child: Radio<T>(
+            groupValue: groupValue,
+            value: value,
+            onChanged: onChanged,
+          ),
         ),
         SizedBox(
           width: 11,

@@ -2,6 +2,7 @@ import 'package:sales_management/api/model/base_entity.dart';
 
 class Buyer extends BaseEntity {
   Buyer({
+    required int id,
     required String groupId,
     required String createat,
     required this.deviceId,
@@ -17,7 +18,7 @@ class Buyer extends BaseEntity {
     this.phoneNumber,
     this.reciverAddress,
     this.status,
-  }) : super(groupId: groupId, createat: createat);
+  }) : super(id: id, groupId: groupId, createat: createat);
 
   late final String deviceId;
   late final String? reciverFullname;

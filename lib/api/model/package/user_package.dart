@@ -14,6 +14,7 @@ class UserPackage extends BaseEntity {
   late final String? status;
 
   UserPackage({
+    required int id,
     required String groupId,
     required String? createat,
     required this.packageSecondId,
@@ -26,11 +27,14 @@ class UserPackage extends BaseEntity {
     required this.discountPercent,
     this.note,
     this.status,
-  }) : super(groupId: groupId, createat: createat);
+  }) : super(id: id, groupId: groupId, createat: createat);
 
   UserPackage.fromProductInPackageResponse(
       ProductInPackageResponse productInPackageResponse)
-      : super(groupId: productInPackageResponse.groupId, createat: null) {
+      : super(
+            id: productInPackageResponse.id,
+            groupId: productInPackageResponse.groupId,
+            createat: null) {
     packageSecondId = productInPackageResponse.packageSecondId;
     deviceId = productInPackageResponse.deviceId;
     productSecondId = productInPackageResponse.productSecondId;

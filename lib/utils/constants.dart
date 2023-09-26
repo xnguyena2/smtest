@@ -355,6 +355,12 @@ const TextStyle subInfoStyMedium400 = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle subInfoStyMediumHigh400 = TextStyle(
+  color: TableHighColor,
+  fontSize: 11,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle subInfoStyMediumAlert400 = TextStyle(
   color: AlertColor,
   fontSize: 11,

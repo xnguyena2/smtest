@@ -17,9 +17,10 @@ class PackageDetail extends BaseEntity {
   late final String? note;
   late final String? image;
   late final String? progress;
-  late final String? status;
+  late String? status;
 
   PackageDetail({
+    required int? id,
     required String groupId,
     String? createat,
     required this.packageSecondId,
@@ -29,13 +30,17 @@ class PackageDetail extends BaseEntity {
     required this.discountAmount,
     required this.discountPercent,
     required this.shipPrice,
+    this.areaId,
+    this.areaName,
+    this.tableId,
+    this.tableName,
     this.packageType,
     this.voucher,
     this.note,
     this.image,
     this.progress,
     this.status,
-  }) : super(groupId: groupId, createat: createat);
+  }) : super(id: id, groupId: groupId, createat: createat);
 
   PackageDetail.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     packageSecondId = json['package_second_id'];

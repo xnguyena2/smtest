@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 import 'package:sales_management/page/create_order/component/order_progress.dart';
 import 'package:sales_management/page/create_order/component/order_bottom_bar.dart';
@@ -13,20 +14,27 @@ import 'package:sales_management/page/create_order/component/order_transaction.d
 import '../../utils/constants.dart';
 
 class CreateOrderPage extends StatelessWidget {
-  const CreateOrderPage({super.key});
+  final PackageDataResponse data;
+  const CreateOrderPage({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: CreateOrderBar(),
+      appBar: CreateOrderBar(
+        onBackPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         // padding: EdgeInsets.symmetric(vertical: 10),
         color: BackgroundColor,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SelectAreaAndDeliver(),
+              SelectAreaAndDeliver(
+                data: data,
+              ),
               SizedBox(
                 height: 10,
               ),
