@@ -5,6 +5,8 @@ import 'package:sales_management/component/layout/default_padding_container.dart
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
+enum DeliverType { deliver, takeaway, table }
+
 class SelectAreaAndDeliver extends StatefulWidget {
   final PackageDataResponse data;
   const SelectAreaAndDeliver({
@@ -17,17 +19,32 @@ class SelectAreaAndDeliver extends StatefulWidget {
 }
 
 class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
-  String? currentPackgeType;
+  late DeliverType currentPackgeType;
+  late bool isEatAtTable;
+  late PackageDataResponse data;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentPackgeType = widget.data.packageType;
+    data = widget.data;
+    currentPackgeType = DeliverType.values.firstWhere(
+        (element) => element.name == data.packageType,
+        orElse: () => DeliverType.table);
+    isEatAtTable = currentPackgeType == DeliverType.table;
   }
 
   @override
   Widget build(BuildContext context) {
+    void Function(DeliverType?) onChanged = (value) {
+      print(value);
+      setState(() {
+        currentPackgeType = value ?? DeliverType.table;
+        data.packageType = currentPackgeType.name;
+        isEatAtTable = currentPackgeType == DeliverType.table;
+      });
+    };
+
     return DefaultPaddingContainer(
       child: Column(
         children: [
@@ -37,74 +54,64 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CheckRadioItem<String>(
+              CheckRadioItem<DeliverType>(
                 txt: 'Ăn tại bàn',
                 groupValue: currentPackgeType,
-                value: 'eat_here',
-                onChanged: (value) {
-                  print(value);
-                  setState(() {
-                    currentPackgeType = value;
-                  });
-                },
+                value: DeliverType.table,
+                onChanged: onChanged,
               ),
-              CheckRadioItem<String>(
+              CheckRadioItem<DeliverType>(
                 txt: 'Mang về',
                 groupValue: currentPackgeType,
-                value: 'bringtohome',
-                onChanged: (value) {
-                  print(value);
-                  setState(() {
-                    currentPackgeType = value;
-                  });
-                },
+                value: DeliverType.takeaway,
+                onChanged: onChanged,
               ),
-              CheckRadioItem<String>(
+              CheckRadioItem<DeliverType>(
                 txt: 'Giao hàng',
                 groupValue: currentPackgeType,
-                value: 'deliver',
-                onChanged: (value) {
-                  print(value);
-                  setState(() {
-                    currentPackgeType = value;
-                  });
-                },
+                value: DeliverType.deliver,
+                onChanged: onChanged,
               )
             ],
           ),
-          SizedBox(
-            height: 7,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-                color: Color(0x1980A91A),
-                borderRadius: defaultSquareBorderRadius),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Chọn bàn:',
-                  style: subStyleMediumNormalLight,
-                ),
-                Row(
+          if (isEatAtTable) ...[
+            SizedBox(
+              height: 7,
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                    color: SelectTableBackgroundColor,
+                    borderRadius: defaultSquareBorderRadius),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Khu vực 1 - Bàn 1',
-                      style: headStyleMedium,
+                      'Chọn bàn:',
+                      style: subStyleMediumNormalLight,
                     ),
-                    LoadSvg(
-                      assetPath: 'svg/navigate_next.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Black,
-                        BlendMode.srcIn,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          data.areAndTable,
+                          style: headStyleMedium,
+                        ),
+                        LoadSvg(
+                          assetPath: 'svg/navigate_next.svg',
+                          colorFilter: const ColorFilter.mode(
+                            Black,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      ],
                     )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          )
+          ]
         ],
       ),
     );

@@ -20,14 +20,14 @@ class Buyer extends BaseEntity {
     this.status,
   }) : super(id: id, groupId: groupId, createat: createat);
 
-  late final String deviceId;
-  late final String? reciverFullname;
-  late final String? phoneNumberClean;
-  late final String? phoneNumber;
-  late final String? reciverAddress;
-  late final int regionId;
-  late final int districtId;
-  late final int wardId;
+  late String deviceId;
+  late String? reciverFullname;
+  late String? phoneNumberClean;
+  late String? phoneNumber;
+  late String? reciverAddress;
+  late int regionId;
+  late int districtId;
+  late int wardId;
   late final double realPrice;
   late final double totalPrice;
   late final double shipPrice;

@@ -141,8 +141,9 @@ class PackageItemDetail extends StatelessWidget {
     String? headerTxtNull = (data.areaName == null || data.tableName == null)
         ? buyer?.reciverFullname
         : ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
-    String headerTxt = headerTxtNull ?? 'Khách lẻ';
-    bool isDone = data.status == 'DONE';
+    String headerTxt =
+        (headerTxtNull ?? data.buyer?.reciverFullname) ?? 'Khách lẻ';
+    bool isDone = data.isDone;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -218,7 +219,7 @@ class PackageItemDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      data.price.toString() ?? '75.000',
+                      data.priceFormat ?? '75.000',
                       style: headStyleMedium500,
                     ),
                     Text(

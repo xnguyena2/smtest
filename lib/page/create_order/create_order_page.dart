@@ -38,15 +38,21 @@ class CreateOrderPage extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              OrderMainInfo(),
+              OrderMainInfo(
+                data: data,
+              ),
               SizedBox(
                 height: 15,
               ),
-              CustomerInfo(),
+              CustomerInfo(
+                data: data,
+              ),
               SizedBox(
                 height: 15,
               ),
-              ListProduct(),
+              ListProduct(
+                data: data,
+              ),
               SizedBox(
                 height: 15,
               ),

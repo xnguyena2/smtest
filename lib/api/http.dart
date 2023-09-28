@@ -34,9 +34,14 @@ Future<Response> getC(String path) {
     'Content-Type': 'application/json; charset=UTF-8',
     'Cookie': '$CookiePrefix=$token',
   };
-  print(token);
   return get(
     Uri.parse('$host$path'),
     headers: requestHeaders,
+  );
+}
+
+Future<Response> getE(String path) {
+  return get(
+    Uri.parse('$host$path'),
   );
 }

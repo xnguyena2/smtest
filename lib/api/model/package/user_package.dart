@@ -1,5 +1,6 @@
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/utils/constants.dart';
 
 class UserPackage extends BaseEntity {
   late final String packageSecondId;
@@ -74,4 +75,6 @@ class UserPackage extends BaseEntity {
     _data['status'] = status;
     return _data;
   }
+
+  String get priceFormat => MoneyFormater.format(price);
 }

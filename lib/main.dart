@@ -25,8 +25,11 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       scrollBehavior: MyCustomScrollBehavior(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
-            .copyWith(background: BackgroundColor),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Colors.deepPurple).copyWith(
+          background: BackgroundColor,
+          // primary: TableHighColor,
+        ),
         useMaterial3: true,
         textTheme: const TextTheme(
           headlineMedium: headStyleLargeWhite,

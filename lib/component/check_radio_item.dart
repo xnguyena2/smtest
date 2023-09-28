@@ -16,35 +16,47 @@ class CheckRadioItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 20,
-          height: 20,
-          padding: EdgeInsets.all(2),
-          decoration: ShapeDecoration(
-            color: White,
-            shape: CircleBorder(
-              side: BorderSide(
-                width: 1,
-                color: groupValue == value ? HighColor : borderColor,
-              ),
-            ),
+    return GestureDetector(
+      onTap: () {
+        if (value != groupValue) {
+          onChanged(value);
+        }
+      },
+      child: Row(
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            padding: EdgeInsets.all(2),
+            // decoration: ShapeDecoration(
+            //   color: White,
+            //   shape: CircleBorder(
+            //     side: BorderSide(
+            //       width: 1,
+            //       color: groupValue == value ? HighColor : borderColor,
+            //     ),
+            //   ),
+            // ),
+            child: Radio<T>(
+                groupValue: groupValue,
+                value: value,
+                onChanged: onChanged,
+                fillColor: MaterialStateColor.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return HighColor;
+                  }
+                  return borderColor;
+                })),
           ),
-          child: Radio<T>(
-            groupValue: groupValue,
-            value: value,
-            onChanged: onChanged,
+          SizedBox(
+            width: 11,
           ),
-        ),
-        SizedBox(
-          width: 11,
-        ),
-        Text(
-          txt,
-          style: headStyleBigMedium,
-        ),
-      ],
+          Text(
+            txt,
+            style: headStyleBigMedium,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -134,13 +134,13 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late final String name;
   late final double price;
   bool processing = false;
-  late BeerUnit unit;
+  late BeerUnit? unit;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    unit = widget.productData.listUnit[0];
+    unit = widget.productData.listUnit?.firstOrNull;
     imgUrl = widget.productData.getFristLargeImg;
     name = widget.productData.name;
     price = widget.productData.getRealPrice;
@@ -176,7 +176,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
               children: [
                 GestureDetector(
                   child: LoadSvg(assetPath: 'svg/minus.svg'),
-                  onTap: () => changePackage(unit, -1),
+                  onTap: () => unit != null ? changePackage(unit!, -1) : null,
                 ),
                 SizedBox(
                   width: 18,
@@ -198,7 +198,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => changePackage(unit, 1),
+                  onTap: () => unit != null ? changePackage(unit!, 1) : null,
                   child: LoadSvg(
                     assetPath: 'svg/plus.svg',
                     colorFilter: const ColorFilter.mode(

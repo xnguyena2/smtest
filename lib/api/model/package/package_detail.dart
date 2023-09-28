@@ -1,4 +1,5 @@
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/utils/constants.dart';
 
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
@@ -7,7 +8,7 @@ class PackageDetail extends BaseEntity {
   late final String? areaName;
   late final String? tableId;
   late final String? tableName;
-  late final String? packageType;
+  late String? packageType;
   late final String? voucher;
   late final double price;
   late final double payment;
@@ -79,4 +80,12 @@ class PackageDetail extends BaseEntity {
     _data['status'] = status;
     return _data;
   }
+
+  bool get isDone => status == 'DONE';
+
+  String get areAndTable => areaName == null || tableName == null
+      ? 'Chưa có bàn được chọn'
+      : '${areaName} - ${tableName}';
+
+  String get priceFormat => MoneyFormater.format(price);
 }

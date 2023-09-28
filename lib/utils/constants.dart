@@ -32,6 +32,7 @@ const Color borderColorLight = Color.fromARGB(25, 0, 0, 0);
 const Color ShowdownColor = Color.fromARGB(56, 0, 0, 0);
 const Color ShowdownColor25 = Color.fromARGB(64, 0, 0, 0);
 const Color AlertColor = Color(0xFFC20202);
+const Color SelectTableBackgroundColor = Color(0x1980A91A);
 
 const Color textNormalLightColor = Color(0xFF323232);
 const Color textSubLightColor = Color(0xFF404040);
@@ -126,6 +127,12 @@ const TextStyle customerNameBig = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle customerNameBigLigh = TextStyle(
+  color: Black70,
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle customerNameBigHight = TextStyle(
   color: TableHighColor,
   fontSize: 16,
@@ -189,6 +196,12 @@ const TextStyle headStyleSemiLargeHigh400 = TextStyle(
 
 const TextStyle headStyleLarge = TextStyle(
   fontSize: 14,
+);
+
+const TextStyle headStyleLargeAlert = TextStyle(
+  color: Red,
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
 );
 
 const TextStyle headStyleBigMediumBlackLight = TextStyle(

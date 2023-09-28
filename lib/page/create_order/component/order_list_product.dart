@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class ListProduct extends StatefulWidget {
+  final PackageDataResponse data;
   const ListProduct({
     super.key,
+    required this.data,
   });
 
   @override
@@ -14,7 +18,17 @@ class ListProduct extends StatefulWidget {
 }
 
 class _ListProductState extends State<ListProduct> {
+  late final PackageDataResponse data;
+  late final List<ProductInPackageResponse> listProducts;
   String currentPriceType = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    data = widget.data;
+    listProducts = data.items;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +110,15 @@ class _ListProductState extends State<ListProduct> {
               itemBuilder: (context, index) {
                 return ProductItem(
                   isEditting: true,
+                  productInPackageResponse: listProducts[index],
                 );
               },
-              separatorBuilder: (context, index) =>
-                  SizedBox(height: 15, child: Divider()),
-              itemCount: 3),
+              separatorBuilder: (context, index) => const SizedBox(
+                  height: 15,
+                  child: Divider(
+                    color: Black40,
+                  )),
+              itemCount: listProducts.length),
         ],
       ),
     );
@@ -108,11 +126,20 @@ class _ListProductState extends State<ListProduct> {
 }
 
 class ProductItem extends StatelessWidget {
+  final ProductInPackageResponse productInPackageResponse;
   final bool isEditting;
-  const ProductItem({super.key, this.isEditting = false});
+  const ProductItem(
+      {super.key,
+      this.isEditting = false,
+      required this.productInPackageResponse});
 
   @override
   Widget build(BuildContext context) {
+    String total_price = productInPackageResponse.priceFormat;
+    String? unitName =
+        productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull?.name;
+    String productName =
+        '${productInPackageResponse.beerSubmitData?.name ?? 'Removed'}(${unitName ?? 'Removed'})';
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -141,7 +168,7 @@ class ProductItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Mỳ hảo hảo',
+                        productName,
                         style: headStyleXLarge,
                       ),
                       if (isEditting)
@@ -161,7 +188,9 @@ class ProductItem extends StatelessWidget {
                               Expanded(
                                 child: TextFormField(
                                   textAlign: TextAlign.center,
-                                  initialValue: '99',
+                                  initialValue: productInPackageResponse
+                                      .numberUnit
+                                      .toString(),
                                   maxLines: 1,
                                   style: headStyleSemiLarge500,
                                   decoration: InputDecoration(
@@ -203,7 +232,7 @@ class ProductItem extends StatelessWidget {
                             alignment: Alignment.bottomCenter,
                             children: [
                               Text(
-                                '90.000',
+                                total_price,
                                 style: headStyleXLargehightUnderline.copyWith(
                                   decorationColor: Colors.white,
                                 ),
@@ -211,7 +240,7 @@ class ProductItem extends StatelessWidget {
                               Positioned(
                                 bottom: -5,
                                 child: Text(
-                                  '90.000',
+                                  total_price,
                                   style: headStyleXLargehightUnderline.copyWith(
                                     color: Colors.transparent,
                                   ),
@@ -220,7 +249,7 @@ class ProductItem extends StatelessWidget {
                             ],
                           )
                         : Text(
-                            '90.000',
+                            total_price,
                             style: headStyleXLarge,
                           )
                   ],
@@ -237,7 +266,10 @@ class ProductItem extends StatelessWidget {
                   SizedBox(
                     height: 7,
                   ),
-                  Divider(),
+                  Divider(
+                    color: Black15,
+                    thickness: 0.3,
+                  ),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

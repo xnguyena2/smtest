@@ -2,6 +2,7 @@ import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
+import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/utils/utils.dart';
 
 class ListPackageDetailResult {
@@ -70,7 +71,7 @@ class ProductInPackageResponse extends UserPackage {
             price: 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0);
-  late final BeerSubmitData beerSubmitData;
+  late final BeerSubmitData? beerSubmitData;
 
   ProductInPackageResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -79,7 +80,7 @@ class ProductInPackageResponse extends UserPackage {
 
   Map<String, dynamic> toJson() {
     final _data = super.toJson();
-    _data['beerSubmitData'] = beerSubmitData.toJson();
+    _data['beerSubmitData'] = beerSubmitData?.toJson();
     return _data;
   }
 }
@@ -101,9 +102,21 @@ class BuyerData extends Buyer {
             totalPrice: 0.0,
             shipPrice: 0.0,
             pointsDiscount: 0.0);
-  late final String? region;
-  late final String? district;
-  late final String? ward;
+  late String? region;
+  late String? district;
+  late String? ward;
+
+  void updateData(AddressData data) {
+    phoneNumber = data.phoneNumber;
+    reciverFullname = data.reciverFullName;
+    reciverAddress = data.houseNumber;
+    region = data.region.name;
+    regionId = data.region.id;
+    district = data.district.name;
+    districtId = data.district.id;
+    ward = data.ward.name;
+    wardId = data.ward.id;
+  }
 
   BuyerData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     region = json['region'];

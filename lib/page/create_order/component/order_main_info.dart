@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
@@ -6,12 +7,15 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class OrderMainInfo extends StatelessWidget {
+  final PackageDataResponse data;
   const OrderMainInfo({
     super.key,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
+    bool isDone = data.isDone;
     return DefaultPaddingContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,7 +26,7 @@ class OrderMainInfo extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'ARPGRK',
+                    'ID: ${data.id}',
                     style: headStyleXLarge400,
                   ),
                   SizedBox(
@@ -31,14 +35,17 @@ class OrderMainInfo extends StatelessWidget {
                   LoadSvg(assetPath: 'svg/copy.svg', width: 15, height: 15)
                 ],
               ),
-              TextRound(txt: 'Đã giao', isHigh: true),
+              TextRound(
+                txt: isDone ? 'Đã giao' : 'Đang xử lý',
+                isHigh: isDone,
+              ),
             ],
           ),
           SizedBox(
             height: 8,
           ),
           Text(
-            '16:49 - 01/08/2023',
+            data.localTimeTxt,
             style: subStyleMediumNormalLight,
           ),
           SizedBox(
@@ -57,7 +64,7 @@ class OrderMainInfo extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'Khu vực 1 - bàn 1',
+                  data.areAndTable,
                   style: subInfoStyLarge500High,
                 ),
               ],
@@ -70,7 +77,7 @@ class OrderMainInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '90.000',
+                data.priceFormat,
                 style: moneyStyleSuperLarge,
               ),
               ApproveBtn(
@@ -84,8 +91,8 @@ class OrderMainInfo extends StatelessWidget {
             height: 8,
           ),
           Text(
-            'Đã thanh toán',
-            style: headStyleMediumHigh500,
+            isDone ? 'Đã thanh toán' : 'Chưa thanh toán',
+            style: isDone ? headStyleMediumHigh500 : headStyleMediumAlert500,
           )
         ],
       ),

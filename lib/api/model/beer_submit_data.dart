@@ -18,7 +18,7 @@ class BeerSubmitData extends ResultInterface {
   late final String category;
   late final String status;
   late final List<Images>? images;
-  late final List<BeerUnit> listUnit;
+  late final List<BeerUnit>? listUnit;
 
   BeerSubmitData.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];
@@ -43,30 +43,32 @@ class BeerSubmitData extends ResultInterface {
     _data['category'] = category;
     _data['status'] = status;
     _data['images'] = images;
-    _data['listUnit'] = listUnit.map((e) => e.toJson()).toList();
+    _data['listUnit'] = listUnit?.map((e) => e.toJson()).toList();
     return _data;
   }
 
-  BeerSubmitData cloneMainData(BeerUnit unit) {
+  BeerSubmitData cloneMainData(BeerUnit? unit) {
     return BeerSubmitData(
       groupId: groupId,
       beerSecondID: beerSecondID,
-      name: '$name(${unit.name})',
+      name: '$name(${unit?.name ?? 'Removed'})',
       category: category,
       status: status,
       detail: detail,
       images: images,
-      listUnit: [unit],
+      listUnit: unit != null ? [unit] : null,
     );
   }
 
   List<BeerSubmitData> flatUnit() {
-    return listUnit.map((e) => cloneMainData(e.correctPrice())).toList();
+    return listUnit == null
+        ? [this]
+        : listUnit!.map((e) => cloneMainData(e.correctPrice())).toList();
   }
 
   String? get getFristLargeImg => images?[0].medium;
 
-  double get getRealPrice => listUnit[0].realPrice;
+  double get getRealPrice => listUnit?[0].realPrice ?? 0;
 }
 
 class Images {

@@ -19,7 +19,7 @@ Future<ListPackageDetailResult> getAllPackage(String groupID) async {
 
   print(response.statusCode);
   if (response.statusCode == 200) {
-    debugPrint(response.body, wrapWidth: 1024);
+    // debugPrint(response.body, wrapWidth: 1024);
     return ListPackageDetailResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );
