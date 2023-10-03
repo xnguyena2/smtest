@@ -1,21 +1,18 @@
-class UserInfoQuery {
-  late final String group_id;
+import 'package:sales_management/api/model/base_id.dart';
+
+class UserInfoQuery extends BaseID {
   late final String id;
-  late final int page;
-  late final int size;
 
   UserInfoQuery(
-      {required this.group_id,
-      required this.page,
-      required this.size,
-      required this.id});
+      {required String group_id,
+      required int page,
+      required int size,
+      required this.id})
+      : super(group_id: group_id, page: page, size: size);
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['group_id'] = group_id;
+    final _data = super.toJson();
     _data['id'] = id;
-    _data['page'] = page;
-    _data['size'] = size;
     return _data;
   }
 }

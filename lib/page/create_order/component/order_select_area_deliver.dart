@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/table/api/table_api.dart';
+import 'package:sales_management/page/table/table_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -79,7 +83,26 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
               height: 7,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TablePage(
+                      done: (table) {
+                        table.packageSecondId = data.packageSecondId;
+                        data.areaId = table.areaId;
+                        data.areaName = table.detail;
+                        data.tableId = table.tableId;
+                        data.tableName = table.tableName;
+                        setPackageId(table);
+                        updatePackage(
+                            ProductPackage.fromPackageDataResponse(data));
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(

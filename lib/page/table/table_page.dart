@@ -1,69 +1,116 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/table/api/model/area_table.dart';
+import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 import '../../component/category_selector.dart';
 import '../../utils/constants.dart';
 import 'component/table_selector_bar.dart';
 
+typedef onTableSelected = void Function(TableDetailData);
+
 class TablePage extends StatelessWidget {
-  const TablePage({super.key});
+  final onTableSelected done;
+  const TablePage({super.key, required this.done});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: TableSelectorBar(),
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          color: BackgroundColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Status(),
-              SizedBox(
-                height: 10,
-              ),
-              CategorySelector(
-                listCategory: ['Khu vực 1', 'Khu vực 2'],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Area();
-                  },
-                  separatorBuilder: (context, index) => SizedBox(
-                        height: 10,
-                      ),
-                  itemCount: 2),
-            ],
-          ),
+        appBar: TableSelectorBar(
+          onBackPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        body: FetchAPI<ListAreDataResult>(
+          future: getAllTable(groupID),
+          successBuilder: (data) {
+            return Body(
+              data: data,
+              done: done,
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class Area extends StatelessWidget {
-  const Area({
+class Body extends StatelessWidget {
+  final onTableSelected done;
+  final ListAreDataResult data;
+  const Body({
     super.key,
+    required this.data,
+    required this.done,
   });
 
   @override
   Widget build(BuildContext context) {
+    List<AreaData> listAreaData = data.listResult;
+    List<String> listArea = data.getListAreName;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      color: BackgroundColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Status(
+            data: data,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          CategorySelector(
+            listCategory: listArea,
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          ListView.separated(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Area(
+                  data: listAreaData[index],
+                  done: done,
+                );
+              },
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10,
+                  ),
+              itemCount: listAreaData.length),
+        ],
+      ),
+    );
+  }
+}
+
+class Area extends StatelessWidget {
+  final AreaData data;
+  final onTableSelected done;
+  const Area({
+    super.key,
+    required this.data,
+    required this.done,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var (_, avaliable) = data.getStatus;
+    List<TableDetailData> listTable = data.listTable ?? [];
+    int tableNo = listTable.length;
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Khu vực 1',
+              data.areaName ?? 'unknow',
               style: headStyleMedium,
             ),
-            Text('2 còn trống', style: headStyleMediumNormalLight),
+            Text('$avaliable còn trống', style: headStyleMediumNormalLight),
           ],
         ),
         SizedBox(
@@ -85,37 +132,17 @@ class Area extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: 2 + 1,
+            itemCount: tableNo + 1,
             itemBuilder: (context, index) {
-              if (index == 2)
-                return Container(
-                  decoration: BoxDecoration(
-                    color: BackgroundColor,
-                    borderRadius: defaultBorderRadius,
-                    border: defaultBorder,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      LoadSvg(
-                        assetPath: 'svg/plus.svg',
-                        colorFilter: ColorFilter.mode(
-                          MainHighColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        'Thêm bàn mới',
-                        style: subInfoStyLargeHigh400,
-                      ),
-                    ],
-                  ),
-                );
+              if (index == tableNo) {
+                return AddNewTable();
+              }
               return TableItem(
-                isSelected: index == 0,
+                tableDetailData: listTable[index],
+                done: (table) {
+                  table.detail = data.areaName;
+                  done(table);
+                },
               );
             },
           ),
@@ -125,74 +152,35 @@ class Area extends StatelessWidget {
   }
 }
 
-class TableItem extends StatelessWidget {
-  final bool isSelected;
-  const TableItem({
+class AddNewTable extends StatelessWidget {
+  const AddNewTable({
     super.key,
-    required this.isSelected,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: BackgroundColorLigh,
+        color: BackgroundColor,
         borderRadius: defaultBorderRadius,
-        border: isSelected ? tableHighBorder : defaultBorder,
+        border: defaultBorder,
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            color: isSelected ? TableHighBGColor : TableHeaderBGColor,
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Bàn 1',
-                  style:
-                      isSelected ? headStyleMediumNormaWhite : headStyleMedium,
-                ),
-              ],
+          LoadSvg(
+            assetPath: 'svg/plus.svg',
+            colorFilter: ColorFilter.mode(
+              MainHighColor,
+              BlendMode.srcIn,
             ),
           ),
-          Expanded(
-            child: isSelected
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          LoadSvg(assetPath: 'svg/time_filled.svg'),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            '18 giờ',
-                            style: subInfoStyLargeTable400,
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          LoadSvg(assetPath: 'svg/money_alt.svg'),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            '15.000',
-                            style: subInfoStyLargeTable400,
-                          )
-                        ],
-                      ),
-                    ],
-                  )
-                : Center(
-                    child: LoadSvg(assetPath: 'svg/table_filled.svg'),
-                  ),
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            'Thêm bàn mới',
+            style: subInfoStyLargeHigh400,
           ),
         ],
       ),
@@ -200,13 +188,102 @@ class TableItem extends StatelessWidget {
   }
 }
 
-class Status extends StatelessWidget {
-  const Status({
+class TableItem extends StatelessWidget {
+  final TableDetailData tableDetailData;
+  final onTableSelected done;
+  const TableItem({
     super.key,
+    required this.tableDetailData,
+    required this.done,
   });
 
   @override
   Widget build(BuildContext context) {
+    bool isSelected = tableDetailData.isUsed;
+    String timeElasped = tableDetailData.timeElapsed;
+    return GestureDetector(
+      onTap: () {
+        done(tableDetailData);
+        Navigator.pop(context);
+      },
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          color: BackgroundColorLigh,
+          borderRadius: defaultBorderRadius,
+          border: isSelected ? tableHighBorder : defaultBorder,
+        ),
+        child: Column(
+          children: [
+            Container(
+              color: isSelected ? TableHighBGColor : TableHeaderBGColor,
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    tableDetailData.tableName ?? 'unknow',
+                    style: isSelected
+                        ? headStyleMediumNormaWhite
+                        : headStyleMedium,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: isSelected
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LoadSvg(assetPath: 'svg/time_filled.svg'),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              timeElasped,
+                              style: subInfoStyLargeTable400,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LoadSvg(assetPath: 'svg/money_alt.svg'),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              tableDetailData.price.toString(),
+                              style: subInfoStyLargeTable400,
+                            )
+                          ],
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: LoadSvg(assetPath: 'svg/table_filled.svg'),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Status extends StatelessWidget {
+  final ListAreDataResult data;
+  const Status({
+    super.key,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var (inUsed, available) = data.getStatus;
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -228,7 +305,8 @@ class Status extends StatelessWidget {
                     text: 'Còn trống: ',
                     style: subInfoStyLarge500,
                     children: [
-                      TextSpan(text: '99', style: subInfoStyLarge600High)
+                      TextSpan(
+                          text: '$available', style: subInfoStyLarge600High)
                     ],
                   ),
                 ),
@@ -249,10 +327,10 @@ class Status extends StatelessWidget {
                 ),
                 RichText(
                   text: TextSpan(
-                    text: 'Còn trống: ',
+                    text: 'Đang sử dụng: ',
                     style: subInfoStyLarge500,
                     children: [
-                      TextSpan(text: '99', style: subInfoStyLarge600High)
+                      TextSpan(text: '$inUsed', style: subInfoStyLarge600High)
                     ],
                   ),
                 ),

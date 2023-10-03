@@ -4,10 +4,10 @@ import 'package:sales_management/utils/constants.dart';
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
   late final String? deviceId;
-  late final String? areaId;
-  late final String? areaName;
-  late final String? tableId;
-  late final String? tableName;
+  late String? areaId;
+  late String? areaName;
+  late String? tableId;
+  late String? tableName;
   late String? packageType;
   late final String? voucher;
   late final double price;

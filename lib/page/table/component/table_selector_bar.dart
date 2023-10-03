@@ -6,7 +6,8 @@ import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
 class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
-  const TableSelectorBar({super.key});
+  final VoidCallback onBackPressed;
+  const TableSelectorBar({super.key, required this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
         extendsWidget: AppSearchBar(
           hint: 'Tìm theo tên',
         ),
+        onBackPressed: onBackPressed,
       ),
     );
   }
