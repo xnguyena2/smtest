@@ -117,7 +117,6 @@ class TableDetailData extends BaseEntity {
     status = json['status'];
     price = json['price'] as double;
     startUsed = createat != null ? stringToDateTime(createat!).toLocal() : null;
-    print('db time: ${createat}, local time: ${startUsed.toString()}');
   }
 
   Map<String, dynamic> toJson() {

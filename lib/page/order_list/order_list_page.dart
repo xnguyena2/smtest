@@ -245,7 +245,7 @@ class PackageItemDetail extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       isSmallTxt: true,
                       onPressed: () {
-                        data.status = 'CREATE';
+                        data.status = 'CANCEL';
                         updatePackage(
                             ProductPackage.fromPackageDataResponse(data));
                       },

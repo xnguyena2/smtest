@@ -1,1 +1,3 @@
-typedef VoidCallback_Bool = void Function(bool);
+typedef VoidCallbackArg<T> = void Function(T);
+
+typedef ReturnCallbackArg<T, R> = R Function(T);

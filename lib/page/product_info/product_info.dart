@@ -43,7 +43,10 @@ class ProductInfo extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: BottomBar(),
+        bottomNavigationBar: BottomBar(
+          done: () {},
+          cancel: () {},
+        ),
       ),
     );
   }

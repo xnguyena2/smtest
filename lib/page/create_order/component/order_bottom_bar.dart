@@ -4,8 +4,12 @@ import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class BottomBar extends StatelessWidget {
+  final VoidCallback done;
+  final VoidCallback cancel;
   const BottomBar({
     super.key,
+    required this.done,
+    required this.cancel,
   });
 
   @override
@@ -24,7 +28,7 @@ class BottomBar extends StatelessWidget {
             child: CancelBtn(
               txt: 'Hủy',
               padding: EdgeInsets.symmetric(vertical: 18),
-              onPressed: () {},
+              onPressed: cancel,
             ),
           ),
           SizedBox(
@@ -34,7 +38,7 @@ class BottomBar extends StatelessWidget {
             child: ApproveBtn(
               txt: 'Đã giao',
               padding: EdgeInsets.symmetric(vertical: 18),
-              onPressed: () {},
+              onPressed: done,
             ),
           ),
         ],

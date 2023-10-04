@@ -3,15 +3,16 @@ import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../component/category_selector.dart';
 import '../../utils/constants.dart';
 import 'component/table_selector_bar.dart';
 
-typedef onTableSelected = void Function(TableDetailData);
+typedef onTableSelected = VoidCallbackArg<TableDetailData>;
 
 class TablePage extends StatelessWidget {
-  final onTableSelected done;
+  final VoidCallbackArg<TableDetailData> done;
   const TablePage({super.key, required this.done});
 
   @override

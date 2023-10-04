@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/utils/typedef.dart';
 
-typedef SuccessBuilder<T> = Widget Function(T data);
+typedef SuccessBuilder<T> = ReturnCallbackArg<T, Widget>;
 
 class FetchAPI<T> extends StatelessWidget {
   final Future<T> future;

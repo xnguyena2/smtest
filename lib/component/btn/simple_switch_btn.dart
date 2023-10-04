@@ -5,7 +5,7 @@ import 'package:sales_management/utils/typedef.dart';
 class SimpleSwitchBtn extends StatefulWidget {
   final Widget backGroundWidget;
   final List<Widget> selectedWidget;
-  final VoidCallback_Bool onSelected;
+  final VoidCallbackArg<bool> onSelected;
   final BorderRadiusGeometry borderRadius;
   final EdgeInsetsGeometry? padding;
   final Color backgroundColor;

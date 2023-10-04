@@ -67,6 +67,10 @@ class PackageDetail extends BaseEntity {
     final _data = super.toJson();
     _data['package_second_id'] = packageSecondId;
     _data['device_id'] = deviceId;
+    _data['area_id'] = areaId;
+    _data['area_name'] = areaName;
+    _data['table_id'] = tableId;
+    _data['table_name'] = tableName;
     _data['package_type'] = packageType;
     _data['voucher'] = voucher;
     _data['price'] = price;
