@@ -84,7 +84,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
                   builder: (context) => ReciverInfo(
                     addressData: addressData,
                     done: () {
-                      widget.data.buyer?.updateData(addressData);
+                      widget.data.updateBuyer(addressData);
                     },
                     delete: () {},
                     isEdit: false,

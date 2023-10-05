@@ -8,6 +8,7 @@ import 'package:sales_management/page/create_order/component/order_select_area_d
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../component/text_round.dart';
 import 'component/order_list_bar.dart';
@@ -98,7 +99,7 @@ class Body extends StatelessWidget {
   }
 }
 
-class AllPackageTab extends StatelessWidget {
+class AllPackageTab extends StatefulWidget {
   final ListPackageDetailResult data;
   const AllPackageTab({
     super.key,
@@ -106,8 +107,13 @@ class AllPackageTab extends StatelessWidget {
   });
 
   @override
+  State<AllPackageTab> createState() => _AllPackageTabState();
+}
+
+class _AllPackageTabState extends State<AllPackageTab> {
+  @override
   Widget build(BuildContext context) {
-    List<PackageDataResponse> listPackage = data.listResult;
+    List<PackageDataResponse> listPackage = widget.data.listResult;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       color: BackgroundColor,
@@ -119,6 +125,10 @@ class AllPackageTab extends StatelessWidget {
         itemBuilder: (context, index) {
           return PackageItemDetail(
             data: listPackage[index],
+            onUpdated: (PackageDataResponse) {
+              listPackage[index] = PackageDataResponse;
+              setState(() {});
+            },
           );
         },
         separatorBuilder: (BuildContext context, int index) =>
@@ -131,9 +141,11 @@ class AllPackageTab extends StatelessWidget {
 
 class PackageItemDetail extends StatelessWidget {
   final PackageDataResponse data;
+  final VoidCallbackArg<PackageDataResponse> onUpdated;
   const PackageItemDetail({
     super.key,
     required this.data,
+    required this.onUpdated,
   });
 
   @override
@@ -153,7 +165,8 @@ class PackageItemDetail extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CreateOrderPage(
-              data: data,
+              data: data.clone(),
+              onUpdated: onUpdated,
             ),
           ),
         );

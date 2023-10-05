@@ -12,12 +12,15 @@ import 'package:sales_management/page/create_order/component/order_select_area_d
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/constants.dart';
 
 class CreateOrderPage extends StatelessWidget {
   final PackageDataResponse data;
-  const CreateOrderPage({super.key, required this.data});
+  final VoidCallbackArg<PackageDataResponse> onUpdated;
+  const CreateOrderPage(
+      {super.key, required this.data, required this.onUpdated});
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +89,7 @@ class CreateOrderPage extends StatelessWidget {
           print(data.toJson());
           updateAction?.call();
           updatePackage(ProductPackage.fromPackageDataResponse(data));
+          onUpdated(data);
         },
         cancel: () {},
       ),

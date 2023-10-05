@@ -4,7 +4,7 @@ class Buyer extends BaseEntity {
   Buyer({
     required int id,
     required String groupId,
-    required String createat,
+    required String? createat,
     required this.deviceId,
     required this.regionId,
     required this.districtId,

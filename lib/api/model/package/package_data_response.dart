@@ -36,7 +36,7 @@ class PackageDataResponse extends PackageDetail {
   late final String localTimeTxt;
 
   late final List<ProductInPackageResponse> items;
-  late final BuyerData? buyer;
+  late BuyerData? buyer;
 
   PackageDataResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -53,6 +53,19 @@ class PackageDataResponse extends PackageDetail {
     _data['items'] = items.map((e) => e.toJson()).toList();
     _data['buyer'] = buyer?.toJson();
     return _data;
+  }
+
+  void updateBuyer(AddressData addressData) {
+    if (buyer == null) {
+      buyer =
+          BuyerData.fromPackageDataResponseAndAddressData(this, addressData);
+      return;
+    }
+    buyer!.updateData(addressData);
+  }
+
+  PackageDataResponse clone() {
+    return PackageDataResponse.fromJson(toJson());
   }
 }
 
@@ -116,6 +129,23 @@ class BuyerData extends Buyer {
     districtId = data.district.id;
     ward = data.ward.name;
     wardId = data.ward.id;
+  }
+
+  BuyerData.fromPackageDataResponseAndAddressData(
+      PackageDataResponse p, AddressData a)
+      : super(
+            id: 0,
+            groupId: p.groupId,
+            createat: null,
+            deviceId: '',
+            regionId: 0,
+            districtId: 0,
+            wardId: 0,
+            realPrice: 0.0,
+            totalPrice: 0.0,
+            shipPrice: 0.0,
+            pointsDiscount: 0.0) {
+    updateData(a);
   }
 
   BuyerData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
