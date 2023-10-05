@@ -60,22 +60,29 @@ class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
 class FunctionItem extends StatelessWidget {
   final String icon;
   final String title;
+  final Widget? iconSvg;
+  final VoidCallback? onTap;
   const FunctionItem({
     super.key,
     required this.icon,
     required this.title,
+    this.iconSvg,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LoadSvg(assetPath: icon),
-        Text(
-          title,
-          style: subInfoStyMedium400Light,
-        )
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          iconSvg ?? LoadSvg(assetPath: icon),
+          Text(
+            title,
+            style: subInfoStyMedium400Light,
+          )
+        ],
+      ),
     );
   }
 }

@@ -83,6 +83,7 @@ class CreateOrderPage extends StatelessWidget {
       ),
       bottomNavigationBar: BottomBar(
         done: () {
+          print(data.toJson());
           updateAction?.call();
           updatePackage(ProductPackage.fromPackageDataResponse(data));
         },

@@ -14,11 +14,12 @@ import 'package:sales_management/page/product_selector/api/product_selector_api.
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
 import '../../component/category_selector.dart';
 
-const List<String> listCategory = ['Mỳ ăn liền', 'Đồ ăn'];
+const List<String> listCategory = ['Tất cả', 'Mỳ ăn liền', 'Đồ ăn'];
 
 class ProductSelectorPage extends StatelessWidget {
   const ProductSelectorPage({super.key});
@@ -60,6 +61,10 @@ class ProductSelectorPage extends StatelessWidget {
                 children: [
                   CategorySelector(
                     listCategory: listCategory,
+                    multiSelected: true,
+                    onChanged: (listCategorySelected) {},
+                    isFlip: true,
+                    itemsSelected: [],
                   ),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -297,25 +302,37 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
 class CategoryItem extends StatelessWidget {
   final String txt;
   final bool isActive;
+  final bool isFlip;
+  final VoidCallbackArg<bool> onTap;
   const CategoryItem({
     super.key,
     required this.txt,
     required this.isActive,
+    required this.onTap,
+    this.isFlip = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: White,
-          borderRadius: defaultBorderRadius,
-          border: isActive ? mainHighBorder : categoryBorder,
-        ),
-        child: Text(
-          txt,
-          style: isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
+    return GestureDetector(
+      onTap: () {
+        if (isActive && !isFlip) {
+          return;
+        }
+        onTap(!isActive);
+      },
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: White,
+            borderRadius: defaultBorderRadius,
+            border: isActive ? mainHighBorder : categoryBorder,
+          ),
+          child: Text(
+            txt,
+            style: isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
+          ),
         ),
       ),
     );

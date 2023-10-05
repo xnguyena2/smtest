@@ -11,17 +11,33 @@ import 'component/table_selector_bar.dart';
 
 typedef onTableSelected = VoidCallbackArg<TableDetailData>;
 
-class TablePage extends StatelessWidget {
+class TablePage extends StatefulWidget {
   final VoidCallbackArg<TableDetailData> done;
   const TablePage({super.key, required this.done});
 
+  @override
+  State<TablePage> createState() => _TablePageState();
+}
+
+class _TablePageState extends State<TablePage> {
+  bool isEditting = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: TableSelectorBar(
           onBackPressed: () {
+            if (isEditting) {
+              isEditting = false;
+              setState(() {});
+              return;
+            }
             Navigator.pop(context);
+          },
+          onEditting: isEditting,
+          onEdit: () {
+            isEditting = true;
+            setState(() {});
           },
         ),
         body: FetchAPI<ListAreDataResult>(
@@ -29,7 +45,7 @@ class TablePage extends StatelessWidget {
           successBuilder: (data) {
             return Body(
               data: data,
-              done: done,
+              done: widget.done,
             );
           },
         ),
@@ -50,7 +66,8 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<AreaData> listAreaData = data.listResult;
-    List<String> listArea = data.getListAreName;
+    List<String> listArea = (<String>['Tất cả']);
+    listArea.addAll(data.getListAreName);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       color: BackgroundColor,
@@ -65,6 +82,11 @@ class Body extends StatelessWidget {
           ),
           CategorySelector(
             listCategory: listArea,
+            onChanged: (listAreaSelected) {
+              // print(listAreaSelected);
+            },
+            itemsSelected: [listArea[0]],
+            isFlip: false,
           ),
           SizedBox(
             height: 5,
@@ -204,6 +226,9 @@ class TableItem extends StatelessWidget {
     String timeElasped = tableDetailData.timeElapsed;
     return GestureDetector(
       onTap: () {
+        if (isSelected) {
+          return;
+        }
         done(tableDetailData);
         Navigator.pop(context);
       },

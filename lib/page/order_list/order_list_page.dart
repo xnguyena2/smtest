@@ -4,6 +4,7 @@ import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -138,7 +139,9 @@ class PackageItemDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = data.buyer;
-    String? headerTxtNull = (data.areaName == null || data.tableName == null)
+    String? headerTxtNull = (data.deliverType != DeliverType.table ||
+            data.areaName == null ||
+            data.tableName == null)
         ? buyer?.reciverFullname
         : ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
     String headerTxt =

@@ -33,9 +33,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
     // TODO: implement initState
     super.initState();
     data = widget.data;
-    currentPackgeType = DeliverType.values.firstWhere(
-        (element) => element.name == data.packageType,
-        orElse: () => DeliverType.table);
+    currentPackgeType = data.deliverType;
     isEatAtTable = currentPackgeType == DeliverType.table;
   }
 

@@ -1,4 +1,5 @@
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class PackageDetail extends BaseEntity {
@@ -92,4 +93,8 @@ class PackageDetail extends BaseEntity {
       : '${areaName} - ${tableName}';
 
   String get priceFormat => MoneyFormater.format(price);
+
+  DeliverType get deliverType =>
+      DeliverType.values.firstWhere((element) => element.name == packageType,
+          orElse: () => DeliverType.table);
 }

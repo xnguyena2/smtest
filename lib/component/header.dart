@@ -6,7 +6,7 @@ import '../utils/constants.dart';
 class Header extends StatelessWidget {
   final String title;
   final Widget funcWidget;
-  final Widget extendsWidget;
+  final Widget? extendsWidget;
   final VoidCallback? onBackPressed;
   const Header(
       {super.key,
@@ -20,9 +20,9 @@ class Header extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               HeaderTitle(
@@ -32,7 +32,7 @@ class Header extends StatelessWidget {
               funcWidget
             ],
           ),
-          Expanded(child: extendsWidget)
+          if (extendsWidget != null) Expanded(child: extendsWidget!)
         ],
       ),
     );
