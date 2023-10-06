@@ -18,7 +18,7 @@ Future<ListAreDataResult> getAllTable(String groupID) async {
   );
 
   if (response.statusCode == 200) {
-    print(response.body);
+    // print(response.body);
     return ListAreDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );

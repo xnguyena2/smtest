@@ -92,10 +92,7 @@ class ProductSelectorPage extends StatelessWidget {
                               children: [
                                 LoadSvg(
                                   assetPath: 'svg/plus.svg',
-                                  colorFilter: ColorFilter.mode(
-                                    MainHighColor,
-                                    BlendMode.srcIn,
-                                  ),
+                                  color: MainHighColor,
                                 ),
                                 Positioned(
                                   bottom: -25,
@@ -206,10 +203,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                   onTap: () => unit != null ? changePackage(unit!, 1) : null,
                   child: LoadSvg(
                     assetPath: 'svg/plus.svg',
-                    colorFilter: const ColorFilter.mode(
-                      MainHighColor,
-                      BlendMode.srcIn,
-                    ),
+                    color: MainHighColor,
                   ),
                 )
               ],

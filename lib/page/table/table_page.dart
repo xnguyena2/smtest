@@ -46,65 +46,119 @@ class _TablePageState extends State<TablePage> {
             return Body(
               data: data,
               done: widget.done,
+              isEditting: isEditting,
             );
           },
         ),
+        floatingActionButton: isEditting
+            ? FloatingActionButton.extended(
+                elevation: 2,
+                backgroundColor: MainHighColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: floatBottomBorderRadius,
+                ),
+                onPressed: () {},
+                icon: LoadSvg(
+                  assetPath: 'svg/plus_large_width_2.svg',
+                  color: White,
+                ),
+                label: Text(
+                  'Thêm khu vực',
+                  style: customerNameBigWhite600,
+                ),
+              )
+            : null,
       ),
     );
   }
 }
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   final onTableSelected done;
   final ListAreDataResult data;
+  final isEditting;
   const Body({
     super.key,
     required this.data,
     required this.done,
+    required this.isEditting,
   });
 
   @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  List<AreaData> _foundArea = [];
+  String _selectedArea = '';
+
+  late final List<AreaData> listAreaData;
+  late final List<String> listArea;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    listAreaData = widget.data.listResult;
+    _foundArea = listAreaData;
+    listArea = (<String>['Tất cả']);
+    listArea.addAll(widget.data.getListAreName);
+    _selectedArea = listArea[0];
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<AreaData> listAreaData = data.listResult;
-    List<String> listArea = (<String>['Tất cả']);
-    listArea.addAll(data.getListAreName);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       color: BackgroundColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Status(
-            data: data,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          CategorySelector(
-            listCategory: listArea,
-            onChanged: (listAreaSelected) {
-              // print(listAreaSelected);
-            },
-            itemsSelected: [listArea[0]],
-            isFlip: false,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          ListView.separated(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Area(
-                  data: listAreaData[index],
-                  done: done,
-                );
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Status(
+              data: widget.data,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CategorySelector(
+              listCategory: listArea,
+              onChanged: (listAreaSelected) {
+                print(listAreaSelected);
+                final String? area = listAreaSelected.firstOrNull;
+                if (area == null || area == 'Tất cả') {
+                  _foundArea = listAreaData;
+                  _selectedArea = 'Tất cả';
+                  setState(() {});
+                  return;
+                }
+                _foundArea = listAreaData
+                    .where((element) => element.areaName == area)
+                    .toList();
+                _selectedArea = area;
+                setState(() {});
               },
-              separatorBuilder: (context, index) => SizedBox(
-                    height: 10,
-                  ),
-              itemCount: listAreaData.length),
-        ],
+              itemsSelected: [_selectedArea],
+              isFlip: false,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            ListView.separated(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Area(
+                    data: _foundArea[index],
+                    done: widget.done,
+                    isEditting: widget.isEditting,
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                      height: 10,
+                    ),
+                itemCount: _foundArea.length),
+          ],
+        ),
       ),
     );
   }
@@ -113,10 +167,12 @@ class Body extends StatelessWidget {
 class Area extends StatelessWidget {
   final AreaData data;
   final onTableSelected done;
+  final bool isEditting;
   const Area({
     super.key,
     required this.data,
     required this.done,
+    required this.isEditting,
   });
 
   @override
@@ -129,9 +185,19 @@ class Area extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              data.areaName ?? 'unknow',
-              style: headStyleMedium,
+            Row(
+              children: [
+                Text(
+                  data.areaName ?? 'unknow',
+                  style: headStyleMedium,
+                ),
+                if (isEditting) ...[
+                  const SizedBox(
+                    width: 3,
+                  ),
+                  LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
+                ]
+              ],
             ),
             Text('$avaliable còn trống', style: headStyleMediumNormalLight),
           ],
@@ -166,6 +232,7 @@ class Area extends StatelessWidget {
                   table.detail = data.areaName;
                   done(table);
                 },
+                isEditting: isEditting,
               );
             },
           ),
@@ -193,10 +260,7 @@ class AddNewTable extends StatelessWidget {
         children: [
           LoadSvg(
             assetPath: 'svg/plus.svg',
-            colorFilter: ColorFilter.mode(
-              MainHighColor,
-              BlendMode.srcIn,
-            ),
+            color: MainHighColor,
           ),
           SizedBox(
             height: 8,
@@ -214,10 +278,12 @@ class AddNewTable extends StatelessWidget {
 class TableItem extends StatelessWidget {
   final TableDetailData tableDetailData;
   final onTableSelected done;
+  final bool isEditting;
   const TableItem({
     super.key,
     required this.tableDetailData,
     required this.done,
+    required this.isEditting,
   });
 
   @override
@@ -226,7 +292,7 @@ class TableItem extends StatelessWidget {
     String timeElasped = tableDetailData.timeElapsed;
     return GestureDetector(
       onTap: () {
-        if (isSelected) {
+        if (isSelected || isEditting) {
           return;
         }
         done(tableDetailData);
@@ -256,43 +322,76 @@ class TableItem extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              child: isSelected
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            if (isSelected)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          LoadSvg(assetPath: 'svg/time_filled.svg'),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            timeElasped,
+                            style: subInfoStyLargeTable400,
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          LoadSvg(assetPath: 'svg/money_alt.svg'),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            tableDetailData.price.toString(),
+                            style: subInfoStyLargeTable400,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (!isSelected && isEditting)
+              Expanded(
+                child: UnconstrainedBox(
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        borderRadius: defaultBorderRadius,
+                        border: tableHighBorder),
+                    child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            LoadSvg(assetPath: 'svg/time_filled.svg'),
+                            LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
                             SizedBox(
-                              width: 5,
+                              width: 1,
                             ),
-                            Text(
-                              timeElasped,
-                              style: subInfoStyLargeTable400,
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LoadSvg(assetPath: 'svg/money_alt.svg'),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              tableDetailData.price.toString(),
+                            const Text(
+                              'Chỉnh sửa',
                               style: subInfoStyLargeTable400,
                             )
                           ],
                         ),
                       ],
-                    )
-                  : Center(
-                      child: LoadSvg(assetPath: 'svg/table_filled.svg'),
                     ),
-            ),
+                  ),
+                ),
+              ),
+            if (!isSelected && !isEditting)
+              Expanded(
+                child: Center(
+                  child: LoadSvg(assetPath: 'svg/table_filled.svg'),
+                ),
+              ),
           ],
         ),
       ),

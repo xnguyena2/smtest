@@ -44,13 +44,15 @@ final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
 
 final BorderRadius defaultSquareBorderRadius = BorderRadius.circular(5);
 
+final BorderRadius floatBottomBorderRadius = BorderRadius.circular(24);
+
 final Border defaultBorder = Border.all(color: searchBorderColor);
 
 final Border lightBorder = Border.all(color: Black40);
 
 final Border normalBorder = Border.all(color: Black);
 
-final Border mainHighBorder = Border.all(color: HighColor);
+final Border mainHighBorder = Border.all(color: MainHighColor);
 
 final Border tableHighBorder = Border.all(color: TableHighColor);
 
@@ -120,6 +122,12 @@ const TextStyle headStyleXLargeHigh = TextStyle(
 const TextStyle headStyleXLarge400 = TextStyle(
   fontSize: 17,
   fontWeight: FontWeight.w400,
+);
+
+const TextStyle customerNameBigWhite600 = TextStyle(
+  color: White,
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
 );
 
 const TextStyle customerNameBig = TextStyle(

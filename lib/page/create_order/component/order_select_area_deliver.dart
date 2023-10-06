@@ -122,10 +122,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                         ),
                         LoadSvg(
                           assetPath: 'svg/navigate_next.svg',
-                          colorFilter: const ColorFilter.mode(
-                            Black,
-                            BlendMode.srcIn,
-                          ),
+                          color: Black,
                         )
                       ],
                     )

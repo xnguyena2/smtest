@@ -41,10 +41,7 @@ class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
                     assetPath: 'svg/order.svg',
                     width: 27,
                     height: 27,
-                    colorFilter: const ColorFilter.mode(
-                      Black,
-                      BlendMode.srcIn,
-                    ),
+                    color: Black,
                   ),
                   title: 'Đơn hàng',
                 ),

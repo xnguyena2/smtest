@@ -74,13 +74,11 @@ class Guide extends StatelessWidget {
             ),
           ),
           LoadSvg(
-              assetPath: 'svg/navigate_next.svg',
-              width: 20,
-              height: 20,
-              colorFilter: const ColorFilter.mode(
-                Black,
-                BlendMode.srcIn,
-              )),
+            assetPath: 'svg/navigate_next.svg',
+            width: 20,
+            height: 20,
+            color: Black,
+          ),
         ],
       ),
     );

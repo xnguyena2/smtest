@@ -204,8 +204,7 @@ class ProductItem extends StatelessWidget {
                                   assetPath: 'svg/plus.svg',
                                   width: 20,
                                   height: 20,
-                                  colorFilter: ColorFilter.mode(
-                                      TableHighColor, BlendMode.srcIn))
+                                  color: TableHighColor)
                             ],
                           ),
                         )

@@ -151,14 +151,21 @@ class PackageItemDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = data.buyer;
-    String? headerTxtNull = (data.deliverType != DeliverType.table ||
-            data.areaName == null ||
-            data.tableName == null)
-        ? buyer?.reciverFullname
-        : ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
-    String headerTxt =
-        (headerTxtNull ?? data.buyer?.reciverFullname) ?? 'Khách lẻ';
+    bool isTable = data.deliverType == DeliverType.table;
+
+    String headerTxt = '';
+    if (isTable) {
+      if (data.areaName == null && data.tableName == null) {
+        headerTxt = 'Chưa chọn bàn';
+      } else {
+        headerTxt = ('${data.areaName ?? ''} - ') + (data.tableName ?? '');
+      }
+    } else {
+      headerTxt = buyer?.reciverFullname ?? 'Khách lẻ';
+    }
+
     bool isDone = data.isDone;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -191,7 +198,7 @@ class PackageItemDetail extends StatelessWidget {
                       headerTxt,
                       style: headStyleMedium500,
                     ),
-                    if (headerTxtNull != null) ...[
+                    if (isTable) ...[
                       SizedBox(
                         height: 6,
                       ),

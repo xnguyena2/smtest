@@ -39,10 +39,7 @@ class ProductSelectorBar extends StatelessWidget
                 assetPath: 'svg/order.svg',
                 width: 27,
                 height: 27,
-                colorFilter: const ColorFilter.mode(
-                  Black,
-                  BlendMode.srcIn,
-                ),
+                color: Black,
               ),
             ],
           ),

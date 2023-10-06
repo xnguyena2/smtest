@@ -13,14 +13,12 @@ bool get isMobile {
 }
 
 Widget LoadSvg(
-    {required String assetPath,
-    double? width,
-    double? height,
-    ColorFilter? colorFilter}) {
+    {required String assetPath, double? width, double? height, Color? color}) {
   return SvgPicture.asset(
     '${isMobile ? 'assets/' : ''}$assetPath',
     width: width,
     height: height,
-    colorFilter: colorFilter,
+    colorFilter:
+        color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
   );
 }

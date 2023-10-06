@@ -62,10 +62,7 @@ class ImgManagement extends StatelessWidget {
                 top: 5,
                 child: LoadSvg(
                   assetPath: 'svg/close_circle.svg',
-                  colorFilter: ColorFilter.mode(
-                    White,
-                    BlendMode.srcIn,
-                  ),
+                  color: White,
                 ),
               )
             ]);

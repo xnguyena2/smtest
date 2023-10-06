@@ -251,8 +251,7 @@ class _LocationSelectState extends State<LocationSelect> {
             selectedRegion.id == region.id
                 ? LoadSvg(
                     assetPath: 'svg/checked.svg',
-                    colorFilter:
-                        ColorFilter.mode(TableHighColor, BlendMode.srcIn),
+                    color: TableHighColor,
                   )
                 : const SizedBox(),
             const SizedBox(

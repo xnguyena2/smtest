@@ -23,7 +23,7 @@ class ApproveBtn extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: TableHighColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: defaultBorderRadius,
         ),
       ),
       child: Text(

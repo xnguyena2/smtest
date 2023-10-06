@@ -4,7 +4,7 @@ import 'package:sales_management/utils/typedef.dart';
 import '../page/product_selector/product_selector_page.dart';
 import '../utils/svg_loader.dart';
 
-class CategorySelector extends StatefulWidget {
+class CategorySelector extends StatelessWidget {
   final bool multiSelected;
   final bool isFlip;
   final List<String> listCategory;
@@ -20,11 +20,6 @@ class CategorySelector extends StatefulWidget {
   });
 
   @override
-  State<CategorySelector> createState() => _CategorySelectorState();
-}
-
-class _CategorySelectorState extends State<CategorySelector> {
-  @override
   Widget build(BuildContext context) {
     // print(widget.itemsSelected);
     return SizedBox(
@@ -36,35 +31,33 @@ class _CategorySelectorState extends State<CategorySelector> {
             if (index == 0) {
               return LoadSvg(assetPath: 'svg/grid_horizontal.svg');
             }
-            String value = widget.listCategory[index - 1];
+            String value = listCategory[index - 1];
             return CategoryItem(
               txt: value,
-              isFlip: widget.isFlip,
-              isActive: widget.itemsSelected.contains(value),
+              isFlip: isFlip,
+              isActive: itemsSelected.contains(value),
               onTap: (isSelected) {
-                if (widget.multiSelected) {
+                if (multiSelected) {
                   if (isSelected) {
-                    widget.itemsSelected.add(value);
+                    itemsSelected.add(value);
                   } else {
-                    widget.itemsSelected.remove(value);
+                    itemsSelected.remove(value);
                   }
-                  widget.onChanged(widget.itemsSelected);
-                  setState(() {});
+                  onChanged(itemsSelected);
                   return;
                 }
-                widget.itemsSelected.clear();
+                itemsSelected.clear();
                 if (isSelected) {
-                  widget.itemsSelected.add(value);
+                  itemsSelected.add(value);
                 }
-                widget.onChanged(widget.itemsSelected);
-                setState(() {});
+                onChanged(itemsSelected);
               },
             );
           },
           separatorBuilder: (context, index) => const SizedBox(
                 width: 10,
               ),
-          itemCount: widget.listCategory.length + 1),
+          itemCount: listCategory.length + 1),
     );
   }
 }

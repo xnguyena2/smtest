@@ -147,9 +147,7 @@ class CategoryItem extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            LoadSvg(
-                colorFilter: ColorFilter.mode(TableHighColor, BlendMode.srcIn),
-                assetPath: 'svg/close_circle.svg')
+            LoadSvg(color: TableHighColor, assetPath: 'svg/close_circle.svg')
           ],
         ],
       ),

@@ -24,7 +24,7 @@ class CancelBtn extends StatelessWidget {
         backgroundColor: White,
         shape: RoundedRectangleBorder(
           side: const BorderSide(color: borderColor),
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: defaultBorderRadius,
         ),
       ),
       child: Text(
