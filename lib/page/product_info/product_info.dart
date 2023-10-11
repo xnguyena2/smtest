@@ -4,7 +4,7 @@ import 'package:sales_management/component/btn/switch_circle_btn.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/rounded_img.dart';
-import 'package:sales_management/page/create_order/component/order_bottom_bar.dart';
+import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/page/product_info/component/product_info_bar.dart';
 import 'package:sales_management/page/product_info/component/product_info_create_combo.dart';
 import 'package:sales_management/page/product_info/component/product_info_img_management.dart';

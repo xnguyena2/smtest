@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 
 import '../../../component/header.dart';
-import '../../../component/app_search_bar.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 

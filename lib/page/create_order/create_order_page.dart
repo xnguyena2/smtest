@@ -3,7 +3,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 import 'package:sales_management/page/create_order/component/order_progress.dart';
-import 'package:sales_management/page/create_order/component/order_bottom_bar.dart';
+import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/page/create_order/component/order_customoer_info.dart';
 import 'package:sales_management/page/create_order/component/order_list_product.dart';
 import 'package:sales_management/page/create_order/component/order_main_info.dart';

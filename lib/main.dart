@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
+import 'package:sales_management/utils/storage_provider.dart';
 
 import 'my_custom_scroll_behavior.dart';
 import 'page/table/table_page.dart';
@@ -12,7 +14,12 @@ import 'utils/constants.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => StorageProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +44,9 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: const OrderListPage(),
+      home: TablePage(
+        done: (TableDetailData) {},
+      ),
     );
   }
 }

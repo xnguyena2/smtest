@@ -235,6 +235,11 @@ const TextStyle headStyleBigMediumHigh = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle headStyleSmallLarge = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleLargeWhite = TextStyle(
   color: White,
   fontSize: 14,

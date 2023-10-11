@@ -6,10 +6,16 @@ import 'package:sales_management/utils/constants.dart';
 class BottomBar extends StatelessWidget {
   final VoidCallback done;
   final VoidCallback cancel;
+  final String? cancelBtnTxt;
+  final String? okBtnTxt;
+  final bool isActiveOk;
   const BottomBar({
     super.key,
     required this.done,
     required this.cancel,
+    this.cancelBtnTxt,
+    this.okBtnTxt,
+    this.isActiveOk = false,
   });
 
   @override
@@ -26,7 +32,7 @@ class BottomBar extends StatelessWidget {
         children: [
           Expanded(
             child: CancelBtn(
-              txt: 'Hủy',
+              txt: cancelBtnTxt ?? 'Hủy',
               padding: EdgeInsets.symmetric(vertical: 18),
               onPressed: cancel,
             ),
@@ -36,7 +42,8 @@ class BottomBar extends StatelessWidget {
           ),
           Expanded(
             child: ApproveBtn(
-              txt: 'Đã giao',
+              isActiveOk: isActiveOk,
+              txt: okBtnTxt ?? 'Đã giao',
               padding: EdgeInsets.symmetric(vertical: 18),
               onPressed: done,
             ),

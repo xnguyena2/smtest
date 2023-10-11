@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/component/bottom_bar.dart';
+import 'package:sales_management/component/input_field_with_header.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
+import 'package:sales_management/page/table/component/modal_create_table.dart';
+import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
 
@@ -43,6 +49,7 @@ class _TablePageState extends State<TablePage> {
         body: FetchAPI<ListAreDataResult>(
           future: getAllTable(groupID),
           successBuilder: (data) {
+            context.read<StorageProvider>().setListArea = data.listResult;
             return Body(
               data: data,
               done: widget.done,
@@ -224,7 +231,9 @@ class Area extends StatelessWidget {
             itemCount: tableNo + 1,
             itemBuilder: (context, index) {
               if (index == tableNo) {
-                return AddNewTable();
+                return AddNewTable(
+                  data: data,
+                );
               }
               return TableItem(
                 tableDetailData: listTable[index],
@@ -243,33 +252,45 @@ class Area extends StatelessWidget {
 }
 
 class AddNewTable extends StatelessWidget {
+  final AreaData data;
   const AddNewTable({
     super.key,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: BackgroundColor,
-        borderRadius: defaultBorderRadius,
-        border: defaultBorder,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          LoadSvg(
-            assetPath: 'svg/plus.svg',
-            color: MainHighColor,
+    return GestureDetector(
+      onTap: () {
+        showDefaultModal(
+          context: context,
+          content: ModalCreateTable(
+            area: data,
           ),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            'Thêm bàn mới',
-            style: subInfoStyLargeHigh400,
-          ),
-        ],
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: BackgroundColor,
+          borderRadius: defaultBorderRadius,
+          border: defaultBorder,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LoadSvg(
+              assetPath: 'svg/plus.svg',
+              color: MainHighColor,
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              'Thêm bàn mới',
+              style: subInfoStyLargeHigh400,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -362,26 +383,41 @@ class TableItem extends StatelessWidget {
             if (!isSelected && isEditting)
               Expanded(
                 child: UnconstrainedBox(
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        borderRadius: defaultBorderRadius,
-                        border: tableHighBorder),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
-                            SizedBox(
-                              width: 1,
-                            ),
-                            const Text(
-                              'Chỉnh sửa',
-                              style: subInfoStyLargeTable400,
-                            )
-                          ],
+                  child: GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(8),
+                          ),
                         ),
-                      ],
+                        builder: (BuildContext context) {
+                          return Container();
+                        },
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          borderRadius: defaultBorderRadius,
+                          border: tableHighBorder),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
+                              SizedBox(
+                                width: 1,
+                              ),
+                              const Text(
+                                'Chỉnh sửa',
+                                style: subInfoStyLargeTable400,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -6,22 +6,25 @@ class ApproveBtn extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final bool isSmallTxt;
   final VoidCallback onPressed;
+  final bool isActiveOk;
   const ApproveBtn(
       {super.key,
       required this.txt,
       required this.padding,
       this.isSmallTxt = false,
-      required this.onPressed});
+      required this.onPressed,
+      this.isActiveOk = false});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: isActiveOk ? onPressed : null,
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: padding,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: TableHighColor,
+        disabledBackgroundColor: Black40,
         shape: RoundedRectangleBorder(
           borderRadius: defaultBorderRadius,
         ),
