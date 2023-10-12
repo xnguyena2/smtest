@@ -39,8 +39,13 @@ class ModalBase extends StatelessWidget {
                 ),
                 Positioned(
                   right: 10,
-                  child: LoadSvg(
-                    assetPath: 'svg/close.svg',
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: LoadSvg(
+                      assetPath: 'svg/close.svg',
+                    ),
                   ),
                 ),
               ],

@@ -48,7 +48,7 @@ class AreaData extends BaseEntity {
   late final String? detail;
   late final String? metaSearch;
   late final String? status;
-  late final List<TableDetailData>? listTable;
+  late List<TableDetailData>? listTable;
 
   AreaData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     areaId = json['area_id'];
@@ -83,6 +83,13 @@ class AreaData extends BaseEntity {
     });
     return (inUse, total - inUse);
   }
+
+  void addNewTable(TableDetailData newTable) {
+    if (listTable == null) {
+      listTable = [];
+    }
+    listTable!.add(newTable);
+  }
 }
 
 class TableDetailData extends BaseEntity {
@@ -98,10 +105,10 @@ class TableDetailData extends BaseEntity {
     this.status,
     required this.price,
   }) : super(id: id, groupId: groupId, createat: createat);
-  late final String areaId;
+  late String areaId;
   late final String tableId;
   late String? packageSecondId;
-  late final String? tableName;
+  late String? tableName;
   late String? detail;
   late final String? status;
   late final double price;

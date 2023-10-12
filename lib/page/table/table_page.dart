@@ -7,6 +7,7 @@ import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/page/table/component/modal_create_table.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -158,6 +159,22 @@ class _BodyState extends State<Body> {
                     data: _foundArea[index],
                     done: widget.done,
                     isEditting: widget.isEditting,
+                    successNewTable: (newTable) {
+                      final area = listAreaData.firstWhere(
+                        (element) => element.areaId == newTable.areaId,
+                        orElse: () => AreaData(
+                            id: 0,
+                            groupId: '',
+                            createat: '',
+                            areaId: '',
+                            listTable: []),
+                      );
+                      if (area.areaId.isNotEmpty) {
+                        area.addNewTable(newTable);
+                        showNotification(context, 'Thêm bàn thành công!');
+                        setState(() {});
+                      }
+                    },
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(
@@ -175,11 +192,13 @@ class Area extends StatelessWidget {
   final AreaData data;
   final onTableSelected done;
   final bool isEditting;
+  final VoidCallbackArg<TableDetailData> successNewTable;
   const Area({
     super.key,
     required this.data,
     required this.done,
     required this.isEditting,
+    required this.successNewTable,
   });
 
   @override
@@ -233,6 +252,7 @@ class Area extends StatelessWidget {
               if (index == tableNo) {
                 return AddNewTable(
                   data: data,
+                  successNewTable: successNewTable,
                 );
               }
               return TableItem(
@@ -252,10 +272,12 @@ class Area extends StatelessWidget {
 }
 
 class AddNewTable extends StatelessWidget {
+  final VoidCallbackArg<TableDetailData> successNewTable;
   final AreaData data;
   const AddNewTable({
     super.key,
     required this.data,
+    required this.successNewTable,
   });
 
   @override
@@ -266,6 +288,12 @@ class AddNewTable extends StatelessWidget {
           context: context,
           content: ModalCreateTable(
             area: data,
+            onDone: (newTable) {
+              createTable(newTable)
+                  .then((value) => successNewTable(value))
+                  .onError((error, stackTrace) =>
+                      showAlert(context, 'Không thể tạo bàn!'));
+            },
           ),
         );
       },

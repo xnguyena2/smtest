@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -11,6 +12,7 @@ class InputFiledWithHeader extends StatefulWidget {
   final VoidCallback? onSelected;
   final String? initValue;
   final VoidCallbackArg<String>? onChanged;
+  final bool isNumberOnly;
   const InputFiledWithHeader({
     super.key,
     required this.header,
@@ -20,6 +22,7 @@ class InputFiledWithHeader extends StatefulWidget {
     this.onSelected,
     this.initValue,
     this.onChanged,
+    this.isNumberOnly = false,
   });
 
   @override
@@ -28,27 +31,11 @@ class InputFiledWithHeader extends StatefulWidget {
 
 class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
   late bool isError;
-  late final TextEditingController myController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     isError = widget.initValue?.isEmpty ?? true;
-    myController = TextEditingController(text: widget.initValue);
-    myController.addListener(() {
-      final text = myController.text;
-
-      isError = text.isEmpty;
-      widget.onChanged?.call(text);
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    myController.dispose();
   }
 
   @override
@@ -91,20 +78,34 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
-                        controller: myController,
-                        maxLines: 1,
-                        style: customerNameBig400,
-                        readOnly: widget.isDropDown,
-                        onTap: widget.onSelected,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          isDense: true,
-                          border: InputBorder.none,
-                          hintStyle: customerNameBigLight400,
-                          hintText: widget.hint,
-                        ),
-                      ),
+                      child: widget.isDropDown
+                          ? GestureDetector(
+                              onTap: widget.onSelected,
+                              child: Text(
+                                widget.initValue ?? '',
+                                style: customerNameBig400,
+                              ),
+                            )
+                          : TextFormField(
+                              initialValue: widget.initValue,
+                              inputFormatters: widget.isNumberOnly
+                                  ? [FilteringTextInputFormatter.digitsOnly]
+                                  : null,
+                              onChanged: (text) {
+                                isError = text.isEmpty;
+                                widget.onChanged?.call(text);
+                                setState(() {});
+                              },
+                              maxLines: 1,
+                              style: customerNameBig400,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                isDense: true,
+                                border: InputBorder.none,
+                                hintStyle: customerNameBigLight400,
+                                hintText: widget.hint,
+                              ),
+                            ),
                     ),
                     if (widget.isDropDown)
                       LoadSvg(assetPath: 'svg/down_arrow_backup_2.svg'),

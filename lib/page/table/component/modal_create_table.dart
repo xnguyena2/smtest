@@ -6,12 +6,15 @@ import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/component/modal_base.dart';
 import 'package:sales_management/page/table/component/modal_select_area.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 class ModalCreateTable extends StatefulWidget {
   final AreaData area;
+  final VoidCallbackArg<TableDetailData> onDone;
   const ModalCreateTable({
     super.key,
     required this.area,
+    required this.onDone,
   });
 
   @override
@@ -21,6 +24,7 @@ class ModalCreateTable extends StatefulWidget {
 class _ModalCreateTableState extends State<ModalCreateTable> {
   int tabIndex = 0;
   bool isActiveOk = false;
+  late TableDetailData newTable;
 
   late AreaData area;
 
@@ -29,6 +33,14 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
     // TODO: implement initState
     super.initState();
     area = widget.area;
+    newTable = TableDetailData(
+        id: 0,
+        groupId: area.groupId,
+        createat: '',
+        areaId: area.areaId,
+        tableId: '',
+        tableName: '',
+        price: 0);
   }
 
   @override
@@ -106,6 +118,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                                 selectedArea: area,
                                 onDone: (area) {
                                   this.area = area;
+                                  newTable.areaId = area.areaId;
                                   setState(() {});
                                 },
                               ),
@@ -121,6 +134,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           isImportance: true,
                           onChanged: (tableName) {
                             isActiveOk = tableName.isNotEmpty;
+                            newTable.tableName = tableName;
                             setState(() {});
                           },
                         ),
@@ -131,7 +145,10 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                     height: 7,
                   ),
                   BottomBar(
-                    done: () {},
+                    done: () {
+                      widget.onDone(newTable);
+                      Navigator.pop(context);
+                    },
                     cancel: () {
                       Navigator.pop(context);
                     },
@@ -162,6 +179,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                                 selectedArea: area,
                                 onDone: (area) {
                                   this.area = area;
+                                  newTable.areaId = area.areaId;
                                   setState(() {});
                                 },
                               ),

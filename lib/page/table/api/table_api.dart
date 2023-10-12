@@ -42,3 +42,20 @@ Future<String> setPackageId(TableDetailData tableDetailData) async {
     throw Exception('Failed to load data');
   }
 }
+
+Future<TableDetailData> createTable(TableDetailData tableDetailData) async {
+  final request = tableDetailData;
+
+  final response = await postE(
+    '/table/savetable',
+    request,
+  );
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return TableDetailData.fromJson(
+        jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
