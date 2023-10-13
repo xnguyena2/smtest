@@ -11,10 +11,12 @@ import 'package:sales_management/utils/typedef.dart';
 class ModalCreateTable extends StatefulWidget {
   final AreaData area;
   final VoidCallbackArg<TableDetailData> onDone;
+  final VoidCallbackArg<AreaData> onDoneListTable;
   const ModalCreateTable({
     super.key,
     required this.area,
     required this.onDone,
+    required this.onDoneListTable,
   });
 
   @override
@@ -24,9 +26,33 @@ class ModalCreateTable extends StatefulWidget {
 class _ModalCreateTableState extends State<ModalCreateTable> {
   int tabIndex = 0;
   bool isActiveOk = false;
+  bool isActiveManyOk = false;
+  int? firstNumber;
+  int? lastNumber;
+  String? prefix;
   late TableDetailData newTable;
 
   late AreaData area;
+
+  void checkOkForCreateMany() {
+    if (firstNumber == null) {
+      isActiveManyOk = false;
+      return;
+    }
+    if (lastNumber == null) {
+      isActiveManyOk = false;
+      return;
+    }
+    if (prefix == null) {
+      isActiveManyOk = false;
+      return;
+    }
+    if (lastNumber! < firstNumber!) {
+      isActiveManyOk = false;
+      return;
+    }
+    isActiveManyOk = true;
+  }
 
   @override
   void initState() {
@@ -36,7 +62,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
     newTable = TableDetailData(
         id: 0,
         groupId: area.groupId,
-        createat: '',
+        createat: null,
         areaId: area.areaId,
         tableId: '',
         tableName: '',
@@ -192,7 +218,13 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                         InputFiledWithHeader(
                           header: 'Tiền tố',
                           hint: 'ví dụ: Bàn',
+                          initValue: 'Bàn',
                           isImportance: true,
+                          onChanged: (value) {
+                            prefix = value;
+                            checkOkForCreateMany();
+                            setState(() {});
+                          },
                         ),
                         SizedBox(
                           height: 13,
@@ -211,6 +243,11 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                                 header: 'Số bắt đầu',
                                 hint: 'ví dụ: 1',
                                 isImportance: true,
+                                onChanged: (value) {
+                                  firstNumber = int.tryParse(value);
+                                  checkOkForCreateMany();
+                                  setState(() {});
+                                },
                               ),
                             ),
                             SizedBox(
@@ -221,6 +258,11 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                                 header: 'Số kết thúc',
                                 hint: 'ví dụ: 10',
                                 isImportance: true,
+                                onChanged: (value) {
+                                  lastNumber = int.tryParse(value);
+                                  checkOkForCreateMany();
+                                  setState(() {});
+                                },
                               ),
                             )
                           ],
@@ -232,11 +274,21 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                     height: 7,
                   ),
                   BottomBar(
-                    done: () {},
+                    done: () {
+                      if (prefix == null ||
+                          firstNumber == null ||
+                          lastNumber == null) {
+                        return;
+                      }
+                      widget.onDoneListTable(AreaData.fromPrefix(
+                          prefix!, firstNumber!, lastNumber!, newTable));
+                      Navigator.pop(context);
+                    },
                     cancel: () {
                       Navigator.pop(context);
                     },
                     okBtnTxt: 'Tạo mới',
+                    isActiveOk: isActiveManyOk,
                   ),
                 ],
               ),

@@ -152,6 +152,7 @@ class _BodyState extends State<Body> {
               height: 5,
             ),
             ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
@@ -175,6 +176,24 @@ class _BodyState extends State<Body> {
                         setState(() {});
                       }
                     },
+                    successNewListTable: (areaData) {
+                      final area = listAreaData.firstWhere(
+                        (element) => element.areaId == areaData.areaId,
+                        orElse: () => AreaData(
+                            id: 0,
+                            groupId: '',
+                            createat: '',
+                            areaId: '',
+                            listTable: []),
+                      );
+                      if (area.areaId.isNotEmpty) {
+                        areaData.listTable?.forEach((newTable) {
+                          area.addNewTable(newTable);
+                        });
+                        showNotification(context, 'Thêm bàn thành công!');
+                        setState(() {});
+                      }
+                    },
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(
@@ -193,12 +212,14 @@ class Area extends StatelessWidget {
   final onTableSelected done;
   final bool isEditting;
   final VoidCallbackArg<TableDetailData> successNewTable;
+  final VoidCallbackArg<AreaData> successNewListTable;
   const Area({
     super.key,
     required this.data,
     required this.done,
     required this.isEditting,
     required this.successNewTable,
+    required this.successNewListTable,
   });
 
   @override
@@ -253,6 +274,7 @@ class Area extends StatelessWidget {
                 return AddNewTable(
                   data: data,
                   successNewTable: successNewTable,
+                  successNewListTable: successNewListTable,
                 );
               }
               return TableItem(
@@ -273,11 +295,13 @@ class Area extends StatelessWidget {
 
 class AddNewTable extends StatelessWidget {
   final VoidCallbackArg<TableDetailData> successNewTable;
+  final VoidCallbackArg<AreaData> successNewListTable;
   final AreaData data;
   const AddNewTable({
     super.key,
     required this.data,
     required this.successNewTable,
+    required this.successNewListTable,
   });
 
   @override
@@ -291,6 +315,12 @@ class AddNewTable extends StatelessWidget {
             onDone: (newTable) {
               createTable(newTable)
                   .then((value) => successNewTable(value))
+                  .onError((error, stackTrace) =>
+                      showAlert(context, 'Không thể tạo bàn!'));
+            },
+            onDoneListTable: (areaData) {
+              createListTable(areaData)
+                  .then((value) => successNewListTable(value))
                   .onError((error, stackTrace) =>
                       showAlert(context, 'Không thể tạo bàn!'));
             },

@@ -10,6 +10,9 @@ class ListAreDataResult {
     listResult = List.from(json['list_result'])
         .map((e) => AreaData.fromJson(e))
         .toList();
+    listResult.sort(
+      (a, b) => a.areaName?.compareTo(b.areaName ?? '') ?? 1,
+    );
   }
 
   (int, int) get getStatus {
@@ -50,6 +53,22 @@ class AreaData extends BaseEntity {
   late final String? status;
   late List<TableDetailData>? listTable;
 
+  AreaData.fromPrefix(String prefix, int firstNumber, int lastNumber,
+      TableDetailData tableDetailData)
+      : super(id: 0, groupId: tableDetailData.groupId, createat: null) {
+    listTable = [];
+    areaId = tableDetailData.areaId;
+    areaName = '';
+    detail = null;
+    metaSearch = null;
+    status = null;
+    for (int i = firstNumber; i <= lastNumber; i++) {
+      TableDetailData newTable = tableDetailData.clone();
+      newTable.tableName = '$prefix $i';
+      listTable!.add(newTable);
+    }
+  }
+
   AreaData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     areaId = json['area_id'];
     areaName = json['area_name'];
@@ -59,6 +78,9 @@ class AreaData extends BaseEntity {
     listTable = List.from(json['listTable'])
         .map((e) => TableDetailData.fromJson(e))
         .toList();
+    listTable?.sort(
+      (a, b) => a.tableName?.compareTo(b.tableName ?? '') ?? 0,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -85,9 +107,7 @@ class AreaData extends BaseEntity {
   }
 
   void addNewTable(TableDetailData newTable) {
-    if (listTable == null) {
-      listTable = [];
-    }
+    listTable ??= [];
     listTable!.add(newTable);
   }
 }
@@ -96,7 +116,7 @@ class TableDetailData extends BaseEntity {
   TableDetailData({
     required int id,
     required String groupId,
-    required String createat,
+    required String? createat,
     required this.areaId,
     required this.tableId,
     this.packageSecondId,
@@ -136,6 +156,10 @@ class TableDetailData extends BaseEntity {
     _data['status'] = status;
     _data['price'] = price;
     return _data;
+  }
+
+  TableDetailData clone() {
+    return TableDetailData.fromJson(toJson());
   }
 
   bool get isUsed => packageSecondId != null && price >= 0;
