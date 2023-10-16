@@ -37,8 +37,8 @@ class AreaData extends BaseEntity {
   AreaData({
     required int id,
     required String groupId,
-    required String createat,
     required this.areaId,
+    String? createat,
     this.areaName,
     this.detail,
     this.metaSearch,
@@ -109,6 +109,15 @@ class AreaData extends BaseEntity {
   void addNewTable(TableDetailData newTable) {
     listTable ??= [];
     listTable!.add(newTable);
+  }
+
+  void removeTable(TableDetailData table) {
+    int foundIndex =
+        listTable?.indexWhere((element) => element.tableId == table.tableId) ??
+            -1;
+    if (foundIndex >= 0) {
+      listTable?.remove(listTable![foundIndex]);
+    }
   }
 
   AreaData clone() {

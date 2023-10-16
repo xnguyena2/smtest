@@ -89,6 +89,7 @@ Future<AreaData> updateAreaData(AreaData areaData) async {
     request,
   );
 
+  print(response.statusCode);
   if (response.statusCode == 200) {
     print(response.body);
     return AreaData.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
@@ -109,6 +110,24 @@ Future<AreaData> deleteAreaData(AreaData areaData) async {
   if (response.statusCode == 200) {
     print(response.body);
     return AreaData.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<TableDetailData> deleteTable(TableDetailData tableDetailData) async {
+  final request = tableDetailData;
+
+  // print(json.encode(tableDetailData));
+  final response = await postE(
+    '/table/deletetable',
+    request,
+  );
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return TableDetailData.fromJson(
+        jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     throw Exception('Failed to load data');
   }

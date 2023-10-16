@@ -4,8 +4,10 @@ import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
+import 'package:sales_management/page/table/component/modal_create_area.dart';
 import 'package:sales_management/page/table/component/modal_create_table.dart';
 import 'package:sales_management/page/table/component/modal_update_area.dart';
+import 'package:sales_management/page/table/component/modal_update_table.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -27,6 +29,14 @@ class TablePage extends StatefulWidget {
 
 class _TablePageState extends State<TablePage> {
   bool isEditting = false;
+  late Future<ListAreDataResult> loadingListArea;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadingListArea = getAllTable(groupID);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,7 +57,7 @@ class _TablePageState extends State<TablePage> {
           },
         ),
         body: FetchAPI<ListAreDataResult>(
-          future: getAllTable(groupID),
+          future: loadingListArea,
           successBuilder: (data) {
             context.read<StorageProvider>().setListArea = data.listResult;
             return Body(
@@ -64,7 +74,37 @@ class _TablePageState extends State<TablePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: floatBottomBorderRadius,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  final areaData = AreaData(
+                      id: 0,
+                      groupId: groupID,
+                      createat: null,
+                      areaId: '',
+                      listTable: []);
+                  showDefaultModal(
+                    context: context,
+                    content: ModalCreateArea(
+                      area: areaData,
+                      onDone: (newArea) {
+                        updateAreaData(areaData).then(
+                          (value) {
+                            context
+                                .read<StorageProvider>()
+                                .listAreaData
+                                ?.add(value);
+                            showNotification(
+                                context, 'Thêm vùng thành công!');
+                            setState(() {});
+                          },
+                        ).onError(
+                          (error, stackTrace) {
+                            showAlert(context, 'Không thể cập nhật!');
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
                 icon: LoadSvg(
                   assetPath: 'svg/plus_large_width_2.svg',
                   color: White,
@@ -99,12 +139,16 @@ class _BodyState extends State<Body> {
   List<AreaData> _foundArea = [];
   String _selectedArea = '';
 
-  late final List<AreaData> listAreaData;
-  late final List<String> listArea;
+  late List<AreaData> listAreaData;
+  late List<String> listArea;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getListArea();
+  }
+
+  void getListArea() {
     listAreaData = widget.data.listResult;
     _foundArea = listAreaData;
     listArea = (<String>['Tất cả']);
@@ -130,7 +174,6 @@ class _BodyState extends State<Body> {
             CategorySelector(
               listCategory: listArea,
               onChanged: (listAreaSelected) {
-                print(listAreaSelected);
                 final String? area = listAreaSelected.firstOrNull;
                 if (area == null || area == 'Tất cả') {
                   _foundArea = listAreaData;
@@ -198,15 +241,17 @@ class _BodyState extends State<Body> {
                           (element) => element.areaId == areaData.areaId);
                       if (foundIndex >= 0) {
                         listAreaData[foundIndex].areaName = areaData.areaName;
+                        getListArea();
                       }
                       showNotification(context, 'Cập nhật thành công!');
                       setState(() {});
                     },
                     successDeleteAreaData: (areaData) {
-                      int foundIndex = listAreaData.indexWhere(
+                      int foundIndex = widget.data.listResult.indexWhere(
                           (element) => element.areaId == areaData.areaId);
                       if (foundIndex >= 0) {
-                        listAreaData.removeAt(foundIndex);
+                        widget.data.listResult.removeAt(foundIndex);
+                        getListArea();
                       }
                       showNotification(context, 'Xóa thành công!');
                       setState(() {});
@@ -224,7 +269,7 @@ class _BodyState extends State<Body> {
   }
 }
 
-class Area extends StatelessWidget {
+class Area extends StatefulWidget {
   final AreaData data;
   final onTableSelected done;
   final bool isEditting;
@@ -244,9 +289,14 @@ class Area extends StatelessWidget {
   });
 
   @override
+  State<Area> createState() => _AreaState();
+}
+
+class _AreaState extends State<Area> {
+  @override
   Widget build(BuildContext context) {
-    var (_, avaliable) = data.getStatus;
-    List<TableDetailData> listTable = data.listTable ?? [];
+    var (_, avaliable) = widget.data.getStatus;
+    List<TableDetailData> listTable = widget.data.listTable ?? [];
     int tableNo = listTable.length;
     return Column(
       children: [
@@ -256,35 +306,38 @@ class Area extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  data.areaName ?? 'unknow',
+                  widget.data.areaName ?? 'unknow',
                   style: headStyleMedium,
                 ),
-                if (isEditting) ...[
+                if (widget.isEditting) ...[
                   const SizedBox(
                     width: 3,
                   ),
                   GestureDetector(
-                      onTap: () {
-                        showDefaultModal(
+                      onTap: () => showDefaultModal(
                             context: context,
                             content: ModalUpdateArea(
-                              area: data.clone(),
+                              area: widget.data.clone(),
                               onDone: (areaData) {
                                 updateAreaData(areaData)
-                                    .then((value) =>
-                                        successNewUpdateAreaData(value))
-                                    .onError((error, stackTrace) => showAlert(
-                                        context, 'Không thể cập nhật!'));
+                                    .then(
+                                      (value) => widget
+                                          .successNewUpdateAreaData(value),
+                                    )
+                                    .onError(
+                                      (error, stackTrace) => showAlert(
+                                          context, 'Không thể cập nhật!'),
+                                    );
                               },
                               onDeleteArea: (areaData) {
                                 deleteAreaData(areaData)
-                                    .then(
-                                        (value) => successDeleteAreaData(value))
+                                    .then((value) =>
+                                        widget.successDeleteAreaData(value))
                                     .onError((error, stackTrace) =>
                                         showAlert(context, 'Không thể xóa!'));
                               },
-                            ));
-                      },
+                            ),
+                          ),
                       child: LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg')),
                 ]
               ],
@@ -315,18 +368,24 @@ class Area extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index == tableNo) {
                 return AddNewTable(
-                  data: data,
-                  successNewTable: successNewTable,
-                  successNewListTable: successNewListTable,
+                  data: widget.data,
+                  successNewTable: widget.successNewTable,
+                  successNewListTable: widget.successNewListTable,
                 );
               }
               return TableItem(
+                key: ObjectKey(listTable[index]),
                 tableDetailData: listTable[index],
                 done: (table) {
-                  table.detail = data.areaName;
-                  done(table);
+                  table.detail = widget.data.areaName;
+                  widget.done(table);
                 },
-                isEditting: isEditting,
+                isEditting: widget.isEditting,
+                successDeleteTableData: (tableDetailData) {
+                  widget.data.removeTable(tableDetailData);
+                  showNotification(context, 'Xóa thành công!');
+                  setState(() {});
+                },
               );
             },
           ),
@@ -397,7 +456,8 @@ class AddNewTable extends StatelessWidget {
   }
 }
 
-class TableItem extends StatelessWidget {
+class TableItem extends StatefulWidget {
+  final VoidCallbackArg<TableDetailData> successDeleteTableData;
   final TableDetailData tableDetailData;
   final onTableSelected done;
   final bool isEditting;
@@ -406,7 +466,21 @@ class TableItem extends StatelessWidget {
     required this.tableDetailData,
     required this.done,
     required this.isEditting,
+    required this.successDeleteTableData,
   });
+
+  @override
+  State<TableItem> createState() => _TableItemState();
+}
+
+class _TableItemState extends State<TableItem> {
+  late TableDetailData tableDetailData;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tableDetailData = widget.tableDetailData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -414,10 +488,10 @@ class TableItem extends StatelessWidget {
     String timeElasped = tableDetailData.timeElapsed;
     return GestureDetector(
       onTap: () {
-        if (isSelected || isEditting) {
+        if (isSelected || widget.isEditting) {
           return;
         }
-        done(tableDetailData);
+        widget.done(tableDetailData);
         Navigator.pop(context);
       },
       child: Container(
@@ -481,11 +555,33 @@ class TableItem extends StatelessWidget {
                   ),
                 ),
               ),
-            if (!isSelected && isEditting)
+            if (!isSelected && widget.isEditting)
               Expanded(
                 child: UnconstrainedBox(
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () => showDefaultModal(
+                      context: context,
+                      content: ModalUpdateTable(
+                        table: tableDetailData.clone(),
+                        onDone: (table) {
+                          createTable(table).then((value) {
+                            tableDetailData = value;
+                            setState(() {});
+                          }).onError(
+                            (error, stackTrace) {
+                              showAlert(context, 'Không thể cập nhật!');
+                            },
+                          );
+                        },
+                        onDeleteTable: (table) {
+                          deleteTable(table)
+                              .then((value) =>
+                                  widget.successDeleteTableData(value))
+                              .onError((error, stackTrace) =>
+                                  showAlert(context, 'Không thể xóa!'));
+                        },
+                      ),
+                    ),
                     child: Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
@@ -511,7 +607,7 @@ class TableItem extends StatelessWidget {
                   ),
                 ),
               ),
-            if (!isSelected && !isEditting)
+            if (!isSelected && !widget.isEditting)
               Expanded(
                 child: Center(
                   child: LoadSvg(assetPath: 'svg/table_filled.svg'),
