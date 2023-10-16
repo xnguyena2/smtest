@@ -79,3 +79,37 @@ Future<AreaData> createListTable(AreaData areaData) async {
     throw Exception('Failed to load data');
   }
 }
+
+Future<AreaData> updateAreaData(AreaData areaData) async {
+  final request = areaData;
+
+  // print(json.encode(tableDetailData));
+  final response = await postE(
+    '/table/savearea',
+    request,
+  );
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return AreaData.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<AreaData> deleteAreaData(AreaData areaData) async {
+  final request = areaData;
+
+  // print(json.encode(tableDetailData));
+  final response = await postE(
+    '/table/deletearea',
+    request,
+  );
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return AreaData.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    throw Exception('Failed to load data');
+  }
+}

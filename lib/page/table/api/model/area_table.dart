@@ -47,7 +47,7 @@ class AreaData extends BaseEntity {
   }) : super(id: id, groupId: groupId, createat: createat);
 
   late final String areaId;
-  late final String? areaName;
+  late String? areaName;
   late final String? detail;
   late final String? metaSearch;
   late final String? status;
@@ -109,6 +109,10 @@ class AreaData extends BaseEntity {
   void addNewTable(TableDetailData newTable) {
     listTable ??= [];
     listTable!.add(newTable);
+  }
+
+  AreaData clone() {
+    return AreaData.fromJson(toJson());
   }
 }
 

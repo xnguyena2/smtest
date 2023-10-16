@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
-import 'package:sales_management/component/bottom_bar.dart';
-import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/page/table/component/modal_create_table.dart';
+import 'package:sales_management/page/table/component/modal_update_area.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -194,6 +193,24 @@ class _BodyState extends State<Body> {
                         setState(() {});
                       }
                     },
+                    successNewUpdateAreaData: (areaData) {
+                      int foundIndex = listAreaData.indexWhere(
+                          (element) => element.areaId == areaData.areaId);
+                      if (foundIndex >= 0) {
+                        listAreaData[foundIndex].areaName = areaData.areaName;
+                      }
+                      showNotification(context, 'Cập nhật thành công!');
+                      setState(() {});
+                    },
+                    successDeleteAreaData: (areaData) {
+                      int foundIndex = listAreaData.indexWhere(
+                          (element) => element.areaId == areaData.areaId);
+                      if (foundIndex >= 0) {
+                        listAreaData.removeAt(foundIndex);
+                      }
+                      showNotification(context, 'Xóa thành công!');
+                      setState(() {});
+                    },
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(
@@ -213,6 +230,8 @@ class Area extends StatelessWidget {
   final bool isEditting;
   final VoidCallbackArg<TableDetailData> successNewTable;
   final VoidCallbackArg<AreaData> successNewListTable;
+  final VoidCallbackArg<AreaData> successNewUpdateAreaData;
+  final VoidCallbackArg<AreaData> successDeleteAreaData;
   const Area({
     super.key,
     required this.data,
@@ -220,6 +239,8 @@ class Area extends StatelessWidget {
     required this.isEditting,
     required this.successNewTable,
     required this.successNewListTable,
+    required this.successNewUpdateAreaData,
+    required this.successDeleteAreaData,
   });
 
   @override
@@ -242,7 +263,29 @@ class Area extends StatelessWidget {
                   const SizedBox(
                     width: 3,
                   ),
-                  LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
+                  GestureDetector(
+                      onTap: () {
+                        showDefaultModal(
+                            context: context,
+                            content: ModalUpdateArea(
+                              area: data.clone(),
+                              onDone: (areaData) {
+                                updateAreaData(areaData)
+                                    .then((value) =>
+                                        successNewUpdateAreaData(value))
+                                    .onError((error, stackTrace) => showAlert(
+                                        context, 'Không thể cập nhật!'));
+                              },
+                              onDeleteArea: (areaData) {
+                                deleteAreaData(areaData)
+                                    .then(
+                                        (value) => successDeleteAreaData(value))
+                                    .onError((error, stackTrace) =>
+                                        showAlert(context, 'Không thể xóa!'));
+                              },
+                            ));
+                      },
+                      child: LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg')),
                 ]
               ],
             ),
@@ -442,19 +485,7 @@ class TableItem extends StatelessWidget {
               Expanded(
                 child: UnconstrainedBox(
                   child: GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(8),
-                          ),
-                        ),
-                        builder: (BuildContext context) {
-                          return Container();
-                        },
-                      );
-                    },
+                    onTap: () {},
                     child: Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(

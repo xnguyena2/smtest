@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/component/btn/delete_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class BottomBar extends StatelessWidget {
@@ -9,20 +10,22 @@ class BottomBar extends StatelessWidget {
   final String? cancelBtnTxt;
   final String? okBtnTxt;
   final bool isActiveOk;
+  final bool enableDelete;
   const BottomBar({
     super.key,
     required this.done,
     required this.cancel,
     this.cancelBtnTxt,
     this.okBtnTxt,
-    this.isActiveOk = false,
+    this.isActiveOk = true,
+    this.enableDelete = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color: White,
         boxShadow: [wholeShadow],
@@ -31,11 +34,17 @@ class BottomBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: CancelBtn(
-              txt: cancelBtnTxt ?? 'Hủy',
-              padding: EdgeInsets.symmetric(vertical: 18),
-              onPressed: cancel,
-            ),
+            child: enableDelete
+                ? DeleteBtn(
+                    txt: cancelBtnTxt ?? 'Xóa',
+                    padding: EdgeInsets.symmetric(vertical: 18),
+                    onPressed: cancel,
+                  )
+                : CancelBtn(
+                    txt: cancelBtnTxt ?? 'Hủy',
+                    padding: EdgeInsets.symmetric(vertical: 18),
+                    onPressed: cancel,
+                  ),
           ),
           SizedBox(
             width: 10,
