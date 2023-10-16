@@ -155,6 +155,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           height: 23,
                         ),
                         InputFiledWithHeader(
+                          key: ValueKey('${newTable.tableId} 1'),
                           header: 'Tên bàn',
                           hint: 'Nhập tên bàn',
                           isImportance: true,
@@ -216,6 +217,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           height: 23,
                         ),
                         InputFiledWithHeader(
+                          key: ValueKey('${newTable.tableId} 2'),
                           header: 'Tiền tố',
                           hint: 'ví dụ: Bàn',
                           initValue: 'Bàn',
