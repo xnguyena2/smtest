@@ -44,9 +44,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: TablePage(
-        done: (TableDetailData) {},
-      ),
+      home: OrderListPage(),
     );
   }
 }

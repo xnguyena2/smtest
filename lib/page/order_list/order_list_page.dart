@@ -211,8 +211,7 @@ class PackageItemDetail extends StatelessWidget {
                       height: 6,
                     ),
                     Text(
-                      '${data.localTimeTxt} - ${data.id}' ??
-                          '16:08 14/08/2023 TZJZDB',
+                      '${data.localTimeTxt} - ${data.id}',
                       style: subInfoStyLargeLigh400,
                     ),
                   ],
@@ -242,7 +241,7 @@ class PackageItemDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      data.priceFormat ?? '75.000',
+                      data.priceFormat,
                       style: headStyleMedium500,
                     ),
                     Text(
