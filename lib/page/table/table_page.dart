@@ -566,6 +566,8 @@ class _TableItemState extends State<TableItem> {
                         onDone: (table) {
                           createTable(table).then((value) {
                             tableDetailData = value;
+                            showNotification(
+                                context, 'Cập nhật thành công!');
                             setState(() {});
                           }).onError(
                             (error, stackTrace) {

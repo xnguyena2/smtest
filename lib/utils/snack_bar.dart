@@ -3,6 +3,7 @@ import 'package:sales_management/utils/constants.dart';
 
 void showNotification(BuildContext context, String msg) {
   final snackBar = SnackBar(
+    showCloseIcon: true,
     content: Text(msg),
     backgroundColor: TableHighColor,
   );

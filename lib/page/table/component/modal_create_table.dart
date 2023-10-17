@@ -29,7 +29,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
   bool isActiveManyOk = false;
   int? firstNumber;
   int? lastNumber;
-  String? prefix;
+  String? prefix = 'Bàn';
   late TableDetailData newTable;
 
   late AreaData area;
@@ -220,7 +220,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           key: ValueKey('${newTable.tableId} 2'),
                           header: 'Tiền tố',
                           hint: 'ví dụ: Bàn',
-                          initValue: 'Bàn',
+                          initValue: prefix,
                           isImportance: true,
                           onChanged: (value) {
                             prefix = value;
@@ -242,6 +242,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           children: [
                             Expanded(
                               child: InputFiledWithHeader(
+                                isNumberOnly: true,
                                 header: 'Số bắt đầu',
                                 hint: 'ví dụ: 1',
                                 isImportance: true,
@@ -257,6 +258,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                             ),
                             Expanded(
                               child: InputFiledWithHeader(
+                                isNumberOnly: true,
                                 header: 'Số kết thúc',
                                 hint: 'ví dụ: 10',
                                 isImportance: true,
