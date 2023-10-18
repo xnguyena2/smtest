@@ -11,6 +11,7 @@ import 'package:sales_management/page/create_order/component/order_note.dart';
 import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
+import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/typedef.dart';
 
@@ -24,7 +25,6 @@ class CreateOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VoidCallback? updateAction;
     return SafeArea(
         child: Scaffold(
       appBar: CreateOrderBar(
@@ -32,67 +32,100 @@ class CreateOrderPage extends StatelessWidget {
           Navigator.pop(context);
         },
       ),
-      body: Container(
-        // padding: EdgeInsets.symmetric(vertical: 10),
-        color: BackgroundColor,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SelectAreaAndDeliver(
-                data: data,
-                setTable: (action) {
-                  updateAction = action;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              OrderMainInfo(
-                data: data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              CustomerInfo(
-                data: data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              ListProduct(
-                data: data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TotalPrice(
-                isEditting: true,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Transaction(),
-              SizedBox(
-                height: 15,
-              ),
-              Progress(),
-              SizedBox(
-                height: 15,
-              ),
-              OrderNote(),
-            ],
-          ),
-        ),
-      ),
+      body: CreateOrderBody(data: data),
       bottomNavigationBar: BottomBar(
         done: () {
-          print(data.toJson());
-          updateAction?.call();
+          data.runPendingAction();
           updatePackage(ProductPackage.fromPackageDataResponse(data));
           onUpdated(data);
         },
         cancel: () {},
       ),
     ));
+  }
+}
+
+class CreateOrderBody extends StatefulWidget {
+  const CreateOrderBody({
+    super.key,
+    required this.data,
+  });
+
+  final PackageDataResponse data;
+
+  @override
+  State<CreateOrderBody> createState() => _CreateOrderBodyState();
+}
+
+class _CreateOrderBodyState extends State<CreateOrderBody> {
+  late final OrderMainInfo orderMainInfo;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initUI();
+  }
+
+  void initUI() {
+    orderMainInfo = OrderMainInfo(
+      data: widget.data,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // padding: EdgeInsets.symmetric(vertical: 10),
+      color: BackgroundColor,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SelectAreaAndDeliver(
+              data: widget.data,
+              onRefreshData: () {
+                setState(() {});
+              },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            StateAreaTable(
+              data: widget.data.areAndTable,
+              child: orderMainInfo,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            CustomerInfo(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            ListProduct(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            TotalPrice(
+              isEditting: true,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Transaction(),
+            SizedBox(
+              height: 15,
+            ),
+            Progress(),
+            SizedBox(
+              height: 15,
+            ),
+            OrderNote(),
+          ],
+        ),
+      ),
+    );
   }
 }

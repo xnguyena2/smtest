@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/page/table/table_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
-import 'package:sales_management/utils/typedef.dart';
-
-enum DeliverType { deliver, takeaway, table }
 
 class SelectAreaAndDeliver extends StatefulWidget {
   final PackageDataResponse data;
-  final VoidCallbackArg<VoidCallback> setTable;
+  final VoidCallback onRefreshData;
   const SelectAreaAndDeliver({
     super.key,
     required this.data,
-    required this.setTable,
+    required this.onRefreshData,
   });
 
   @override
@@ -33,17 +31,16 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
     // TODO: implement initState
     super.initState();
     data = widget.data;
-    currentPackgeType = data.deliverType;
+    currentPackgeType = data.packageType;
     isEatAtTable = currentPackgeType == DeliverType.table;
   }
 
   @override
   Widget build(BuildContext context) {
     onChanged(value) {
-      print(value);
       setState(() {
         currentPackgeType = value ?? DeliverType.table;
-        data.packageType = currentPackgeType.name;
+        data.packageType = currentPackgeType;
         isEatAtTable = currentPackgeType == DeliverType.table;
       });
     }
@@ -93,10 +90,9 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                         data.areaName = table.detail;
                         data.tableId = table.tableId;
                         data.tableName = table.tableName;
-                        widget.setTable(
-                          () => setPackageId(table),
-                        );
+                        data.setAction(() => setPackageId(table));
                         setState(() {});
+                        widget.onRefreshData();
                       },
                     ),
                   ),

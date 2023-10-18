@@ -27,19 +27,20 @@ class _ReciverInfoState extends State<ReciverInfo> {
   late bool enableDone;
   late AddressData addressData = widget.addressData;
   bool validData() {
-    if (addressData.reciverFullName.isEmpty) {
-      return false;
-    }
-    if (addressData.houseNumber.isEmpty) {
-      return false;
-    }
-    if (addressData.phoneNumber.isEmpty) {
-      return false;
-    }
-    if (addressData.regionTextFormat.isEmpty) {
-      return false;
-    }
     return true;
+    // if (addressData.reciverFullName.isEmpty) {
+    //   return false;
+    // }
+    // if (addressData.houseNumber.isEmpty) {
+    //   return false;
+    // }
+    // if (addressData.phoneNumber.isEmpty) {
+    //   return false;
+    // }
+    // if (addressData.regionTextFormat.isEmpty) {
+    //   return false;
+    // }
+    // return true;
   }
 
   void checkValid() {
@@ -68,6 +69,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
             children: [
               TitleHeader("Liên hệ"),
               InputText(
+                isAutoFocus: true,
                 hint: "Họ và tên",
                 textInputType: TextInputType.name,
                 onChanged: (value) {
@@ -86,7 +88,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
                   checkValid();
                   setState(() {});
                 },
-                textInputType: TextInputType.phone,
+                textInputType: TextInputType.number,
               ),
               TitleHeader("Địa chỉ"),
               TextButton(
@@ -224,16 +226,20 @@ class InputText extends StatelessWidget {
   final TextInputType textInputType;
   final ValueChanged<String> onChanged;
   final String initialValue;
-  const InputText(
-      {super.key,
-      required this.hint,
-      required this.textInputType,
-      required this.onChanged,
-      required this.initialValue});
+  final bool isAutoFocus;
+  const InputText({
+    super.key,
+    required this.hint,
+    required this.textInputType,
+    required this.onChanged,
+    required this.initialValue,
+    this.isAutoFocus = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofocus: isAutoFocus,
       initialValue: initialValue,
       onChanged: (value) => onChanged(value),
       keyboardType: textInputType,

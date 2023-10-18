@@ -161,4 +161,14 @@ class BuyerData extends Buyer {
     _data['ward'] = ward;
     return _data;
   }
+
+  String? getAddressFormat() {
+    if (region == null) {
+      return null;
+    }
+    if (region!.isEmpty) {
+      return null;
+    }
+    return '${reciverAddress ?? ''}, ${ward ?? ''}, ${district ?? ''}, ${region ?? ''}';
+  }
 }

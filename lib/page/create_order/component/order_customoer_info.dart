@@ -21,9 +21,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = widget.data.buyer;
-    String? regionTextFormat = buyer?.region != null
-        ? '${buyer?.reciverAddress ?? ''}, ${buyer?.ward ?? ''}, ${buyer?.district ?? ''}, ${buyer?.region ?? ''}'
-        : null;
+    String? regionTextFormat = buyer?.getAddressFormat();
 
     return DefaultPaddingContainer(
       child: Column(

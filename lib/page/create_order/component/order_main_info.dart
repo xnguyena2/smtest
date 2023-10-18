@@ -3,6 +3,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -55,21 +56,7 @@ class OrderMainInfo extends StatelessWidget {
           SizedBox(
             height: 5,
           ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 7, horizontal: 7),
-            decoration: BoxDecoration(
-              color: BackgroundHigh,
-              borderRadius: defaultSquareBorderRadius,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  data.areAndTable,
-                  style: subInfoStyLarge500High,
-                ),
-              ],
-            ),
-          ),
+          AreaTableInfo(),
           SizedBox(
             height: 4,
           ),
@@ -94,6 +81,32 @@ class OrderMainInfo extends StatelessWidget {
             isDone ? 'Đã thanh toán' : 'Chưa thanh toán',
             style: isDone ? headStyleMediumHigh500 : headStyleMediumAlert500,
           )
+        ],
+      ),
+    );
+  }
+}
+
+class AreaTableInfo extends StatelessWidget {
+  const AreaTableInfo({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String areaTable = StateAreaTable.of(context).data;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 7),
+      decoration: BoxDecoration(
+        color: BackgroundHigh,
+        borderRadius: defaultSquareBorderRadius,
+      ),
+      child: Row(
+        children: [
+          Text(
+            areaTable,
+            style: subInfoStyLarge500High,
+          ),
         ],
       ),
     );

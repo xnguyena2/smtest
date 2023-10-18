@@ -31,7 +31,7 @@ Future<ListPackageDetailResult> getAllPackage(String groupID) async {
 
 Future<ResponseResult> updatePackage(ProductPackage productPackage) async {
   final request = productPackage;
-  print(request.toJson());
+  // print(request.toJson());
 
   final response = await postC('/package/update', request);
 

@@ -13,6 +13,7 @@ class InputFiledWithHeader extends StatefulWidget {
   final String? initValue;
   final VoidCallbackArg<String>? onChanged;
   final bool isNumberOnly;
+  final bool isAutoFocus;
   const InputFiledWithHeader({
     super.key,
     required this.header,
@@ -23,6 +24,7 @@ class InputFiledWithHeader extends StatefulWidget {
     this.initValue,
     this.onChanged,
     this.isNumberOnly = false,
+    this.isAutoFocus = false,
   });
 
   @override
@@ -87,7 +89,11 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               ),
                             )
                           : TextFormField(
+                              autofocus: widget.isAutoFocus,
                               initialValue: widget.initValue,
+                              keyboardType: widget.isNumberOnly
+                                  ? TextInputType.number
+                                  : null,
                               inputFormatters: widget.isNumberOnly
                                   ? [FilteringTextInputFormatter.digitsOnly]
                                   : null,

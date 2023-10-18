@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/base_entity.dart';
-import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/utils/constants.dart';
+
+enum DeliverType { deliver, takeaway, table }
 
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
@@ -9,7 +11,7 @@ class PackageDetail extends BaseEntity {
   late String? areaName;
   late String? tableId;
   late String? tableName;
-  late String? packageType;
+  late DeliverType packageType;
   late final String? voucher;
   late final double price;
   late final double payment;
@@ -36,7 +38,7 @@ class PackageDetail extends BaseEntity {
     this.areaName,
     this.tableId,
     this.tableName,
-    this.packageType,
+    this.packageType = DeliverType.table,
     this.voucher,
     this.note,
     this.image,
@@ -47,7 +49,9 @@ class PackageDetail extends BaseEntity {
   PackageDetail.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     packageSecondId = json['package_second_id'];
     deviceId = json['device_id'];
-    packageType = json['package_type'];
+    packageType = DeliverType.values.firstWhere(
+        (element) => element.name == json['package_type'],
+        orElse: () => DeliverType.table);
     areaId = json['area_id'];
     areaName = json['area_name'];
     tableId = json['table_id'];
@@ -72,7 +76,7 @@ class PackageDetail extends BaseEntity {
     _data['area_name'] = areaName;
     _data['table_id'] = tableId;
     _data['table_name'] = tableName;
-    _data['package_type'] = packageType;
+    _data['package_type'] = packageType.name;
     _data['voucher'] = voucher;
     _data['price'] = price;
     _data['payment'] = payment;
@@ -94,7 +98,17 @@ class PackageDetail extends BaseEntity {
 
   String get priceFormat => MoneyFormater.format(price);
 
-  DeliverType get deliverType =>
-      DeliverType.values.firstWhere((element) => element.name == packageType,
-          orElse: () => DeliverType.table);
+  VoidCallback? beforeUpdate;
+
+  void setAction(VoidCallback beforeUpdate) {
+    this.beforeUpdate = beforeUpdate;
+  }
+
+  void runPendingAction() {
+    if (packageType != DeliverType.table) {
+      tableId = null;
+    }
+    this.beforeUpdate?.call();
+    this.beforeUpdate = null;
+  }
 }

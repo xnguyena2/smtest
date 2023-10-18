@@ -156,6 +156,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                         ),
                         InputFiledWithHeader(
                           key: ValueKey('${newTable.tableId} 1'),
+                          isAutoFocus: true,
                           header: 'Tên bàn',
                           hint: 'Nhập tên bàn',
                           isImportance: true,
@@ -242,6 +243,7 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
                           children: [
                             Expanded(
                               child: InputFiledWithHeader(
+                                isAutoFocus: true,
                                 isNumberOnly: true,
                                 header: 'Số bắt đầu',
                                 hint: 'ví dụ: 1',
