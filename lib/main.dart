@@ -47,21 +47,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: ReciverInfo(
-        addressData: AddressData(
-            addressID: 'addressID',
-            deviceID: deviceID,
-            reciverFullName: 'reciverFullName',
-            phoneNumber: '',
-            houseNumber: 'houseNumber',
-            region: Region(name: 'name', id: -1),
-            district: Region(name: 'name', id: -1),
-            ward: Region(name: 'name', id: -1),
-            regionTextFormat: 'regionTextFormat'),
-        done: (data) {},
-        delete: () {},
-        isEdit: false,
-      ),
+      home: OrderListPage(),
     );
   }
 }

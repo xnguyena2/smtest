@@ -79,7 +79,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
             children: [
               TitleHeader("Liên hệ"),
               InputText(
-                key: ValueKey(addressData.reciverFullName),
+                key: ValueKey('reciverFullName ${addressData.reciverFullName}'),
                 isAutoFocus: true,
                 hint: "Họ và tên",
                 textInputType: TextInputType.name,
@@ -90,7 +90,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
               ),
               const Divider(height: 1),
               InputText(
-                key: ValueKey(addressData.phoneNumber),
+                key: ValueKey('phoneNumber ${addressData.phoneNumber}'),
                 hint: "Số điện thoại",
                 initialValue: addressData.phoneNumber,
                 onChanged: (String value) {
@@ -137,7 +137,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
               ),
               const Divider(height: 1),
               InputText(
-                key: ValueKey(addressData.houseNumber),
+                key: ValueKey('houseNumber ${addressData.houseNumber}'),
                 hint: "Tên đường, Tòa nhà, Số nhà.",
                 initialValue: addressData.houseNumber,
                 textInputType: TextInputType.text,
