@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sales_management/page/address/api/address_api.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/page/address/api/model/list_buyer.dart';
+import 'package:sales_management/page/address/component/address_list_buyer.dart';
 import 'package:sales_management/page/address/component/location_select_bar.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/debouncer.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import 'location_select.dart';
 
 class ReciverInfo extends StatefulWidget {
   final AddressData addressData;
-  final VoidCallback done;
+  final VoidCallbackArg<AddressData> done;
   final VoidCallback delete;
   final bool isEdit;
   const ReciverInfo({
@@ -26,6 +32,8 @@ class ReciverInfo extends StatefulWidget {
 class _ReciverInfoState extends State<ReciverInfo> {
   late bool enableDone;
   late AddressData addressData = widget.addressData;
+  late Debouncer searchDebouncer = Debouncer(milliseconds: 300);
+  late Future<ListBuyerResult> loadingListBuyer;
   bool validData() {
     return true;
     // if (addressData.reciverFullName.isEmpty) {
@@ -51,6 +59,8 @@ class _ReciverInfoState extends State<ReciverInfo> {
   void initState() {
     super.initState();
     checkValid();
+    loadingListBuyer =
+        searchUser(''); // Future.value(ListBuyerResult(listResult: []));
   }
 
   @override
@@ -69,24 +79,26 @@ class _ReciverInfoState extends State<ReciverInfo> {
             children: [
               TitleHeader("Liên hệ"),
               InputText(
+                key: ValueKey(addressData.reciverFullName),
                 isAutoFocus: true,
                 hint: "Họ và tên",
                 textInputType: TextInputType.name,
                 onChanged: (value) {
                   addressData.reciverFullName = value;
-                  checkValid();
-                  setState(() {});
                 },
                 initialValue: addressData.reciverFullName,
               ),
               const Divider(height: 1),
               InputText(
+                key: ValueKey(addressData.phoneNumber),
                 hint: "Số điện thoại",
                 initialValue: addressData.phoneNumber,
                 onChanged: (String value) {
                   addressData.phoneNumber = value;
-                  checkValid();
-                  setState(() {});
+                  searchDebouncer.run(() {
+                    loadingListBuyer = searchUser(value);
+                    setState(() {});
+                  });
                 },
                 textInputType: TextInputType.number,
               ),
@@ -101,8 +113,6 @@ class _ReciverInfoState extends State<ReciverInfo> {
                       ),
                     ),
                   );
-                  checkValid();
-                  setState(() {});
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: BackgroundColorLigh,
@@ -127,13 +137,12 @@ class _ReciverInfoState extends State<ReciverInfo> {
               ),
               const Divider(height: 1),
               InputText(
+                key: ValueKey(addressData.houseNumber),
                 hint: "Tên đường, Tòa nhà, Số nhà.",
                 initialValue: addressData.houseNumber,
                 textInputType: TextInputType.text,
                 onChanged: (String value) {
                   addressData.houseNumber = value;
-                  checkValid();
-                  setState(() {});
                 },
               ),
               if (widget.isEdit) ...[
@@ -191,7 +200,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
                       onPressed: enableDone
                           ? () {
                               // print(addressData.toJson().toString());
-                              widget.done();
+                              widget.done(addressData);
                               Navigator.pop(context);
                             }
                           : null,
@@ -205,6 +214,13 @@ class _ReciverInfoState extends State<ReciverInfo> {
                     width: 8,
                   ),
                 ],
+              ),
+              ListBuyer(
+                loadingListBuyer: loadingListBuyer,
+                onSelected: (buyerData) {
+                  addressData = buyerData;
+                  setState(() {});
+                },
               ),
             ],
           ),
@@ -243,6 +259,9 @@ class InputText extends StatelessWidget {
       initialValue: initialValue,
       onChanged: (value) => onChanged(value),
       keyboardType: textInputType,
+      inputFormatters: textInputType == TextInputType.number
+          ? [FilteringTextInputFormatter.digitsOnly]
+          : null,
       style: const TextStyle(
         decoration: TextDecoration.none,
         decorationThickness: 0,
@@ -259,7 +278,6 @@ class InputText extends StatelessWidget {
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
       ),
-      inputFormatters: [],
     );
   }
 }

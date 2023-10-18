@@ -28,7 +28,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             radius: 25,
             backgroundColor: Colors.black,
             foregroundImage: AssetImage(
-              "assets/images/shop_logo.png",
+              "assets/images/shop_logo_big.png",
             ),
           ),
           SizedBox(

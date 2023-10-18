@@ -81,7 +81,8 @@ class _CustomerInfoState extends State<CustomerInfo> {
                 MaterialPageRoute(
                   builder: (context) => ReciverInfo(
                     addressData: addressData,
-                    done: () {
+                    done: (data) {
+                      addressData = data;
                       widget.data.updateBuyer(addressData);
                     },
                     delete: () {},

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/page/address/api/model/region.dart';
+import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
@@ -44,7 +47,21 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: OrderListPage(),
+      home: ReciverInfo(
+        addressData: AddressData(
+            addressID: 'addressID',
+            deviceID: deviceID,
+            reciverFullName: 'reciverFullName',
+            phoneNumber: '',
+            houseNumber: 'houseNumber',
+            region: Region(name: 'name', id: -1),
+            district: Region(name: 'name', id: -1),
+            ward: Region(name: 'name', id: -1),
+            regionTextFormat: 'regionTextFormat'),
+        done: (data) {},
+        delete: () {},
+        isEdit: false,
+      ),
     );
   }
 }
