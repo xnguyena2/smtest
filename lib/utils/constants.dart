@@ -71,6 +71,13 @@ const BoxShadow wholeShadow = BoxShadow(
   spreadRadius: 0,
 );
 
+const BoxShadow highShadow = BoxShadow(
+  color: TableHighColor,
+  blurRadius: 4,
+  offset: Offset(0, 0),
+  spreadRadius: 0,
+);
+
 const TextStyle moneyStyleSuperLarge = TextStyle(
   fontSize: 30,
   fontWeight: FontWeight.w600,

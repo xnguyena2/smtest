@@ -7,13 +7,15 @@ import '../../../utils/svg_loader.dart';
 
 class ProductSelectorBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const ProductSelectorBar({super.key});
+  final VoidCallback onBackPressed;
+  const ProductSelectorBar({super.key, required this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
+        onBackPressed: onBackPressed,
         title: 'Bán hàng',
         funcWidget: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),

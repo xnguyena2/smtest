@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/typedef.dart';
 
-import '../page/product_selector/product_selector_page.dart';
 import '../utils/svg_loader.dart';
 
 class CategorySelector extends StatelessWidget {
@@ -58,6 +58,46 @@ class CategorySelector extends StatelessWidget {
                 width: 10,
               ),
           itemCount: listCategory.length + 1),
+    );
+  }
+}
+
+class CategoryItem extends StatelessWidget {
+  final String txt;
+  final bool isActive;
+  final bool isFlip;
+  final VoidCallbackArg<bool> onTap;
+  const CategoryItem({
+    super.key,
+    required this.txt,
+    required this.isActive,
+    required this.onTap,
+    this.isFlip = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (isActive && !isFlip) {
+          return;
+        }
+        onTap(!isActive);
+      },
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: White,
+            borderRadius: defaultBorderRadius,
+            border: isActive ? mainHighBorder : categoryBorder,
+          ),
+          child: Text(
+            txt,
+            style: isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
+          ),
+        ),
+      ),
     );
   }
 }

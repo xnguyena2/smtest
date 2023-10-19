@@ -8,7 +8,7 @@ class SearchResult<T extends ResultInterface> {
     required this.normalSearch,
   });
   late final int count;
-  late final Null searchTxt;
+  late final String? searchTxt;
   late final List<T> result;
   late final bool normalSearch;
 

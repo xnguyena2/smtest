@@ -20,7 +20,7 @@ Future<SearchResult<BeerSubmitData>> getall() async {
     group_id: groupID,
   );
 
-  final response = await postC('/beer/admin/getall', request);
+  final response = await postC('/beer/getall', request);
 
   print(response.statusCode);
   if (response.statusCode == 200) {

@@ -2,19 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
-import 'package:sales_management/api/model/package/buyer.dart';
-import 'package:sales_management/api/model/package/product_package.dart';
-import 'package:sales_management/api/model/package/user_package.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/search_result.dart';
-import 'package:sales_management/api/model/user_info_query.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
-import 'package:sales_management/component/image_loading.dart';
-import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
+import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
-import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
 import '../../component/category_selector.dart';
@@ -22,28 +17,18 @@ import '../../component/category_selector.dart';
 const List<String> listCategory = ['Tất cả', 'Mỳ ăn liền', 'Đồ ăn'];
 
 class ProductSelectorPage extends StatelessWidget {
-  const ProductSelectorPage({super.key});
+  final PackageDataResponse packageDataResponse;
+  const ProductSelectorPage({super.key, required this.packageDataResponse});
 
   @override
   Widget build(BuildContext context) {
-    // getall().then((value) {
-    //   print(value.count);
-    // }).catchError((e) {
-    //   print('Got error: $e');
-    //   signin().then((value) {
-    //     print(value.token);
-    //   });
-    // });
-    // signin().then((value) {
-    //   print(value.token);
-    // });
-    // me();
-    fetchPackage(UserInfoQuery(
-            group_id: groupID, id: deviceID, page: 0, size: 10000))
-        .then((value) => null);
     return SafeArea(
         child: Scaffold(
-      appBar: ProductSelectorBar(),
+      appBar: ProductSelectorBar(
+        onBackPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       body: FetchAPI<SearchResult<BeerSubmitData>>(
         future: getall(),
         successBuilder: (SearchResult<BeerSubmitData> data) {
@@ -105,8 +90,14 @@ class ProductSelectorPage extends StatelessWidget {
                             ),
                           ),
                         );
+                      BeerSubmitData productData = results[index];
+                      final productUnitID =
+                          productData.listUnit?.firstOrNull?.beerUnitSecondId;
                       return ProductSelectorItem(
-                        productData: results[index],
+                        productData: productData,
+                        productInPackageResponse: productUnitID == null
+                            ? null
+                            : packageDataResponse.productMap[productUnitID],
                       );
                     },
                   ),
@@ -117,218 +108,5 @@ class ProductSelectorPage extends StatelessWidget {
         },
       ),
     ));
-  }
-}
-
-class ProductSelectorItem extends StatefulWidget {
-  final BeerSubmitData productData;
-  const ProductSelectorItem({
-    super.key,
-    required this.productData,
-  });
-
-  @override
-  State<ProductSelectorItem> createState() => _ProductSelectorItemState();
-}
-
-class _ProductSelectorItemState extends State<ProductSelectorItem> {
-  late final String? imgUrl;
-  late final String name;
-  late final double price;
-  bool processing = false;
-  late BeerUnit? unit;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    unit = widget.productData.listUnit?.firstOrNull;
-    imgUrl = widget.productData.getFristLargeImg;
-    name = widget.productData.name;
-    price = widget.productData.getRealPrice;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: White,
-        borderRadius: defaultBorderRadius,
-        border: defaultBorder,
-        image: DecorationImage(
-          image: (imgUrl == null
-              ? const AssetImage(
-                  'assets/images/shop_logo.png',
-                )
-              : NetworkImage(imgUrl!)) as ImageProvider,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-            margin: const EdgeInsets.only(top: 12, left: 6, right: 6),
-            decoration: BoxDecoration(
-                color: White,
-                borderRadius: defaultSquareBorderRadius,
-                border: defaultBorder),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  child: LoadSvg(assetPath: 'svg/minus.svg'),
-                  onTap: () => unit != null ? changePackage(unit!, -1) : null,
-                ),
-                SizedBox(
-                  width: 18,
-                  child: TextFormField(
-                    initialValue: '99',
-                    maxLines: 1,
-                    style: headStyleLarge,
-                    onEditingComplete: () {
-                      print('onEditingComplete');
-                    },
-                    onFieldSubmitted: (value) {
-                      print('onFieldSubmitted');
-                    },
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      isDense: true,
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => unit != null ? changePackage(unit!, 1) : null,
-                  child: LoadSvg(
-                    assetPath: 'svg/plus.svg',
-                    color: MainHighColor,
-                  ),
-                )
-              ],
-            ),
-          ),
-          ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: 4.0,
-                sigmaY: 4.0,
-              ),
-              child: Container(
-                color: Color.fromRGBO(214, 214, 214, 0.40),
-                child: Column(
-                  children: [
-                    Text(
-                      name,
-                      style: subInfoStyLarge400,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          MoneyFormater.format(price),
-                          style: subInfoStyLarge600,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void changePackage(BeerUnit unit, int diff) {
-    setState(() {
-      processing = true;
-    });
-    addToPackage(
-      ProductPackage(
-        id: 0,
-        groupId: '',
-        buyer: Buyer(
-            id: 0,
-            regionId: 0,
-            districtId: 0,
-            wardId: 0,
-            realPrice: 0,
-            totalPrice: 0,
-            shipPrice: 0,
-            pointsDiscount: 0,
-            groupId: '',
-            createat: '',
-            deviceId: ''),
-        productUnits: [
-          UserPackage(
-              id: 0,
-              groupId: '',
-              createat: '',
-              packageSecondId: '',
-              deviceId: '',
-              productSecondId: unit.beer,
-              productUnitSecondId: unit.beerUnitSecondId,
-              numberUnit: diff,
-              price: 0,
-              discountAmount: 0,
-              discountPercent: 0)
-        ],
-      ),
-    ).then((value) {
-      processing = false;
-      // widget.item.numberUnit += diff;
-      // widget.updateItemCount.call();
-    }).catchError(
-      (error, stackTrace) {
-        setState(() {
-          processing = false;
-        });
-        print("Error: $error");
-      },
-    );
-  }
-}
-
-class CategoryItem extends StatelessWidget {
-  final String txt;
-  final bool isActive;
-  final bool isFlip;
-  final VoidCallbackArg<bool> onTap;
-  const CategoryItem({
-    super.key,
-    required this.txt,
-    required this.isActive,
-    required this.onTap,
-    this.isFlip = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (isActive && !isFlip) {
-          return;
-        }
-        onTap(!isActive);
-      },
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: White,
-            borderRadius: defaultBorderRadius,
-            border: isActive ? mainHighBorder : categoryBorder,
-          ),
-          child: Text(
-            txt,
-            style: isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
-          ),
-        ),
-      ),
-    );
   }
 }

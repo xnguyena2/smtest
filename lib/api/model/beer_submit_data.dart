@@ -85,9 +85,9 @@ class Images {
   });
   late final String groupId;
   late final String createat;
-  late final String id;
+  late final int id;
   late final String imgid;
-  late final Null tag;
+  late final String? tag;
   late final String thumbnail;
   late final String medium;
   late final String large;

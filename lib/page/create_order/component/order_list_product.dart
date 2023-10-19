@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
+import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -46,6 +46,7 @@ class _ListProductState extends State<ListProduct> {
                     icon: LoadSvg(
                         assetPath: 'svg/print.svg', width: 20, height: 20),
                     txt: 'In bếp',
+                    onPressed: () {},
                   ),
                 ),
                 SizedBox(
@@ -57,6 +58,16 @@ class _ListProductState extends State<ListProduct> {
                     icon: LoadSvg(
                         assetPath: 'svg/plus_large.svg', width: 20, height: 20),
                     txt: 'Thêm sản phẩm',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductSelectorPage(
+                            packageDataResponse: data,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 )
               ],
@@ -396,35 +407,40 @@ class RoundBtn extends StatelessWidget {
   final String txt;
   final Widget icon;
   final bool isSelected;
+  final VoidCallback onPressed;
   const RoundBtn({
     super.key,
     required this.txt,
     required this.icon,
+    required this.onPressed,
     this.isSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: defaultBorderRadius,
-        border: isSelected ? tableHighBorder : lightBorder,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            txt,
-            style: isSelected
-                ? headStyleSemiLargeHigh500
-                : headStyleSemiLargeLigh500,
-          ),
-        ],
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: defaultBorderRadius,
+          border: isSelected ? tableHighBorder : lightBorder,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            icon,
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              txt,
+              style: isSelected
+                  ? headStyleSemiLargeHigh500
+                  : headStyleSemiLargeLigh500,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
@@ -38,6 +40,8 @@ class PackageDataResponse extends PackageDetail {
   late final List<ProductInPackageResponse> items;
   late BuyerData? buyer;
 
+  final Map<String, ProductInPackageResponse> productMap = HashMap();
+
   PackageDataResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     items = List.from(json['items'])
@@ -46,6 +50,7 @@ class PackageDataResponse extends PackageDetail {
     buyer = json['buyer'] == null ? null : BuyerData.fromJson(json['buyer']);
 
     localTimeTxt = formatLocalDateTime(createat);
+    updateProductMap();
   }
 
   Map<String, dynamic> toJson() {
@@ -53,6 +58,16 @@ class PackageDataResponse extends PackageDetail {
     _data['items'] = items.map((e) => e.toJson()).toList();
     _data['buyer'] = buyer?.toJson();
     return _data;
+  }
+
+  void updateProductMap() {
+    items.forEach((element) {
+      final productUnit = element.beerSubmitData?.listUnit?.firstOrNull;
+      if (productUnit == null) {
+        return;
+      }
+      productMap[productUnit.beerUnitSecondId] = element;
+    });
   }
 
   void updateBuyer(AddressData addressData) {
