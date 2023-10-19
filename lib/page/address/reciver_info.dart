@@ -34,6 +34,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
   late AddressData addressData = widget.addressData;
   late Debouncer searchDebouncer = Debouncer(milliseconds: 300);
   late Future<ListBuyerResult> loadingListBuyer;
+  late Key phoneNumbeKey;
   bool validData() {
     return true;
     // if (addressData.reciverFullName.isEmpty) {
@@ -55,12 +56,17 @@ class _ReciverInfoState extends State<ReciverInfo> {
     enableDone = validData();
   }
 
+  void initialValue() {
+    phoneNumbeKey = ValueKey('phoneNumber');
+  }
+
   @override
   void initState() {
     super.initState();
     checkValid();
     loadingListBuyer =
         searchUser(''); // Future.value(ListBuyerResult(listResult: []));
+    initialValue();
   }
 
   @override
@@ -90,7 +96,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
               ),
               const Divider(height: 1),
               InputText(
-                key: ValueKey('phoneNumber ${addressData.phoneNumber}'),
+                key: phoneNumbeKey,
                 hint: "Số điện thoại",
                 initialValue: addressData.phoneNumber,
                 onChanged: (String value) {
@@ -113,6 +119,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
                       ),
                     ),
                   );
+                  setState(() {});
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: BackgroundColorLigh,
@@ -219,6 +226,8 @@ class _ReciverInfoState extends State<ReciverInfo> {
                 loadingListBuyer: loadingListBuyer,
                 onSelected: (buyerData) {
                   addressData = buyerData;
+                  phoneNumbeKey =
+                      ValueKey('phoneNumber ${addressData.phoneNumber}');
                   setState(() {});
                 },
               ),
