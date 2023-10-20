@@ -37,6 +37,9 @@ class ProductSelectorPage extends StatelessWidget {
               return e.flatUnit();
             },
           ));
+          results.sort(
+            (a, b) => a.name.compareTo(b.name),
+          );
           return SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
@@ -98,6 +101,10 @@ class ProductSelectorPage extends StatelessWidget {
                         productInPackageResponse: productUnitID == null
                             ? null
                             : packageDataResponse.productMap[productUnitID],
+                        updateNumberUnit: (productInPackageResponse) {
+                          packageDataResponse
+                              .addProduct(productInPackageResponse);
+                        },
                       );
                     },
                   ),

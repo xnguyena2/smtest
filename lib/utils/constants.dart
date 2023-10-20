@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const String host =
-    'http://192.168.1.212:5001'; //"https://product-sell.onrender.com";
+    'http://192.168.1.212:5001'; // "https://web-production-865f.up.railway.app"; //
 
 const String deviceID = 'admintestting';
 const String groupID = 'trumbien_store';

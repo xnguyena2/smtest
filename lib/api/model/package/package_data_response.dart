@@ -60,6 +60,24 @@ class PackageDataResponse extends PackageDetail {
     return _data;
   }
 
+  void addProduct(ProductInPackageResponse productInPackageResponse) {
+    final productUnit =
+        productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull;
+    if (productUnit == null) {
+      return;
+    }
+    if (productMap.containsKey(productUnit.beerUnitSecondId)) {
+      return;
+    }
+    if (productInPackageResponse.numberUnit <= 0) {
+      items.remove(productInPackageResponse);
+      productMap.remove(productUnit.beerUnitSecondId);
+      return;
+    }
+    items.add(productInPackageResponse);
+    productMap[productUnit.beerUnitSecondId] = productInPackageResponse;
+  }
+
   void updateProductMap() {
     items.forEach((element) {
       final productUnit = element.beerSubmitData?.listUnit?.firstOrNull;
@@ -89,14 +107,15 @@ class ProductInPackageResponse extends UserPackage {
     required this.beerSubmitData,
   }) : super(
             id: 0,
-            groupId: '',
-            createat: '',
-            packageSecondId: '',
-            deviceId: '',
-            productSecondId: '',
-            productUnitSecondId: '',
+            groupId: 'set at backend',
+            deviceId: 'set at backend',
+            packageSecondId: 'set at backend',
+            createat: null,
+            productSecondId: beerSubmitData?.beerSecondID ?? '',
+            productUnitSecondId:
+                beerSubmitData?.listUnit?.firstOrNull?.beerUnitSecondId ?? '',
             numberUnit: 0,
-            price: 0.0,
+            price: beerSubmitData?.listUnit?.firstOrNull?.realPrice ?? 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0);
   late final BeerSubmitData? beerSubmitData;

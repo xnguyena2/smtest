@@ -7,7 +7,7 @@ class UserPackage extends BaseEntity {
   late final String deviceId;
   late final String productSecondId;
   late final String productUnitSecondId;
-  late final int numberUnit;
+  late int numberUnit;
   late final double price;
   late final double discountAmount;
   late final double discountPercent;

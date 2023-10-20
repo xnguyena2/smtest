@@ -42,7 +42,7 @@ class BeerSubmitData extends ResultInterface {
     _data['detail'] = detail;
     _data['category'] = category;
     _data['status'] = status;
-    _data['images'] = images;
+    _data['images'] = images?.map((e) => e.toJson()).toList();
     _data['listUnit'] = listUnit?.map((e) => e.toJson()).toList();
     return _data;
   }
@@ -63,7 +63,7 @@ class BeerSubmitData extends ResultInterface {
   List<BeerSubmitData> flatUnit() {
     return listUnit == null
         ? [this]
-        : listUnit!.map((e) => cloneMainData(e.correctPrice())).toList();
+        : listUnit!.map((e) => cloneMainData(e)).toList();
   }
 
   String? get getFristLargeImg => images?[0].medium;
@@ -144,11 +144,10 @@ class BeerUnit {
   late final String beerUnitSecondId;
   late final String status;
 
-  double realPrice = 0;
+  late double realPrice = 0;
 
-  BeerUnit correctPrice() {
+  void correctPrice() {
     realPrice = price * (1 - discount / 100);
-    return this;
   }
 
   BeerUnit.fromJson(Map<String, dynamic> json) {
@@ -162,6 +161,8 @@ class BeerUnit {
     weight = json['weight'];
     beerUnitSecondId = json['beer_unit_second_id'];
     status = json['status'];
+
+    correctPrice();
   }
 
   Map<String, dynamic> toJson() {

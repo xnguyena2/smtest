@@ -18,6 +18,9 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
   @override
   Widget build(BuildContext context) {
     List<PackageDataResponse> listPackage = widget.data.listResult;
+    listPackage.sort(
+      (a, b) => b.createat?.compareTo(a.createat ?? '') ?? 0,
+    );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       color: BackgroundColor,
