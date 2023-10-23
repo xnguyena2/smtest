@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/address/api/model/region.dart';
 import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
@@ -14,8 +20,34 @@ import 'my_custom_scroll_behavior.dart';
 import 'page/table/table_page.dart';
 import 'utils/constants.dart';
 
-void main() {
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+Future<void> setupHiveDB() async {
+  await Hive.initFlutter();
+  await Hive.openBox(hiveSettingBox);
+  initData();
+}
+
+void initData() {
+  loadBootstrap(groupID).then((value) {
+    var box = Hive.box(hiveSettingBox);
+    box.put(hiveConfigKey, jsonEncode(value.toJson()));
+  });
+}
+
+Future<void> main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
   WidgetsFlutterBinding.ensureInitialized();
+
+  await setupHiveDB();
 
   runApp(
     MultiProvider(

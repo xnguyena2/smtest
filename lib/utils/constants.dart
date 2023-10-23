@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 const String host =
     'http://192.168.1.212:5001'; // "https://web-production-865f.up.railway.app"; //
 
+const String hiveSettingBox = 'settings';
+const String hiveConfigKey = 'config';
+
 const String deviceID = 'admintestting';
 const String groupID = 'trumbien_store';
 

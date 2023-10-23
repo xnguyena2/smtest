@@ -1,8 +1,9 @@
+import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/result_interface.dart';
 
-class BeerSubmitData extends ResultInterface {
+class BeerSubmitData extends BaseEntity implements ResultInterface {
   BeerSubmitData({
-    required this.groupId,
+    required String groupId,
     required this.beerSecondID,
     required this.name,
     this.detail,
@@ -10,8 +11,7 @@ class BeerSubmitData extends ResultInterface {
     required this.status,
     this.images,
     required this.listUnit,
-  });
-  late final String groupId;
+  }) : super(id: null, groupId: groupId, createat: null);
   late final String beerSecondID;
   late final String name;
   late final String? detail;
@@ -20,8 +20,7 @@ class BeerSubmitData extends ResultInterface {
   late final List<Images>? images;
   late final List<BeerUnit>? listUnit;
 
-  BeerSubmitData.fromJson(Map<String, dynamic> json) {
-    groupId = json['group_id'];
+  BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
     detail = json['name'];
@@ -35,7 +34,7 @@ class BeerSubmitData extends ResultInterface {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
+    final _data = super.toJson();
     _data['group_id'] = groupId;
     _data['beerSecondID'] = beerSecondID;
     _data['name'] = name;

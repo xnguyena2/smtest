@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
@@ -20,6 +23,23 @@ class ProductSelectorPage extends StatelessWidget {
   final PackageDataResponse packageDataResponse;
   const ProductSelectorPage({super.key, required this.packageDataResponse});
 
+  Future<SearchResult<BeerSubmitData>> getAllProduct() async {
+    var box = Hive.box(hiveSettingBox);
+    String? config = box.get(hiveConfigKey);
+    List<BeerSubmitData> listProducts = [];
+    if (config != null) {
+      BootStrapData data = BootStrapData.fromJson(jsonDecode(config));
+      listProducts = data.products;
+    }
+
+    SearchResult<BeerSubmitData> result = SearchResult<BeerSubmitData>(
+      count: 0,
+      normalSearch: false,
+      result: listProducts,
+    );
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +50,7 @@ class ProductSelectorPage extends StatelessWidget {
         },
       ),
       body: FetchAPI<SearchResult<BeerSubmitData>>(
-        future: getall(),
+        future: getAllProduct(), //getall(),
         successBuilder: (SearchResult<BeerSubmitData> data) {
           final results = flatten<BeerSubmitData>(data.result.map(
             (e) {
