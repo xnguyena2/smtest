@@ -1,9 +1,15 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/result_interface.dart';
 
+part 'beer_submit_data.g.dart';
+
+@HiveType(typeId: 2)
 class BeerSubmitData extends BaseEntity implements ResultInterface {
   BeerSubmitData({
-    required String groupId,
+    super.id,
+    required super.groupId,
+    super.createat,
     required this.beerSecondID,
     required this.name,
     this.detail,
@@ -11,13 +17,27 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.status,
     this.images,
     required this.listUnit,
-  }) : super(id: null, groupId: groupId, createat: null);
+  });
+
+  @HiveField(4)
   late final String beerSecondID;
+
+  @HiveField(5)
   late final String name;
+
+  @HiveField(6)
   late final String? detail;
+
+  @HiveField(7)
   late final String category;
+
+  @HiveField(8)
   late final String status;
+
+  @HiveField(9)
   late final List<Images>? images;
+
+  @HiveField(10)
   late final List<BeerUnit>? listUnit;
 
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -70,6 +90,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   double get getRealPrice => listUnit?[0].realPrice ?? 0;
 }
 
+@HiveType(typeId: 4)
 class Images {
   Images({
     required this.groupId,
@@ -82,14 +103,31 @@ class Images {
     required this.large,
     required this.category,
   });
+  @HiveField(0)
   late final String groupId;
+
+  @HiveField(1)
   late final String createat;
+
+  @HiveField(2)
   late final int id;
+
+  @HiveField(3)
   late final String imgid;
+
+  @HiveField(4)
   late final String? tag;
+
+  @HiveField(5)
   late final String thumbnail;
+
+  @HiveField(6)
   late final String medium;
+
+  @HiveField(7)
   late final String large;
+
+  @HiveField(8)
   late final String category;
 
   Images.fromJson(Map<String, dynamic> json) {
@@ -119,6 +157,7 @@ class Images {
   }
 }
 
+@HiveType(typeId: 5)
 class BeerUnit {
   BeerUnit({
     required this.groupId,
@@ -132,15 +171,34 @@ class BeerUnit {
     required this.beerUnitSecondId,
     required this.status,
   });
+  @HiveField(0)
   late final String groupId;
+
+  @HiveField(1)
   late final String beer;
+
+  @HiveField(2)
   late final String name;
+
+  @HiveField(3)
   late final double price;
+
+  @HiveField(4)
   late final double discount;
+
+  @HiveField(5)
   late final DateExpir? dateExpir;
+
+  @HiveField(6)
   late final double volumetric;
+
+  @HiveField(7)
   late final double? weight;
+
+  @HiveField(8)
   late final String beerUnitSecondId;
+
+  @HiveField(9)
   late final String status;
 
   late double realPrice = 0;
@@ -155,7 +213,9 @@ class BeerUnit {
     name = json['name'];
     price = json['price'];
     discount = json['discount'];
-    dateExpir = null;
+    dateExpir = json['dateExpir'] == null
+        ? null
+        : DateExpir.fromJson(json['dateExpir']);
     volumetric = json['volumetric'];
     weight = json['weight'];
     beerUnitSecondId = json['beer_unit_second_id'];
@@ -171,7 +231,7 @@ class BeerUnit {
     _data['name'] = name;
     _data['price'] = price;
     _data['discount'] = discount;
-    _data['dateExpir'] = dateExpir;
+    _data['dateExpir'] = dateExpir?.toJson();
     _data['volumetric'] = volumetric;
     _data['weight'] = weight;
     _data['beer_unit_second_id'] = beerUnitSecondId;
@@ -180,14 +240,20 @@ class BeerUnit {
   }
 }
 
+@HiveType(typeId: 6)
 class DateExpir {
   DateExpir({
     required this.day,
     required this.month,
     required this.year,
   });
+  @HiveField(0)
   late final int day;
+
+  @HiveField(1)
   late final int month;
+
+  @HiveField(2)
   late final int year;
 
   DateExpir.fromJson(Map<String, dynamic> json) {

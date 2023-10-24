@@ -25,17 +25,12 @@ class ProductSelectorPage extends StatelessWidget {
 
   Future<SearchResult<BeerSubmitData>> getAllProduct() async {
     var box = Hive.box(hiveSettingBox);
-    String? config = box.get(hiveConfigKey);
-    List<BeerSubmitData> listProducts = [];
-    if (config != null) {
-      BootStrapData data = BootStrapData.fromJson(jsonDecode(config));
-      listProducts = data.products;
-    }
+    BootStrapData? config = box.get(hiveConfigKey);
 
     SearchResult<BeerSubmitData> result = SearchResult<BeerSubmitData>(
       count: 0,
       normalSearch: false,
-      result: listProducts,
+      result: config?.products ?? [],
     );
     return result;
   }

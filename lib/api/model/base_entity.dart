@@ -1,7 +1,15 @@
+import 'package:hive/hive.dart';
+
 class BaseEntity {
+  @HiveField(0)
   late final int? id;
+
+  @HiveField(2)
   late final String groupId;
+
+  @HiveField(3)
   late final String? createat;
+
   BaseEntity({
     required this.id,
     required this.groupId,

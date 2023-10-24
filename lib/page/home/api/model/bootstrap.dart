@@ -1,14 +1,19 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 
+part 'bootstrap.g.dart';
+
+@HiveType(typeId: 1)
 class BootStrapData {
   BootStrapData({
-    required int? id,
-    required String groupId,
-    String? createat,
     required this.products,
+    required this.carousel,
   });
+  @HiveField(0)
   late final List<BeerSubmitData> products;
+
+  @HiveField(1)
   late final List<String> carousel;
 
   BootStrapData.fromJson(Map<String, dynamic> json) {

@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/address/api/model/region.dart';
 import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
@@ -31,6 +33,13 @@ class MyHttpOverrides extends HttpOverrides {
 
 Future<void> setupHiveDB() async {
   await Hive.initFlutter();
+
+  Hive.registerAdapter(ImagesAdapter());
+  Hive.registerAdapter(BeerSubmitDataAdapter());
+  Hive.registerAdapter(BeerUnitAdapter());
+  Hive.registerAdapter(DateExpirAdapter());
+  Hive.registerAdapter(BootStrapDataAdapter());
+
   await Hive.openBox(hiveSettingBox);
   initData();
 }
@@ -38,7 +47,7 @@ Future<void> setupHiveDB() async {
 void initData() {
   loadBootstrap(groupID).then((value) {
     var box = Hive.box(hiveSettingBox);
-    box.put(hiveConfigKey, jsonEncode(value.toJson()));
+    box.put(hiveConfigKey, value);
   });
 }
 
