@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/header.dart';
 import 'package:sales_management/utils/constants.dart';
+// ignore: unused_import
 import 'package:sales_management/utils/svg_loader.dart';
 
 class ProductInfoBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,6 +15,9 @@ class ProductInfoBar extends StatelessWidget implements PreferredSizeWidget {
         title: 'Tạo sản phẩm',
         funcWidget: SizedBox(),
         extendsWidget: SizedBox(),
+        onBackPressed: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }

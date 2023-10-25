@@ -8,6 +8,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
@@ -109,6 +110,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                     },
                     isFlip: true,
                     itemsSelected: listCateSelected,
+                    firstWidget: LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
                   ),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -123,29 +125,40 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                     itemCount: listProduct.length + 1,
                     itemBuilder: (context, index) {
                       if (index == listProduct.length)
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: White,
-                            borderRadius: defaultBorderRadius,
-                            border: defaultBorder,
-                          ),
-                          child: Center(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              clipBehavior: Clip.none,
-                              children: [
-                                LoadSvg(
-                                  assetPath: 'svg/plus.svg',
-                                  color: MainHighColor,
-                                ),
-                                Positioned(
-                                  bottom: -25,
-                                  child: Text(
-                                    'Thêm sản phẩm',
-                                    style: subInfoStyLargeHigh400,
+                        return GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductInfo(),
+                              ),
+                            );
+                            setState(() {});
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: White,
+                              borderRadius: defaultBorderRadius,
+                              border: defaultBorder,
+                            ),
+                            child: Center(
+                              child: Stack(
+                                alignment: Alignment.center,
+                                clipBehavior: Clip.none,
+                                children: [
+                                  LoadSvg(
+                                    assetPath: 'svg/plus.svg',
+                                    color: MainHighColor,
                                   ),
-                                ),
-                              ],
+                                  Positioned(
+                                    bottom: -25,
+                                    child: Text(
+                                      'Thêm sản phẩm',
+                                      style: subInfoStyLargeHigh400,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

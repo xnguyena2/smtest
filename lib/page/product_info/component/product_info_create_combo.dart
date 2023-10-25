@@ -24,7 +24,7 @@ class CreateCombo extends StatelessWidget {
         InputFiledWithHeader(
           header: 'Nhóm bán kèm',
           hint: 'Chọn 1 hoặc nhiều nhóm bán kèm',
-          isImportance: true,
+          isImportance: false,
         ),
       ],
     ));

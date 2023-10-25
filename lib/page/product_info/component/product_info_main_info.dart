@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/category_selector.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class MainProductInfo extends StatelessWidget {
+class MainProductInfo extends StatefulWidget {
   const MainProductInfo({
     super.key,
   });
+
+  @override
+  State<MainProductInfo> createState() => _MainProductInfoState();
+}
+
+class _MainProductInfoState extends State<MainProductInfo> {
+  List<String> listCateSelected = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,50 +80,36 @@ class MainProductInfo extends StatelessWidget {
                 height: 7,
               ),
               SizedBox(
-                height: 42,
-                child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return LoadSvg(
-                          assetPath: 'svg/menu.svg',
-                        );
-                      }
-                      if (index == 1) {
-                        return CategoryItem(
-                          txt: 'Đồ ăn',
-                          isSelected: true,
-                        );
-                      }
-                      if (index == 4) {
-                        return HighBorderContainer(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 11, horizontal: 18),
-                          child: Row(
-                            children: [
-                              LoadSvg(assetPath: 'svg/plus_large.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Tạo danh muc',
-                                style: headStyleSemiLargeHigh500,
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      return CategoryItem(
-                        txt: 'Mỳ ăn liền',
-                        isSelected: false,
-                      );
+                  height: 42,
+                  child: CategorySelector(
+                    listCategory: ['đồ ăn', 'mỳ ăn liền'],
+                    onChanged: (listSelected) {
+                      listCateSelected = listSelected;
+                      setState(() {});
                     },
-                    separatorBuilder: (context, index) => SizedBox(
-                          width: 12,
-                        ),
-                    itemCount: 5),
-              ),
+                    itemsSelected: listCateSelected,
+                    isFlip: true,
+                    firstWidget: LoadSvg(
+                      assetPath: 'svg/menu.svg',
+                    ),
+                    multiSelected: true,
+                    lastWidget: HighBorderContainer(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 11, horizontal: 18),
+                      child: Row(
+                        children: [
+                          LoadSvg(assetPath: 'svg/plus_large.svg'),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Tạo danh muc',
+                            style: headStyleSemiLargeHigh500,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
             ],
           )
         ],

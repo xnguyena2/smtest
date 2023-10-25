@@ -40,7 +40,7 @@ class Body extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ColoredBox(
             color: White,

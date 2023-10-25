@@ -6,6 +6,7 @@ import 'package:sales_management/page/table/component/table_status.dart';
 import 'package:sales_management/page/table/table_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
+import 'package:sales_management/utils/svg_loader.dart';
 
 class TableBody extends StatefulWidget {
   final onTableSelected done;
@@ -76,6 +77,7 @@ class _TableBodyState extends State<TableBody> {
               },
               itemsSelected: [_selectedArea],
               isFlip: false,
+              firstWidget: LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
             ),
             const SizedBox(
               height: 5,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
 
-import '../utils/svg_loader.dart';
-
 class CategorySelector extends StatelessWidget {
+  final Widget firstWidget;
+  final Widget? lastWidget;
   final bool multiSelected;
   final bool isFlip;
   final List<String> listCategory;
@@ -16,12 +17,14 @@ class CategorySelector extends StatelessWidget {
     required this.onChanged,
     required this.itemsSelected,
     required this.isFlip,
+    required this.firstWidget,
+    this.lastWidget,
     this.multiSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.itemsSelected);
+    int count = listCategory.length + 1 + (lastWidget == null ? 0 : 1);
     return SizedBox(
       height: 60,
       child: ListView.separated(
@@ -29,7 +32,10 @@ class CategorySelector extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return LoadSvg(assetPath: 'svg/grid_horizontal.svg');
+              return firstWidget;
+            }
+            if (lastWidget != null && index == count - 1) {
+              return lastWidget;
             }
             String value = listCategory[index - 1];
             return CategoryItem(
@@ -57,7 +63,7 @@ class CategorySelector extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(
                 width: 10,
               ),
-          itemCount: listCategory.length + 1),
+          itemCount: count),
     );
   }
 }
@@ -92,9 +98,21 @@ class CategoryItem extends StatelessWidget {
             borderRadius: defaultBorderRadius,
             border: isActive ? mainHighBorder : categoryBorder,
           ),
-          child: Text(
-            txt,
-            style: isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
+          child: Row(
+            children: [
+              Text(
+                txt,
+                style:
+                    isActive ? headStyleMediumHigh : headStyleMediumNormalLight,
+              ),
+              if (isActive && isFlip) ...[
+                SizedBox(
+                  width: 10,
+                ),
+                LoadSvg(
+                    color: TableHighColor, assetPath: 'svg/close_circle.svg')
+              ],
+            ],
           ),
         ),
       ),
