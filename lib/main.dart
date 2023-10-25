@@ -39,6 +39,7 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(BeerUnitAdapter());
   Hive.registerAdapter(DateExpirAdapter());
   Hive.registerAdapter(BootStrapDataAdapter());
+  Hive.registerAdapter(DeviceConfigAdapter());
 
   await Hive.openBox(hiveSettingBox);
   initData();

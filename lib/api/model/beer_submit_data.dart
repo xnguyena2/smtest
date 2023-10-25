@@ -15,6 +15,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     this.detail,
     required this.category,
     required this.status,
+    this.meta_search,
     this.images,
     required this.listUnit,
   });
@@ -35,9 +36,12 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late final String status;
 
   @HiveField(9)
-  late final List<Images>? images;
+  late final String? meta_search;
 
   @HiveField(10)
+  late final List<Images>? images;
+
+  @HiveField(11)
   late final List<BeerUnit>? listUnit;
 
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -45,6 +49,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     name = json['name'];
     detail = json['name'];
     category = json['category'];
+    meta_search = json['meta_search'];
     status = json['status'];
     images = json['images'] == null
         ? null
@@ -60,6 +65,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['name'] = name;
     _data['detail'] = detail;
     _data['category'] = category;
+    _data['meta_search'] = meta_search;
     _data['status'] = status;
     _data['images'] = images?.map((e) => e.toJson()).toList();
     _data['listUnit'] = listUnit?.map((e) => e.toJson()).toList();
@@ -76,6 +82,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       detail: detail,
       images: images,
       listUnit: unit != null ? [unit] : null,
+      meta_search: meta_search,
     );
   }
 
@@ -88,6 +95,20 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   String? get getFristLargeImg => images?[0].medium;
 
   double get getRealPrice => listUnit?[0].realPrice ?? 0;
+
+  bool isContainCategory(List<String> listCat) {
+    for (String cat in listCat) {
+      if (category.contains(cat)) return true;
+    }
+    return false;
+  }
+
+  bool searchMatch(String srx) {
+    if (meta_search?.contains(srx) == true) {
+      return true;
+    }
+    return false;
+  }
 }
 
 @HiveType(typeId: 4)

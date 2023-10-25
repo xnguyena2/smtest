@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../../component/header.dart';
 import '../../../component/app_search_bar.dart';
@@ -8,7 +9,9 @@ import '../../../utils/svg_loader.dart';
 class ProductSelectorBar extends StatelessWidget
     implements PreferredSizeWidget {
   final VoidCallback onBackPressed;
-  const ProductSelectorBar({super.key, required this.onBackPressed});
+  final VoidCallbackArg<String>? onChanged;
+  const ProductSelectorBar(
+      {super.key, required this.onBackPressed, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +50,7 @@ class ProductSelectorBar extends StatelessWidget
           ),
         ),
         extendsWidget: AppSearchBar(
+          onChanged: onChanged,
           hint: 'Tìm theo tên, code, ...',
         ),
       ),

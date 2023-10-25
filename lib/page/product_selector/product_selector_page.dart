@@ -17,22 +17,50 @@ import 'package:sales_management/utils/utils.dart';
 
 import '../../component/category_selector.dart';
 
-const List<String> listCategory = ['Tất cả', 'Mỳ ăn liền', 'Đồ ăn'];
-
-class ProductSelectorPage extends StatelessWidget {
+class ProductSelectorPage extends StatefulWidget {
   final PackageDataResponse packageDataResponse;
   const ProductSelectorPage({super.key, required this.packageDataResponse});
 
-  Future<SearchResult<BeerSubmitData>> getAllProduct() async {
+  @override
+  State<ProductSelectorPage> createState() => _ProductSelectorPageState();
+}
+
+class _ProductSelectorPageState extends State<ProductSelectorPage> {
+  late Future<BootStrapData?> loadConfig;
+  late final List<BeerSubmitData> listAllProduct;
+  late List<BeerSubmitData> listProduct;
+  late final List<String> listCategory;
+
+  List<String> listCateSelected = ['Tất cả'];
+
+  Future<BootStrapData?> getAllProduct() async {
     var box = Hive.box(hiveSettingBox);
     BootStrapData? config = box.get(hiveConfigKey);
 
-    SearchResult<BeerSubmitData> result = SearchResult<BeerSubmitData>(
-      count: 0,
-      normalSearch: false,
-      result: config?.products ?? [],
+    final results = config?.products ?? [];
+    final listCategoryContent = config?.deviceConfig?.categorys ?? '';
+    listCategory = ['Tất cả'];
+
+    final List<String> allCat = List.from(jsonDecode(listCategoryContent));
+    listCategory.addAll(allCat);
+
+    listAllProduct = flatten<BeerSubmitData>(results.map(
+      (e) {
+        return e.flatUnit();
+      },
+    ));
+    listAllProduct.sort(
+      (a, b) => a.name.compareTo(b.name),
     );
-    return result;
+    listProduct = listAllProduct;
+    return config;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadConfig = getAllProduct();
   }
 
   @override
@@ -43,18 +71,16 @@ class ProductSelectorPage extends StatelessWidget {
         onBackPressed: () {
           Navigator.pop(context);
         },
+        onChanged: (searchTxt) {
+          listProduct = listAllProduct
+              .where((element) => element.searchMatch(searchTxt))
+              .toList();
+          setState(() {});
+        },
       ),
-      body: FetchAPI<SearchResult<BeerSubmitData>>(
-        future: getAllProduct(), //getall(),
-        successBuilder: (SearchResult<BeerSubmitData> data) {
-          final results = flatten<BeerSubmitData>(data.result.map(
-            (e) {
-              return e.flatUnit();
-            },
-          ));
-          results.sort(
-            (a, b) => a.name.compareTo(b.name),
-          );
+      body: FetchAPI<BootStrapData?>(
+        future: loadConfig, //getall(),
+        successBuilder: (BootStrapData? data) {
           return SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
@@ -64,10 +90,23 @@ class ProductSelectorPage extends StatelessWidget {
                 children: [
                   CategorySelector(
                     listCategory: listCategory,
-                    multiSelected: true,
-                    onChanged: (listCategorySelected) {},
+                    multiSelected: false,
+                    onChanged: (listCategorySelected) {
+                      listCateSelected = listCategorySelected;
+                      final String? firstCat = listCategorySelected.firstOrNull;
+                      if (firstCat == null || firstCat == 'Tất cả') {
+                        listProduct = listAllProduct;
+                        setState(() {});
+                        return;
+                      }
+                      listProduct = listAllProduct
+                          .where((element) =>
+                              element.isContainCategory(listCateSelected))
+                          .toList();
+                      setState(() {});
+                    },
                     isFlip: true,
-                    itemsSelected: [],
+                    itemsSelected: listCateSelected,
                   ),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -79,9 +118,9 @@ class ProductSelectorPage extends StatelessWidget {
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                     ),
-                    itemCount: results.length + 1,
+                    itemCount: listProduct.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == results.length)
+                      if (index == listProduct.length)
                         return Container(
                           decoration: BoxDecoration(
                             color: White,
@@ -108,16 +147,17 @@ class ProductSelectorPage extends StatelessWidget {
                             ),
                           ),
                         );
-                      BeerSubmitData productData = results[index];
+                      BeerSubmitData productData = listProduct[index];
                       final productUnitID =
                           productData.listUnit?.firstOrNull?.beerUnitSecondId;
                       return ProductSelectorItem(
                         productData: productData,
                         productInPackageResponse: productUnitID == null
                             ? null
-                            : packageDataResponse.productMap[productUnitID],
+                            : widget
+                                .packageDataResponse.productMap[productUnitID],
                         updateNumberUnit: (productInPackageResponse) {
-                          packageDataResponse
+                          widget.packageDataResponse
                               .addProduct(productInPackageResponse);
                         },
                       );
