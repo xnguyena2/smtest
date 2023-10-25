@@ -29,6 +29,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   late Future<BootStrapData?> loadConfig;
   late final List<BeerSubmitData> listAllProduct;
   late List<BeerSubmitData> listProduct;
+  late List<BeerSubmitData> listProductOfCat;
   late final List<String> listCategory;
 
   List<String> listCateSelected = ['Tất cả'];
@@ -52,7 +53,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
-    listProduct = listAllProduct;
+    listProductOfCat = listProduct = listAllProduct;
     return config;
   }
 
@@ -72,7 +73,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
           Navigator.pop(context);
         },
         onChanged: (searchTxt) {
-          listProduct = listAllProduct
+          listProduct = listProductOfCat
               .where((element) => element.searchMatch(searchTxt))
               .toList();
           setState(() {});
@@ -95,14 +96,15 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                       listCateSelected = listCategorySelected;
                       final String? firstCat = listCategorySelected.firstOrNull;
                       if (firstCat == null || firstCat == 'Tất cả') {
-                        listProduct = listAllProduct;
+                        listProductOfCat = listProduct = listAllProduct;
                         setState(() {});
                         return;
                       }
-                      listProduct = listAllProduct
+                      listProductOfCat = listProduct = listAllProduct
                           .where((element) =>
                               element.isContainCategory(listCateSelected))
                           .toList();
+
                       setState(() {});
                     },
                     isFlip: true,
@@ -151,6 +153,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                       final productUnitID =
                           productData.listUnit?.firstOrNull?.beerUnitSecondId;
                       return ProductSelectorItem(
+                        key: ValueKey(productUnitID),
                         productData: productData,
                         productInPackageResponse: productUnitID == null
                             ? null
