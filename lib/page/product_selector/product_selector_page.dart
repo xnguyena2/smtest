@@ -130,7 +130,17 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProductInfo(),
+                                builder: (context) => ProductInfo(
+                                  product: BeerSubmitData(
+                                      groupId:
+                                          widget.packageDataResponse.groupId,
+                                      beerSecondID: '',
+                                      name: '',
+                                      category: '',
+                                      status: '',
+                                      listUnit: null,
+                                      list_categorys: []),
+                                ),
                               ),
                             );
                             setState(() {});

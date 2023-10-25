@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/page/product_info/component/product_info_bar.dart';
 import 'package:sales_management/page/product_info/component/product_info_create_combo.dart';
@@ -9,7 +10,8 @@ import 'package:sales_management/page/product_info/component/product_more_settin
 import 'package:sales_management/utils/constants.dart';
 
 class ProductInfo extends StatelessWidget {
-  const ProductInfo({super.key});
+  final BeerSubmitData product;
+  const ProductInfo({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,9 @@ class ProductInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ImgManagement(),
-                MainProductInfo(),
+                MainProductInfo(
+                  product: product,
+                ),
                 SizedBox(
                   height: 14,
                 ),

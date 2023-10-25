@@ -18,6 +18,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     this.meta_search,
     this.images,
     required this.listUnit,
+    required this.list_categorys,
   });
 
   @HiveField(4)
@@ -30,7 +31,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late final String? detail;
 
   @HiveField(7)
-  late final String category;
+  late String category;
 
   @HiveField(8)
   late final String status;
@@ -44,6 +45,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   @HiveField(11)
   late final List<BeerUnit>? listUnit;
 
+  @HiveField(12)
+  late List<String>? list_categorys;
+
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
@@ -56,6 +60,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
         : List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     listUnit =
         List.from(json['listUnit']).map((e) => BeerUnit.fromJson(e)).toList();
+
+    list_categorys = toListCat(category);
   }
 
   Map<String, dynamic> toJson() {
@@ -83,7 +89,22 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       images: images,
       listUnit: unit != null ? [unit] : null,
       meta_search: meta_search,
+      list_categorys: list_categorys,
     );
+  }
+
+  List<String> toListCat(String? cats) {
+    if (cats == null) return [];
+    return cats.split('<<CAT>>');
+  }
+
+  String toListCatTxt(List<String> cats) {
+    return cats.join('<<CAT>>');
+  }
+
+  void updateListCat(List<String> cats) {
+    list_categorys = cats;
+    category = toListCatTxt(cats);
   }
 
   List<BeerSubmitData> flatUnit() {
