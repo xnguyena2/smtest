@@ -5,6 +5,7 @@ import 'package:sales_management/utils/svg_loader.dart';
 Future<T?> showDefaultModal<T>(
     {required BuildContext context, required Widget content}) {
   return showModalBottomSheet<T>(
+    isScrollControlled: true,
     context: context,
     builder: (BuildContext context) {
       return Stack(
@@ -16,7 +17,10 @@ Future<T?> showDefaultModal<T>(
               child: LoadSvg(
                   assetPath: 'svg/close_navigator.svg', color: BackgroundColor),
             ),
-            content
+            Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: content,
+            )
           ]);
     },
   );

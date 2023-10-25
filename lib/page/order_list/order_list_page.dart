@@ -40,39 +40,36 @@ class Body extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ColoredBox(
             color: White,
-            child: Row(
-              children: [
-                TabBar(
-                  padding: EdgeInsets.zero,
-                  labelPadding: EdgeInsets.zero,
-                  isScrollable: true,
-                  indicatorColor: HighColor,
-                  labelColor: HighColor,
-                  labelStyle: headStyleMedium500,
-                  indicatorWeight: 1,
-                  // indicator: UnderlineTabIndicator(
-                  //   borderSide: BorderSide(
-                  //     width: 2,
-                  //     color: HighColor,
-                  //   ),
-                  // ),
-                  tabs: [
-                    Tab(
-                      child: SizedBox(
-                        width: 200,
-                        child: Center(child: Text('Tất cả')),
-                      ),
-                    ),
-                    Tab(
-                      child: SizedBox(
-                        width: 200,
-                        child: Center(child: Text('Chờ xác nhận')),
-                      ),
-                    ),
-                  ],
+            child: TabBar(
+              padding: EdgeInsets.zero,
+              labelPadding: EdgeInsets.zero,
+              isScrollable: true,
+              indicatorColor: HighColor,
+              labelColor: HighColor,
+              labelStyle: headStyleMedium500,
+              indicatorWeight: 1,
+              // indicator: UnderlineTabIndicator(
+              //   borderSide: BorderSide(
+              //     width: 2,
+              //     color: HighColor,
+              //   ),
+              // ),
+              tabs: [
+                Tab(
+                  child: SizedBox(
+                    width: 200,
+                    child: Center(child: Text('Tất cả')),
+                  ),
+                ),
+                Tab(
+                  child: SizedBox(
+                    width: 200,
+                    child: Center(child: Text('Chờ xác nhận')),
+                  ),
                 ),
               ],
             ),

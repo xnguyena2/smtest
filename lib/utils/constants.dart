@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const String host =
-    'http://192.168.1.212:5001'; // "https://web-production-865f.up.railway.app"; //
+    "https://web-production-865f.up.railway.app"; //'http://192.168.1.212:5001'; //
 
 const String hiveSettingBox = 'settings';
 const String hiveConfigKey = 'config';
@@ -342,6 +342,7 @@ const TextStyle subInfoStyLargeLight500 = TextStyle(
 );
 
 const TextStyle subInfoStyLarge500 = TextStyle(
+  color: Black,
   fontSize: 12,
   fontWeight: FontWeight.w500,
 );

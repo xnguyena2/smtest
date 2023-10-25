@@ -55,20 +55,16 @@ class _TableItemState extends State<TableItem> {
           border: isSelected ? tableHighBorder : defaultBorder,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
+              alignment: Alignment.center,
               color: isSelected ? TableHighBGColor : TableHeaderBGColor,
               padding: EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    tableDetailData.tableName ?? 'unknow',
-                    style: isSelected
-                        ? headStyleMediumNormaWhite
-                        : headStyleMedium,
-                  ),
-                ],
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                tableDetailData.tableName ?? 'unknow',
+                style: isSelected ? headStyleMediumNormaWhite : headStyleMedium,
               ),
             ),
             if (isSelected)
