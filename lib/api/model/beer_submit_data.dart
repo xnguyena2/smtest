@@ -13,6 +13,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.beerSecondID,
     required this.name,
     this.detail,
+    this.sku,
+    this.upc,
     required this.category,
     required this.status,
     this.meta_search,
@@ -25,16 +27,16 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late final String beerSecondID;
 
   @HiveField(5)
-  late final String name;
+  late String name;
 
   @HiveField(6)
-  late final String? detail;
+  late String? detail;
 
   @HiveField(7)
   late String category;
 
   @HiveField(8)
-  late final String status;
+  late String status;
 
   @HiveField(9)
   late final String? meta_search;
@@ -48,10 +50,18 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   @HiveField(12)
   late List<String>? list_categorys;
 
+  @HiveField(13)
+  late final String? sku;
+
+  @HiveField(14)
+  late final String? upc;
+
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
-    detail = json['name'];
+    detail = json['detail'];
+    sku = json['sku'];
+    upc = json['upc'];
     category = json['category'];
     meta_search = json['meta_search'];
     status = json['status'];
@@ -70,6 +80,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['beerSecondID'] = beerSecondID;
     _data['name'] = name;
     _data['detail'] = detail;
+    _data['sku'] = sku;
+    _data['upc'] = upc;
     _data['category'] = category;
     _data['meta_search'] = meta_search;
     _data['status'] = status;
@@ -90,6 +102,32 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       listUnit: unit != null ? [unit] : null,
       meta_search: meta_search,
       list_categorys: list_categorys,
+      sku: sku,
+      upc: upc,
+    );
+  }
+
+  factory BeerSubmitData.createEmpty(String groupID) {
+    return BeerSubmitData(
+      groupId: groupID,
+      beerSecondID: '',
+      name: '',
+      category: '',
+      status: '',
+      listUnit: [
+        BeerUnit(
+            groupId: groupID,
+            beer: '',
+            name: '',
+            price: 0,
+            buyPrice: 0,
+            discount: 0,
+            volumetric: 0,
+            weight: 0,
+            beerUnitSecondId: '',
+            status: '')
+      ],
+      list_categorys: [],
     );
   }
 
@@ -116,6 +154,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   String? get getFristLargeImg => images?[0].medium;
 
   double get getRealPrice => listUnit?[0].realPrice ?? 0;
+
+  double get getBuyPrice => listUnit?[0].buyPrice ?? 0;
+
+  double get getPrice => listUnit?[0].price ?? 0;
 
   bool isContainCategory(List<String> listCat) {
     for (String cat in listCat) {
@@ -206,6 +248,7 @@ class BeerUnit {
     required this.beer,
     required this.name,
     required this.price,
+    required this.buyPrice,
     required this.discount,
     this.dateExpir,
     required this.volumetric,
@@ -223,24 +266,27 @@ class BeerUnit {
   late final String name;
 
   @HiveField(3)
-  late final double price;
+  late double price;
 
   @HiveField(4)
-  late final double discount;
+  late double buyPrice;
 
   @HiveField(5)
-  late final DateExpir? dateExpir;
+  late final double discount;
 
   @HiveField(6)
-  late final double volumetric;
+  late final DateExpir? dateExpir;
 
   @HiveField(7)
-  late final double? weight;
+  late final double volumetric;
 
   @HiveField(8)
-  late final String beerUnitSecondId;
+  late final double? weight;
 
   @HiveField(9)
+  late final String beerUnitSecondId;
+
+  @HiveField(10)
   late final String status;
 
   late double realPrice = 0;
@@ -254,6 +300,7 @@ class BeerUnit {
     beer = json['beer'];
     name = json['name'];
     price = json['price'];
+    buyPrice = json['buy_price'];
     discount = json['discount'];
     dateExpir = json['dateExpir'] == null
         ? null
@@ -272,6 +319,7 @@ class BeerUnit {
     _data['beer'] = beer;
     _data['name'] = name;
     _data['price'] = price;
+    _data['buy_price'] = buyPrice;
     _data['discount'] = discount;
     _data['dateExpir'] = dateExpir?.toJson();
     _data['volumetric'] = volumetric;

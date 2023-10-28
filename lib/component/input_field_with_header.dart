@@ -14,6 +14,7 @@ class InputFiledWithHeader extends StatefulWidget {
   final VoidCallbackArg<String>? onChanged;
   final bool isNumberOnly;
   final bool isAutoFocus;
+  final bool isMoneyFormat;
   const InputFiledWithHeader({
     super.key,
     required this.header,
@@ -25,6 +26,7 @@ class InputFiledWithHeader extends StatefulWidget {
     this.onChanged,
     this.isNumberOnly = false,
     this.isAutoFocus = false,
+    this.isMoneyFormat = false,
   });
 
   @override
@@ -95,7 +97,11 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                                   ? TextInputType.number
                                   : null,
                               inputFormatters: widget.isNumberOnly
-                                  ? [FilteringTextInputFormatter.digitsOnly]
+                                  ? [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      // if (widget.isMoneyFormat)
+                                      //   CurrencyInputFormatter()
+                                    ]
                                   : null,
                               onChanged: (text) {
                                 isError = text.isEmpty;
@@ -123,5 +129,56 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
         ),
       ],
     );
+  }
+}
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+    final int selectionIndexFromTheRight =
+        newValue.text.length - newValue.selection.end;
+
+    double value = double.parse(newValue.text);
+    print(selectionIndexFromTheRight);
+
+    final formatter = MoneyFormater;
+
+    String newText = formatter.format(value);
+    print(newText);
+
+    return newValue.copyWith(
+      text: newText,
+      selection: new TextSelection.collapsed(
+          offset: newText.length - selectionIndexFromTheRight),
+    );
+  }
+}
+
+class NumericTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    } else if (newValue.text.compareTo(oldValue.text) != 0) {
+      final int selectionIndexFromTheRight =
+          newValue.text.length - newValue.selection.end;
+      var value = newValue.text;
+      if (newValue.text.length > 2) {
+        value = value.replaceAll(RegExp(r'\D'), '');
+        value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.');
+        print("Value ---- $value");
+      }
+      return TextEditingValue(
+        text: value,
+        selection: TextSelection.collapsed(
+            offset: value.length - selectionIndexFromTheRight),
+      );
+    } else {
+      return newValue;
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/bottom_bar.dart';
+import 'package:sales_management/page/product_info/api/product_info_api.dart';
 import 'package:sales_management/page/product_info/component/product_info_bar.dart';
 import 'package:sales_management/page/product_info/component/product_info_create_combo.dart';
 import 'package:sales_management/page/product_info/component/product_info_img_management.dart';
@@ -42,7 +43,10 @@ class ProductInfo extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomBar(
-          done: () {},
+          okBtnTxt: 'Cập nhật',
+          done: () {
+            createProduct(product);
+          },
           cancel: () {},
         ),
       ),

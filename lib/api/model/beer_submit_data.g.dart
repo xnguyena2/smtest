@@ -23,6 +23,8 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       beerSecondID: fields[4] as String,
       name: fields[5] as String,
       detail: fields[6] as String?,
+      sku: fields[13] as String?,
+      upc: fields[14] as String?,
       category: fields[7] as String,
       status: fields[8] as String,
       meta_search: fields[9] as String?,
@@ -35,7 +37,7 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
   @override
   void write(BinaryWriter writer, BeerSubmitData obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(14)
       ..writeByte(4)
       ..write(obj.beerSecondID)
       ..writeByte(5)
@@ -54,6 +56,10 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       ..write(obj.listUnit)
       ..writeByte(12)
       ..write(obj.list_categorys)
+      ..writeByte(13)
+      ..write(obj.sku)
+      ..writeByte(14)
+      ..write(obj.upc)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)
@@ -146,19 +152,20 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       beer: fields[1] as String,
       name: fields[2] as String,
       price: fields[3] as double,
-      discount: fields[4] as double,
-      dateExpir: fields[5] as DateExpir?,
-      volumetric: fields[6] as double,
-      weight: fields[7] as double?,
-      beerUnitSecondId: fields[8] as String,
-      status: fields[9] as String,
+      buyPrice: fields[4] as double,
+      discount: fields[5] as double,
+      dateExpir: fields[6] as DateExpir?,
+      volumetric: fields[7] as double,
+      weight: fields[8] as double?,
+      beerUnitSecondId: fields[9] as String,
+      status: fields[10] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, BeerUnit obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.groupId)
       ..writeByte(1)
@@ -168,16 +175,18 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       ..writeByte(3)
       ..write(obj.price)
       ..writeByte(4)
-      ..write(obj.discount)
+      ..write(obj.buyPrice)
       ..writeByte(5)
-      ..write(obj.dateExpir)
+      ..write(obj.discount)
       ..writeByte(6)
-      ..write(obj.volumetric)
+      ..write(obj.dateExpir)
       ..writeByte(7)
-      ..write(obj.weight)
+      ..write(obj.volumetric)
       ..writeByte(8)
-      ..write(obj.beerUnitSecondId)
+      ..write(obj.weight)
       ..writeByte(9)
+      ..write(obj.beerUnitSecondId)
+      ..writeByte(10)
       ..write(obj.status);
   }
 

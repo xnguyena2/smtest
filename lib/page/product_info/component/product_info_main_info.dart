@@ -56,9 +56,13 @@ class _MainProductInfoState extends State<MainProductInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputFiledWithHeader(
+              initValue: product.name,
               header: 'Tên sản phẩm',
               hint: 'Ví dụ: Mỳ hảo hảo',
               isImportance: true,
+              onChanged: (value) {
+                product.name = value;
+              },
             ),
             SizedBox(
               height: 21,
@@ -67,9 +71,17 @@ class _MainProductInfoState extends State<MainProductInfo> {
               children: [
                 Expanded(
                   child: InputFiledWithHeader(
+                    isNumberOnly: true,
+                    isMoneyFormat: true,
+                    initValue: (product.getPrice <= 0 ? '' : product.getPrice)
+                        .toString(),
                     header: 'Giá bán',
                     hint: '0.000',
                     isImportance: true,
+                    onChanged: (value) {
+                      product.listUnit?.firstOrNull?.price =
+                          double.tryParse(value) ?? 0;
+                    },
                   ),
                 ),
                 SizedBox(
@@ -77,9 +89,17 @@ class _MainProductInfoState extends State<MainProductInfo> {
                 ),
                 Expanded(
                   child: InputFiledWithHeader(
+                    isNumberOnly: true,
+                    initValue:
+                        (product.getBuyPrice <= 0 ? '' : product.getBuyPrice)
+                            .toString(),
                     header: 'Giá vốn',
                     hint: '0.000',
                     isImportance: true,
+                    onChanged: (value) {
+                      product.listUnit?.firstOrNull?.buyPrice =
+                          double.tryParse(value) ?? 0;
+                    },
                   ),
                 ),
               ],

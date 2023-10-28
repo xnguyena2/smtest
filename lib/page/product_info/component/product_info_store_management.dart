@@ -52,7 +52,7 @@ class StoreManagement extends StatelessWidget {
         InputFiledWithHeader(
           header: 'Mã SKU',
           hint: 'Nhập/Quét',
-          isImportance: true,
+          isImportance: false,
         ),
       ],
     ));

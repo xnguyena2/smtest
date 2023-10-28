@@ -108,9 +108,9 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
 
                       setState(() {});
                     },
-                    isFlip: true,
                     itemsSelected: listCateSelected,
                     firstWidget: LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
+                    isFlip: false,
                   ),
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -131,15 +131,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ProductInfo(
-                                  product: BeerSubmitData(
-                                      groupId:
-                                          widget.packageDataResponse.groupId,
-                                      beerSecondID: '',
-                                      name: '',
-                                      category: '',
-                                      status: '',
-                                      listUnit: null,
-                                      list_categorys: []),
+                                  product: BeerSubmitData.createEmpty(
+                                      widget.packageDataResponse.groupId),
                                 ),
                               ),
                             );

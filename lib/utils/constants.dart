@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const String host =
-    "https://web-production-865f.up.railway.app"; //'http://192.168.1.212:5001'; //
+    "https://web-production-865f.up.railway.app"; // 'http://192.168.1.212:5001'; //
 
 const String hiveSettingBox = 'settings';
 const String hiveConfigKey = 'config';
@@ -11,7 +11,8 @@ const String deviceID = 'admintestting';
 const String groupID = 'trumbien_store';
 
 //formater
-final MoneyFormater = NumberFormat("#,##0", "en_US");
+final MoneyFormater =
+    NumberFormat("#,##0", "en_US"); // .simpleCurrency(locale: 'vi_VN'); //
 
 // color
 const Color BackgroundColor = Color(0xFFF5F5F5);
