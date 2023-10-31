@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sales_management/api/http.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/rounded_img.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -22,34 +24,60 @@ class ImgManagement extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  HighBorderContainer(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        LoadSvg(assetPath: 'svg/add_picture.svg'),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Text(
-                          'Tải ảnh lên',
-                          style: headStyleXLargeHigh,
-                        )
-                      ],
+                  GestureDetector(
+                    onTap: () async {
+                      final ImagePicker picker = ImagePicker();
+// Pick an image.
+                      final XFile? image =
+                          await picker.pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        uploadFile(
+                            '/beer/admin/${groupID}/${'hello'}/img/upload',
+                            image);
+                      }
+                    },
+                    child: HighBorderContainer(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          LoadSvg(assetPath: 'svg/add_picture.svg'),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Text(
+                            'Tải ảnh lên',
+                            style: headStyleXLargeHigh,
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                  HighBorderContainer(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        LoadSvg(assetPath: 'svg/camera_add.svg'),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Text(
-                          'Chụp ảnh   ',
-                          style: headStyleXLargeHigh,
-                        )
-                      ],
+                  GestureDetector(
+                    onTap: () async {
+                      final ImagePicker picker = ImagePicker();
+// Capture a photo.
+                      final XFile? photo =
+                          await picker.pickImage(source: ImageSource.camera);
+                      if (photo != null) {
+                        uploadFile(
+                            '/beer/admin/${groupID}/${'hello'}/img/upload',
+                            photo);
+                      }
+                    },
+                    child: HighBorderContainer(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          LoadSvg(assetPath: 'svg/camera_add.svg'),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Text(
+                            'Chụp ảnh   ',
+                            style: headStyleXLargeHigh,
+                          )
+                        ],
+                      ),
                     ),
                   )
                 ],
