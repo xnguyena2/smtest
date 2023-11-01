@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart';
@@ -6,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sales_management/api/token.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/img_compress.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 const String CookiePrefix = 'hoduongvuong66666';
 
@@ -49,7 +52,8 @@ Future<Response> getE(String path) {
   );
 }
 
-Future<int> uploadFile(String path, XFile photo) async {
+Future<int> uploadFile(String path, XFile photo,
+    {VoidCallbackArg<int>? onUploadProgress}) async {
   ///MultiPart request
   var bytes = await photo.readAsBytes();
 
@@ -73,10 +77,48 @@ Future<int> uploadFile(String path, XFile photo) async {
 
   /// optional if require to add other fields then image
 
-  print("request: " + request.toString());
-  var res = await request.send();
-  print("This is response:" + res.statusCode.toString());
-  print("This is response:" + res.headers.toString());
-  // res.stream.listen((value) { })
-  return res.statusCode;
+  int byteCount = 0;
+
+  var totalByteLength = request.contentLength;
+  var msStream = request.finalize();
+  Stream<List<int>> streamUpload = msStream.transform(
+    StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        sink.add(data);
+
+        byteCount += data.length;
+
+        onUploadProgress?.call((100 * byteCount / totalByteLength).round());
+      },
+      handleError: (error, stack, sink) {
+        throw error;
+      },
+      handleDone: (sink) {
+        sink.close();
+        print('done stream!');
+        // UPLOAD DONE;
+      },
+    ),
+  );
+
+  final httpClient = HttpClient();
+
+  final post_request = await httpClient.postUrl(
+    Uri.parse('$host$path'),
+  );
+
+  post_request.contentLength = totalByteLength;
+
+  post_request.headers.set(HttpHeaders.contentTypeHeader,
+      request.headers[HttpHeaders.contentTypeHeader]!);
+  post_request.headers.set(HttpHeaders.cookieHeader, '$CookiePrefix=$token');
+
+  await post_request.addStream(streamUpload);
+
+  final httpResponse = await post_request.close();
+
+  var statusCode = httpResponse.statusCode;
+
+  print("This is response:" + statusCode.toString());
+  return statusCode;
 }
