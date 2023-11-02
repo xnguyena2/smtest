@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sales_management/api/http.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/rounded_img.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class ImgManagement extends StatelessWidget {
+class ImgManagement extends StatefulWidget {
+  final BeerSubmitData product;
   const ImgManagement({
     super.key,
+    required this.product,
   });
 
   @override
+  State<ImgManagement> createState() => _ImgManagementState();
+}
+
+class _ImgManagementState extends State<ImgManagement> {
+  late final BeerSubmitData product;
+  late final List<Images> list_image;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    product = widget.product;
+    list_image = product.images ?? [];
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final showText = list_image.isEmpty;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
       height: 127,
@@ -27,13 +47,23 @@ class ImgManagement extends StatelessWidget {
                   GestureDetector(
                     onTap: () async {
                       final ImagePicker picker = ImagePicker();
-// Pick an image.
                       final XFile? image =
                           await picker.pickImage(source: ImageSource.gallery);
                       if (image != null) {
-                        uploadFile(
-                            '/beer/admin/${groupID}/${'hello'}/img/upload',
-                            image);
+                        final img = Images(
+                            groupId: product.groupId,
+                            createat: '',
+                            id: 0,
+                            imgid: '',
+                            thumbnail: '',
+                            medium: '',
+                            large: '',
+                            category: product.beerSecondID);
+                        img.content = await image.readAsBytes();
+                        img.upload = true;
+                        product.addImg(img);
+                        list_image.add(img);
+                        setState(() {});
                       }
                     },
                     child: HighBorderContainer(
@@ -41,13 +71,15 @@ class ImgManagement extends StatelessWidget {
                       child: Row(
                         children: [
                           LoadSvg(assetPath: 'svg/add_picture.svg'),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            'Tải ảnh lên',
-                            style: headStyleXLargeHigh,
-                          )
+                          if (showText) ...[
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              'Tải ảnh lên',
+                              style: headStyleXLargeHigh,
+                            ),
+                          ]
                         ],
                       ),
                     ),
@@ -55,13 +87,25 @@ class ImgManagement extends StatelessWidget {
                   GestureDetector(
                     onTap: () async {
                       final ImagePicker picker = ImagePicker();
-// Capture a photo.
-                      final XFile? photo =
-                          await picker.pickImage(source: ImageSource.camera);
+                      final XFile? photo = await picker.pickImage(
+                          source: ImageSource.camera,
+                          maxWidth: 500,
+                          maxHeight: 500);
                       if (photo != null) {
-                        uploadFile(
-                            '/beer/admin/${groupID}/${'hello'}/img/upload',
-                            photo);
+                        final img = Images(
+                            groupId: product.groupId,
+                            createat: '',
+                            id: 0,
+                            imgid: '',
+                            thumbnail: '',
+                            medium: '',
+                            large: '',
+                            category: product.beerSecondID);
+                        img.content = await photo.readAsBytes();
+                        img.upload = true;
+                        product.addImg(img);
+                        list_image.add(img);
+                        setState(() {});
                       }
                     },
                     child: HighBorderContainer(
@@ -69,13 +113,15 @@ class ImgManagement extends StatelessWidget {
                       child: Row(
                         children: [
                           LoadSvg(assetPath: 'svg/camera_add.svg'),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            'Chụp ảnh   ',
-                            style: headStyleXLargeHigh,
-                          )
+                          if (showText) ...[
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              'Chụp ảnh   ',
+                              style: headStyleXLargeHigh,
+                            ),
+                          ]
                         ],
                       ),
                     ),
@@ -83,22 +129,19 @@ class ImgManagement extends StatelessWidget {
                 ],
               );
             }
-            return Stack(children: [
-              Rounded_Img(),
-              Positioned(
-                right: 5,
-                top: 5,
-                child: LoadSvg(
-                  assetPath: 'svg/close_circle.svg',
-                  color: White,
-                ),
-              )
-            ]);
+            final img = list_image[index - 1];
+            return Rounded_Img(
+              images: img,
+              onUploadDone: (images) {
+                product.replaceImg(img, images);
+                setState(() {});
+              },
+            );
           },
           separatorBuilder: (context, index) => SizedBox(
                 width: 10,
               ),
-          itemCount: 2),
+          itemCount: list_image.length + 1),
     );
   }
 }

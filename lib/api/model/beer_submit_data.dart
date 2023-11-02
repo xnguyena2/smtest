@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/result_interface.dart';
@@ -42,7 +44,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late final String? meta_search;
 
   @HiveField(10)
-  late final List<Images>? images;
+  late List<Images>? images;
 
   @HiveField(11)
   late final List<BeerUnit>? listUnit;
@@ -172,6 +174,21 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     }
     return false;
   }
+
+  void addImg(Images img) {
+    if (images == null) {
+      images = [];
+    }
+    images?.add(img);
+  }
+
+  void replaceImg(Images oldImg, Images newImg) {
+    int replaceIndex = images?.indexOf(oldImg) ?? -1;
+    if (replaceIndex >= 0) {
+      print('Replace with index: $replaceIndex');
+      images?[replaceIndex] = newImg;
+    }
+  }
 }
 
 @HiveType(typeId: 4)
@@ -213,6 +230,9 @@ class Images {
 
   @HiveField(8)
   late final String category;
+
+  Uint8List? content;
+  bool? upload;
 
   Images.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];

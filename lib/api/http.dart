@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:sales_management/api/token.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/img_compress.dart';
@@ -52,10 +51,9 @@ Future<Response> getE(String path) {
   );
 }
 
-Future<int> uploadFile(String path, XFile photo,
-    {VoidCallbackArg<int>? onUploadProgress}) async {
+Future<MultipartRequest> createMultiPartRequest(
+    String path, Uint8List bytes) async {
   ///MultiPart request
-  var bytes = await photo.readAsBytes();
 
   var bytes_compressed = await comporessList(bytes);
 
@@ -75,8 +73,12 @@ Future<int> uploadFile(String path, XFile photo,
   );
   request.headers.addAll(headers);
 
-  /// optional if require to add other fields then image
+  return request;
+}
 
+Future<HttpClientResponse> createHttpClientRequest(
+    String path, MultipartRequest request,
+    {VoidCallbackArg<double>? onUploadProgress}) async {
   int byteCount = 0;
 
   var totalByteLength = request.contentLength;
@@ -88,7 +90,7 @@ Future<int> uploadFile(String path, XFile photo,
 
         byteCount += data.length;
 
-        onUploadProgress?.call((100 * byteCount / totalByteLength).round());
+        onUploadProgress?.call(byteCount / totalByteLength);
       },
       handleError: (error, stack, sink) {
         throw error;
@@ -115,10 +117,13 @@ Future<int> uploadFile(String path, XFile photo,
 
   await post_request.addStream(streamUpload);
 
-  final httpResponse = await post_request.close();
+  return post_request.close();
+}
 
-  var statusCode = httpResponse.statusCode;
-
-  print("This is response:" + statusCode.toString());
-  return statusCode;
+Future<String> readResponse(HttpClientResponse response) async {
+  final contents = StringBuffer();
+  await for (var data in response.transform(utf8.decoder)) {
+    contents.write(data);
+  }
+  return contents.toString();
 }

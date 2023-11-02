@@ -25,7 +25,9 @@ class ProductInfo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ImgManagement(),
+                ImgManagement(
+                  product: product,
+                ),
                 MainProductInfo(
                   product: product,
                 ),
