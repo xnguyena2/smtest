@@ -26,7 +26,7 @@ class _ImgManagementState extends State<ImgManagement> {
     // TODO: implement initState
     super.initState();
     product = widget.product;
-    list_image = product.images ?? [];
+    list_image = product.images;
   }
 
   @override
@@ -53,7 +53,6 @@ class _ImgManagementState extends State<ImgManagement> {
                               final img = Images.createEmpty(product);
                               img.content = await image.readAsBytes();
                               img.upload = true;
-                              product.addImg(img);
                               list_image.add(img);
                               setState(() {});
                             }
@@ -89,7 +88,6 @@ class _ImgManagementState extends State<ImgManagement> {
                               final img = Images.createEmpty(product);
                               img.content = await photo.readAsBytes();
                               img.upload = true;
-                              product.addImg(img);
                               list_image.add(img);
                               setState(() {});
                             }

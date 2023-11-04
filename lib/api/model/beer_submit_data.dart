@@ -20,7 +20,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.category,
     required this.status,
     this.meta_search,
-    this.images,
+    required this.images,
     required this.listUnit,
     required this.list_categorys,
   });
@@ -44,7 +44,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late final String? meta_search;
 
   @HiveField(10)
-  late List<Images>? images;
+  late List<Images> images;
 
   @HiveField(11)
   late final List<BeerUnit>? listUnit;
@@ -68,7 +68,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     meta_search = json['meta_search'];
     status = json['status'];
     images = json['images'] == null
-        ? null
+        ? []
         : List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     listUnit =
         List.from(json['listUnit']).map((e) => BeerUnit.fromJson(e)).toList();
@@ -87,7 +87,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['category'] = category;
     _data['meta_search'] = meta_search;
     _data['status'] = status;
-    _data['images'] = images?.map((e) => e.toJson()).toList();
+    _data['images'] = images.map((e) => e.toJson()).toList();
     _data['listUnit'] = listUnit?.map((e) => e.toJson()).toList();
     return _data;
   }
@@ -130,7 +130,13 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
             status: '')
       ],
       list_categorys: [],
+      images: [],
     );
+  }
+
+  void copyImg(BeerSubmitData oldProduct) {
+    images.clear();
+    images.addAll(oldProduct.images);
   }
 
   List<String> toListCat(String? cats) {
@@ -153,7 +159,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
         : listUnit!.map((e) => cloneMainData(e)).toList();
   }
 
-  String? get getFristLargeImg => images?[0].medium;
+  String? get getFristLargeImg => images.firstOrNull?.medium;
 
   double get getRealPrice => listUnit?[0].realPrice ?? 0;
 
@@ -176,22 +182,19 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   }
 
   void addImg(Images img) {
-    if (images == null) {
-      images = [];
-    }
-    images?.add(img);
+    images.add(img);
   }
 
   void replaceImg(Images oldImg, Images newImg) {
-    int replaceIndex = images?.indexOf(oldImg) ?? -1;
+    int replaceIndex = images.indexOf(oldImg);
     if (replaceIndex >= 0) {
       print('Replace with index: $replaceIndex');
-      images?[replaceIndex] = newImg;
+      images[replaceIndex] = newImg;
     }
   }
 
   void deleteImg(Images img) {
-    images?.remove(img);
+    images.remove(img);
   }
 }
 

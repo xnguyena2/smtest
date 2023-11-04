@@ -28,7 +28,7 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       category: fields[7] as String,
       status: fields[8] as String,
       meta_search: fields[9] as String?,
-      images: (fields[10] as List?)?.cast<Images>(),
+      images: (fields[10] as List).cast<Images>(),
       listUnit: (fields[11] as List?)?.cast<BeerUnit>(),
       list_categorys: (fields[12] as List?)?.cast<String>(),
     );

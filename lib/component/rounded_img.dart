@@ -51,10 +51,10 @@ class _Rounded_ImgState extends State<Rounded_Img> {
   @override
   Widget build(BuildContext context) {
     late final ImageProvider<Object> img;
-    if (widget.images.thumbnail.isNotEmpty) {
-      img = NetworkImage(widget.images.thumbnail);
-    } else if (widget.images.content != null) {
+    if (widget.images.content != null) {
       img = MemoryImage(widget.images.content!);
+    } else if (widget.images.large.isNotEmpty) {
+      img = NetworkImage(widget.images.large);
     } else {
       img = AssetImage("assets/images/shop_logo.png");
     }
@@ -70,16 +70,16 @@ class _Rounded_ImgState extends State<Rounded_Img> {
         ),
       ),
       if (!isUploading)
-        GestureDetector(
-          onTap: () {
-            deleteImg(IDContainer(id: widget.images.imgid, groupId: groupID))
-                .then((value) {
-              widget.onDeleteDone(widget.images);
-            });
-          },
-          child: Positioned(
-            right: 5,
-            top: 5,
+        Positioned(
+          right: 5,
+          top: 5,
+          child: GestureDetector(
+            onTap: () {
+              deleteImg(IDContainer(id: widget.images.imgid, groupId: groupID))
+                  .then((value) {
+                widget.onDeleteDone(widget.images);
+              });
+            },
             child: LoadSvg(
               assetPath: 'svg/close_circle.svg',
               color: White,

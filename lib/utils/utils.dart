@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 List<T> flatten<T>(Iterable<Iterable<T>> list) =>
     [for (var sublist in list) ...sublist];
@@ -12,4 +13,9 @@ String formatLocalDateTime(String? dateTime) {
   return dateTime == null
       ? 'unknow'
       : format.format(stringToDateTime(dateTime).toLocal());
+}
+
+String generateUUID() {
+  var uuid = Uuid();
+  return uuid.v1();
 }

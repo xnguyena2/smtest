@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
-import 'package:sales_management/api/model/search_result.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
-import 'package:sales_management/page/product_selector/api/product_selector_api.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -28,19 +27,52 @@ class ProductSelectorPage extends StatefulWidget {
 
 class _ProductSelectorPageState extends State<ProductSelectorPage> {
   late Future<BootStrapData?> loadConfig;
-  late final List<BeerSubmitData> listAllProduct;
+  late List<BeerSubmitData> listAllProduct;
   late List<BeerSubmitData> listProduct;
   late List<BeerSubmitData> listProductOfCat;
-  late final List<String> listCategory;
+  late List<String> listCategory;
 
   List<String> listCateSelected = ['Tất cả'];
 
   Future<BootStrapData?> getAllProduct() async {
     var box = Hive.box(hiveSettingBox);
     BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
 
-    final results = config?.products ?? [];
-    final listCategoryContent = config?.deviceConfig?.categorys ?? '';
+    final results = config.products;
+    final listCategoryContent = config.deviceConfig?.categorys ?? '';
+    listCategory = ['Tất cả'];
+
+    final List<String> allCat = List.from(jsonDecode(listCategoryContent));
+    listCategory.addAll(allCat);
+
+    listAllProduct = flatten<BeerSubmitData>(results.map(
+      (e) {
+        return e.flatUnit();
+      },
+    ));
+    listAllProduct.sort(
+      (a, b) => a.name.compareTo(b.name),
+    );
+    listProductOfCat = listProduct = listAllProduct;
+    return config;
+  }
+
+  Future<BootStrapData?> addProduct(BeerSubmitData product) async {
+    var box = Hive.box(hiveSettingBox);
+    BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
+
+    config.products.add(product);
+
+    box.put(hiveConfigKey, config);
+
+    final results = config.products;
+    final listCategoryContent = config.deviceConfig?.categorys ?? '';
     listCategory = ['Tất cả'];
 
     final List<String> allCat = List.from(jsonDecode(listCategoryContent));
@@ -130,9 +162,15 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProductInfo(
-                                  product: BeerSubmitData.createEmpty(
-                                      widget.packageDataResponse.groupId, ''),
+                                builder: (context) => LoadingOverlayAlt(
+                                  child: ProductInfo(
+                                    product: BeerSubmitData.createEmpty(
+                                        widget.packageDataResponse.groupId,
+                                        generateUUID()),
+                                    onAdded: (product) {
+                                      loadConfig = addProduct(product);
+                                    },
+                                  ),
                                 ),
                               ),
                             );
