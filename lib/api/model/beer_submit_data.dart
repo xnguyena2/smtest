@@ -109,17 +109,17 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     );
   }
 
-  factory BeerSubmitData.createEmpty(String groupID) {
+  factory BeerSubmitData.createEmpty(String groupID, String productID) {
     return BeerSubmitData(
       groupId: groupID,
-      beerSecondID: '',
+      beerSecondID: productID,
       name: '',
       category: '',
       status: '',
       listUnit: [
         BeerUnit(
             groupId: groupID,
-            beer: '',
+            beer: productID,
             name: '',
             price: 0,
             buyPrice: 0,
@@ -188,6 +188,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       print('Replace with index: $replaceIndex');
       images?[replaceIndex] = newImg;
     }
+  }
+
+  void deleteImg(Images img) {
+    images?.remove(img);
   }
 }
 
@@ -258,6 +262,18 @@ class Images {
     _data['large'] = large;
     _data['category'] = category;
     return _data;
+  }
+
+  factory Images.createEmpty(BeerSubmitData product) {
+    return Images(
+        groupId: product.groupId,
+        createat: '',
+        id: 0,
+        imgid: '',
+        thumbnail: '',
+        medium: '',
+        large: '',
+        category: product.beerSecondID);
   }
 }
 

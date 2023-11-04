@@ -132,7 +132,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                               MaterialPageRoute(
                                 builder: (context) => ProductInfo(
                                   product: BeerSubmitData.createEmpty(
-                                      widget.packageDataResponse.groupId),
+                                      widget.packageDataResponse.groupId, ''),
                                 ),
                               ),
                             );

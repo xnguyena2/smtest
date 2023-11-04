@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/page/product_info/api/model/id_container.dart';
 import 'package:sales_management/page/product_info/api/product_info_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -8,10 +9,12 @@ import 'package:sales_management/utils/typedef.dart';
 class Rounded_Img extends StatefulWidget {
   final Images images;
   final VoidCallbackArg<Images> onUploadDone;
+  final VoidCallbackArg<Images> onDeleteDone;
   const Rounded_Img({
     super.key,
     required this.images,
     required this.onUploadDone,
+    required this.onDeleteDone,
   });
 
   @override
@@ -26,7 +29,7 @@ class _Rounded_ImgState extends State<Rounded_Img> {
     super.initState();
     isUploading = widget.images.upload == true && widget.images.content != null;
     if (isUploading) {
-      uploadFile('/beer/admin/${groupID}/${'hello'}/img/upload',
+      uploadFile('/beer/admin/${groupID}/${widget.images.category}/img/upload',
               widget.images.content!,
               onUploadProgress: onUploadProgress)
           .then((value) {
@@ -66,14 +69,23 @@ class _Rounded_ImgState extends State<Rounded_Img> {
           borderRadius: defaultBorderRadius,
         ),
       ),
-      Positioned(
-        right: 5,
-        top: 5,
-        child: LoadSvg(
-          assetPath: 'svg/close_circle.svg',
-          color: White,
+      if (!isUploading)
+        GestureDetector(
+          onTap: () {
+            deleteImg(IDContainer(id: widget.images.imgid, groupId: groupID))
+                .then((value) {
+              widget.onDeleteDone(widget.images);
+            });
+          },
+          child: Positioned(
+            right: 5,
+            top: 5,
+            child: LoadSvg(
+              assetPath: 'svg/close_circle.svg',
+              color: White,
+            ),
+          ),
         ),
-      ),
       if (isUploading)
         CircularProgressIndicator(
           value: progress,

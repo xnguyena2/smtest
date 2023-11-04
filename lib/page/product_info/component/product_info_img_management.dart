@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sales_management/api/http.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/rounded_img.dart';
@@ -45,27 +44,21 @@ class _ImgManagementState extends State<ImgManagement> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? image =
-                          await picker.pickImage(source: ImageSource.gallery);
-                      if (image != null) {
-                        final img = Images(
-                            groupId: product.groupId,
-                            createat: '',
-                            id: 0,
-                            imgid: '',
-                            thumbnail: '',
-                            medium: '',
-                            large: '',
-                            category: product.beerSecondID);
-                        img.content = await image.readAsBytes();
-                        img.upload = true;
-                        product.addImg(img);
-                        list_image.add(img);
-                        setState(() {});
-                      }
-                    },
+                    onTap: showText
+                        ? () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              final img = Images.createEmpty(product);
+                              img.content = await image.readAsBytes();
+                              img.upload = true;
+                              product.addImg(img);
+                              list_image.add(img);
+                              setState(() {});
+                            }
+                          }
+                        : null,
                     child: HighBorderContainer(
                       padding: EdgeInsets.all(10),
                       child: Row(
@@ -85,29 +78,23 @@ class _ImgManagementState extends State<ImgManagement> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? photo = await picker.pickImage(
-                          source: ImageSource.camera,
-                          maxWidth: 500,
-                          maxHeight: 500);
-                      if (photo != null) {
-                        final img = Images(
-                            groupId: product.groupId,
-                            createat: '',
-                            id: 0,
-                            imgid: '',
-                            thumbnail: '',
-                            medium: '',
-                            large: '',
-                            category: product.beerSecondID);
-                        img.content = await photo.readAsBytes();
-                        img.upload = true;
-                        product.addImg(img);
-                        list_image.add(img);
-                        setState(() {});
-                      }
-                    },
+                    onTap: showText
+                        ? () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? photo = await picker.pickImage(
+                                source: ImageSource.camera,
+                                maxWidth: 500,
+                                maxHeight: 500);
+                            if (photo != null) {
+                              final img = Images.createEmpty(product);
+                              img.content = await photo.readAsBytes();
+                              img.upload = true;
+                              product.addImg(img);
+                              list_image.add(img);
+                              setState(() {});
+                            }
+                          }
+                        : null,
                     child: HighBorderContainer(
                       padding: EdgeInsets.all(10),
                       child: Row(
@@ -134,6 +121,10 @@ class _ImgManagementState extends State<ImgManagement> {
               images: img,
               onUploadDone: (images) {
                 product.replaceImg(img, images);
+                setState(() {});
+              },
+              onDeleteDone: (images) {
+                product.deleteImg(images);
                 setState(() {});
               },
             );
