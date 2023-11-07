@@ -25,6 +25,7 @@ class CreateCombo extends StatelessWidget {
           header: 'Nhóm bán kèm',
           hint: 'Chọn 1 hoặc nhiều nhóm bán kèm',
           isImportance: false,
+          isDisable: true,
         ),
       ],
     ));

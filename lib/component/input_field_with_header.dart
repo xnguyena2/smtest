@@ -15,6 +15,7 @@ class InputFiledWithHeader extends StatefulWidget {
   final bool isNumberOnly;
   final bool isAutoFocus;
   final bool isMoneyFormat;
+  final bool isDisable;
   const InputFiledWithHeader({
     super.key,
     required this.header,
@@ -27,6 +28,7 @@ class InputFiledWithHeader extends StatefulWidget {
     this.isNumberOnly = false,
     this.isAutoFocus = false,
     this.isMoneyFormat = false,
+    this.isDisable = false,
   });
 
   @override
@@ -91,6 +93,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               ),
                             )
                           : TextFormField(
+                              enabled: !widget.isDisable,
                               autofocus: widget.isAutoFocus,
                               initialValue: widget.initValue,
                               keyboardType: widget.isNumberOnly

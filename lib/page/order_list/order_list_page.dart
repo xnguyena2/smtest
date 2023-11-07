@@ -60,12 +60,14 @@ class Body extends StatelessWidget {
               // ),
               tabs: [
                 Tab(
+                  height: 35,
                   child: SizedBox(
                     width: 200,
                     child: Center(child: Text('Tất cả')),
                   ),
                 ),
                 Tab(
+                  height: 35,
                   child: SizedBox(
                     width: 200,
                     child: Center(child: Text('Chờ xác nhận')),

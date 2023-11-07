@@ -9,6 +9,7 @@ class SimpleSwitchBtn extends StatefulWidget {
   final BorderRadiusGeometry borderRadius;
   final EdgeInsetsGeometry? padding;
   final Color backgroundColor;
+  final bool isDisable;
   const SimpleSwitchBtn({
     super.key,
     required this.backGroundWidget,
@@ -17,6 +18,7 @@ class SimpleSwitchBtn extends StatefulWidget {
     required this.borderRadius,
     this.padding,
     this.backgroundColor = BackgroundColor,
+    this.isDisable = false,
   });
 
   @override
@@ -39,13 +41,15 @@ class _SimpleSwitchBtnState extends State<SimpleSwitchBtn> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isSelected = !isSelected;
-          currentSelected = widget.selectedWidget[isSelected ? 1 : 0];
-          widget.onSelected(isSelected);
-        });
-      },
+      onTap: widget.isDisable
+          ? null
+          : () {
+              setState(() {
+                isSelected = !isSelected;
+                currentSelected = widget.selectedWidget[isSelected ? 1 : 0];
+                widget.onSelected(isSelected);
+              });
+            },
       child: Container(
         padding: padding,
         decoration: BoxDecoration(

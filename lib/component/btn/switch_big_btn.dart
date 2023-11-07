@@ -5,15 +5,18 @@ import 'package:sales_management/utils/constants.dart';
 class SwitchBigBtn extends StatelessWidget {
   final String firstTxt;
   final String secondTxt;
+  final bool isDisable;
   const SwitchBigBtn({
     super.key,
     required this.firstTxt,
     required this.secondTxt,
+    this.isDisable = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return SimpleSwitchBtn(
+      isDisable: isDisable,
       backGroundWidget: Row(
         children: [
           Padding(

@@ -37,12 +37,12 @@ class BottomBar extends StatelessWidget {
             child: enableDelete
                 ? DeleteBtn(
                     txt: cancelBtnTxt ?? 'Xóa',
-                    padding: EdgeInsets.symmetric(vertical: 18),
+                    padding: EdgeInsets.symmetric(vertical: 12),
                     onPressed: cancel,
                   )
                 : CancelBtn(
                     txt: cancelBtnTxt ?? 'Hủy',
-                    padding: EdgeInsets.symmetric(vertical: 18),
+                    padding: EdgeInsets.symmetric(vertical: 12),
                     onPressed: cancel,
                   ),
           ),
@@ -53,7 +53,7 @@ class BottomBar extends StatelessWidget {
             child: ApproveBtn(
               isActiveOk: isActiveOk,
               txt: okBtnTxt ?? 'Đã giao',
-              padding: EdgeInsets.symmetric(vertical: 18),
+              padding: EdgeInsets.symmetric(vertical: 12),
               onPressed: done,
             ),
           ),

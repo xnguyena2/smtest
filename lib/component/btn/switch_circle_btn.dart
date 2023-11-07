@@ -3,11 +3,16 @@ import 'package:sales_management/component/btn/simple_switch_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class SwitchCircleBtn extends StatelessWidget {
-  const SwitchCircleBtn({super.key});
+  final bool isDisable;
+  const SwitchCircleBtn({
+    super.key,
+    this.isDisable = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SimpleSwitchBtn(
+      isDisable: isDisable,
       padding: EdgeInsets.all(4),
       backGroundWidget: Container(
         width: 45,
@@ -21,7 +26,7 @@ class SwitchCircleBtn extends StatelessWidget {
         ),
         CircleAvatar(
           radius: 11,
-          backgroundColor: HighColor,
+          backgroundColor: TableHighColor,
         )
       ],
       borderRadius: BorderRadius.circular(20),

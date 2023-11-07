@@ -42,7 +42,7 @@ class MoreSetting extends StatelessWidget {
                 separatorBuilder: (context, index) => SizedBox(
                       width: 10,
                     ),
-                itemCount: 5),
+                itemCount: 2),
           ),
         ],
       ),

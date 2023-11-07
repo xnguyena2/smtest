@@ -10,6 +10,7 @@ import 'package:sales_management/page/product_info/component/product_info_main_i
 import 'package:sales_management/page/product_info/component/product_info_store_management.dart';
 import 'package:sales_management/page/product_info/component/product_more_setting.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 class ProductInfo extends StatelessWidget {
@@ -41,7 +42,9 @@ class ProductInfo extends StatelessWidget {
                 SizedBox(
                   height: 14,
                 ),
-                StoreManagement(),
+                StoreManagement(
+                  product: product,
+                ),
                 SizedBox(
                   height: 14,
                 ),
@@ -60,9 +63,15 @@ class ProductInfo extends StatelessWidget {
               onAdded?.call(value);
               LoadingOverlayAlt.of(context).hide();
               Navigator.pop(context);
+            }).onError((error, stackTrace) {
+              LoadingOverlayAlt.of(context).hide();
+              showAlert(
+                  context, 'Lỗi hệ thống không thể tạo sản phẩm!!!');
             });
           },
-          cancel: () {},
+          cancel: () {
+            Navigator.pop(context);
+          },
         ),
       ),
     );

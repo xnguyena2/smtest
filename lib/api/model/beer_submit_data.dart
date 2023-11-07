@@ -53,7 +53,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late List<String>? list_categorys;
 
   @HiveField(13)
-  late final String? sku;
+  late String? sku;
 
   @HiveField(14)
   late final String? upc;

@@ -40,7 +40,7 @@ class LoadingOverlayAlt extends StatelessWidget {
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
                 child: const Opacity(
-                  opacity: 0.8,
+                  opacity: 0.3,
                   child: ModalBarrier(dismissible: false, color: Colors.black),
                 ),
               ),
