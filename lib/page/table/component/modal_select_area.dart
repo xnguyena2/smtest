@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/component/app_search_bar.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
-import 'package:sales_management/page/table/component/modal_base.dart';
+import 'package:sales_management/component/modal/modal_base.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/typedef.dart';

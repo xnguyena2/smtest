@@ -37,7 +37,7 @@ class PackageDataResponse extends PackageDetail {
 
   late final String localTimeTxt;
 
-  late final List<ProductInPackageResponse> items;
+  late List<ProductInPackageResponse> items;
   late BuyerData? buyer;
 
   final Map<String, ProductInPackageResponse> productMap = HashMap();
@@ -60,18 +60,22 @@ class PackageDataResponse extends PackageDetail {
     return _data;
   }
 
+  void updateListProductItem(PackageDataResponse package) {
+    items = package.items;
+  }
+
   void addProduct(ProductInPackageResponse productInPackageResponse) {
     final productUnit =
         productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull;
     if (productUnit == null) {
       return;
     }
-    if (productMap.containsKey(productUnit.beerUnitSecondId)) {
-      return;
-    }
     if (productInPackageResponse.numberUnit <= 0) {
       items.remove(productInPackageResponse);
       productMap.remove(productUnit.beerUnitSecondId);
+      return;
+    }
+    if (productMap.containsKey(productUnit.beerUnitSecondId)) {
       return;
     }
     items.add(productInPackageResponse);
@@ -99,6 +103,22 @@ class PackageDataResponse extends PackageDetail {
 
   PackageDataResponse clone() {
     return PackageDataResponse.fromJson(toJson());
+  }
+
+  double get totalPrice {
+    double total = 0;
+    items.forEach((element) {
+      total += element.realPrice;
+    });
+    return total;
+  }
+
+  int get numItem {
+    int total = 0;
+    items.forEach((element) {
+      total += element.numberUnit;
+    });
+    return total;
   }
 }
 
@@ -130,6 +150,9 @@ class ProductInPackageResponse extends UserPackage {
     _data['beerSubmitData'] = beerSubmitData?.toJson();
     return _data;
   }
+
+  double get realPrice =>
+      numberUnit * (price * (1 - discountPercent / 100) - discountAmount);
 }
 
 class BuyerData extends Buyer {

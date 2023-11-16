@@ -8,7 +8,11 @@ import 'package:sales_management/component/category_selector.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/product_info/api/model/category_container.dart';
+import 'package:sales_management/page/product_info/component/modal_create_category.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -26,12 +30,13 @@ class MainProductInfo extends StatefulWidget {
 class _MainProductInfoState extends State<MainProductInfo> {
   late final BeerSubmitData product;
   late Future<BootStrapData?> loadConfig;
+  BootStrapData? config;
   List<String> listCateSelected = [];
-  late final List<String> listCategory;
+  late List<String> listCategory;
 
   Future<BootStrapData?> getAllProduct() async {
     var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    config = box.get(hiveConfigKey);
 
     final listCategoryContent = config?.deviceConfig?.categorys ?? '';
 
@@ -140,21 +145,39 @@ class _MainProductInfoState extends State<MainProductInfo> {
                       assetPath: 'svg/menu.svg',
                     ),
                     multiSelected: true,
-                    lastWidget: HighBorderContainer(
-                      isHight: true,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 11, horizontal: 18),
-                      child: Row(
-                        children: [
-                          LoadSvg(assetPath: 'svg/plus_large.svg'),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Tạo danh muc',
-                            style: headStyleSemiLargeHigh500,
-                          ),
-                        ],
+                    lastWidget: GestureDetector(
+                      onTap: () {
+                        showDefaultModal(
+                          context: context,
+                          content: ModalCreateCategory(
+                              onDone: (category) {
+                                listCategory.add(category.category);
+                                config?.deviceConfig?.categorys =
+                                    jsonEncode(listCategory);
+                                if (config?.deviceConfig != null) {
+                                  udpateConfig(config!.deviceConfig!);
+                                }
+                                setState(() {});
+                              },
+                              config: CategoryContainer(category: '')),
+                        );
+                      },
+                      child: HighBorderContainer(
+                        isHight: true,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 11, horizontal: 18),
+                        child: Row(
+                          children: [
+                            LoadSvg(assetPath: 'svg/plus_large.svg'),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Tạo danh muc',
+                              style: headStyleSemiLargeHigh500,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

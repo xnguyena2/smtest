@@ -1,42 +1,35 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
-import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/component/modal/modal_base.dart';
+import 'package:sales_management/page/product_info/api/model/category_container.dart';
 import 'package:sales_management/utils/typedef.dart';
 
-class ModalCreateArea extends StatefulWidget {
-  final AreaData area;
-  final VoidCallbackArg<AreaData> onDone;
-  const ModalCreateArea({
+class ModalCreateCategory extends StatelessWidget {
+  final CategoryContainer config;
+  final VoidCallbackArg<CategoryContainer> onDone;
+  const ModalCreateCategory({
     super.key,
-    required this.area,
     required this.onDone,
+    required this.config,
   });
 
   @override
-  State<ModalCreateArea> createState() => _ModalCreateAreaState();
-}
-
-class _ModalCreateAreaState extends State<ModalCreateArea> {
-  bool isActiveOk = false;
-  @override
   Widget build(BuildContext context) {
     return ModalBase(
-      headerTxt: 'Tạo khu vực',
+      headerTxt: 'Tạo danh mục',
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             child: InputFiledWithHeader(
-              initValue: widget.area.areaName,
-              header: 'Tên khu vực',
-              hint: 'Nhập tên khu vực',
-              isImportance: true,
-              onChanged: (areaName) {
-                isActiveOk = areaName.isNotEmpty;
-                widget.area.areaName = areaName;
-                setState(() {});
+              isAutoFocus: true,
+              header: 'Tên danh mục',
+              hint: 'Nhập tên danh mục',
+              onChanged: (category) {
+                config.category = category;
               },
             ),
           ),
@@ -45,14 +38,13 @@ class _ModalCreateAreaState extends State<ModalCreateArea> {
           ),
           BottomBar(
             done: () {
+              onDone(config);
               Navigator.pop(context);
-              widget.onDone(widget.area);
             },
             cancel: () {
               Navigator.pop(context);
             },
             okBtnTxt: 'Tạo',
-            isActiveOk: isActiveOk,
           ),
         ],
       ),

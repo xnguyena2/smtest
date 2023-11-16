@@ -19,7 +19,6 @@ class ListProduct extends StatefulWidget {
 
 class _ListProductState extends State<ListProduct> {
   late final PackageDataResponse data;
-  late final List<ProductInPackageResponse> listProducts;
   String currentPriceType = '';
 
   @override
@@ -27,7 +26,6 @@ class _ListProductState extends State<ListProduct> {
     // TODO: implement initState
     super.initState();
     data = widget.data;
-    listProducts = data.items;
   }
 
   @override
@@ -58,15 +56,19 @@ class _ListProductState extends State<ListProduct> {
                     icon: LoadSvg(
                         assetPath: 'svg/plus_large.svg', width: 20, height: 20),
                     txt: 'Thêm sản phẩm',
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductSelectorPage(
-                            packageDataResponse: data,
+                            packageDataResponse: data.clone(),
+                            onUpdated: (PackageDataResponse) {
+                              data.updateListProductItem(PackageDataResponse);
+                            },
                           ),
                         ),
                       );
+                      setState(() {});
                     },
                   ),
                 )
@@ -115,21 +117,22 @@ class _ListProductState extends State<ListProduct> {
             height: 25,
           ),
           ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return ProductItem(
-                  isEditting: true,
-                  productInPackageResponse: listProducts[index],
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                  height: 15,
-                  child: Divider(
-                    color: Black40,
-                  )),
-              itemCount: listProducts.length),
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return ProductItem(
+                isEditting: true,
+                productInPackageResponse: data.items[index],
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(
+                height: 15,
+                child: Divider(
+                  color: Black40,
+                )),
+            itemCount: data.items.length,
+          ),
         ],
       ),
     );
@@ -151,6 +154,7 @@ class ProductItem extends StatelessWidget {
         productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull?.name;
     String productName =
         '${productInPackageResponse.beerSubmitData?.name ?? 'Removed'}(${unitName ?? 'Removed'})';
+    print('name: ${productInPackageResponse.beerSubmitData?.name}');
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Column(

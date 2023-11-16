@@ -24,28 +24,28 @@ class ProductSelectorBar extends StatelessWidget
           padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
           child: Row(
             children: [
-              LoadSvg(assetPath: 'svg/sort_by.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/grid.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/grid_left_panel.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(assetPath: 'svg/list_ul.svg'),
-              const SizedBox(
-                width: 20,
-              ),
-              LoadSvg(
-                assetPath: 'svg/order.svg',
-                width: 27,
-                height: 27,
-                color: Black,
-              ),
+              // LoadSvg(assetPath: 'svg/sort_by.svg'),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // LoadSvg(assetPath: 'svg/grid.svg'),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // LoadSvg(assetPath: 'svg/grid_left_panel.svg'),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // LoadSvg(assetPath: 'svg/list_ul.svg'),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // LoadSvg(
+              //   assetPath: 'svg/order.svg',
+              //   width: 27,
+              //   height: 27,
+              //   color: Black,
+              // ),
             ],
           ),
         ),

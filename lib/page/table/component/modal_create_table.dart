@@ -3,7 +3,7 @@ import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
-import 'package:sales_management/page/table/component/modal_base.dart';
+import 'package:sales_management/component/modal/modal_base.dart';
 import 'package:sales_management/page/table/component/modal_select_area.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/typedef.dart';

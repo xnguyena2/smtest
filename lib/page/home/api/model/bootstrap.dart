@@ -51,7 +51,7 @@ class DeviceConfig extends BaseEntity {
   late final String? color;
 
   @HiveField(5)
-  late final String? categorys;
+  late String? categorys;
 
   @HiveField(6)
   late final String? config;
@@ -64,6 +64,7 @@ class DeviceConfig extends BaseEntity {
 
   Map<String, dynamic> toJson() {
     final _data = super.toJson();
+    _data.remove('id');
     _data['color'] = color;
     _data['categorys'] = categorys;
     _data['config'] = config;
