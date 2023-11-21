@@ -60,20 +60,7 @@ class OrderMainInfo extends StatelessWidget {
           SizedBox(
             height: 4,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                data.priceFormat,
-                style: moneyStyleSuperLarge,
-              ),
-              ApproveBtn(
-                txt: 'Gửi hóa đơn',
-                padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
-                onPressed: () {},
-              ),
-            ],
-          ),
+          TotalPriceInfo(data: data),
           SizedBox(
             height: 8,
           ),
@@ -83,6 +70,34 @@ class OrderMainInfo extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class TotalPriceInfo extends StatelessWidget {
+  const TotalPriceInfo({
+    super.key,
+    required this.data,
+  });
+
+  final PackageDataResponse data;
+
+  @override
+  Widget build(BuildContext context) {
+    String totalPrice = StateAreaTable.of(context).totalPrice;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          totalPrice,
+          style: moneyStyleSuperLarge,
+        ),
+        ApproveBtn(
+          txt: 'Gửi hóa đơn',
+          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+          onPressed: () {},
+        ),
+      ],
     );
   }
 }

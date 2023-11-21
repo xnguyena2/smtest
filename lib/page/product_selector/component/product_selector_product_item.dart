@@ -39,7 +39,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     super.initState();
     unit = widget.productData.listUnit?.firstOrNull;
     imgUrl = widget.productData.getFristLargeImg;
-    name = widget.productData.name;
+    name = widget.productData.get_show_name;
     price = widget.productData.getRealPrice;
     productInPackage = widget.productInPackageResponse;
     unitNo = productInPackage?.numberUnit ?? 0;

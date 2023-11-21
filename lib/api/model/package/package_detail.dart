@@ -13,7 +13,7 @@ class PackageDetail extends BaseEntity {
   late String? tableName;
   late DeliverType packageType;
   late final String? voucher;
-  late final double price;
+  late double price;
   late final double payment;
   late final double discountAmount;
   late final double discountPercent;

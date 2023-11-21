@@ -56,7 +56,7 @@ class ProductSelectorBottomBar extends StatelessWidget {
                   width: 28,
                 ),
                 Text(
-                  '${package?.totalPrice ?? 0}',
+                  '${package?.totalPriceFormat ?? 0}',
                   style: customerNameBigWhite600,
                 ),
               ],

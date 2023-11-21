@@ -91,6 +91,7 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
             ),
             StateAreaTable(
               data: widget.data.areAndTable,
+              totalPrice: widget.data.priceFormat,
               child: orderMainInfo,
             ),
             SizedBox(
@@ -104,6 +105,9 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
             ),
             ListProduct(
               data: widget.data,
+              updateData: () {
+                setState(() {});
+              },
             ),
             SizedBox(
               height: 15,

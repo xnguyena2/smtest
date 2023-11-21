@@ -10,6 +10,7 @@ class SimpleSwitchBtn extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final Color backgroundColor;
   final bool isDisable;
+  final int selectedIndex;
   const SimpleSwitchBtn({
     super.key,
     required this.backGroundWidget,
@@ -19,6 +20,7 @@ class SimpleSwitchBtn extends StatefulWidget {
     this.padding,
     this.backgroundColor = BackgroundColor,
     this.isDisable = false,
+    this.selectedIndex = 0,
   });
 
   @override
@@ -34,8 +36,9 @@ class _SimpleSwitchBtnState extends State<SimpleSwitchBtn> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentSelected = widget.selectedWidget[0];
+    currentSelected = widget.selectedWidget[widget.selectedIndex];
     padding = widget.padding == null ? EdgeInsets.all(2) : widget.padding!;
+    isSelected = widget.selectedIndex == 1;
   }
 
   @override

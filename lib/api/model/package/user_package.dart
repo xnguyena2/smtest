@@ -8,11 +8,11 @@ class UserPackage extends BaseEntity {
   late final String productSecondId;
   late final String productUnitSecondId;
   late int numberUnit;
-  late final double price;
-  late final double discountAmount;
-  late final double discountPercent;
-  late final String? note;
-  late final String? status;
+  late double price;
+  late double discountAmount;
+  late double discountPercent;
+  late String? note;
+  late String? status;
 
   UserPackage({
     required int id,
@@ -77,4 +77,6 @@ class UserPackage extends BaseEntity {
   }
 
   String get priceFormat => MoneyFormater.format(price);
+
+  String get totalPriceFormat => MoneyFormater.format(price * numberUnit);
 }

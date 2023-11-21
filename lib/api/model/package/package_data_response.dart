@@ -5,6 +5,7 @@ import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
 class ListPackageDetailResult {
@@ -62,6 +63,8 @@ class PackageDataResponse extends PackageDetail {
 
   void updateListProductItem(PackageDataResponse package) {
     items = package.items;
+    updateProductMap();
+    updatePrice();
   }
 
   void addProduct(ProductInPackageResponse productInPackageResponse) {
@@ -71,8 +74,8 @@ class PackageDataResponse extends PackageDetail {
       return;
     }
     if (productInPackageResponse.numberUnit <= 0) {
-      items.remove(productInPackageResponse);
-      productMap.remove(productUnit.beerUnitSecondId);
+      var itemRemoved = productMap.remove(productUnit.beerUnitSecondId);
+      items.remove(itemRemoved);
       return;
     }
     if (productMap.containsKey(productUnit.beerUnitSecondId)) {
@@ -105,6 +108,11 @@ class PackageDataResponse extends PackageDetail {
     return PackageDataResponse.fromJson(toJson());
   }
 
+  void updatePrice() {
+    price = items.fold(
+        0, (previousValue, element) => previousValue + element.realPrice);
+  }
+
   double get totalPrice {
     double total = 0;
     items.forEach((element) {
@@ -112,6 +120,8 @@ class PackageDataResponse extends PackageDetail {
     });
     return total;
   }
+
+  String get totalPriceFormat => MoneyFormater.format(totalPrice);
 
   int get numItem {
     int total = 0;
@@ -151,8 +161,12 @@ class ProductInPackageResponse extends UserPackage {
     return _data;
   }
 
-  double get realPrice =>
-      numberUnit * (price * (1 - discountPercent / 100) - discountAmount);
+  double get realPrice {
+    double rPrice = (price * (1 - discountPercent / 100) - discountAmount);
+    print(
+        'rPrice: $rPrice, price: $price, discountPercent: $discountPercent, discountAmount: $discountAmount');
+    return numberUnit * rPrice;
+  }
 }
 
 class BuyerData extends Buyer {

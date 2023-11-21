@@ -47,7 +47,11 @@ class TotalPrice extends StatelessWidget {
                 SizedBox(
                   width: 18,
                 ),
-                SwitchBtn(firstTxt: 'VND', secondTxt: '%'),
+                SwitchBtn(
+                  firstTxt: 'VND',
+                  secondTxt: '%',
+                  onChanged: (int) {},
+                ),
               ],
             ),
             isEditting

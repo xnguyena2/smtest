@@ -14,6 +14,7 @@ import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/api/model/category_container.dart';
 import 'package:sales_management/page/product_info/component/modal_create_category.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class MainProductInfo extends StatefulWidget {
@@ -155,7 +156,19 @@ class _MainProductInfoState extends State<MainProductInfo> {
                                 config?.deviceConfig?.categorys =
                                     jsonEncode(listCategory);
                                 if (config?.deviceConfig != null) {
-                                  udpateConfig(config!.deviceConfig!);
+                                  udpateConfig(config!.deviceConfig!)
+                                      .then((value) {
+                                    var box = Hive.box(hiveSettingBox);
+                                    box.put(hiveConfigKey, config);
+                                    showNotification(
+                                        context, 'Thêm danh mục thành công!');
+                                  }).onError((error, stackTrace) {
+                                    listCategory.remove(category.category);
+                                    config?.deviceConfig?.categorys =
+                                        jsonEncode(listCategory);
+                                    showAlert(
+                                        context, 'Không thể thêm danh mục!!');
+                                  });
                                 }
                                 setState(() {});
                               },

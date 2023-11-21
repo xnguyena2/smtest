@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
+import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 class ListProduct extends StatefulWidget {
   final PackageDataResponse data;
+  final VoidCallback updateData;
   const ListProduct({
     super.key,
     required this.data,
+    required this.updateData,
   });
 
   @override
@@ -19,7 +24,7 @@ class ListProduct extends StatefulWidget {
 
 class _ListProductState extends State<ListProduct> {
   late final PackageDataResponse data;
-  String currentPriceType = '';
+  String currentPriceType = 'retailprice';
 
   @override
   void initState() {
@@ -36,7 +41,7 @@ class _ListProductState extends State<ListProduct> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.only(left: 15, right: 15, top: 10),
             child: Row(
               children: [
                 Expanded(
@@ -68,7 +73,7 @@ class _ListProductState extends State<ListProduct> {
                           ),
                         ),
                       );
-                      setState(() {});
+                      widget.updateData();
                     },
                   ),
                 )
@@ -121,9 +126,19 @@ class _ListProductState extends State<ListProduct> {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemBuilder: (context, index) {
+              final item = data.items[index];
               return ProductItem(
+                key: ValueKey(
+                    '${item.productSecondId + item.productUnitSecondId}${item.numberUnit}'),
                 isEditting: true,
-                productInPackageResponse: data.items[index],
+                productInPackageResponse: item,
+                updateNumberUnit: (productInPackageResponse) {
+                  data.addProduct(productInPackageResponse);
+                },
+                onRefreshData: () {
+                  data.updatePrice();
+                  widget.updateData();
+                },
               );
             },
             separatorBuilder: (context, index) => const SizedBox(
@@ -139,22 +154,89 @@ class _ListProductState extends State<ListProduct> {
   }
 }
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
   final ProductInPackageResponse productInPackageResponse;
   final bool isEditting;
+  final VoidCallbackArg<ProductInPackageResponse> updateNumberUnit;
+  final VoidCallback onRefreshData;
   const ProductItem(
       {super.key,
       this.isEditting = false,
-      required this.productInPackageResponse});
+      required this.productInPackageResponse,
+      required this.updateNumberUnit,
+      required this.onRefreshData});
+
+  @override
+  State<ProductItem> createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  static const double max_height = 130;
+  double _container_edit_height = 0;
+  late final ProductInPackageResponse productInPackageResponse;
+  late String? imgUrl;
+  late int unitNo;
+  final TextEditingController txtController = TextEditingController();
+  final TextEditingController discountTxtController = TextEditingController();
+  late FocusNode priceFocus = FocusNode();
+  bool valueEmpty = false;
+  bool isDiscountPercent = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    productInPackageResponse = widget.productInPackageResponse;
+    imgUrl = productInPackageResponse.beerSubmitData?.getFristLargeImg;
+    unitNo = productInPackageResponse.numberUnit;
+    txtController.text = unitNo.toString();
+    if (productInPackageResponse.discountPercent != 0 ||
+        productInPackageResponse.discountAmount != 0) {
+      isDiscountPercent = productInPackageResponse.discountPercent >= 0;
+    }
+    discountTxtController.text = isDiscountPercent
+        ? productInPackageResponse.discountPercent.toString()
+        : productInPackageResponse.discountAmount.toString();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    txtController.dispose();
+    priceFocus.dispose();
+    discountTxtController.dispose();
+  }
+
+  void removeItemToPackage() {
+    if (productInPackageResponse.numberUnit < 1) {
+      return;
+    }
+    productInPackageResponse.numberUnit--;
+    widget.updateNumberUnit(productInPackageResponse);
+    unitNo = productInPackageResponse.numberUnit;
+    txtController.text = unitNo.toString();
+    if (unitNo <= 0) {
+      widget.onRefreshData();
+    }
+    setState(() {});
+  }
+
+  void addItemToPackage() {
+    productInPackageResponse.numberUnit++;
+    widget.updateNumberUnit(productInPackageResponse);
+    unitNo = productInPackageResponse.numberUnit;
+    txtController.text = unitNo.toString();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    String total_price = productInPackageResponse.priceFormat;
-    String? unitName =
-        productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull?.name;
+    String priceFormat = productInPackageResponse.priceFormat;
+    String totalPriceFormat = productInPackageResponse.totalPriceFormat;
     String productName =
-        '${productInPackageResponse.beerSubmitData?.name ?? 'Removed'}(${unitName ?? 'Removed'})';
-    print('name: ${productInPackageResponse.beerSubmitData?.name}');
+        productInPackageResponse.beerSubmitData?.get_show_name ?? 'Removed';
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -172,8 +254,13 @@ class ProductItem extends StatelessWidget {
                       borderRadius: defaultSquareBorderRadius,
                       color: BackgroundColor),
                   child: Center(
-                    child: LoadSvg(
-                        assetPath: 'svg/product.svg', width: 20, height: 20),
+                    child: imgUrl == null
+                        ? LoadSvg(
+                            assetPath: 'svg/product.svg', width: 20, height: 20)
+                        : AspectRatio(
+                            aspectRatio: 1 / 1,
+                            child: ImageLoading(url: imgUrl!),
+                          ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -186,7 +273,7 @@ class ProductItem extends StatelessWidget {
                         productName,
                         style: headStyleXLarge,
                       ),
-                      if (isEditting)
+                      if (widget.isEditting)
                         Container(
                           width: 127,
                           padding: EdgeInsets.all(8),
@@ -196,30 +283,77 @@ class ProductItem extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              LoadSvg(
-                                  assetPath: 'svg/minus.svg',
-                                  width: 20,
-                                  height: 20),
+                              GestureDetector(
+                                onTap: () {
+                                  removeItemToPackage();
+                                },
+                                child: LoadSvg(
+                                    assetPath: 'svg/minus.svg',
+                                    width: 20,
+                                    height: 20),
+                              ),
                               Expanded(
                                 child: TextFormField(
+                                  controller: txtController,
                                   textAlign: TextAlign.center,
-                                  initialValue: productInPackageResponse
-                                      .numberUnit
-                                      .toString(),
                                   maxLines: 1,
                                   style: headStyleSemiLarge500,
-                                  decoration: InputDecoration(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.zero,
                                     isDense: true,
                                     border: InputBorder.none,
                                   ),
+                                  onChanged: (value) {
+                                    valueEmpty = value.isEmpty;
+                                    if (valueEmpty) {
+                                      return;
+                                    }
+                                    productInPackageResponse.numberUnit =
+                                        int.tryParse(value) ?? 0;
+                                    if (productInPackageResponse.numberUnit <=
+                                        0) {
+                                      productInPackageResponse.numberUnit =
+                                          1; //set to 1 so can run remove func
+                                      removeItemToPackage();
+                                    }
+                                  },
+                                  onEditingComplete: () {
+                                    if (valueEmpty) {
+                                      txtController.text =
+                                          productInPackageResponse.numberUnit
+                                              .toString();
+                                    }
+                                  },
+                                  onTapOutside: (e) {
+                                    if (valueEmpty) {
+                                      txtController.text =
+                                          productInPackageResponse.numberUnit
+                                              .toString();
+                                    }
+                                  },
+                                  onFieldSubmitted: (v) {
+                                    if (valueEmpty) {
+                                      txtController.text =
+                                          productInPackageResponse.numberUnit
+                                              .toString();
+                                    }
+                                  },
                                 ),
                               ),
-                              LoadSvg(
-                                  assetPath: 'svg/plus.svg',
-                                  width: 20,
-                                  height: 20,
-                                  color: TableHighColor)
+                              GestureDetector(
+                                onTap: () {
+                                  addItemToPackage();
+                                },
+                                child: LoadSvg(
+                                    assetPath: 'svg/plus.svg',
+                                    width: 20,
+                                    height: 20,
+                                    color: TableHighColor),
+                              )
                             ],
                           ),
                         )
@@ -230,175 +364,245 @@ class ProductItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (!isEditting) ...[
+                    if (!widget.isEditting) ...[
                       Text(
-                        '15.000',
+                        priceFormat,
                         style: headStyleBigMediumBlackLight,
                       ),
                       Text(
-                        'x6',
+                        'x${productInPackageResponse.numberUnit}',
                         style: headStyleBigMedium,
                       )
                     ],
-                    isEditting
-                        ? Stack(
-                            clipBehavior: Clip.none,
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              Text(
-                                total_price,
+                    if (widget.isEditting)
+                      GestureDetector(
+                        onTap: () {
+                          _container_edit_height = max_height;
+                          setState(() {});
+                        },
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            Text(
+                              totalPriceFormat,
+                              style: headStyleXLargehightUnderline.copyWith(
+                                decorationColor: Colors.white,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: -5,
+                              child: Text(
+                                totalPriceFormat,
                                 style: headStyleXLargehightUnderline.copyWith(
-                                  decorationColor: Colors.white,
+                                  color: Colors.transparent,
                                 ),
                               ),
-                              Positioned(
-                                bottom: -5,
-                                child: Text(
-                                  total_price,
-                                  style: headStyleXLargehightUnderline.copyWith(
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        : Text(
-                            total_price,
-                            style: headStyleXLarge,
-                          )
+                            )
+                          ],
+                        ),
+                      )
+                    else
+                      Text(
+                        totalPriceFormat,
+                        style: headStyleXLarge,
+                      )
                   ],
                 )
               ],
             ),
           ),
-          if (isEditting)
-            SizedBox(
-              height: 130,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: 7,
-                  ),
-                  Divider(
-                    color: Black15,
-                    thickness: 0.3,
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+          if (widget.isEditting)
+            AnimatedContainer(
+              height: _container_edit_height,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: max_height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 7,
+                      ),
+                      Divider(
+                        color: Black15,
+                        thickness: 0.3,
+                      ),
+                      Expanded(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'Giá bán',
-                                  style: headStyleSemiLargeLigh500,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.right,
-                                    initialValue: '30.000',
-                                    maxLines: 1,
-                                    style: customerNameBigHight,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true,
-                                      border: InputBorder.none,
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Giá bán',
+                                      style: headStyleSemiLargeLigh500,
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                LoadSvg(
-                                    assetPath: 'svg/edit_pencil_line_01.svg')
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Chiết khấu',
-                                  style: headStyleSemiLargeLigh500,
-                                ),
-                                SizedBox(
-                                  width: 18,
-                                ),
-                                SwitchBtn(
-                                  firstTxt: 'VND',
-                                  secondTxt: '%',
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        focusNode: priceFocus,
+                                        textAlign: TextAlign.right,
+                                        initialValue: productInPackageResponse
+                                            .price
+                                            .toString(),
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        onChanged: (value) {
+                                          productInPackageResponse.price =
+                                              double.tryParse(value) ?? 0;
+                                          widget.onRefreshData();
+                                        },
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => priceFocus.requestFocus(),
+                                      child: LoadSvg(
+                                          assetPath:
+                                              'svg/edit_pencil_line_01.svg'),
+                                    )
+                                  ],
                                 )
                               ],
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  width: 60,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.right,
-                                    initialValue: '30.000',
-                                    maxLines: 1,
-                                    style: customerNameBigHight,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true,
-                                      border: InputBorder.none,
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Chiết khấu',
+                                      style: headStyleSemiLargeLigh500,
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 18,
+                                    ),
+                                    SwitchBtn(
+                                      firstTxt: 'VND',
+                                      secondTxt: '%',
+                                      onChanged: (index) {
+                                        if (index == 0) {
+                                          isDiscountPercent = false;
+                                          productInPackageResponse
+                                              .discountPercent = 0;
+                                          productInPackageResponse
+                                              .discountAmount = 0;
+                                        } else {
+                                          isDiscountPercent = true;
+                                          productInPackageResponse
+                                              .discountAmount = 0;
+                                          productInPackageResponse
+                                              .discountPercent = 0;
+                                        }
+                                        discountTxtController.text = '0';
+                                        widget.onRefreshData();
+                                      },
+                                    )
+                                  ],
                                 ),
-                                LoadSvg(
-                                    assetPath: 'svg/edit_pencil_line_01.svg')
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Ghi chú',
-                                  style: headStyleSemiLargeLigh500,
-                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        controller: discountTxtController,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                          LengthLimitingTextInputFormatter(3),
+                                        ],
+                                        textAlign: TextAlign.right,
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        onChanged: (value) {
+                                          if (isDiscountPercent) {
+                                            productInPackageResponse
+                                                    .discountPercent =
+                                                double.tryParse(value) ?? 0;
+                                          } else {
+                                            productInPackageResponse
+                                                    .discountAmount =
+                                                double.tryParse(value) ?? 0;
+                                          }
+                                          widget.onRefreshData();
+                                        },
+                                      ),
+                                    ),
+                                    LoadSvg(
+                                        assetPath:
+                                            'svg/edit_pencil_line_01.svg')
+                                  ],
+                                )
                               ],
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  width: 100,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.right,
-                                    initialValue: 'ghi chú ở đây',
-                                    maxLines: 1,
-                                    style: customerNameBigHight,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true,
-                                      border: InputBorder.none,
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Ghi chú',
+                                      style: headStyleSemiLargeLigh500,
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                LoadSvg(
-                                    assetPath: 'svg/edit_pencil_line_01.svg')
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 100,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        initialValue: 'ghi chú ở đây',
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                    LoadSvg(
+                                        assetPath:
+                                            'svg/edit_pencil_line_01.svg')
+                                  ],
+                                )
                               ],
-                            )
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _container_edit_height = 0;
+                          setState(() {});
+                        },
+                        child: LoadSvg(assetPath: 'svg/collapse.svg'),
+                      )
+                    ],
                   ),
-                  LoadSvg(assetPath: 'svg/collapse.svg')
-                ],
+                ),
               ),
             ),
         ],

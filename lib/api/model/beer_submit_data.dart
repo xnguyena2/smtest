@@ -96,7 +96,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     return BeerSubmitData(
       groupId: groupId,
       beerSecondID: beerSecondID,
-      name: '$name(${unit?.name ?? 'Removed'})',
+      name: name,
       category: category,
       status: status,
       detail: detail,
@@ -133,6 +133,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       images: [],
     );
   }
+
+  String get get_show_name =>
+      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})';
 
   void copyImg(BeerSubmitData oldProduct) {
     images.clear();

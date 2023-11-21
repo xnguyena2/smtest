@@ -201,7 +201,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
                       style: TextButton.styleFrom(
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
                           backgroundColor: TableHighColor,
                           disabledBackgroundColor: Black40),
                       onPressed: enableDone
