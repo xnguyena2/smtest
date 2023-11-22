@@ -42,6 +42,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
         currentPackgeType = value ?? DeliverType.table;
         data.packageType = currentPackgeType;
         isEatAtTable = currentPackgeType == DeliverType.table;
+        widget.onRefreshData();
       });
     }
 

@@ -176,9 +176,11 @@ class _ProductItemState extends State<ProductItem> {
   late final ProductInPackageResponse productInPackageResponse;
   late String? imgUrl;
   late int unitNo;
-  final TextEditingController txtController = TextEditingController();
+  final TextEditingController priceTxtController = TextEditingController();
   final TextEditingController discountTxtController = TextEditingController();
-  late FocusNode priceFocus = FocusNode();
+  final FocusNode priceFocus = FocusNode();
+  final FocusNode discountFocus = FocusNode();
+  final FocusNode noteFocus = FocusNode();
   bool valueEmpty = false;
   bool isDiscountPercent = false;
 
@@ -189,7 +191,7 @@ class _ProductItemState extends State<ProductItem> {
     productInPackageResponse = widget.productInPackageResponse;
     imgUrl = productInPackageResponse.beerSubmitData?.getFristLargeImg;
     unitNo = productInPackageResponse.numberUnit;
-    txtController.text = unitNo.toString();
+    priceTxtController.text = unitNo.toString();
     if (productInPackageResponse.discountPercent != 0 ||
         productInPackageResponse.discountAmount != 0) {
       isDiscountPercent = productInPackageResponse.discountPercent >= 0;
@@ -203,9 +205,11 @@ class _ProductItemState extends State<ProductItem> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    txtController.dispose();
-    priceFocus.dispose();
+    priceTxtController.dispose();
     discountTxtController.dispose();
+    priceFocus.dispose();
+    discountFocus.dispose();
+    noteFocus.dispose();
   }
 
   void removeItemToPackage() {
@@ -215,7 +219,7 @@ class _ProductItemState extends State<ProductItem> {
     productInPackageResponse.numberUnit--;
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
-    txtController.text = unitNo.toString();
+    priceTxtController.text = unitNo.toString();
     if (unitNo <= 0) {
       widget.onRefreshData();
     }
@@ -226,7 +230,7 @@ class _ProductItemState extends State<ProductItem> {
     productInPackageResponse.numberUnit++;
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
-    txtController.text = unitNo.toString();
+    priceTxtController.text = unitNo.toString();
     setState(() {});
   }
 
@@ -294,7 +298,7 @@ class _ProductItemState extends State<ProductItem> {
                               ),
                               Expanded(
                                 child: TextFormField(
-                                  controller: txtController,
+                                  controller: priceTxtController,
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                   style: headStyleSemiLarge500,
@@ -323,21 +327,21 @@ class _ProductItemState extends State<ProductItem> {
                                   },
                                   onEditingComplete: () {
                                     if (valueEmpty) {
-                                      txtController.text =
+                                      priceTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
                                   },
                                   onTapOutside: (e) {
                                     if (valueEmpty) {
-                                      txtController.text =
+                                      priceTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
                                   },
                                   onFieldSubmitted: (v) {
                                     if (valueEmpty) {
-                                      txtController.text =
+                                      priceTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
@@ -446,37 +450,38 @@ class _ProductItemState extends State<ProductItem> {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 60,
-                                      child: TextFormField(
-                                        focusNode: priceFocus,
-                                        textAlign: TextAlign.right,
-                                        initialValue: productInPackageResponse
-                                            .price
-                                            .toString(),
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          focusNode: priceFocus,
+                                          textAlign: TextAlign.right,
+                                          initialValue: productInPackageResponse
+                                              .price
+                                              .toString(),
+                                          maxLines: 1,
+                                          style: customerNameBigHight,
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                          onChanged: (value) {
+                                            productInPackageResponse.price =
+                                                double.tryParse(value) ?? 0;
+                                            widget.onRefreshData();
+                                          },
                                         ),
-                                        onChanged: (value) {
-                                          productInPackageResponse.price =
-                                              double.tryParse(value) ?? 0;
-                                          widget.onRefreshData();
-                                        },
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => priceFocus.requestFocus(),
-                                      child: LoadSvg(
-                                          assetPath:
-                                              'svg/edit_pencil_line_01.svg'),
-                                    )
-                                  ],
+                                      GestureDetector(
+                                        onTap: () => priceFocus.requestFocus(),
+                                        child: LoadSvg(
+                                            assetPath:
+                                                'svg/edit_pencil_line_01.svg'),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -495,6 +500,7 @@ class _ProductItemState extends State<ProductItem> {
                                     SwitchBtn(
                                       firstTxt: 'VND',
                                       secondTxt: '%',
+                                      enableIndex: isDiscountPercent ? 1 : 0,
                                       onChanged: (index) {
                                         if (index == 0) {
                                           isDiscountPercent = false;
@@ -515,44 +521,50 @@ class _ProductItemState extends State<ProductItem> {
                                     )
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 60,
-                                      child: TextFormField(
-                                        controller: discountTxtController,
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          LengthLimitingTextInputFormatter(3),
-                                        ],
-                                        textAlign: TextAlign.right,
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: discountTxtController,
+                                          focusNode: discountFocus,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(3),
+                                          ],
+                                          textAlign: TextAlign.right,
+                                          maxLines: 1,
+                                          style: customerNameBigHight,
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                          onChanged: (value) {
+                                            if (isDiscountPercent) {
+                                              productInPackageResponse
+                                                      .discountPercent =
+                                                  double.tryParse(value) ?? 0;
+                                            } else {
+                                              productInPackageResponse
+                                                      .discountAmount =
+                                                  double.tryParse(value) ?? 0;
+                                            }
+                                            widget.onRefreshData();
+                                          },
                                         ),
-                                        onChanged: (value) {
-                                          if (isDiscountPercent) {
-                                            productInPackageResponse
-                                                    .discountPercent =
-                                                double.tryParse(value) ?? 0;
-                                          } else {
-                                            productInPackageResponse
-                                                    .discountAmount =
-                                                double.tryParse(value) ?? 0;
-                                          }
-                                          widget.onRefreshData();
-                                        },
                                       ),
-                                    ),
-                                    LoadSvg(
-                                        assetPath:
-                                            'svg/edit_pencil_line_01.svg')
-                                  ],
+                                      GestureDetector(
+                                        onTap: () =>
+                                            discountFocus.requestFocus(),
+                                        child: LoadSvg(
+                                            assetPath:
+                                                'svg/edit_pencil_line_01.svg'),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -567,26 +579,37 @@ class _ProductItemState extends State<ProductItem> {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 100,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        initialValue: 'ghi chú ở đây',
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          focusNode: noteFocus,
+                                          textAlign: TextAlign.right,
+                                          initialValue:
+                                              productInPackageResponse.note,
+                                          maxLines: 1,
+                                          style: customerNameBig,
+                                          decoration: InputDecoration(
+                                            hintText: 'Ghi chú',
+                                            contentPadding: EdgeInsets.zero,
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                          onChanged: (value) {
+                                            productInPackageResponse.note =
+                                                value;
+                                          },
                                         ),
                                       ),
-                                    ),
-                                    LoadSvg(
-                                        assetPath:
-                                            'svg/edit_pencil_line_01.svg')
-                                  ],
+                                      GestureDetector(
+                                        onTap: () => noteFocus.requestFocus(),
+                                        child: LoadSvg(
+                                            assetPath:
+                                                'svg/edit_pencil_line_01.svg'),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             ),

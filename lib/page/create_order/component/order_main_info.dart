@@ -84,7 +84,7 @@ class TotalPriceInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice = StateAreaTable.of(context).totalPrice;
+    String totalPrice = StateAreaTable.of(context).finalPrice;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -110,6 +110,7 @@ class AreaTableInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String areaTable = StateAreaTable.of(context).data;
+    if (areaTable == 'NOT') return SizedBox();
     return Container(
       padding: EdgeInsets.symmetric(vertical: 7, horizontal: 7),
       decoration: BoxDecoration(

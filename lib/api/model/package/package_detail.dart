@@ -15,9 +15,9 @@ class PackageDetail extends BaseEntity {
   late final String? voucher;
   late double price;
   late final double payment;
-  late final double discountAmount;
-  late final double discountPercent;
-  late final double shipPrice;
+  late double discountAmount;
+  late double discountPercent;
+  late double shipPrice;
   late final String? note;
   late final String? image;
   late final String? progress;
@@ -92,11 +92,16 @@ class PackageDetail extends BaseEntity {
 
   bool get isDone => status == 'DONE';
 
-  String get areAndTable => areaName == null || tableName == null
-      ? 'Chưa có bàn được chọn'
-      : '${areaName} - ${tableName}';
+  String get areAndTable => packageType != DeliverType.table
+      ? 'NOT'
+      : areaName == null || tableName == null
+          ? 'Chưa có bàn được chọn'
+          : '${areaName} - ${tableName}';
 
   String get priceFormat => MoneyFormater.format(price);
+
+  String get finalPriceFormat => MoneyFormater.format(
+      price * (1 - discountPercent / 100) - discountAmount + shipPrice);
 
   VoidCallback? beforeUpdate;
 

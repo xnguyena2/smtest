@@ -121,6 +121,11 @@ class PackageDataResponse extends PackageDetail {
     return total;
   }
 
+  int get totalNumIems {
+    return items.fold(
+        0, (previousValue, element) => previousValue + element.numberUnit);
+  }
+
   String get totalPriceFormat => MoneyFormater.format(totalPrice);
 
   int get numItem {

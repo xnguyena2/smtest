@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 class StateAreaTable extends InheritedWidget {
+  final String data;
+  final String totalPrice;
+  final String finalPrice;
+  final int numItems;
+
   const StateAreaTable({
     super.key,
     required this.totalPrice,
     required this.data,
     required super.child,
+    required this.numItems,
+    required this.finalPrice,
   });
-
-  final String data;
-  final String totalPrice;
 
   static StateAreaTable? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<StateAreaTable>();
@@ -23,6 +27,9 @@ class StateAreaTable extends InheritedWidget {
 
   @override
   bool updateShouldNotify(StateAreaTable oldWidget) {
-    return data != oldWidget.data || totalPrice != oldWidget.totalPrice;
+    return data != oldWidget.data ||
+        totalPrice != oldWidget.totalPrice ||
+        numItems != oldWidget.numItems ||
+        finalPrice != oldWidget.finalPrice;
   }
 }

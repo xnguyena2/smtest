@@ -59,6 +59,7 @@ class CreateOrderBody extends StatefulWidget {
 
 class _CreateOrderBodyState extends State<CreateOrderBody> {
   late final OrderMainInfo orderMainInfo;
+  late final TotalPrice totalPrice;
   @override
   void initState() {
     // TODO: implement initState
@@ -69,6 +70,13 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
   void initUI() {
     orderMainInfo = OrderMainInfo(
       data: widget.data,
+    );
+    totalPrice = TotalPrice(
+      isEditting: true,
+      data: widget.data,
+      onRefreshData: () {
+        setState(() {});
+      },
     );
   }
 
@@ -92,6 +100,8 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
             StateAreaTable(
               data: widget.data.areAndTable,
               totalPrice: widget.data.priceFormat,
+              numItems: widget.data.totalNumIems,
+              finalPrice: widget.data.finalPriceFormat,
               child: orderMainInfo,
             ),
             SizedBox(
@@ -112,8 +122,12 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
             SizedBox(
               height: 15,
             ),
-            TotalPrice(
-              isEditting: true,
+            StateAreaTable(
+              data: widget.data.areAndTable,
+              totalPrice: widget.data.priceFormat,
+              numItems: widget.data.totalNumIems,
+              finalPrice: widget.data.finalPriceFormat,
+              child: totalPrice,
             ),
             SizedBox(
               height: 15,
