@@ -84,7 +84,8 @@ class TotalPriceInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice = StateAreaTable.of(context).finalPrice;
+    String totalPrice =
+        MoneyFormater.format(StateAreaTable.of(context).finalPrice);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

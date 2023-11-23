@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StateAreaTable extends InheritedWidget {
   final String data;
   final String totalPrice;
-  final String finalPrice;
+  final double finalPrice;
   final int numItems;
 
   const StateAreaTable({

@@ -168,8 +168,6 @@ class ProductInPackageResponse extends UserPackage {
 
   double get realPrice {
     double rPrice = (price * (1 - discountPercent / 100) - discountAmount);
-    print(
-        'rPrice: $rPrice, price: $price, discountPercent: $discountPercent, discountAmount: $discountAmount');
     return numberUnit * rPrice;
   }
 }

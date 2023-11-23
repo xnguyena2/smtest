@@ -11,6 +11,7 @@ class BottomBar extends StatelessWidget {
   final String? okBtnTxt;
   final bool isActiveOk;
   final bool enableDelete;
+  final bool hideDeleteBtn;
   const BottomBar({
     super.key,
     required this.done,
@@ -19,6 +20,7 @@ class BottomBar extends StatelessWidget {
     this.okBtnTxt,
     this.isActiveOk = true,
     this.enableDelete = false,
+    this.hideDeleteBtn = false,
   });
 
   @override
@@ -33,22 +35,24 @@ class BottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: enableDelete
-                ? DeleteBtn(
-                    txt: cancelBtnTxt ?? 'Xóa',
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    onPressed: cancel,
-                  )
-                : CancelBtn(
-                    txt: cancelBtnTxt ?? 'Hủy',
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    onPressed: cancel,
-                  ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
+          if (hideDeleteBtn == false) ...[
+            Expanded(
+              child: enableDelete
+                  ? DeleteBtn(
+                      txt: cancelBtnTxt ?? 'Xóa',
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      onPressed: cancel,
+                    )
+                  : CancelBtn(
+                      txt: cancelBtnTxt ?? 'Hủy',
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      onPressed: cancel,
+                    ),
+            ),
+            SizedBox(
+              width: 10,
+            )
+          ],
           Expanded(
             child: ApproveBtn(
               isActiveOk: isActiveOk,

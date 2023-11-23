@@ -16,6 +16,7 @@ class InputFiledWithHeader extends StatefulWidget {
   final bool isAutoFocus;
   final bool isMoneyFormat;
   final bool isDisable;
+  final bool showClose;
   const InputFiledWithHeader({
     super.key,
     required this.header,
@@ -29,6 +30,7 @@ class InputFiledWithHeader extends StatefulWidget {
     this.isAutoFocus = false,
     this.isMoneyFormat = false,
     this.isDisable = false,
+    this.showClose = true,
   });
 
   @override
@@ -37,11 +39,20 @@ class InputFiledWithHeader extends StatefulWidget {
 
 class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
   late bool isError;
+  late TextEditingController txtControler =
+      TextEditingController(text: widget.initValue);
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     isError = widget.initValue?.isEmpty ?? true;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    txtControler.dispose();
   }
 
   @override
@@ -93,9 +104,9 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               ),
                             )
                           : TextFormField(
+                              controller: txtControler,
                               enabled: !widget.isDisable,
                               autofocus: widget.isAutoFocus,
-                              initialValue: widget.initValue,
                               keyboardType: widget.isNumberOnly
                                   ? TextInputType.number
                                   : null,
@@ -119,6 +130,26 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                                 border: InputBorder.none,
                                 hintStyle: customerNameBigLight400,
                                 hintText: widget.hint,
+                                suffixIconConstraints: BoxConstraints(
+                                  maxWidth: 20,
+                                  maxHeight: 20,
+                                ),
+                                suffixIcon: widget.showClose && !isError
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          txtControler.text = '';
+                                          isError = true;
+                                          setState(() {});
+                                        },
+                                        child: SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: LoadSvg(
+                                              assetPath:
+                                                  'svg/close_circle.svg'),
+                                        ),
+                                      )
+                                    : null,
                               ),
                             ),
                     ),

@@ -101,7 +101,7 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
               data: widget.data.areAndTable,
               totalPrice: widget.data.priceFormat,
               numItems: widget.data.totalNumIems,
-              finalPrice: widget.data.finalPriceFormat,
+              finalPrice: widget.data.finalPrice,
               child: orderMainInfo,
             ),
             SizedBox(
@@ -126,7 +126,7 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
               data: widget.data.areAndTable,
               totalPrice: widget.data.priceFormat,
               numItems: widget.data.totalNumIems,
-              finalPrice: widget.data.finalPriceFormat,
+              finalPrice: widget.data.finalPrice,
               child: totalPrice,
             ),
             SizedBox(

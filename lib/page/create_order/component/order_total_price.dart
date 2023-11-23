@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/page/create_order/component/modal_payment.dart';
+import 'package:sales_management/page/create_order/component/order_list_product.dart';
 import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -58,7 +61,8 @@ class _TotalPriceState extends State<TotalPrice> {
   @override
   Widget build(BuildContext context) {
     String totalPrice = StateAreaTable.of(context).totalPrice;
-    String finalPrice = StateAreaTable.of(context).finalPrice;
+    double finalPrice = StateAreaTable.of(context).finalPrice;
+    String finalPriceFormat = MoneyFormater.format(finalPrice);
     String numItems = StateAreaTable.of(context).numItems.toString();
     return DefaultPaddingContainer(
         child: Column(
@@ -227,11 +231,28 @@ class _TotalPriceState extends State<TotalPrice> {
               style: totalMoneyHeaderStylexXLarge,
             ),
             Text(
-              finalPrice,
+              finalPriceFormat,
               style: totalMoneyStylexXLarge,
             ),
           ],
         ),
+        SizedBox(
+          height: 12,
+        ),
+        RoundBtn(
+          isSelected: true,
+          icon: LoadSvg(assetPath: 'svg/wallet.svg', width: 20, height: 20),
+          txt: 'Thanh toán trước',
+          onPressed: () {
+            showDefaultModal(
+              context: context,
+              content: ModalPayment(
+                finalPrice: finalPrice,
+                onDone: (value) {},
+              ),
+            );
+          },
+        )
       ],
     ));
   }
