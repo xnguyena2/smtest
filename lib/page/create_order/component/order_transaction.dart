@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class Transaction extends StatelessWidget {
+  final PackageDataResponse data;
   const Transaction({
     super.key,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
+    double own = data.finalPrice - data.payment;
+    String ownFormat = MoneyFormater.format(own);
+    final transactions = data.progress?.transaction ?? [];
     return DefaultPaddingContainer(
         child: Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextRound(txt: 'Khách còn nợ', isHigh: false),
-            Text(
-              '25.000',
-              style: subInfoStyLargeAlert600,
-            )
-          ],
-        ),
+        if (own > 0)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextRound(txt: 'Khách còn nợ', isHigh: false),
+              Row(
+                children: [
+                  Text(
+                    ownFormat,
+                    style: headStyleLargeRed,
+                  ),
+                  SizedBox(
+                    width: 9,
+                  ),
+                ],
+              )
+            ],
+          ),
         SizedBox(
           height: 10,
         ),
@@ -31,57 +46,74 @@ class Transaction extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            return SizedBox(
-              height: 40,
-              child: Row(children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text('02/08/2023'), Text('05:25')],
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    VerticalDivider(),
-                    CircleAvatar(
-                      radius: 5,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Expanded(
-                    child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                      color: BackgroundColor,
-                      borderRadius: defaultBorderRadius),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tiền mặt',
-                        style: headStyleMediumNormalLight,
-                      ),
-                      Text(
-                        '90.000',
-                        style: headStyleLargeHigh,
-                      )
-                    ],
-                  ),
-                ))
-              ]),
+            return TransactionItem(
+              data: transactions[index],
             );
           },
-          itemCount: 5,
+          itemCount: transactions.length,
         ),
         SizedBox(
           height: 10,
         ),
       ],
     ));
+  }
+}
+
+class TransactionItem extends StatelessWidget {
+  final TransactionHistory data;
+  const TransactionItem({
+    super.key,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: Row(children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(data.localDateTxt),
+            Text(data.localTimeTxt),
+          ],
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            VerticalDivider(),
+            CircleAvatar(
+              radius: 5,
+            )
+          ],
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Expanded(
+            child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+              color: BackgroundColor, borderRadius: defaultBorderRadius),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                data.type,
+                style: headStyleMediumNormalLight,
+              ),
+              Text(
+                MoneyFormater.format(data.payment),
+                style: headStyleLargeHigh,
+              )
+            ],
+          ),
+        ))
+      ]),
+    );
   }
 }

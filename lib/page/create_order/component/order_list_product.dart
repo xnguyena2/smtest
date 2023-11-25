@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/image_loading.dart';
+import 'package:sales_management/page/create_order/provider/price_provider.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -137,7 +139,8 @@ class _ListProductState extends State<ListProduct> {
                 },
                 onRefreshData: () {
                   data.updatePrice();
-                  widget.updateData();
+                  // widget.updateData();
+                  context.read<PriceProvider>().justRefresh();
                 },
               );
             },
@@ -194,7 +197,7 @@ class _ProductItemState extends State<ProductItem> {
     priceTxtController.text = unitNo.toString();
     if (productInPackageResponse.discountPercent != 0 ||
         productInPackageResponse.discountAmount != 0) {
-      isDiscountPercent = productInPackageResponse.discountPercent >= 0;
+      isDiscountPercent = productInPackageResponse.discountPercent > 0;
     }
     discountTxtController.text = isDiscountPercent
         ? productInPackageResponse.discountPercent.toString()
@@ -236,8 +239,10 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    String priceFormat = productInPackageResponse.priceFormat;
-    String totalPriceFormat = productInPackageResponse.totalPriceFormat;
+    print('object');
+    String priceDiscountFormat = productInPackageResponse.priceDiscountFormat;
+    String totalPriceFormat =
+        MoneyFormater.format(productInPackageResponse.totalPriceDiscount);
     String productName =
         productInPackageResponse.beerSubmitData?.get_show_name ?? 'Removed';
 
@@ -370,7 +375,7 @@ class _ProductItemState extends State<ProductItem> {
                   children: [
                     if (!widget.isEditting) ...[
                       Text(
-                        priceFormat,
+                        priceDiscountFormat,
                         style: headStyleBigMediumBlackLight,
                       ),
                       Text(
@@ -384,27 +389,8 @@ class _ProductItemState extends State<ProductItem> {
                           _container_edit_height = max_height;
                           setState(() {});
                         },
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            Text(
-                              totalPriceFormat,
-                              style: headStyleXLargehightUnderline.copyWith(
-                                decorationColor: Colors.white,
-                              ),
-                            ),
-                            Positioned(
-                              bottom: -5,
-                              child: Text(
-                                totalPriceFormat,
-                                style: headStyleXLargehightUnderline.copyWith(
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
+                        child: TextUnderlineCustome(
+                            totalPriceFormat: totalPriceFormat),
                       )
                     else
                       Text(
@@ -517,6 +503,7 @@ class _ProductItemState extends State<ProductItem> {
                                         }
                                         discountTxtController.text = '0';
                                         widget.onRefreshData();
+                                        setState(() {});
                                       },
                                     )
                                   ],
@@ -532,7 +519,9 @@ class _ProductItemState extends State<ProductItem> {
                                           inputFormatters: [
                                             FilteringTextInputFormatter
                                                 .digitsOnly,
-                                            LengthLimitingTextInputFormatter(3),
+                                            if (isDiscountPercent)
+                                              LengthLimitingTextInputFormatter(
+                                                  3),
                                           ],
                                           textAlign: TextAlign.right,
                                           maxLines: 1,
@@ -553,6 +542,7 @@ class _ProductItemState extends State<ProductItem> {
                                                   double.tryParse(value) ?? 0;
                                             }
                                             widget.onRefreshData();
+                                            setState(() {});
                                           },
                                         ),
                                       ),
@@ -630,6 +620,40 @@ class _ProductItemState extends State<ProductItem> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class TextUnderlineCustome extends StatelessWidget {
+  const TextUnderlineCustome({
+    super.key,
+    required this.totalPriceFormat,
+  });
+
+  final String totalPriceFormat;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.bottomCenter,
+      children: [
+        Text(
+          totalPriceFormat,
+          style: headStyleXLargehightUnderline.copyWith(
+            decorationColor: Colors.white,
+          ),
+        ),
+        Positioned(
+          bottom: -5,
+          child: Text(
+            totalPriceFormat,
+            style: headStyleXLargehightUnderline.copyWith(
+              color: Colors.transparent,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

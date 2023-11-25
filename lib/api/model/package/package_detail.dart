@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/utils/constants.dart';
 
 enum DeliverType { deliver, takeaway, table }
@@ -14,13 +18,13 @@ class PackageDetail extends BaseEntity {
   late DeliverType packageType;
   late final String? voucher;
   late double price;
-  late final double payment;
+  late double payment;
   late double discountAmount;
   late double discountPercent;
   late double shipPrice;
   late final String? note;
   late final String? image;
-  late final String? progress;
+  late final Progress? progress;
   late String? status;
 
   PackageDetail({
@@ -64,7 +68,9 @@ class PackageDetail extends BaseEntity {
     shipPrice = json['ship_price'] as double;
     note = json['note'];
     image = json['image'];
-    progress = json['progress'];
+    progress = json['progress'] == null
+        ? Progress(transaction: [])
+        : Progress.fromJson(jsonDecode(json['progress']));
     status = json['status'];
   }
 
@@ -85,12 +91,16 @@ class PackageDetail extends BaseEntity {
     _data['ship_price'] = shipPrice;
     _data['note'] = note;
     _data['image'] = image;
-    _data['progress'] = progress;
+    _data['progress'] = jsonEncode(progress);
     _data['status'] = status;
     return _data;
   }
 
   bool get isDone => status == 'DONE';
+
+  void donePayment() {
+    status = 'DONE';
+  }
 
   String get areAndTable => packageType != DeliverType.table
       ? 'NOT'
@@ -117,5 +127,57 @@ class PackageDetail extends BaseEntity {
     }
     this.beforeUpdate?.call();
     this.beforeUpdate = null;
+  }
+
+  void addtransaction(
+    double payment,
+    String type,
+    String detail,
+  ) {
+    progress ??= Progress(transaction: []);
+    progress!.addTransaction(groupId, packageSecondId, payment, type, detail);
+    this.payment += payment;
+  }
+}
+
+class Progress {
+  late final List<TransactionHistory>? transaction;
+
+  Progress({
+    required this.transaction,
+  });
+
+  void addTransaction(
+    String groupID,
+    String packageSecondId,
+    double payment,
+    String type,
+    String detail,
+  ) {
+    transaction ??= [];
+    transaction!.add(
+      TransactionHistory(
+          id: 0,
+          groupId: groupID,
+          createat:
+              DateFormat("y-MM-ddThh:mm:ss.S").format(DateTime.now().toUtc()),
+          packageSecondId: packageSecondId,
+          payment: payment,
+          type: type,
+          detail: detail),
+    );
+  }
+
+  Progress.fromJson(Map<String, dynamic> json) {
+    final listP = json['transaction'];
+    transaction = listP == null
+        ? null
+        : List.from(listP).map((e) => TransactionHistory.fromJson(e)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['transaction'] = transaction?.map((e) => e.toJson()).toList();
+    return _data;
   }
 }

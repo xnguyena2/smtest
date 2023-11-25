@@ -41,6 +41,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
   late bool isError;
   late TextEditingController txtControler =
       TextEditingController(text: widget.initValue);
+  final FocusNode txtFocus = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -53,6 +54,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
     // TODO: implement dispose
     super.dispose();
     txtControler.dispose();
+    txtFocus.dispose();
   }
 
   @override
@@ -104,6 +106,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               ),
                             )
                           : TextFormField(
+                              focusNode: txtFocus,
                               controller: txtControler,
                               enabled: !widget.isDisable,
                               autofocus: widget.isAutoFocus,
@@ -139,6 +142,8 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                                         onTap: () {
                                           txtControler.text = '';
                                           isError = true;
+                                          txtFocus.requestFocus();
+                                          widget.onChanged?.call('');
                                           setState(() {});
                                         },
                                         child: SizedBox(

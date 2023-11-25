@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/create_order/provider/price_provider.dart';
 import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -16,7 +18,8 @@ class OrderMainInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDone = data.isDone;
+    double payment = StateAreaTable.of(context).payment;
+    PaymentStatus status = data.paymentStatus();
     return DefaultPaddingContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,8 +40,8 @@ class OrderMainInfo extends StatelessWidget {
                 ],
               ),
               TextRound(
-                txt: isDone ? 'Đã giao' : 'Đang xử lý',
-                isHigh: isDone,
+                txt: status == PaymentStatus.DONE ? 'Đã giao' : 'Đang xử lý',
+                isHigh: status == PaymentStatus.DONE,
               ),
             ],
           ),
@@ -65,8 +68,14 @@ class OrderMainInfo extends StatelessWidget {
             height: 8,
           ),
           Text(
-            isDone ? 'Đã thanh toán' : 'Chưa thanh toán',
-            style: isDone ? headStyleMediumHigh500 : headStyleMediumAlert500,
+            status == PaymentStatus.DONE
+                ? 'Đã thanh toán'
+                : status == PaymentStatus.MAKE_SOME_PAY
+                    ? 'Thanh toán một phần'
+                    : 'Chưa thanh toán',
+            style: status == PaymentStatus.DONE
+                ? headStyleMediumHigh500
+                : headStyleMediumAlert500,
           )
         ],
       ),
@@ -84,8 +93,8 @@ class TotalPriceInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice =
-        MoneyFormater.format(StateAreaTable.of(context).finalPrice);
+    PackageDataResponse? package = context.watch<PriceProvider>().getPackage;
+    String totalPrice = MoneyFormater.format(package?.finalPrice ?? 0);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

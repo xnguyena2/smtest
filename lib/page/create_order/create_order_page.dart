@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
@@ -11,6 +12,7 @@ import 'package:sales_management/page/create_order/component/order_note.dart';
 import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
+import 'package:sales_management/page/create_order/provider/price_provider.dart';
 import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -82,66 +84,77 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // padding: EdgeInsets.symmetric(vertical: 10),
-      color: BackgroundColor,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SelectAreaAndDeliver(
-              data: widget.data,
-              onRefreshData: () {
-                setState(() {});
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            StateAreaTable(
-              data: widget.data.areAndTable,
-              totalPrice: widget.data.priceFormat,
-              numItems: widget.data.totalNumIems,
-              finalPrice: widget.data.finalPrice,
-              child: orderMainInfo,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            CustomerInfo(
-              data: widget.data,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            ListProduct(
-              data: widget.data,
-              updateData: () {
-                setState(() {});
-              },
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            StateAreaTable(
-              data: widget.data.areAndTable,
-              totalPrice: widget.data.priceFormat,
-              numItems: widget.data.totalNumIems,
-              finalPrice: widget.data.finalPrice,
-              child: totalPrice,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Transaction(),
-            SizedBox(
-              height: 15,
-            ),
-            Progress(),
-            SizedBox(
-              height: 15,
-            ),
-            OrderNote(),
-          ],
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => PriceProvider(widget.data),
+        )
+      ],
+      child: Container(
+        // padding: EdgeInsets.symmetric(vertical: 10),
+        color: BackgroundColor,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SelectAreaAndDeliver(
+                data: widget.data,
+                onRefreshData: () {
+                  setState(() {});
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              StateAreaTable(
+                data: widget.data.areAndTable,
+                totalPrice: widget.data.priceFormat,
+                numItems: widget.data.totalNumIems,
+                finalPrice: widget.data.finalPrice,
+                payment: widget.data.payment,
+                child: orderMainInfo,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              CustomerInfo(
+                data: widget.data,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              ListProduct(
+                data: widget.data,
+                updateData: () {
+                  setState(() {});
+                },
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              StateAreaTable(
+                data: widget.data.areAndTable,
+                totalPrice: widget.data.priceFormat,
+                numItems: widget.data.totalNumIems,
+                finalPrice: widget.data.finalPrice,
+                payment: widget.data.payment,
+                child: totalPrice,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Transaction(
+                data: widget.data,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Progress(),
+              SizedBox(
+                height: 15,
+              ),
+              OrderNote(),
+            ],
+          ),
         ),
       ),
     );

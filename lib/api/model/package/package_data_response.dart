@@ -8,6 +8,12 @@ import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
+enum PaymentStatus {
+  DONE,
+  MAKE_SOME_PAY,
+  NOT_PAY,
+}
+
 class ListPackageDetailResult {
   ListPackageDetailResult({
     required this.listResult,
@@ -109,14 +115,14 @@ class PackageDataResponse extends PackageDetail {
   }
 
   void updatePrice() {
-    price = items.fold(
-        0, (previousValue, element) => previousValue + element.realPrice);
+    price = items.fold(0,
+        (previousValue, element) => previousValue + element.totalPriceDiscount);
   }
 
   double get totalPrice {
     double total = 0;
     items.forEach((element) {
-      total += element.realPrice;
+      total += element.totalPriceDiscount;
     });
     return total;
   }
@@ -134,6 +140,27 @@ class PackageDataResponse extends PackageDetail {
       total += element.numberUnit;
     });
     return total;
+  }
+
+  PaymentStatus paymentStatus() {
+    if (payment >= totalPrice) {
+      return PaymentStatus.DONE; //'Đã thanh toán';
+    }
+    if (payment > 0) {
+      return PaymentStatus.MAKE_SOME_PAY; //'Thanh toán một phần';
+    }
+    return PaymentStatus.NOT_PAY; //'Chưa thanh toán';
+  }
+
+  void addtransaction(
+    double payment,
+    String type,
+    String detail,
+  ) {
+    super.addtransaction(payment, type, detail);
+    if (payment >= totalPrice) {
+      donePayment();
+    }
   }
 }
 
@@ -166,10 +193,12 @@ class ProductInPackageResponse extends UserPackage {
     return _data;
   }
 
-  double get realPrice {
-    double rPrice = (price * (1 - discountPercent / 100) - discountAmount);
-    return numberUnit * rPrice;
-  }
+  double get priceDiscount =>
+      (price * (1 - discountPercent / 100) - discountAmount);
+
+  double get totalPriceDiscount => numberUnit * priceDiscount;
+
+  String get priceDiscountFormat => MoneyFormater.format(priceDiscount);
 }
 
 class BuyerData extends Buyer {

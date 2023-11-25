@@ -45,8 +45,8 @@ class ProgressItem extends StatelessWidget {
   final bool isDone;
   final String txt;
   final String subTxt;
-  bool isFirst;
-  bool isLast;
+  final bool isFirst;
+  final bool isLast;
   ProgressItem({
     super.key,
     required this.isDone,

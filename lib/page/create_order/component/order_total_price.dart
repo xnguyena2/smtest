@@ -62,6 +62,7 @@ class _TotalPriceState extends State<TotalPrice> {
   Widget build(BuildContext context) {
     String totalPrice = StateAreaTable.of(context).totalPrice;
     double finalPrice = StateAreaTable.of(context).finalPrice;
+    double payment = StateAreaTable.of(context).payment;
     String finalPriceFormat = MoneyFormater.format(finalPrice);
     String numItems = StateAreaTable.of(context).numItems.toString();
     return DefaultPaddingContainer(
@@ -131,7 +132,8 @@ class _TotalPriceState extends State<TotalPrice> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3),
+                        if (isDiscountPercent)
+                          LengthLimitingTextInputFormatter(3),
                       ],
                       maxLines: 1,
                       style: headStyleXLargeHigh,
@@ -189,7 +191,6 @@ class _TotalPriceState extends State<TotalPrice> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3),
                       ],
                       maxLines: 1,
                       style: headStyleXLargeHigh,
@@ -239,20 +240,24 @@ class _TotalPriceState extends State<TotalPrice> {
         SizedBox(
           height: 12,
         ),
-        RoundBtn(
-          isSelected: true,
-          icon: LoadSvg(assetPath: 'svg/wallet.svg', width: 20, height: 20),
-          txt: 'Thanh toán trước',
-          onPressed: () {
-            showDefaultModal(
-              context: context,
-              content: ModalPayment(
-                finalPrice: finalPrice,
-                onDone: (value) {},
-              ),
-            );
-          },
-        )
+        if (finalPrice - payment > 0)
+          RoundBtn(
+            isSelected: true,
+            icon: LoadSvg(assetPath: 'svg/wallet.svg', width: 20, height: 20),
+            txt: 'Thanh toán trước',
+            onPressed: () {
+              showDefaultModal(
+                context: context,
+                content: ModalPayment(
+                  finalPrice: finalPrice - payment,
+                  onDone: (value) {
+                    data.addtransaction(value, 'Tiền mặt', '');
+                    widget.onRefreshData();
+                  },
+                ),
+              );
+            },
+          )
       ],
     ));
   }

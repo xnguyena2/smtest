@@ -19,7 +19,7 @@ class ModalPayment extends StatefulWidget {
 }
 
 class _ModalModalPaymentState extends State<ModalPayment> {
-  bool isActiveOk = false;
+  late bool isActiveOk = widget.finalPrice > 0;
   late double value = widget.finalPrice;
 
   @override
@@ -40,7 +40,7 @@ class _ModalModalPaymentState extends State<ModalPayment> {
             height: 10,
           ),
           Text(
-            widget.finalPrice.toString(),
+            MoneyFormater.format(widget.finalPrice),
             style: totalMoneyStylexXXLarge,
           ),
           Padding(
@@ -54,7 +54,7 @@ class _ModalModalPaymentState extends State<ModalPayment> {
               isNumberOnly: true,
               onChanged: (v) {
                 value = double.tryParse(v) ?? 0;
-                isActiveOk = double.parse(v) > 0;
+                isActiveOk = value > 0;
                 setState(() {});
               },
             ),

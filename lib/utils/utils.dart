@@ -15,6 +15,20 @@ String formatLocalDateTime(String? dateTime) {
       : format.format(stringToDateTime(dateTime).toLocal());
 }
 
+String formatLocalDateTimeOnlyDate(String? dateTime) {
+  final format = DateFormat('dd-MM-yyyy');
+  return dateTime == null
+      ? 'unknow'
+      : format.format(stringToDateTime(dateTime).toLocal());
+}
+
+String formatLocalDateTimeOnlyTime(String? dateTime) {
+  final format = DateFormat('HH:mm');
+  return dateTime == null
+      ? 'unknow'
+      : format.format(stringToDateTime(dateTime).toLocal());
+}
+
 String generateUUID() {
   var uuid = Uuid();
   return uuid.v1();

@@ -4,6 +4,7 @@ class StateAreaTable extends InheritedWidget {
   final String data;
   final String totalPrice;
   final double finalPrice;
+  final double payment;
   final int numItems;
 
   const StateAreaTable({
@@ -13,6 +14,7 @@ class StateAreaTable extends InheritedWidget {
     required super.child,
     required this.numItems,
     required this.finalPrice,
+    required this.payment,
   });
 
   static StateAreaTable? maybeOf(BuildContext context) {
@@ -30,6 +32,7 @@ class StateAreaTable extends InheritedWidget {
     return data != oldWidget.data ||
         totalPrice != oldWidget.totalPrice ||
         numItems != oldWidget.numItems ||
-        finalPrice != oldWidget.finalPrice;
+        finalPrice != oldWidget.finalPrice ||
+        payment != oldWidget.payment;
   }
 }

@@ -257,6 +257,12 @@ const TextStyle headStyleSmallLarge = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleLargeRed = TextStyle(
+  color: Red,
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle headStyleLargeWhite = TextStyle(
   color: White,
   fontSize: 14,

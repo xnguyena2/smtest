@@ -75,8 +75,4 @@ class UserPackage extends BaseEntity {
     _data['status'] = status;
     return _data;
   }
-
-  String get priceFormat => MoneyFormater.format(price);
-
-  String get totalPriceFormat => MoneyFormater.format(price * numberUnit);
 }
