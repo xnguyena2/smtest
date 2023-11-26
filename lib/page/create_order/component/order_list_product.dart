@@ -5,7 +5,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/image_loading.dart';
-import 'package:sales_management/page/create_order/provider/price_provider.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -13,11 +13,9 @@ import 'package:sales_management/utils/typedef.dart';
 
 class ListProduct extends StatefulWidget {
   final PackageDataResponse data;
-  final VoidCallback updateData;
   const ListProduct({
     super.key,
     required this.data,
-    required this.updateData,
   });
 
   @override
@@ -75,7 +73,8 @@ class _ListProductState extends State<ListProduct> {
                           ),
                         ),
                       );
-                      widget.updateData();
+                      context.read<ProductProvider>().justRefresh();
+                      setState(() {});
                     },
                   ),
                 )
@@ -139,8 +138,10 @@ class _ListProductState extends State<ListProduct> {
                 },
                 onRefreshData: () {
                   data.updatePrice();
-                  // widget.updateData();
-                  context.read<PriceProvider>().justRefresh();
+                  context.read<ProductProvider>().justRefresh();
+                },
+                onRemoveItem: () {
+                  setState(() {});
                 },
               );
             },
@@ -162,12 +163,14 @@ class ProductItem extends StatefulWidget {
   final bool isEditting;
   final VoidCallbackArg<ProductInPackageResponse> updateNumberUnit;
   final VoidCallback onRefreshData;
+  final VoidCallback onRemoveItem;
   const ProductItem(
       {super.key,
       this.isEditting = false,
       required this.productInPackageResponse,
       required this.updateNumberUnit,
-      required this.onRefreshData});
+      required this.onRefreshData,
+      required this.onRemoveItem});
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -223,8 +226,10 @@ class _ProductItemState extends State<ProductItem> {
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
     priceTxtController.text = unitNo.toString();
+    widget.onRefreshData();
     if (unitNo <= 0) {
-      widget.onRefreshData();
+      widget.onRemoveItem();
+      return;
     }
     setState(() {});
   }
@@ -234,12 +239,12 @@ class _ProductItemState extends State<ProductItem> {
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
     priceTxtController.text = unitNo.toString();
+    widget.onRefreshData();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    print('object');
     String priceDiscountFormat = productInPackageResponse.priceDiscountFormat;
     String totalPriceFormat =
         MoneyFormater.format(productInPackageResponse.totalPriceDiscount);
@@ -457,6 +462,7 @@ class _ProductItemState extends State<ProductItem> {
                                             productInPackageResponse.price =
                                                 double.tryParse(value) ?? 0;
                                             widget.onRefreshData();
+                                            setState(() {});
                                           },
                                         ),
                                       ),

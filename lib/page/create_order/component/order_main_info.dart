@@ -4,21 +4,19 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
-import 'package:sales_management/page/create_order/provider/price_provider.dart';
 import 'package:sales_management/page/create_order/state/state_aretable.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class OrderMainInfo extends StatelessWidget {
-  final PackageDataResponse data;
   const OrderMainInfo({
     super.key,
-    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
-    double payment = StateAreaTable.of(context).payment;
+    PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
     PaymentStatus status = data.paymentStatus();
     return DefaultPaddingContainer(
       child: Column(
@@ -59,7 +57,9 @@ class OrderMainInfo extends StatelessWidget {
           SizedBox(
             height: 5,
           ),
-          AreaTableInfo(),
+          AreaTableInfo(
+            data: data,
+          ),
           SizedBox(
             height: 4,
           ),
@@ -84,17 +84,16 @@ class OrderMainInfo extends StatelessWidget {
 }
 
 class TotalPriceInfo extends StatelessWidget {
+  final PackageDataResponse data;
+
   const TotalPriceInfo({
     super.key,
     required this.data,
   });
 
-  final PackageDataResponse data;
-
   @override
   Widget build(BuildContext context) {
-    PackageDataResponse? package = context.watch<PriceProvider>().getPackage;
-    String totalPrice = MoneyFormater.format(package?.finalPrice ?? 0);
+    String totalPrice = MoneyFormater.format(data.finalPrice);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -113,13 +112,16 @@ class TotalPriceInfo extends StatelessWidget {
 }
 
 class AreaTableInfo extends StatelessWidget {
+  final PackageDataResponse data;
+
   const AreaTableInfo({
     super.key,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
-    String areaTable = StateAreaTable.of(context).data;
+    String areaTable = data.areAndTable;
     if (areaTable == 'NOT') return SizedBox();
     return Container(
       padding: EdgeInsets.symmetric(vertical: 7, horizontal: 7),

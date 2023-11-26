@@ -12,9 +12,9 @@ import 'package:sales_management/page/create_order/component/order_note.dart';
 import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
-import 'package:sales_management/page/create_order/provider/price_provider.dart';
 import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/constants.dart';
@@ -60,8 +60,6 @@ class CreateOrderBody extends StatefulWidget {
 }
 
 class _CreateOrderBodyState extends State<CreateOrderBody> {
-  late final OrderMainInfo orderMainInfo;
-  late final TotalPrice totalPrice;
   @override
   void initState() {
     // TODO: implement initState
@@ -69,25 +67,14 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
     initUI();
   }
 
-  void initUI() {
-    orderMainInfo = OrderMainInfo(
-      data: widget.data,
-    );
-    totalPrice = TotalPrice(
-      isEditting: true,
-      data: widget.data,
-      onRefreshData: () {
-        setState(() {});
-      },
-    );
-  }
+  void initUI() {}
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => PriceProvider(widget.data),
+          create: (_) => ProductProvider(widget.data),
         )
       ],
       child: Container(
@@ -98,21 +85,11 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
             children: [
               SelectAreaAndDeliver(
                 data: widget.data,
-                onRefreshData: () {
-                  setState(() {});
-                },
               ),
               SizedBox(
                 height: 10,
               ),
-              StateAreaTable(
-                data: widget.data.areAndTable,
-                totalPrice: widget.data.priceFormat,
-                numItems: widget.data.totalNumIems,
-                finalPrice: widget.data.finalPrice,
-                payment: widget.data.payment,
-                child: orderMainInfo,
-              ),
+              OrderMainInfo(),
               SizedBox(
                 height: 15,
               ),
@@ -124,27 +101,18 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
               ),
               ListProduct(
                 data: widget.data,
-                updateData: () {
-                  setState(() {});
-                },
               ),
               SizedBox(
                 height: 15,
               ),
-              StateAreaTable(
-                data: widget.data.areAndTable,
-                totalPrice: widget.data.priceFormat,
-                numItems: widget.data.totalNumIems,
-                finalPrice: widget.data.finalPrice,
-                payment: widget.data.payment,
-                child: totalPrice,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Transaction(
+              TotalPrice(
+                isEditting: true,
                 data: widget.data,
               ),
+              SizedBox(
+                height: 15,
+              ),
+              Transaction(),
               SizedBox(
                 height: 15,
               ),

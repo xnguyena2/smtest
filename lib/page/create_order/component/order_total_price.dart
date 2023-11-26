@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
 import 'package:sales_management/page/create_order/component/order_list_product.dart';
-import 'package:sales_management/page/create_order/state/state_aretable.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class TotalPrice extends StatefulWidget {
   final PackageDataResponse data;
   final bool isEditting;
-  final VoidCallback onRefreshData;
   const TotalPrice({
     super.key,
     required this.isEditting,
     required this.data,
-    required this.onRefreshData,
   });
 
   @override
@@ -60,11 +59,12 @@ class _TotalPriceState extends State<TotalPrice> {
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice = StateAreaTable.of(context).totalPrice;
-    double finalPrice = StateAreaTable.of(context).finalPrice;
-    double payment = StateAreaTable.of(context).payment;
+    PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
+    String totalPrice = data.priceFormat;
+    double finalPrice = data.finalPrice;
+    double payment = data.payment;
     String finalPriceFormat = MoneyFormater.format(finalPrice);
-    String numItems = StateAreaTable.of(context).numItems.toString();
+    String numItems = data.totalNumIems.toString();
     return DefaultPaddingContainer(
         child: Column(
       children: [
@@ -115,7 +115,8 @@ class _TotalPriceState extends State<TotalPrice> {
                       data.discountPercent = 0;
                     }
                     discountTxtController.text = '0';
-                    widget.onRefreshData();
+                    context.read<ProductProvider>().justRefresh();
+                    setState(() {});
                   },
                 ),
               ],
@@ -148,7 +149,8 @@ class _TotalPriceState extends State<TotalPrice> {
                         } else {
                           data.discountAmount = double.tryParse(value) ?? 0;
                         }
-                        widget.onRefreshData();
+                        context.read<ProductProvider>().justRefresh();
+                        setState(() {});
                       },
                     ),
                   ),
@@ -201,7 +203,8 @@ class _TotalPriceState extends State<TotalPrice> {
                       ),
                       onChanged: (value) {
                         data.shipPrice = double.tryParse(value) ?? 0;
-                        widget.onRefreshData();
+                        context.read<ProductProvider>().justRefresh();
+                        setState(() {});
                       },
                     ),
                   ),
@@ -252,7 +255,7 @@ class _TotalPriceState extends State<TotalPrice> {
                   finalPrice: finalPrice - payment,
                   onDone: (value) {
                     data.addtransaction(value, 'Tiền mặt', '');
-                    widget.onRefreshData();
+                    context.read<ProductProvider>().justRefresh();
                   },
                 ),
               );

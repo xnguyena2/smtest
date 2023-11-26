@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class Transaction extends StatelessWidget {
-  final PackageDataResponse data;
   const Transaction({
     super.key,
-    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
+    PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
     double own = data.finalPrice - data.payment;
     String ownFormat = MoneyFormater.format(own);
     final transactions = data.progress?.transaction ?? [];

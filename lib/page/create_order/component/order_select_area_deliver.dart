@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/page/table/table_page.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -10,11 +12,9 @@ import 'package:sales_management/utils/svg_loader.dart';
 
 class SelectAreaAndDeliver extends StatefulWidget {
   final PackageDataResponse data;
-  final VoidCallback onRefreshData;
   const SelectAreaAndDeliver({
     super.key,
     required this.data,
-    required this.onRefreshData,
   });
 
   @override
@@ -42,7 +42,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
         currentPackgeType = value ?? DeliverType.table;
         data.packageType = currentPackgeType;
         isEatAtTable = currentPackgeType == DeliverType.table;
-        widget.onRefreshData();
+        context.read<ProductProvider>().justRefresh();
       });
     }
 
@@ -80,8 +80,8 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
               height: 7,
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TablePage(
@@ -92,12 +92,12 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                         data.tableId = table.tableId;
                         data.tableName = table.tableName;
                         data.setAction(() => setPackageId(table));
-                        setState(() {});
-                        widget.onRefreshData();
                       },
                     ),
                   ),
                 );
+                context.read<ProductProvider>().justRefresh();
+                setState(() {});
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
