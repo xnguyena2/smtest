@@ -4,7 +4,6 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
-import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -18,6 +17,7 @@ class OrderMainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
     PaymentStatus status = data.paymentStatus();
+    bool isDone = data.isDone;
     return DefaultPaddingContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,8 +38,8 @@ class OrderMainInfo extends StatelessWidget {
                 ],
               ),
               TextRound(
-                txt: status == PaymentStatus.DONE ? 'Đã giao' : 'Đang xử lý',
-                isHigh: status == PaymentStatus.DONE,
+                txt: isDone ? 'Đã giao' : 'Đang xử lý',
+                isHigh: isDone,
               ),
             ],
           ),

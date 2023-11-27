@@ -141,7 +141,7 @@ class PackageDetail extends BaseEntity {
 }
 
 class Progress {
-  late final List<TransactionHistory>? transaction;
+  late List<TransactionHistory>? transaction;
 
   Progress({
     required this.transaction,

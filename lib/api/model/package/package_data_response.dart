@@ -158,9 +158,17 @@ class PackageDataResponse extends PackageDetail {
     String detail,
   ) {
     super.addtransaction(payment, type, detail);
-    if (payment >= totalPrice) {
-      donePayment();
+  }
+
+  String? getDoneTime() {
+    if (status != 'DONE') {
+      return null;
     }
+    final length = progress?.transaction?.length;
+    if (length == null || length == 0) {
+      return null;
+    }
+    return progress!.transaction!.last.createat!;
   }
 }
 

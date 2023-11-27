@@ -112,7 +112,7 @@ class PackageItemDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      data.priceFormat,
+                      data.finalPriceFormat,
                       style: headStyleMedium500,
                     ),
                     Text(

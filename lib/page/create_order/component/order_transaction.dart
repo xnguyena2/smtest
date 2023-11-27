@@ -38,24 +38,28 @@ class Transaction extends StatelessWidget {
                 ],
               )
             ],
+          )
+        else
+          TextRound(txt: 'Đã thanh toán', isHigh: true),
+        if (transactions.length > 0) ...[
+          SizedBox(
+            height: 10,
           ),
-        SizedBox(
-          height: 10,
-        ),
-        ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return TransactionItem(
-              data: transactions[index],
-            );
-          },
-          itemCount: transactions.length,
-        ),
-        SizedBox(
-          height: 10,
-        ),
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return TransactionItem(
+                data: transactions[index],
+              );
+            },
+            itemCount: transactions.length,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+        ]
       ],
     ));
   }

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class Progress extends StatelessWidget {
+  final PackageDataResponse data;
   const Progress({
     super.key,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
+    bool isDone = data.isDone;
     return DefaultPaddingContainer(
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -20,20 +25,20 @@ class Progress extends StatelessWidget {
             isDone: true,
             isFirst: true,
             txt: 'Chờ xác nhận',
-            subTxt: '16:08 14/08/2023',
+            subTxt: '',
           )),
           Expanded(
               child: ProgressItem(
             isDone: true,
-            txt: 'Chờ xác nhận',
-            subTxt: '16:08 14/08/2023',
+            txt: 'Đang xử lý',
+            subTxt: formatLocalDateTime(data.createat),
           )),
           Expanded(
               child: ProgressItem(
-            isDone: false,
+            isDone: isDone,
             isLast: true,
-            txt: 'Chờ xác nhận',
-            subTxt: '16:08 14/08/2023',
+            txt: 'Đã giao',
+            subTxt: isDone ? formatLocalDateTime(data.getDoneTime()) : '',
           )),
         ],
       ),

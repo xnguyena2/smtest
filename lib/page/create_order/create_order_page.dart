@@ -116,7 +116,9 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
               SizedBox(
                 height: 15,
               ),
-              Progress(),
+              Progress(
+                data: widget.data,
+              ),
               SizedBox(
                 height: 15,
               ),
