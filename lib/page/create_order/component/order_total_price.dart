@@ -2,22 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
 import 'package:sales_management/page/create_order/component/order_list_product.dart';
+import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class TotalPrice extends StatefulWidget {
+  final VoidCallback onUpdate;
   final PackageDataResponse data;
   final bool isEditting;
   const TotalPrice({
     super.key,
     required this.isEditting,
     required this.data,
+    required this.onUpdate,
   });
 
   @override
@@ -256,6 +261,14 @@ class _TotalPriceState extends State<TotalPrice> {
                   onDone: (value) {
                     data.addtransaction(value, 'Tiền mặt', '');
                     context.read<ProductProvider>().justRefresh();
+                    updatePackage(ProductPackage.fromPackageDataResponse(data))
+                        .then((value) => null)
+                        .catchError(
+                      (error, stackTrace) {
+                        showNotification(context, 'Lỗi hệ thống!');
+                      },
+                    );
+                    widget.onUpdate();
                   },
                 ),
               );

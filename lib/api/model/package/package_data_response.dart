@@ -14,6 +14,25 @@ enum PaymentStatus {
   NOT_PAY,
 }
 
+class WrapListFilter {
+  final String filter;
+  final ListPackageDetailResult listPackageDetailResult;
+
+  WrapListFilter({
+    required this.listPackageDetailResult,
+    required this.filter,
+  });
+
+  List<PackageDataResponse> getListResult() {
+    if (filter.isEmpty) return listPackageDetailResult.listResult;
+    return listPackageDetailResult.listResult
+        .where((e) =>
+            e.tableName?.contains(filter) == true ||
+            e.buyer?.reciverFullname?.contains(filter) == true)
+        .toList();
+  }
+}
+
 class ListPackageDetailResult {
   ListPackageDetailResult({
     required this.listResult,
@@ -158,6 +177,14 @@ class PackageDataResponse extends PackageDetail {
     String detail,
   ) {
     super.addtransaction(payment, type, detail);
+  }
+
+  void makeDone() {
+    if (payment < finalPrice) {
+      print('payment: $payment, finalPrice: $finalPrice');
+      addtransaction(finalPrice - payment, 'Tiền mặt', '');
+    }
+    donePayment();
   }
 
   String? getDoneTime() {

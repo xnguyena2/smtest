@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
+import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 
 import 'component/order_list_bar.dart';
@@ -12,16 +14,23 @@ class OrderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: OrderListBar(),
-        body: FetchAPI<ListPackageDetailResult>(
-          future: getAllPackage(groupID),
-          successBuilder: (data) {
-            return Body(
-              data: data,
-            );
-          },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => SearchProvider(''),
+        )
+      ],
+      child: SafeArea(
+        child: Scaffold(
+          appBar: OrderListBar(),
+          body: FetchAPI<ListPackageDetailResult>(
+            future: getAllPackage(groupID),
+            successBuilder: (data) {
+              return Body(
+                data: data,
+              );
+            },
+          ),
         ),
       ),
     );

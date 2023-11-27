@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/page/order_list/component/order_list_package_item.dart';
+import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class OrderListAllPackageTab extends StatefulWidget {
@@ -17,7 +19,10 @@ class OrderListAllPackageTab extends StatefulWidget {
 class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
   @override
   Widget build(BuildContext context) {
-    List<PackageDataResponse> listPackage = widget.data.listResult;
+    final filter = context.watch<SearchProvider>().getTxt ?? '';
+    WrapListFilter wrapListFilter =
+        WrapListFilter(listPackageDetailResult: widget.data, filter: filter);
+    List<PackageDataResponse> listPackage = wrapListFilter.getListResult();
     listPackage.sort(
       (a, b) => b.createat?.compareTo(a.createat ?? '') ?? 0,
     );

@@ -20,6 +20,7 @@ class AppSearchBar extends StatefulWidget {
 class _AppSearchBarState extends State<AppSearchBar> {
   bool showCloseBtn = false;
   final editorCtr = TextEditingController();
+  final searchFocusNode = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -37,6 +38,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
   void dispose() {
     // TODO: implement dispose
     editorCtr.dispose();
+    searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -62,6 +64,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
           Expanded(
             child: TextField(
               controller: editorCtr,
+              focusNode: searchFocusNode,
               maxLines: 1,
               style: headStyleSemiLarge,
               decoration: InputDecoration(
@@ -76,6 +79,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
             GestureDetector(
               onTap: () {
                 editorCtr.clear();
+                searchFocusNode.requestFocus();
               },
               child: LoadSvg(assetPath: 'svg/close_circle.svg'),
             ),

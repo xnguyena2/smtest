@@ -20,6 +20,7 @@ class Transaction extends StatelessWidget {
     final transactions = data.progress?.transaction ?? [];
     return DefaultPaddingContainer(
         child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (own > 0)
           Row(

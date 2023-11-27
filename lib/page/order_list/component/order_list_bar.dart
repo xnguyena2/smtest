@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sales_management/page/order_list/provider/search_provider.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../../component/app_search_bar.dart';
 import '../../../component/header.dart';
@@ -6,7 +9,9 @@ import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
 class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
-  const OrderListBar({super.key});
+  const OrderListBar({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,9 @@ class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         extendsWidget: AppSearchBar(
           hint: 'Tìm theo tên',
+          onChanged: (txt) {
+            context.read<SearchProvider>().updateValue = txt;
+          },
         ),
       ),
     );

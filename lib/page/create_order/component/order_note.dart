@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class OrderNote extends StatelessWidget {
+  final PackageDataResponse data;
   const OrderNote({
     super.key,
+    required this.data,
   });
 
   @override
@@ -24,14 +27,18 @@ class OrderNote extends StatelessWidget {
               ),
               child: TextFormField(
                 textAlign: TextAlign.left,
-                initialValue: 'ghi chu',
+                initialValue: data.note,
                 maxLines: 1,
                 style: headStyleSemiLarge,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                   border: InputBorder.none,
+                  hintText: 'Ghi chú',
                 ),
+                onChanged: (value) {
+                  data.note = value;
+                },
               ),
             ),
           ),

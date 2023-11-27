@@ -12,7 +12,6 @@ import 'package:sales_management/page/create_order/component/order_note.dart';
 import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
-import 'package:sales_management/page/create_order/state/state_aretable.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -27,30 +26,47 @@ class CreateOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(data),
+        )
+      ],
+      child: SafeArea(
         child: Scaffold(
-      appBar: CreateOrderBar(
-        onBackPressed: () {
-          Navigator.pop(context);
-        },
+          appBar: CreateOrderBar(
+            onBackPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          body: CreateOrderBody(
+            data: data,
+            onUpdated: () => onUpdated(data),
+          ),
+          bottomNavigationBar: Builder(
+            builder: (context) => BottomBar(
+              done: () {
+                data.runPendingAction();
+                data.makeDone();
+                updatePackage(ProductPackage.fromPackageDataResponse(data));
+                onUpdated(data);
+                context.read<ProductProvider>().justRefresh();
+              },
+              cancel: () {},
+            ),
+          ),
+        ),
       ),
-      body: CreateOrderBody(data: data),
-      bottomNavigationBar: BottomBar(
-        done: () {
-          data.runPendingAction();
-          updatePackage(ProductPackage.fromPackageDataResponse(data));
-          onUpdated(data);
-        },
-        cancel: () {},
-      ),
-    ));
+    );
   }
 }
 
 class CreateOrderBody extends StatefulWidget {
+  final VoidCallback onUpdated;
   const CreateOrderBody({
     super.key,
     required this.data,
+    required this.onUpdated,
   });
 
   final PackageDataResponse data;
@@ -71,60 +87,58 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ProductProvider(widget.data),
-        )
-      ],
-      child: Container(
-        // padding: EdgeInsets.symmetric(vertical: 10),
-        color: BackgroundColor,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SelectAreaAndDeliver(
-                data: widget.data,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              OrderMainInfo(),
-              SizedBox(
-                height: 15,
-              ),
-              CustomerInfo(
-                data: widget.data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              ListProduct(
-                data: widget.data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TotalPrice(
-                isEditting: true,
-                data: widget.data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Transaction(),
-              SizedBox(
-                height: 15,
-              ),
-              Progress(
-                data: widget.data,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              OrderNote(),
-            ],
-          ),
+    return Container(
+      // padding: EdgeInsets.symmetric(vertical: 10),
+      color: BackgroundColor,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SelectAreaAndDeliver(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            OrderMainInfo(),
+            SizedBox(
+              height: 15,
+            ),
+            CustomerInfo(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            ListProduct(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            TotalPrice(
+              isEditting: true,
+              data: widget.data,
+              onUpdate: () {
+                widget.onUpdated();
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Transaction(),
+            SizedBox(
+              height: 15,
+            ),
+            Progress(
+              data: widget.data,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            OrderNote(
+              data: widget.data,
+            ),
+          ],
         ),
       ),
     );
