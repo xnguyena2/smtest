@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 
 class ProductProvider with ChangeNotifier, DiagnosticableTreeMixin {
-  ProductProvider(PackageDataResponse data) : _package = data;
+  ProductProvider(PackageDataResponse? data) : _package = data;
 
   PackageDataResponse? _package;
 

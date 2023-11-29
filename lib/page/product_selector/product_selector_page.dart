@@ -22,7 +22,7 @@ import 'package:sales_management/utils/utils.dart';
 import '../../component/category_selector.dart';
 
 class ProductSelectorPage extends StatefulWidget {
-  final PackageDataResponse packageDataResponse;
+  final PackageDataResponse? packageDataResponse;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
   const ProductSelectorPage(
       {super.key, required this.packageDataResponse, required this.onUpdated});
@@ -39,6 +39,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   late List<String> listCategory;
 
   List<String> listCateSelected = ['Tất cả'];
+
+  late final isProductSelector = widget.packageDataResponse != null;
 
   Future<BootStrapData?> getAllProduct() async {
     var box = Hive.box(hiveSettingBox);
@@ -73,7 +75,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
       return null;
     }
 
-    config.products.add(product);
+    config.addOrReplaceProduct(product);
 
     box.put(hiveConfigKey, config);
 
@@ -94,6 +96,23 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     );
     listProductOfCat = listProduct = listAllProduct;
     return config;
+  }
+
+  Future<void> showProductInfo(BeerSubmitData product) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoadingOverlayAlt(
+          child: ProductInfo(
+            product: product,
+            onAdded: (product) {
+              loadConfig = addProduct(product);
+            },
+          ),
+        ),
+      ),
+    );
+    setState(() {});
   }
 
   @override
@@ -157,99 +176,179 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                             LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
                         isFlip: false,
                       ),
-                      GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 120,
-                          childAspectRatio: 1 / 1,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemCount: listProduct.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == listProduct.length) {
+                      if (isProductSelector)
+                        selectProduct()
+                      else
+                        ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final item = listProduct[index];
                             return GestureDetector(
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoadingOverlayAlt(
-                                      child: ProductInfo(
-                                        product: BeerSubmitData.createEmpty(
-                                            widget.packageDataResponse.groupId,
-                                            generateUUID()),
-                                        onAdded: (product) {
-                                          loadConfig = addProduct(product);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                setState(() {});
+                              onTap: () {
+                                showProductInfo(item);
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: White,
-                                  borderRadius: defaultBorderRadius,
-                                  border: defaultBorder,
-                                ),
-                                child: Center(
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      LoadSvg(
-                                        assetPath: 'svg/plus.svg',
-                                        color: MainHighColor,
-                                      ),
-                                      const Positioned(
-                                        bottom: -25,
-                                        child: Text(
-                                          'Thêm sản phẩm',
-                                          style: subInfoStyLargeHigh400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              child: ProductManagerItem(
+                                productData: item,
                               ),
                             );
-                          }
-                          BeerSubmitData productData = listProduct[index];
-                          final productUnitID = productData
-                              .listUnit?.firstOrNull?.beerUnitSecondId;
-                          return ProductSelectorItem(
-                            key: ValueKey(productUnitID),
-                            productData: productData,
-                            productInPackageResponse: productUnitID == null
-                                ? null
-                                : widget.packageDataResponse
-                                    .productMap[productUnitID],
-                            updateNumberUnit: (productInPackageResponse) {
-                              widget.packageDataResponse
-                                  .addProduct(productInPackageResponse);
-                              context.read<ProductProvider>().updateValue =
-                                  widget.packageDataResponse;
-                            },
-                          );
-                        },
-                      ),
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                            height: 10,
+                          ),
+                          itemCount: listProduct.length,
+                        ),
                     ],
                   ),
                 ),
               );
             },
           ),
-          bottomNavigationBar: ProductSelectorBottomBar(
-            done: () {
-              widget.onUpdated(widget.packageDataResponse);
-              Navigator.pop(context);
+          bottomNavigationBar: isProductSelector
+              ? ProductSelectorBottomBar(
+                  done: () {
+                    widget.onUpdated(widget.packageDataResponse!);
+                    Navigator.pop(context);
+                  },
+                  cancel: () {
+                    Navigator.pop(context);
+                  },
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  GridView selectProduct() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 120,
+        childAspectRatio: 1 / 1,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: listProduct.length + 1,
+      itemBuilder: (context, index) {
+        if (index == listProduct.length) {
+          return GestureDetector(
+            onTap: () {
+              showProductInfo(
+                  BeerSubmitData.createEmpty(groupID, generateUUID()));
             },
-            cancel: () {
-              Navigator.pop(context);
-            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: White,
+                borderRadius: defaultBorderRadius,
+                border: defaultBorder,
+              ),
+              child: Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    LoadSvg(
+                      assetPath: 'svg/plus.svg',
+                      color: MainHighColor,
+                    ),
+                    const Positioned(
+                      bottom: -25,
+                      child: Text(
+                        'Thêm sản phẩm',
+                        style: subInfoStyLargeHigh400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+        BeerSubmitData productData = listProduct[index];
+        final productUnitID =
+            productData.listUnit?.firstOrNull?.beerUnitSecondId;
+        return ProductSelectorItem(
+          key: ValueKey(productUnitID),
+          productData: productData,
+          productInPackageResponse: productUnitID == null
+              ? null
+              : widget.packageDataResponse!.productMap[productUnitID],
+          updateNumberUnit: (productInPackageResponse) {
+            widget.packageDataResponse!.addProduct(productInPackageResponse);
+            context.read<ProductProvider>().justRefresh();
+          },
+        );
+      },
+    );
+  }
+}
+
+class ProductManagerItem extends StatelessWidget {
+  final BeerSubmitData productData;
+  const ProductManagerItem({
+    super.key,
+    required this.productData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final imgUrl = productData.getFristLargeImg;
+    final name = productData.get_show_name;
+    final price = productData.getRealPrice;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: White,
+        borderRadius: defaultBorderRadius,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ConstrainedBox(
+          constraints: BoxConstraints.tight(Size.fromHeight(70)),
+          child: Row(
+            children: [
+              AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: defaultBorder,
+                    color: BackgroundColor,
+                    borderRadius: defaultBorderRadius,
+                    image: DecorationImage(
+                      image: (imgUrl == null
+                          ? const AssetImage(
+                              'assets/images/product.png',
+                            )
+                          : NetworkImage(imgUrl)) as ImageProvider,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 18,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      name,
+                      style: headStyleSemiLarge500,
+                    ),
+                    Text(
+                      MoneyFormater.format(price),
+                      style: headStyleSemiLargeHigh500,
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),

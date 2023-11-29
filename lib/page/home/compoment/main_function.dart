@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/order_list/order_list_page.dart';
+import 'package:sales_management/page/product_selector/product_selector_page.dart';
+import 'package:sales_management/page/table/table_page.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
 const List<Map<String, String>> listMainFunction = [
-  {
-    'icon': 'svg/order_food.svg',
-    'name': 'Tạo đơn',
-  },
-  {
-    'icon': 'svg/table_order.svg',
-    'name': 'Quản lý bàn',
-  },
-  {
-    'icon': 'svg/order_manage.svg',
-    'name': 'Đơn hàng',
-  },
-  {
-    'icon': 'svg/goods.svg',
-    'name': 'Sản phẩm',
-  },
-  {
-    'icon': 'svg/report.svg',
-    'name': 'Báo cáo',
-  },
+  {'icon': 'svg/order_food.svg', 'name': 'Tạo đơn', 'page': 'Create_Order'},
+  {'icon': 'svg/table_order.svg', 'name': 'Quản lý bàn', 'page': 'Table'},
+  {'icon': 'svg/order_manage.svg', 'name': 'Đơn hàng', 'page': 'List_Order'},
+  {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
+  {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
 ];
 
 class MainFunction extends StatelessWidget {
@@ -46,23 +36,65 @@ class MainFunction extends StatelessWidget {
         itemCount: listMainFunction.length,
         itemBuilder: (context, index) {
           var item = listMainFunction[index];
-          return Container(
-            decoration: BoxDecoration(
-                color: White,
-                borderRadius: defaultBorderRadius,
-                boxShadow: const [defaultShadow]),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                LoadSvg(
-                  assetPath: item['icon'].toString(),
-                  width: 40,
-                ),
-                Text(
-                  item['name'].toString(),
-                  style: subInfoStyLarge400,
-                )
-              ],
+          return GestureDetector(
+            onTap: () {
+              switch (item['page']) {
+                case 'Create_Order':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateOrderPage(
+                        data: PackageDataResponse(items: [], buyer: null),
+                        onUpdated: (package) {},
+                      ),
+                    ),
+                  );
+                case 'Table':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TablePage(
+                        done: (table) {},
+                      ),
+                    ),
+                  );
+                case 'List_Order':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderListPage(),
+                    ),
+                  );
+                case 'Product':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductSelectorPage(
+                        packageDataResponse: null,
+                        onUpdated: (packageDataResponse) {},
+                      ),
+                    ),
+                  );
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: White,
+                  borderRadius: defaultBorderRadius,
+                  boxShadow: const [defaultShadow]),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  LoadSvg(
+                    assetPath: item['icon'].toString(),
+                    width: 40,
+                  ),
+                  Text(
+                    item['name'].toString(),
+                    style: subInfoStyLarge400,
+                  )
+                ],
+              ),
             ),
           );
         },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
-import 'package:sales_management/utils/typedef.dart';
 
 import '../../../component/app_search_bar.dart';
 import '../../../component/header.dart';
@@ -9,8 +8,10 @@ import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
 class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback onBackPressed;
   const OrderListBar({
     super.key,
+    required this.onBackPressed,
   });
 
   @override
@@ -41,6 +42,7 @@ class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
             context.read<SearchProvider>().updateValue = txt;
           },
         ),
+        onBackPressed: onBackPressed,
       ),
     );
   }

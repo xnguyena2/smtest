@@ -89,7 +89,10 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: OrderListPage(),
+      home: ProductSelectorPage(
+        packageDataResponse: null,
+        onUpdated: (PackageDataResponse) {},
+      ),
     );
   }
 }

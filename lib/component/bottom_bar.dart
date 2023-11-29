@@ -12,6 +12,7 @@ class BottomBar extends StatelessWidget {
   final bool isActiveOk;
   final bool enableDelete;
   final bool hideDeleteBtn;
+  final Widget? midleWidget;
   const BottomBar({
     super.key,
     required this.done,
@@ -21,6 +22,7 @@ class BottomBar extends StatelessWidget {
     this.isActiveOk = true,
     this.enableDelete = false,
     this.hideDeleteBtn = false,
+    this.midleWidget,
   });
 
   @override
@@ -52,6 +54,12 @@ class BottomBar extends StatelessWidget {
             SizedBox(
               width: 10,
             )
+          ],
+          if (midleWidget != null) ...[
+            midleWidget!,
+            SizedBox(
+              width: 10,
+            ),
           ],
           Expanded(
             child: ApproveBtn(

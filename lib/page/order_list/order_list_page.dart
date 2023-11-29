@@ -22,7 +22,11 @@ class OrderListPage extends StatelessWidget {
       ],
       child: SafeArea(
         child: Scaffold(
-          appBar: OrderListBar(),
+          appBar: OrderListBar(
+            onBackPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           body: FetchAPI<ListPackageDetailResult>(
             future: getAllPackage(groupID),
             successBuilder: (data) {

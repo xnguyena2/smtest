@@ -297,7 +297,9 @@ class BeerUnit {
     required this.weight,
     required this.beerUnitSecondId,
     required this.status,
-  });
+  }) {
+    correctPrice();
+  }
   @HiveField(0)
   late final String groupId;
 

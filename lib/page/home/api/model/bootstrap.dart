@@ -35,6 +35,16 @@ class BootStrapData {
     _data['deviceConfig'] = deviceConfig?.toJson();
     return _data;
   }
+
+  void addOrReplaceProduct(BeerSubmitData p) {
+    int index = products
+        .indexWhere((element) => element.beerSecondID == p.beerSecondID);
+    if (index < 0) {
+      products.add(p);
+      return;
+    }
+    products[index] = p;
+  }
 }
 
 @HiveType(typeId: 3)

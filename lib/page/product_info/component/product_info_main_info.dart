@@ -32,7 +32,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
   late final BeerSubmitData product;
   late Future<BootStrapData?> loadConfig;
   BootStrapData? config;
-  List<String> listCateSelected = [];
+  late List<String> listCateSelected = product.list_categorys ?? [];
   late List<String> listCategory;
 
   Future<BootStrapData?> getAllProduct() async {
@@ -114,9 +114,11 @@ class _MainProductInfoState extends State<MainProductInfo> {
               height: 21,
             ),
             InputFiledWithHeader(
+              isNumberOnly: true,
               header: 'Giá sỉ',
               hint: '0-0',
               isImportance: false,
+              isDisable: true,
             ),
             SizedBox(
               height: 21,
