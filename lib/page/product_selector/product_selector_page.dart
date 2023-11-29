@@ -142,6 +142,21 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               setState(() {});
             },
           ),
+          floatingActionButton: FloatingActionButton.small(
+            elevation: 2,
+            backgroundColor: MainHighColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: floatBottomBorderRadius,
+            ),
+            onPressed: () {
+              showProductInfo(
+                  BeerSubmitData.createEmpty(groupID, generateUUID()));
+            },
+            child: LoadSvg(
+              assetPath: 'svg/plus_large_width_2.svg',
+              color: White,
+            ),
+          ),
           body: FetchAPI<BootStrapData?>(
             future: loadConfig, //getall(),
             successBuilder: (BootStrapData? data) {
