@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
@@ -42,8 +43,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
 
   late final isProductSelector = widget.packageDataResponse != null;
 
-  Future<BootStrapData?> getAllProduct() async {
-    var box = Hive.box(hiveSettingBox);
+  Future<BootStrapData?> getAllProduct(Box<dynamic> box) async {
+    // var box = Hive.box(hiveSettingBox);
     BootStrapData? config = box.get(hiveConfigKey);
     if (config == null) {
       return null;
@@ -98,8 +99,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     return config;
   }
 
-  Future<void> showProductInfo(BeerSubmitData product) async {
-    await Navigator.push(
+  void showProductInfo(BeerSubmitData product) {
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LoadingOverlayAlt(
@@ -112,14 +113,12 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
         ),
       ),
     );
-    setState(() {});
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadConfig = getAllProduct();
   }
 
   @override
@@ -128,7 +127,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (_) => ProductProvider(widget.packageDataResponse))
+            create: (_) => ProductProvider(widget.packageDataResponse),
+          )
         ],
         child: Scaffold(
           appBar: ProductSelectorBar(
@@ -157,66 +157,74 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               color: White,
             ),
           ),
-          body: FetchAPI<BootStrapData?>(
-            future: loadConfig, //getall(),
-            successBuilder: (BootStrapData? data) {
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-                  color: BackgroundColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CategorySelector(
-                        listCategory: listCategory,
-                        multiSelected: false,
-                        onChanged: (listCategorySelected) {
-                          listCateSelected = listCategorySelected;
-                          final String? firstCat =
-                              listCategorySelected.firstOrNull;
-                          if (firstCat == null || firstCat == 'Tất cả') {
-                            listProductOfCat = listProduct = listAllProduct;
-                            setState(() {});
-                            return;
-                          }
-                          listProductOfCat = listProduct = listAllProduct
-                              .where((element) =>
-                                  element.isContainCategory(listCateSelected))
-                              .toList();
+          body: ValueListenableBuilder<Box>(
+            valueListenable:
+                Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+            builder: (context, value, child) {
+              loadConfig = getAllProduct(value);
+              return FetchAPI<BootStrapData?>(
+                future: loadConfig, //getall(),
+                successBuilder: (BootStrapData? data) {
+                  return SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                      color: BackgroundColor,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CategorySelector(
+                            listCategory: listCategory,
+                            multiSelected: false,
+                            onChanged: (listCategorySelected) {
+                              listCateSelected = listCategorySelected;
+                              final String? firstCat =
+                                  listCategorySelected.firstOrNull;
+                              if (firstCat == null || firstCat == 'Tất cả') {
+                                listProductOfCat = listProduct = listAllProduct;
+                                setState(() {});
+                                return;
+                              }
+                              listProductOfCat = listProduct = listAllProduct
+                                  .where((element) => element
+                                      .isContainCategory(listCateSelected))
+                                  .toList();
 
-                          setState(() {});
-                        },
-                        itemsSelected: listCateSelected,
-                        firstWidget:
-                            LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
-                        isFlip: false,
-                      ),
-                      if (isProductSelector)
-                        selectProduct()
-                      else
-                        ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final item = listProduct[index];
-                            return GestureDetector(
-                              onTap: () {
-                                showProductInfo(item);
-                              },
-                              child: ProductManagerItem(
-                                productData: item,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
+                              setState(() {});
+                            },
+                            itemsSelected: listCateSelected,
+                            firstWidget:
+                                LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
+                            isFlip: false,
                           ),
-                          itemCount: listProduct.length,
-                        ),
-                    ],
-                  ),
-                ),
+                          if (isProductSelector)
+                            selectProduct()
+                          else
+                            ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final item = listProduct[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    showProductInfo(item);
+                                  },
+                                  child: ProductManagerItem(
+                                    productData: item,
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: 10,
+                              ),
+                              itemCount: listProduct.length,
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
           ),
