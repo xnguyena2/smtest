@@ -8,6 +8,8 @@ import 'package:sales_management/utils/constants.dart';
 
 enum DeliverType { deliver, takeaway, table }
 
+enum PackageStatusType { CREATE, DONE }
+
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
   late final String? deviceId;
@@ -27,7 +29,7 @@ class PackageDetail extends BaseEntity {
   late final String? note;
   late final String? image;
   late final Progress? progress;
-  late String? status;
+  late PackageStatusType? status;
 
   PackageDetail({
     required int? id,
@@ -77,7 +79,9 @@ class PackageDetail extends BaseEntity {
     progress = json['progress'] == null
         ? Progress(transaction: [])
         : Progress.fromJson(jsonDecode(json['progress']));
-    status = json['status'];
+    status = PackageStatusType.values.firstWhere(
+        (element) => element.name == json['status'],
+        orElse: () => PackageStatusType.CREATE);
   }
 
   Map<String, dynamic> toJson() {
@@ -100,14 +104,14 @@ class PackageDetail extends BaseEntity {
     _data['note'] = note;
     _data['image'] = image;
     _data['progress'] = jsonEncode(progress);
-    _data['status'] = status;
+    _data['status'] = status?.name;
     return _data;
   }
 
-  bool get isDone => status == 'DONE';
+  bool get isDone => status == PackageStatusType.DONE;
 
   void donePayment() {
-    status = 'DONE';
+    status = PackageStatusType.DONE;
   }
 
   String get areAndTable => packageType != DeliverType.table

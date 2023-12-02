@@ -56,7 +56,7 @@ class BottomBar extends StatelessWidget {
             )
           ],
           if (midleWidget != null) ...[
-            midleWidget!,
+            Expanded(child: midleWidget!),
             SizedBox(
               width: 10,
             ),

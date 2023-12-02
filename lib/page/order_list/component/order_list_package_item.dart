@@ -154,7 +154,6 @@ class PackageItemDetail extends StatelessWidget {
                             context: context,
                             content: ModalConfirm(
                               onOk: () {
-                                data.status = 'CANCEL';
                                 deletePackage(
                                         PackageID.fromPackageDataResponse(data))
                                     .then((value) => onDelete(data))

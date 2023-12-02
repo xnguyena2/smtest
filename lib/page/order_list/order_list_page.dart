@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/svg_loader.dart';
 
 import 'component/order_list_bar.dart';
 
@@ -26,6 +28,29 @@ class OrderListPage extends StatelessWidget {
             onBackPressed: () {
               Navigator.pop(context);
             },
+          ),
+          floatingActionButton: FloatingActionButton.small(
+            elevation: 2,
+            backgroundColor: MainHighColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: floatBottomBorderRadius,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateOrderPage(
+                    data: PackageDataResponse(items: [], buyer: null),
+                    onUpdated: (package) {},
+                    onDelete: (PackageDataResponse) {},
+                  ),
+                ),
+              );
+            },
+            child: LoadSvg(
+              assetPath: 'svg/plus_large_width_2.svg',
+              color: White,
+            ),
           ),
           body: FetchAPI<ListPackageDetailResult>(
             future: getAllPackage(groupID),

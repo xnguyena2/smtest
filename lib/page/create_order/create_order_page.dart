@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
+import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 import 'package:sales_management/page/create_order/component/order_progress.dart';
 import 'package:sales_management/component/bottom_bar.dart';
@@ -71,6 +72,21 @@ class CreateOrderPage extends StatelessWidget {
                   showAlert(context, 'Không thể hủy!');
                 });
               },
+              midleWidget: ApproveBtn(
+                isActiveOk: true,
+                txt: 'Lưu đơn',
+                padding: EdgeInsets.symmetric(vertical: 12),
+                backgroundColor: HighColor,
+                onPressed: () {
+                  updatePackage(ProductPackage.fromPackageDataResponse(data))
+                      .then((value) {
+                    onUpdated(data);
+                    context.read<ProductProvider>().justRefresh();
+                  }).onError((error, stackTrace) {
+                    showAlert(context, 'Không thể cập nhật!');
+                  });
+                },
+              ),
             ),
           ),
         ),

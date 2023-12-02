@@ -8,11 +8,21 @@ DateTime stringToDateTime(String dateValue) {
   return DateFormat("y-MM-ddThh:mm:ss.S").parse(dateValue, true);
 }
 
-String formatLocalDateTime(String? dateTime) {
+String getCreateAtNow() {
+  return DateFormat("y-MM-ddThh:mm:ss.S").format(DateTime.now().toUtc());
+}
+
+String formatLocalDateTimeOfDateTime(DateTime dateTime) {
   final format = DateFormat('HH:mm dd-MM-yyyy');
-  return dateTime == null
-      ? 'unknow'
-      : format.format(stringToDateTime(dateTime).toLocal());
+  return format.format(dateTime.toLocal());
+}
+
+String formatLocalDateTime(String? dateTime) {
+  if (dateTime == null || dateTime.isEmpty) {
+    return 'unknow';
+  }
+  final format = DateFormat('HH:mm dd-MM-yyyy');
+  return format.format(stringToDateTime(dateTime).toLocal());
 }
 
 String formatLocalDateTimeOnlyDate(String? dateTime) {

@@ -15,6 +15,7 @@ class Transaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
+    bool isDone = data.isDone;
     double own = data.finalPrice - data.payment;
     String ownFormat = MoneyFormater.format(own);
     final transactions = data.progress?.transaction ?? [];
@@ -22,7 +23,13 @@ class Transaction extends StatelessWidget {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (own > 0)
+        if (own <= 0 && isDone)
+          Row(
+            children: [
+              TextRound(txt: 'Đã thanh toán', isHigh: true),
+            ],
+          )
+        else
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -38,12 +45,6 @@ class Transaction extends StatelessWidget {
                   ),
                 ],
               )
-            ],
-          )
-        else
-          Row(
-            children: [
-              TextRound(txt: 'Đã thanh toán', isHigh: true),
             ],
           ),
         if (transactions.length > 0) ...[

@@ -49,19 +49,22 @@ class PackageDataResponse extends PackageDetail {
   PackageDataResponse({
     required this.items,
     required this.buyer,
-  }) : super(
-            id: 0,
-            groupId: '',
-            createat: '',
-            packageSecondId: '',
-            deviceId: '',
-            price: 0.0,
-            cost: 0.0,
-            profit: 0.0,
-            payment: 0.0,
-            discountAmount: 0.0,
-            discountPercent: 0.0,
-            shipPrice: 0.0);
+  })  : localTimeTxt = formatLocalDateTimeOfDateTime(DateTime.now().toUtc()),
+        super(
+          id: 0,
+          groupId: groupID,
+          createat: getCreateAtNow(),
+          packageSecondId: '',
+          deviceId: '',
+          price: 0.0,
+          cost: 0.0,
+          profit: 0.0,
+          payment: 0.0,
+          discountAmount: 0.0,
+          discountPercent: 0.0,
+          shipPrice: 0.0,
+          status: PackageStatusType.CREATE,
+        );
 
   late final String localTimeTxt;
 
@@ -166,7 +169,7 @@ class PackageDataResponse extends PackageDetail {
   double get profitExpect => price - cost;
 
   PaymentStatus paymentStatus() {
-    if (payment >= price) {
+    if (payment >= price && isDone) {
       return PaymentStatus.DONE; //'Đã thanh toán';
     }
     if (payment > 0) {
@@ -192,7 +195,7 @@ class PackageDataResponse extends PackageDetail {
   }
 
   String? getDoneTime() {
-    if (status != 'DONE') {
+    if (status != PackageStatusType.DONE) {
       return null;
     }
     final length = progress?.transaction?.length;
