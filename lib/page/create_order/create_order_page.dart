@@ -12,8 +12,10 @@ import 'package:sales_management/page/create_order/component/order_note.dart';
 import 'package:sales_management/page/create_order/component/order_select_area_deliver.dart';
 import 'package:sales_management/page/create_order/component/order_total_price.dart';
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
+import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/constants.dart';
@@ -21,8 +23,12 @@ import '../../utils/constants.dart';
 class CreateOrderPage extends StatelessWidget {
   final PackageDataResponse data;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
+  final VoidCallbackArg<PackageDataResponse> onDelete;
   const CreateOrderPage(
-      {super.key, required this.data, required this.onUpdated});
+      {super.key,
+      required this.data,
+      required this.onUpdated,
+      required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +54,23 @@ class CreateOrderPage extends StatelessWidget {
               done: () {
                 data.runPendingAction();
                 data.makeDone();
-                updatePackage(ProductPackage.fromPackageDataResponse(data));
-                onUpdated(data);
-                context.read<ProductProvider>().justRefresh();
+                updatePackage(ProductPackage.fromPackageDataResponse(data))
+                    .then((value) {
+                  onUpdated(data);
+                  context.read<ProductProvider>().justRefresh();
+                }).onError((error, stackTrace) {
+                  showAlert(context, 'Không thể cập nhật!');
+                });
               },
-              cancel: () {},
+              cancel: () {
+                deletePackage(PackageID.fromPackageDataResponse(data))
+                    .then((value) {
+                  onDelete(data);
+                  Navigator.pop(context);
+                }).onError((error, stackTrace) {
+                  showAlert(context, 'Không thể hủy!');
+                });
+              },
             ),
           ),
         ),

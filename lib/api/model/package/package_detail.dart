@@ -22,6 +22,8 @@ class PackageDetail extends BaseEntity {
   late double discountAmount;
   late double discountPercent;
   late double shipPrice;
+  late double cost;
+  late double profit;
   late final String? note;
   late final String? image;
   late final Progress? progress;
@@ -38,6 +40,8 @@ class PackageDetail extends BaseEntity {
     required this.discountAmount,
     required this.discountPercent,
     required this.shipPrice,
+    required this.cost,
+    required this.profit,
     this.areaId,
     this.areaName,
     this.tableId,
@@ -66,6 +70,8 @@ class PackageDetail extends BaseEntity {
     discountAmount = json['discount_amount'] as double;
     discountPercent = json['discount_percent'] as double;
     shipPrice = json['ship_price'] as double;
+    cost = json['cost'] as double;
+    profit = json['profit'] as double;
     note = json['note'];
     image = json['image'];
     progress = json['progress'] == null
@@ -89,6 +95,8 @@ class PackageDetail extends BaseEntity {
     _data['discount_amount'] = discountAmount;
     _data['discount_percent'] = discountPercent;
     _data['ship_price'] = shipPrice;
+    _data['cost'] = cost;
+    _data['profit'] = profit;
     _data['note'] = note;
     _data['image'] = image;
     _data['progress'] = jsonEncode(progress);
@@ -137,6 +145,13 @@ class PackageDetail extends BaseEntity {
     progress ??= Progress(transaction: []);
     progress!.addTransaction(groupId, packageSecondId, payment, type, detail);
     this.payment += payment;
+    this.profit = this.payment - cost;
+  }
+
+  void removeLastestTransaction() {
+    double undoPrice = progress?.removeLastestTransaction()?.payment ?? 0;
+    this.payment -= undoPrice;
+    this.profit = payment - cost;
   }
 }
 
@@ -166,6 +181,10 @@ class Progress {
           type: type,
           detail: detail),
     );
+  }
+
+  TransactionHistory? removeLastestTransaction() {
+    return transaction?.removeLast();
   }
 
   Progress.fromJson(Map<String, dynamic> json) {

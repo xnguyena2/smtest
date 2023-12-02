@@ -10,16 +10,19 @@ class ProductPackage extends PackageDetail {
     required this.buyer,
     required this.productUnits,
   }) : super(
-            id: id,
-            groupId: groupId,
-            createat: '',
-            packageSecondId: '',
-            deviceId: '',
-            price: 0.0,
-            payment: 0.0,
-            discountAmount: 0.0,
-            discountPercent: 0.0,
-            shipPrice: 0.0);
+          id: id,
+          groupId: groupId,
+          createat: '',
+          packageSecondId: '',
+          deviceId: '',
+          price: 0.0,
+          payment: 0.0,
+          discountAmount: 0.0,
+          discountPercent: 0.0,
+          shipPrice: 0.0,
+          cost: 0.0,
+          profit: 0.0,
+        );
 
   ProductPackage.fromPackageDataResponse(
       PackageDataResponse packageDataResponse)
@@ -33,6 +36,8 @@ class ProductPackage extends PackageDetail {
           discountAmount: packageDataResponse.discountAmount,
           discountPercent: packageDataResponse.discountPercent,
           shipPrice: packageDataResponse.shipPrice,
+          cost: packageDataResponse.cost,
+          profit: packageDataResponse.profit,
           areaId: packageDataResponse.areaId,
           areaName: packageDataResponse.areaName,
           tableId: packageDataResponse.tableId,

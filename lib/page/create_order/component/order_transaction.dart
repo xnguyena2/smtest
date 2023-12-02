@@ -41,7 +41,11 @@ class Transaction extends StatelessWidget {
             ],
           )
         else
-          TextRound(txt: 'Đã thanh toán', isHigh: true),
+          Row(
+            children: [
+              TextRound(txt: 'Đã thanh toán', isHigh: true),
+            ],
+          ),
         if (transactions.length > 0) ...[
           SizedBox(
             height: 10,

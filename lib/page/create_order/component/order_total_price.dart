@@ -69,6 +69,8 @@ class _TotalPriceState extends State<TotalPrice> {
     double finalPrice = data.finalPrice;
     double payment = data.payment;
     String finalPriceFormat = MoneyFormater.format(finalPrice);
+    String profitExpectFormat = MoneyFormater.format(data.profitExpect);
+    String costFormat = MoneyFormater.format(data.cost);
     String numItems = data.totalNumIems.toString();
     return DefaultPaddingContainer(
         child: Column(
@@ -190,7 +192,7 @@ class _TotalPriceState extends State<TotalPrice> {
               Row(
                 children: [
                   SizedBox(
-                    width: 60,
+                    width: 120,
                     child: TextFormField(
                       textAlign: TextAlign.right,
                       controller: shipTxtController,
@@ -236,6 +238,38 @@ class _TotalPriceState extends State<TotalPrice> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
+              'Giá vốn của đơn này',
+              style: headStyleXLargeLigh,
+            ),
+            Text(
+              costFormat,
+              style: headStyleXLarge,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Lợi nhuận dự kiến của đơn này',
+              style: headStyleXLargeLigh,
+            ),
+            Text(
+              profitExpectFormat,
+              style: headStyleXLargeHigh,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 18,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
               'Tổng cộng',
               style: totalMoneyHeaderStylexXLarge,
             ),
@@ -245,10 +279,10 @@ class _TotalPriceState extends State<TotalPrice> {
             ),
           ],
         ),
-        SizedBox(
-          height: 12,
-        ),
-        if (finalPrice - payment > 0)
+        if (finalPrice - payment > 0) ...[
+          SizedBox(
+            height: 12,
+          ),
           RoundBtn(
             isSelected: true,
             icon: LoadSvg(assetPath: 'svg/wallet.svg', width: 20, height: 20),
@@ -262,18 +296,21 @@ class _TotalPriceState extends State<TotalPrice> {
                     data.addtransaction(value, 'Tiền mặt', '');
                     context.read<ProductProvider>().justRefresh();
                     updatePackage(ProductPackage.fromPackageDataResponse(data))
-                        .then((value) => null)
+                        .then((value) => widget.onUpdate())
                         .catchError(
                       (error, stackTrace) {
-                        showNotification(context, 'Lỗi hệ thống!');
+                        data.removeLastestTransaction();
+                        context.read<ProductProvider>().justRefresh();
+                        widget.onUpdate();
+                        showAlert(context, 'Lỗi hệ thống!');
                       },
                     );
-                    widget.onUpdate();
                   },
                 ),
               );
             },
-          )
+          ),
+        ],
       ],
     ));
   }

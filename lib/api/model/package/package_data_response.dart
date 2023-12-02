@@ -56,6 +56,8 @@ class PackageDataResponse extends PackageDetail {
             packageSecondId: '',
             deviceId: '',
             price: 0.0,
+            cost: 0.0,
+            profit: 0.0,
             payment: 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0,
@@ -92,7 +94,12 @@ class PackageDataResponse extends PackageDetail {
     updatePrice();
   }
 
-  void addProduct(ProductInPackageResponse productInPackageResponse) {
+  void addOrUpdateProduct(ProductInPackageResponse productInPackageResponse) {
+    _addProduct(productInPackageResponse);
+    updatePrice();
+  }
+
+  void _addProduct(ProductInPackageResponse productInPackageResponse) {
     final productUnit =
         productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull;
     if (productUnit == null) {
@@ -108,6 +115,7 @@ class PackageDataResponse extends PackageDetail {
     }
     items.add(productInPackageResponse);
     productMap[productUnit.beerUnitSecondId] = productInPackageResponse;
+    updatePrice();
   }
 
   void updateProductMap() {
@@ -136,14 +144,8 @@ class PackageDataResponse extends PackageDetail {
   void updatePrice() {
     price = items.fold(0,
         (previousValue, element) => previousValue + element.totalPriceDiscount);
-  }
-
-  double get totalPrice {
-    double total = 0;
-    items.forEach((element) {
-      total += element.totalPriceDiscount;
-    });
-    return total;
+    cost = items.fold(
+        0, (previousValue, element) => previousValue + element.totalCost);
   }
 
   int get totalNumIems {
@@ -151,7 +153,7 @@ class PackageDataResponse extends PackageDetail {
         0, (previousValue, element) => previousValue + element.numberUnit);
   }
 
-  String get totalPriceFormat => MoneyFormater.format(totalPrice);
+  String get totalPriceFormat => MoneyFormater.format(price);
 
   int get numItem {
     int total = 0;
@@ -161,8 +163,10 @@ class PackageDataResponse extends PackageDetail {
     return total;
   }
 
+  double get profitExpect => price - cost;
+
   PaymentStatus paymentStatus() {
-    if (payment >= totalPrice) {
+    if (payment >= price) {
       return PaymentStatus.DONE; //'Đã thanh toán';
     }
     if (payment > 0) {
@@ -232,6 +236,9 @@ class ProductInPackageResponse extends UserPackage {
       (price * (1 - discountPercent / 100) - discountAmount);
 
   double get totalPriceDiscount => numberUnit * priceDiscount;
+
+  double get totalCost =>
+      numberUnit * (beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0);
 
   String get priceDiscountFormat => MoneyFormater.format(priceDiscount);
 }

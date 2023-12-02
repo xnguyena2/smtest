@@ -134,7 +134,7 @@ class _ListProductState extends State<ListProduct> {
                 isEditting: true,
                 productInPackageResponse: item,
                 updateNumberUnit: (productInPackageResponse) {
-                  data.addProduct(productInPackageResponse);
+                  data.addOrUpdateProduct(productInPackageResponse);
                 },
                 onRefreshData: () {
                   data.updatePrice();

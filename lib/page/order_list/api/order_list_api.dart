@@ -6,6 +6,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/api/model/response_result.dart';
 import 'package:sales_management/api/model/user_info_query.dart';
+import 'package:sales_management/page/order_list/api/model/package_id.dart';
 
 Future<ListPackageDetailResult> getAllPackage(String groupID) async {
   final request = UserInfoQuery(
@@ -34,6 +35,22 @@ Future<ResponseResult> updatePackage(ProductPackage productPackage) async {
   // print(request.toJson());
 
   final response = await postC('/package/update', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    debugPrint(response.body, wrapWidth: 1024);
+    return ResponseResult.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<ResponseResult> deletePackage(PackageID packageID) async {
+  final request = packageID;
+  // print(request.toJson());
+
+  final response = await postC('/package/delete', request);
 
   print(response.statusCode);
   if (response.statusCode == 200) {

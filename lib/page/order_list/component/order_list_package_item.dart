@@ -4,25 +4,34 @@ import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/component/modal_confirm.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 class PackageItemDetail extends StatelessWidget {
   final PackageDataResponse data;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
+  final VoidCallbackArg<PackageDataResponse> onDelete;
   const PackageItemDetail({
     super.key,
     required this.data,
     required this.onUpdated,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = data.buyer;
     bool isTable = data.packageType == DeliverType.table;
+    PaymentStatus status = data.paymentStatus();
+
+    bool isDone = data.isDone;
 
     String headerTxt = '';
     if (isTable) {
@@ -35,8 +44,6 @@ class PackageItemDetail extends StatelessWidget {
       headerTxt = buyer?.reciverFullname ?? 'Khách lẻ';
     }
 
-    bool isDone = data.isDone;
-
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -45,6 +52,7 @@ class PackageItemDetail extends StatelessWidget {
             builder: (context) => CreateOrderPage(
               data: data.clone(),
               onUpdated: onUpdated,
+              onDelete: onDelete,
             ),
           ),
         );
@@ -116,7 +124,11 @@ class PackageItemDetail extends StatelessWidget {
                       style: headStyleMedium500,
                     ),
                     Text(
-                      isDone ? 'Đã thanh toán' : 'Chưa thanh toán',
+                      status == PaymentStatus.DONE
+                          ? 'Đã thanh toán'
+                          : status == PaymentStatus.MAKE_SOME_PAY
+                              ? 'Thanh toán một phần'
+                              : 'Chưa thanh toán',
                       style: isDone
                           ? subInfoStyMediumHigh400
                           : subInfoStyMediumAlert400,
@@ -138,9 +150,21 @@ class PackageItemDetail extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       isSmallTxt: true,
                       onPressed: () {
-                        data.status = 'CANCEL';
-                        updatePackage(
-                            ProductPackage.fromPackageDataResponse(data));
+                        showDefaultModal(
+                            context: context,
+                            content: ModalConfirm(
+                              onOk: () {
+                                data.status = 'CANCEL';
+                                deletePackage(
+                                        PackageID.fromPackageDataResponse(data))
+                                    .then((value) => onDelete(data))
+                                    .catchError(
+                                  (error, stackTrace) {
+                                    showAlert(context, 'Lỗi hệ thống!');
+                                  },
+                                );
+                              },
+                            ));
                       },
                     ),
                   ),
@@ -155,9 +179,15 @@ class PackageItemDetail extends StatelessWidget {
                       isSmallTxt: true,
                       onPressed: () {
                         print('update package: ${data.packageSecondId}');
-                        data.status = 'DONE';
+                        data.makeDone();
                         updatePackage(
-                            ProductPackage.fromPackageDataResponse(data));
+                                ProductPackage.fromPackageDataResponse(data))
+                            .then((value) => onUpdated(data))
+                            .catchError(
+                          (error, stackTrace) {
+                            showAlert(context, 'Lỗi hệ thống!');
+                          },
+                        );
                       },
                     ),
                   ),

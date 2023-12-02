@@ -41,6 +41,10 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
               listPackage[index] = PackageDataResponse;
               setState(() {});
             },
+            onDelete: (PackageDataResponse) {
+              listPackage.remove(PackageDataResponse);
+              setState(() {});
+            },
           );
         },
         separatorBuilder: (BuildContext context, int index) =>

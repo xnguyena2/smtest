@@ -46,6 +46,7 @@ class MainFunction extends StatelessWidget {
                       builder: (context) => CreateOrderPage(
                         data: PackageDataResponse(items: [], buyer: null),
                         onUpdated: (package) {},
+                        onDelete: (PackageDataResponse) {},
                       ),
                     ),
                   );

@@ -142,21 +142,23 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               setState(() {});
             },
           ),
-          floatingActionButton: FloatingActionButton.small(
-            elevation: 2,
-            backgroundColor: MainHighColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: floatBottomBorderRadius,
-            ),
-            onPressed: () {
-              showProductInfo(
-                  BeerSubmitData.createEmpty(groupID, generateUUID()));
-            },
-            child: LoadSvg(
-              assetPath: 'svg/plus_large_width_2.svg',
-              color: White,
-            ),
-          ),
+          floatingActionButton: isProductSelector
+              ? null
+              : FloatingActionButton.small(
+                  elevation: 2,
+                  backgroundColor: MainHighColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: floatBottomBorderRadius,
+                  ),
+                  onPressed: () {
+                    showProductInfo(
+                        BeerSubmitData.createEmpty(groupID, generateUUID()));
+                  },
+                  child: LoadSvg(
+                    assetPath: 'svg/plus_large_width_2.svg',
+                    color: White,
+                  ),
+                ),
           body: ValueListenableBuilder<Box>(
             valueListenable:
                 Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
@@ -300,7 +302,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               ? null
               : widget.packageDataResponse!.productMap[productUnitID],
           updateNumberUnit: (productInPackageResponse) {
-            widget.packageDataResponse!.addProduct(productInPackageResponse);
+            widget.packageDataResponse!
+                .addOrUpdateProduct(productInPackageResponse);
             context.read<ProductProvider>().justRefresh();
           },
         );
