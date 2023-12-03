@@ -41,7 +41,7 @@ class Transaction extends StatelessWidget {
                     style: headStyleLargeRed,
                   ),
                   SizedBox(
-                    width: 9,
+                    width: 3,
                   ),
                 ],
               )

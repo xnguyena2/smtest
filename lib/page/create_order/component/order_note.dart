@@ -26,6 +26,7 @@ class OrderNote extends StatelessWidget {
                 ),
               ),
               child: TextFormField(
+                enabled: !data.isDone,
                 textAlign: TextAlign.left,
                 initialValue: data.note,
                 maxLines: 1,

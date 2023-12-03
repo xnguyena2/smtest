@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 import 'package:sales_management/page/create_order/component/order_progress.dart';
 import 'package:sales_management/component/bottom_bar.dart';
@@ -16,6 +17,7 @@ import 'package:sales_management/page/create_order/component/order_transaction.d
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
+import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
@@ -33,62 +35,88 @@ class CreateOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ProductProvider(data),
-        )
-      ],
-      child: SafeArea(
-        child: Scaffold(
-          appBar: CreateOrderBar(
-            onBackPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          body: CreateOrderBody(
-            data: data,
-            onUpdated: () => onUpdated(data),
-          ),
-          bottomNavigationBar: Builder(
-            builder: (context) => BottomBar(
-              done: () {
-                data.runPendingAction();
-                data.makeDone();
-                updatePackage(ProductPackage.fromPackageDataResponse(data))
-                    .then((value) {
-                  onUpdated(data);
-                  context.read<ProductProvider>().justRefresh();
-                }).onError((error, stackTrace) {
-                  showAlert(context, 'Không thể cập nhật!');
-                });
+    return LoadingOverlayAlt(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => ProductProvider(data),
+          )
+        ],
+        child: SafeArea(
+          child: Scaffold(
+            appBar: CreateOrderBar(
+              onBackPressed: () {
+                Navigator.pop(context);
               },
-              cancel: () {
-                deletePackage(PackageID.fromPackageDataResponse(data))
-                    .then((value) {
-                  onDelete(data);
-                  Navigator.pop(context);
-                }).onError((error, stackTrace) {
-                  showAlert(context, 'Không thể hủy!');
-                });
-              },
-              midleWidget: ApproveBtn(
-                isActiveOk: true,
-                txt: 'Lưu đơn',
-                padding: EdgeInsets.symmetric(vertical: 12),
-                backgroundColor: HighColor,
-                onPressed: () {
-                  updatePackage(ProductPackage.fromPackageDataResponse(data))
-                      .then((value) {
-                    onUpdated(data);
-                    context.read<ProductProvider>().justRefresh();
-                    Navigator.pop(context);
-                  }).onError((error, stackTrace) {
-                    showAlert(context, 'Không thể cập nhật!');
-                  });
-                },
-              ),
             ),
+            body: CreateOrderBody(
+              data: data,
+              onUpdated: () => onUpdated(data),
+            ),
+            bottomNavigationBar: data.isDone
+                ? null
+                : Builder(
+                    builder: (context) => BottomBar(
+                      done: () {
+                        LoadingOverlayAlt.of(context).show();
+                        data.runPendingAction();
+                        data.makeDone();
+                        updatePackage(
+                                ProductPackage.fromPackageDataResponse(data))
+                            .then((value) {
+                          onUpdated(data);
+                          context.read<ProductProvider>().justRefresh();
+                          LoadingOverlayAlt.of(context).hide();
+                          Navigator.pop(context);
+                        }).onError((error, stackTrace) {
+                          showAlert(context, 'Không thể cập nhật!');
+                          LoadingOverlayAlt.of(context).hide();
+                        });
+                      },
+                      cancel: () {
+                        showDefaultDialog(
+                          context,
+                          'Xác nhận hủy!',
+                          'Bạn có chắc muốn hủy đơn?',
+                          onOk: () {
+                            LoadingOverlayAlt.of(context).show();
+                            deletePackage(
+                                    PackageID.fromPackageDataResponse(data))
+                                .then((value) {
+                              onDelete(data);
+                              Navigator.pop(context);
+                              LoadingOverlayAlt.of(context).hide();
+                            }).onError((error, stackTrace) {
+                              showAlert(context, 'Không thể hủy!');
+                              LoadingOverlayAlt.of(context).hide();
+                            });
+                          },
+                          onCancel: () {},
+                        );
+                      },
+                      midleWidget: ApproveBtn(
+                        isActiveOk: true,
+                        txt: 'Lưu đơn',
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        backgroundColor: HighColor,
+                        onPressed: () {
+                          LoadingOverlayAlt.of(context).show();
+                          data.runPendingAction();
+                          updatePackage(
+                                  ProductPackage.fromPackageDataResponse(data))
+                              .then((value) {
+                            onUpdated(data);
+                            context.read<ProductProvider>().justRefresh();
+                            LoadingOverlayAlt.of(context).hide();
+                            Navigator.pop(context);
+                          }).onError((error, stackTrace) {
+                            showAlert(context, 'Không thể cập nhật!');
+                            LoadingOverlayAlt.of(context).hide();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
           ),
         ),
       ),
@@ -151,7 +179,6 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
               height: 15,
             ),
             TotalPrice(
-              isEditting: true,
               data: widget.data,
               onUpdate: () {
                 widget.onUpdated();

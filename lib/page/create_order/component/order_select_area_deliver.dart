@@ -25,6 +25,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
   late DeliverType currentPackgeType;
   late bool isEatAtTable;
   late PackageDataResponse data;
+  late bool isDone = data.isDone;
 
   @override
   void initState() {
@@ -59,23 +60,26 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                 txt: 'Ăn tại bàn',
                 groupValue: currentPackgeType,
                 value: DeliverType.table,
+                isDisable: isDone,
                 onChanged: onChanged,
               ),
               CheckRadioItem<DeliverType>(
                 txt: 'Mang về',
                 groupValue: currentPackgeType,
                 value: DeliverType.takeaway,
+                isDisable: isDone,
                 onChanged: onChanged,
               ),
               CheckRadioItem<DeliverType>(
                 txt: 'Giao hàng',
                 groupValue: currentPackgeType,
                 value: DeliverType.deliver,
+                isDisable: isDone,
                 onChanged: onChanged,
               )
             ],
           ),
-          if (isEatAtTable) ...[
+          if (isEatAtTable && !isDone) ...[
             const SizedBox(
               height: 7,
             ),

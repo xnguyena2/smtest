@@ -18,6 +18,7 @@ class CustomerInfo extends StatefulWidget {
 }
 
 class _CustomerInfoState extends State<CustomerInfo> {
+  late bool isDone = widget.data.isDone;
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = widget.data.buyer;
@@ -73,25 +74,27 @@ class _CustomerInfoState extends State<CustomerInfo> {
             height: 5,
           ),
           GestureDetector(
-            onTap: () async {
-              AddressData addressData =
-                  AddressData.fromBuyerData(widget.data.buyer);
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ReciverInfo(
-                    addressData: addressData,
-                    done: (data) {
-                      addressData = data;
-                      widget.data.updateBuyer(addressData);
-                    },
-                    delete: () {},
-                    isEdit: false,
-                  ),
-                ),
-              );
-              setState(() {});
-            },
+            onTap: isDone
+                ? null
+                : () async {
+                    AddressData addressData =
+                        AddressData.fromBuyerData(widget.data.buyer);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReciverInfo(
+                          addressData: addressData,
+                          done: (data) {
+                            addressData = data;
+                            widget.data.updateBuyer(addressData);
+                          },
+                          delete: () {},
+                          isEdit: false,
+                        ),
+                      ),
+                    );
+                    setState(() {});
+                  },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(

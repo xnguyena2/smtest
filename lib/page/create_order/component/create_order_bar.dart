@@ -18,31 +18,31 @@ class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
           child: Row(
             children: [
-              FunctionItem(
-                icon: 'svg/edit_clipboard.svg',
-                title: 'Sửa',
-              ),
-              const SizedBox(
-                width: 20,
-              ),
+              // FunctionItem(
+              //   icon: 'svg/edit_clipboard.svg',
+              //   title: 'Sửa',
+              // ),
+              // const SizedBox(
+              //   width: 20,
+              // ),
               FunctionItem(
                 icon: 'svg/copy.svg',
                 title: 'Copy',
               ),
-              const SizedBox(
-                width: 20,
-              ),
-              FunctionItem(
-                icon: 'svg/order_cancel.svg',
-                title: 'Trả/Hủy',
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              FunctionItem(
-                icon: 'svg/print.svg',
-                title: 'In hóa đơn',
-              ),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // FunctionItem(
+              //   icon: 'svg/order_cancel.svg',
+              //   title: 'Trả/Hủy',
+              // ),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // FunctionItem(
+              //   icon: 'svg/print.svg',
+              //   title: 'In hóa đơn',
+              // ),
             ],
           ),
         ),

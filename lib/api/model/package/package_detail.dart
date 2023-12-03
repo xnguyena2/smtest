@@ -26,7 +26,7 @@ class PackageDetail extends BaseEntity {
   late double shipPrice;
   late double cost;
   late double profit;
-  late final String? note;
+  late String? note;
   late final String? image;
   late final Progress? progress;
   late PackageStatusType? status;

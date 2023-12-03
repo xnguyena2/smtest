@@ -6,22 +6,26 @@ class CheckRadioItem<T> extends StatelessWidget {
   final T? groupValue;
   final T value;
   final String txt;
+  final bool isDisable;
   const CheckRadioItem({
     super.key,
     required this.txt,
     required this.groupValue,
     required this.value,
     required this.onChanged,
+    this.isDisable = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (value != groupValue) {
-          onChanged(value);
-        }
-      },
+      onTap: isDisable
+          ? null
+          : () {
+              if (value != groupValue) {
+                onChanged(value);
+              }
+            },
       child: Row(
         children: [
           Container(
@@ -38,15 +42,18 @@ class CheckRadioItem<T> extends StatelessWidget {
             //   ),
             // ),
             child: Radio<T>(
-                groupValue: groupValue,
-                value: value,
-                onChanged: onChanged,
-                fillColor: MaterialStateColor.resolveWith((states) {
+              groupValue: groupValue,
+              value: value,
+              onChanged: isDisable ? null : onChanged,
+              fillColor: MaterialStateColor.resolveWith(
+                (states) {
                   if (states.contains(MaterialState.selected)) {
                     return HighColor;
                   }
                   return borderColor;
-                })),
+                },
+              ),
+            ),
           ),
           SizedBox(
             width: 11,

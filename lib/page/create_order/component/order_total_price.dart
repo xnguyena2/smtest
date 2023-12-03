@@ -17,10 +17,8 @@ import 'package:sales_management/utils/svg_loader.dart';
 class TotalPrice extends StatefulWidget {
   final VoidCallback onUpdate;
   final PackageDataResponse data;
-  final bool isEditting;
   const TotalPrice({
     super.key,
-    required this.isEditting,
     required this.data,
     required this.onUpdate,
   });
@@ -36,6 +34,7 @@ class _TotalPriceState extends State<TotalPrice> {
   final FocusNode discountFocus = FocusNode();
   final TextEditingController shipTxtController = TextEditingController();
   final FocusNode shipFocus = FocusNode();
+  late bool isEditting = !data.isDone;
 
   @override
   void dispose() {
@@ -80,13 +79,12 @@ class _TotalPriceState extends State<TotalPrice> {
           children: [
             Text(
               'Tổng ${numItems} sản phẩm',
-              style: widget.isEditting
-                  ? headStyleSemiLargeLigh500
-                  : headStyleXLargeLigh,
+              style:
+                  isEditting ? headStyleSemiLargeLigh500 : headStyleXLargeLigh,
             ),
             Text(
               totalPrice,
-              style: widget.isEditting ? headStyleXLarge : headStyleXXLarge,
+              style: isEditting ? headStyleXLarge : headStyleXXLarge,
             ),
           ],
         ),
@@ -100,7 +98,7 @@ class _TotalPriceState extends State<TotalPrice> {
               children: [
                 Text(
                   'Chiết khấu',
-                  style: widget.isEditting
+                  style: isEditting
                       ? headStyleSemiLargeLigh500
                       : headStyleXLargeLigh,
                 ),
@@ -128,7 +126,7 @@ class _TotalPriceState extends State<TotalPrice> {
                 ),
               ],
             ),
-            if (widget.isEditting)
+            if (isEditting)
               Row(
                 children: [
                   SizedBox(
@@ -184,11 +182,10 @@ class _TotalPriceState extends State<TotalPrice> {
           children: [
             Text(
               'Phí vận chuyển',
-              style: widget.isEditting
-                  ? headStyleSemiLargeLigh500
-                  : headStyleXLargeLigh,
+              style:
+                  isEditting ? headStyleSemiLargeLigh500 : headStyleXLargeLigh,
             ),
-            if (widget.isEditting)
+            if (isEditting)
               Row(
                 children: [
                   SizedBox(

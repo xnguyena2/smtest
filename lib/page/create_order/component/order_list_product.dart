@@ -25,6 +25,7 @@ class ListProduct extends StatefulWidget {
 class _ListProductState extends State<ListProduct> {
   late final PackageDataResponse data;
   String currentPriceType = 'retailprice';
+  late bool isDone = data.isDone;
 
   @override
   void initState() {
@@ -40,47 +41,50 @@ class _ListProductState extends State<ListProduct> {
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: RoundBtn(
-                    icon: LoadSvg(
-                        assetPath: 'svg/print.svg', width: 20, height: 20),
-                    txt: 'In bếp',
-                    onPressed: () {},
+          if (!isDone)
+            Padding(
+              padding: EdgeInsets.only(left: 15, right: 15, top: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: RoundBtn(
+                      icon: LoadSvg(
+                          assetPath: 'svg/print.svg', width: 20, height: 20),
+                      txt: 'In bếp',
+                      onPressed: () {},
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 18,
-                ),
-                Expanded(
-                  child: RoundBtn(
-                    isSelected: true,
-                    icon: LoadSvg(
-                        assetPath: 'svg/plus_large.svg', width: 20, height: 20),
-                    txt: 'Thêm sản phẩm',
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductSelectorPage(
-                            packageDataResponse: data.clone(),
-                            onUpdated: (PackageDataResponse) {
-                              data.updateListProductItem(PackageDataResponse);
-                            },
+                  SizedBox(
+                    width: 18,
+                  ),
+                  Expanded(
+                    child: RoundBtn(
+                      isSelected: true,
+                      icon: LoadSvg(
+                          assetPath: 'svg/plus_large.svg',
+                          width: 20,
+                          height: 20),
+                      txt: 'Thêm sản phẩm',
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductSelectorPage(
+                              packageDataResponse: data.clone(),
+                              onUpdated: (PackageDataResponse) {
+                                data.updateListProductItem(PackageDataResponse);
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                      context.read<ProductProvider>().justRefresh();
-                      setState(() {});
-                    },
-                  ),
-                )
-              ],
+                        );
+                        context.read<ProductProvider>().justRefresh();
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
           SizedBox(
             height: 15,
           ),
@@ -131,7 +135,7 @@ class _ListProductState extends State<ListProduct> {
               return ProductItem(
                 key: ValueKey(
                     '${item.productSecondId + item.productUnitSecondId}${item.numberUnit}'),
-                isEditting: true,
+                isEditting: !isDone,
                 productInPackageResponse: item,
                 updateNumberUnit: (productInPackageResponse) {
                   data.addOrUpdateProduct(productInPackageResponse);

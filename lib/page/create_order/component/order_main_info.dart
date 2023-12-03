@@ -103,7 +103,7 @@ class TotalPriceInfo extends StatelessWidget {
         ),
         ApproveBtn(
           txt: 'Gửi hóa đơn',
-          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 10),
           onPressed: () {},
         ),
       ],
