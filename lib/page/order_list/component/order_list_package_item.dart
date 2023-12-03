@@ -4,12 +4,14 @@ import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/modal_confirm.dart';
+import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -150,20 +152,26 @@ class PackageItemDetail extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       isSmallTxt: true,
                       onPressed: () {
-                        showDefaultModal(
-                            context: context,
-                            content: ModalConfirm(
-                              onOk: () {
-                                deletePackage(
-                                        PackageID.fromPackageDataResponse(data))
-                                    .then((value) => onDelete(data))
-                                    .catchError(
-                                  (error, stackTrace) {
-                                    showAlert(context, 'Lỗi hệ thống!');
-                                  },
-                                );
+                        showDefaultDialog(
+                          context,
+                          'Xác nhận hủy!',
+                          'Bạn có chắc muốn hủy đơn?',
+                          onOk: () {
+                            LoadingOverlayAlt.of(context).show();
+                            deletePackage(
+                                    PackageID.fromPackageDataResponse(data))
+                                .then((value) {
+                              onDelete(data);
+                              LoadingOverlayAlt.of(context).hide();
+                            }).catchError(
+                              (error, stackTrace) {
+                                showAlert(context, 'Lỗi hệ thống!');
+                                LoadingOverlayAlt.of(context).hide();
                               },
-                            ));
+                            );
+                          },
+                          onCancel: () {},
+                        );
                       },
                     ),
                   ),
@@ -178,14 +186,28 @@ class PackageItemDetail extends StatelessWidget {
                       isSmallTxt: true,
                       onPressed: () {
                         print('update package: ${data.packageSecondId}');
-                        data.makeDone();
-                        updatePackage(
-                                ProductPackage.fromPackageDataResponse(data))
-                            .then((value) => onUpdated(data))
-                            .catchError(
-                          (error, stackTrace) {
-                            showAlert(context, 'Lỗi hệ thống!');
+
+                        showDefaultDialog(
+                          context,
+                          'Xác nhận hoàn thành!',
+                          'Bạn có chắc muốn đóng đơn?',
+                          onOk: () {
+                            LoadingOverlayAlt.of(context).show();
+                            data.makeDone();
+                            updatePackage(
+                                    ProductPackage.fromPackageDataResponse(
+                                        data))
+                                .then((value) {
+                              onUpdated(data);
+                              LoadingOverlayAlt.of(context).hide();
+                            }).catchError(
+                              (error, stackTrace) {
+                                showAlert(context, 'Lỗi hệ thống!');
+                                LoadingOverlayAlt.of(context).hide();
+                              },
+                            );
                           },
+                          onCancel: () {},
                         );
                       },
                     ),

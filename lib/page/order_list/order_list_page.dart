@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
@@ -16,49 +17,51 @@ class OrderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => SearchProvider(''),
-        )
-      ],
-      child: SafeArea(
-        child: Scaffold(
-          appBar: OrderListBar(
-            onBackPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          floatingActionButton: FloatingActionButton.small(
-            elevation: 2,
-            backgroundColor: MainHighColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: floatBottomBorderRadius,
+    return LoadingOverlayAlt(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => SearchProvider(''),
+          )
+        ],
+        child: SafeArea(
+          child: Scaffold(
+            appBar: OrderListBar(
+              onBackPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CreateOrderPage(
-                    data: PackageDataResponse(items: [], buyer: null),
-                    onUpdated: (package) {},
-                    onDelete: (PackageDataResponse) {},
+            floatingActionButton: FloatingActionButton.small(
+              elevation: 2,
+              backgroundColor: MainHighColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: floatBottomBorderRadius,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateOrderPage(
+                      data: PackageDataResponse(items: [], buyer: null),
+                      onUpdated: (package) {},
+                      onDelete: (PackageDataResponse) {},
+                    ),
                   ),
-                ),
-              );
-            },
-            child: LoadSvg(
-              assetPath: 'svg/plus_large_width_2.svg',
-              color: White,
+                );
+              },
+              child: LoadSvg(
+                assetPath: 'svg/plus_large_width_2.svg',
+                color: White,
+              ),
             ),
-          ),
-          body: FetchAPI<ListPackageDetailResult>(
-            future: getAllPackage(groupID),
-            successBuilder: (data) {
-              return Body(
-                data: data,
-              );
-            },
+            body: FetchAPI<ListPackageDetailResult>(
+              future: getAllPackage(groupID),
+              successBuilder: (data) {
+                return Body(
+                  data: data,
+                );
+              },
+            ),
           ),
         ),
       ),

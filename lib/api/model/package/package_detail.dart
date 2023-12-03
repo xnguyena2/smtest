@@ -103,7 +103,7 @@ class PackageDetail extends BaseEntity {
     _data['profit'] = profit;
     _data['note'] = note;
     _data['image'] = image;
-    _data['progress'] = jsonEncode(progress);
+    _data['progress'] = progress == null ? null : jsonEncode(progress);
     _data['status'] = status?.name;
     return _data;
   }

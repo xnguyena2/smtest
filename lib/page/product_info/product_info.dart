@@ -24,6 +24,24 @@ class ProductInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LoadingOverlayAlt(
+      child: ProductInfoBody(product: product, onAdded: onAdded),
+    );
+  }
+}
+
+class ProductInfoBody extends StatelessWidget {
+  const ProductInfoBody({
+    super.key,
+    required this.product,
+    required this.onAdded,
+  });
+
+  final BeerSubmitData product;
+  final VoidCallbackArg<BeerSubmitData>? onAdded;
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: ProductInfoBar(),

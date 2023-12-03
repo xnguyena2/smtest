@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
-import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
@@ -103,13 +102,11 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoadingOverlayAlt(
-          child: ProductInfo(
-            product: product,
-            onAdded: (product) {
-              loadConfig = addProduct(product);
-            },
-          ),
+        builder: (context) => ProductInfo(
+          product: product,
+          onAdded: (product) {
+            loadConfig = addProduct(product);
+          },
         ),
       ),
     );
