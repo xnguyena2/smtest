@@ -38,10 +38,15 @@ class ListPackageDetailResult {
     required this.listResult,
   });
   late final List<PackageDataResponse> listResult;
+
   ListPackageDetailResult.fromJson(Map<String, dynamic> json) {
     listResult = List.from(json['list_result'])
         .map((e) => PackageDataResponse.fromJson(e))
         .toList();
+  }
+
+  void addNewOrder(PackageDataResponse newO) {
+    listResult.add(newO);
   }
 }
 

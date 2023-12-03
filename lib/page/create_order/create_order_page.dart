@@ -82,6 +82,7 @@ class CreateOrderPage extends StatelessWidget {
                       .then((value) {
                     onUpdated(data);
                     context.read<ProductProvider>().justRefresh();
+                    Navigator.pop(context);
                   }).onError((error, stackTrace) {
                     showAlert(context, 'Không thể cập nhật!');
                   });

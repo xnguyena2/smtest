@@ -6,6 +6,7 @@ import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
+import 'package:sales_management/page/order_list/provider/new_order_provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -22,6 +23,9 @@ class OrderListPage extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (_) => SearchProvider(''),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => NewOrderProvider(),
           )
         ],
         child: SafeArea(
@@ -31,29 +35,37 @@ class OrderListPage extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            floatingActionButton: FloatingActionButton.small(
-              elevation: 2,
-              backgroundColor: MainHighColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: floatBottomBorderRadius,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateOrderPage(
-                      data: PackageDataResponse(items: [], buyer: null),
-                      onUpdated: (package) {},
-                      onDelete: (PackageDataResponse) {},
+            floatingActionButton: Builder(builder: (context) {
+              return FloatingActionButton.small(
+                elevation: 2,
+                backgroundColor: MainHighColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: floatBottomBorderRadius,
+                ),
+                onPressed: () async {
+                  PackageDataResponse? newO;
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateOrderPage(
+                        data: PackageDataResponse(items: [], buyer: null),
+                        onUpdated: (package) {
+                          newO = package;
+                        },
+                        onDelete: (PackageDataResponse) {},
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: LoadSvg(
-                assetPath: 'svg/plus_large_width_2.svg',
-                color: White,
-              ),
-            ),
+                  );
+                  if (newO != null) {
+                    context.read<NewOrderProvider>().updateValue = newO!;
+                  }
+                },
+                child: LoadSvg(
+                  assetPath: 'svg/plus_large_width_2.svg',
+                  color: White,
+                ),
+              );
+            }),
             body: FetchAPI<ListPackageDetailResult>(
               future: getAllPackage(groupID),
               successBuilder: (data) {
@@ -78,6 +90,10 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newO = context.watch<NewOrderProvider>().getData;
+    if (newO != null) {
+      data.addNewOrder(newO);
+    }
     return DefaultTabController(
       length: 2,
       child: Column(

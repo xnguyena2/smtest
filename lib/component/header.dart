@@ -55,10 +55,17 @@ class HeaderTitle extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-              onTap: onBackPressed, child: LoadSvg(assetPath: 'svg/back.svg')),
-          const SizedBox(
-            width: 15,
+            onTap: onBackPressed,
+            child: Container(
+              padding:
+                  const EdgeInsets.only(left: 0, top: 0, right: 15, bottom: 0),
+              decoration: const BoxDecoration(color: White),
+              child: LoadSvg(assetPath: 'svg/back.svg'),
+            ),
           ),
+          // const SizedBox(
+          //   width: 15,
+          // ),
           Text(
             title,
             style: headStyleXLarge,
