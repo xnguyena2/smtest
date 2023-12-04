@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/compoment/order_list.dart';
 import 'package:sales_management/utils/constants.dart';
 
@@ -9,7 +10,11 @@ import '../compoment/monthly_report.dart';
 import '../compoment/quick_report.dart';
 
 class Management extends StatefulWidget {
-  const Management({super.key});
+  final BenifitByMonth? benifitByMonth;
+  const Management({
+    super.key,
+    required this.benifitByMonth,
+  });
 
   @override
   State<Management> createState() => _ManagementState();
@@ -18,18 +23,16 @@ class Management extends StatefulWidget {
 class _ManagementState extends State<Management> {
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         children: [
-          QuickReport(),
+          QuickReport(
+            benifitByMonth: widget.benifitByMonth,
+          ),
           Guide(),
           MainFunction(),
           MonthlyReport(),
           OrderList(),
-          // SizedBox(
-          //   height: 2000,
-          // )
         ],
       ),
     );

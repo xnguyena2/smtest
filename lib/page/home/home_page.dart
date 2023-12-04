@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/utils/constants.dart';
 
@@ -13,59 +17,90 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future<BenifitByMonth?> getBenifitOfMonth(Box<dynamic> box) async {
+    BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
+
+    return config.benifit;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget page = Management();
+    return ValueListenableBuilder<Box>(
+      valueListenable:
+          Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+      builder: (BuildContext context, Box<dynamic> value, Widget? child) {
+        return FetchAPI<BenifitByMonth?>(
+          future: getBenifitOfMonth(value),
+          successBuilder: (benifitByMonth) {
+            Widget page = Management(
+              benifitByMonth: benifitByMonth,
+            );
+            return SafeArea(
+              child: Scaffold(
+                appBar: HomeAppBar(),
+                bottomNavigationBar: BottomBar(),
+                body: page,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: HomeAppBar(),
-        bottomNavigationBar: Container(
-          height: 46,
-          decoration:
-              const BoxDecoration(color: White, boxShadow: [wholeShadow]),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () {},
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LoadSvg(assetPath: 'svg/home_bar.svg'),
-                    const Text(
-                      'Quản lý',
-                      style: subInfoStySmall,
-                    )
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LoadSvg(assetPath: 'svg/plus_bar.svg'),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LoadSvg(assetPath: 'svg/in_out_bar.svg'),
-                    const Text(
-                      'Thu chi',
-                      style: subInfoStySmall,
-                    )
-                  ],
-                ),
-              ),
-            ],
+class BottomBar extends StatelessWidget {
+  const BottomBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 46,
+      decoration: const BoxDecoration(color: White, boxShadow: [wholeShadow]),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          GestureDetector(
+            onTap: () {},
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LoadSvg(assetPath: 'svg/home_bar.svg'),
+                const Text(
+                  'Quản lý',
+                  style: subInfoStySmall,
+                )
+              ],
+            ),
           ),
-        ),
-        body: page,
+          GestureDetector(
+            onTap: () {},
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LoadSvg(assetPath: 'svg/plus_bar.svg'),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LoadSvg(assetPath: 'svg/in_out_bar.svg'),
+                const Text(
+                  'Thu chi',
+                  style: subInfoStySmall,
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

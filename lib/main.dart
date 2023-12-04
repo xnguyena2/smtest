@@ -40,6 +40,7 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(DateExpirAdapter());
   Hive.registerAdapter(BootStrapDataAdapter());
   Hive.registerAdapter(DeviceConfigAdapter());
+  Hive.registerAdapter(BenifitByMonthAdapter());
 
   await Hive.openBox(hiveSettingBox);
   initData();
@@ -89,7 +90,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: OrderListPage(),
+      home: HomePage(),
     );
   }
 }

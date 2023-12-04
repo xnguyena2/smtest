@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
 
 import '../../../utils/constants.dart';
-import '../../../utils/svg_loader.dart';
 import 'header.dart';
 
 class MonthlyReport extends StatelessWidget {
@@ -17,10 +16,10 @@ class MonthlyReport extends StatelessWidget {
         titlesData: titlesData1,
         borderData: borderData,
         lineBarsData: lineBarsData1,
-        minX: 0,
-        maxX: 14,
-        maxY: 4,
-        minY: 0,
+        // minX: 0,
+        // maxX: 14,
+        // maxY: 10,
+        // minY: 0,
       );
 
   LineTouchData get lineTouchData1 => LineTouchData(

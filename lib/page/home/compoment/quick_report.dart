@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -6,13 +10,55 @@ import '../model/report.dart';
 import 'navigation_next.dart';
 
 class QuickReport extends StatelessWidget {
+  final BenifitByMonth? benifitByMonth;
   const QuickReport({
     super.key,
+    required this.benifitByMonth,
   });
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    return WidgetContent(
+      screenWidth: screenWidth,
+      benifitByMonth: benifitByMonth,
+    );
+  }
+}
+
+class WidgetContent extends StatelessWidget {
+  final BenifitByMonth? benifitByMonth;
+  const WidgetContent({
+    super.key,
+    required this.screenWidth,
+    this.benifitByMonth,
+  });
+
+  final double screenWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    String count = (benifitByMonth?.count ?? 0).toString();
+    String revenue = MoneyFormater.format(benifitByMonth?.revenue ?? 0);
+    String profit = MoneyFormater.format(benifitByMonth?.profit ?? 0);
+    List<report> exampleReport = [
+      report(
+        title: 'Doanh thu',
+        iconHeader: 'svg/income_amount.svg',
+        content: revenue,
+      ),
+      report(
+        title: 'Lợi nhuận',
+        iconHeader: 'svg/currency_revenue.svg',
+        content: profit,
+      ),
+      report(
+        title: 'Đơn hàng',
+        iconHeader: 'svg/order_repo.svg',
+        content: count,
+      ),
+    ];
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 300),
       child: SizedBox(
