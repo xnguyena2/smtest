@@ -87,6 +87,12 @@ const TextStyle moneyStyleSuperLarge = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle moneyStyleSuperLargeHigh = TextStyle(
+  color: TableHighColor,
+  fontSize: 30,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle totalMoneyStylexXXLarge = TextStyle(
   color: Red,
   fontSize: 26,

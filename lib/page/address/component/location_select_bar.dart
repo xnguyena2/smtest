@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/bar/bar_large.dart';
 
 import '../../../component/header.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/svg_loader.dart';
 
-class AddressSelectBar extends StatelessWidget implements PreferredSizeWidget {
+class AddressSelectBar extends BarLarge {
   final VoidCallback onBackPressed;
   const AddressSelectBar({super.key, required this.onBackPressed});
 
@@ -18,33 +18,6 @@ class AddressSelectBar extends StatelessWidget implements PreferredSizeWidget {
         extendsWidget: SizedBox(),
         onBackPressed: onBackPressed,
       ),
-    );
-  }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(64);
-}
-
-class FunctionItem extends StatelessWidget {
-  final String icon;
-  final String title;
-  const FunctionItem({
-    super.key,
-    required this.icon,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LoadSvg(assetPath: icon),
-        Text(
-          title,
-          style: subInfoStyMedium400Light,
-        )
-      ],
     );
   }
 }

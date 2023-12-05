@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/bar/bar_x_large.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 import '../../../component/header.dart';
 import '../../../component/app_search_bar.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/svg_loader.dart';
 
-class ProductSelectorBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class ProductSelectorBar extends BarXLarge {
   final VoidCallback onBackPressed;
   final VoidCallbackArg<String>? onChanged;
   const ProductSelectorBar(
@@ -56,8 +55,4 @@ class ProductSelectorBar extends StatelessWidget
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(95);
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/bar/bar_medium.dart';
 import 'package:sales_management/utils/constants.dart';
 
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+class HomeAppBar extends BarMedium {
   const HomeAppBar({
     super.key,
   });
@@ -51,8 +52,4 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(60);
 }

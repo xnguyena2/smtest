@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_management/component/bar/bar_x_large.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 
 import '../../../component/app_search_bar.dart';
@@ -7,7 +8,7 @@ import '../../../component/header.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
-class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
+class OrderListBar extends BarXLarge {
   final VoidCallback onBackPressed;
   const OrderListBar({
     super.key,
@@ -46,8 +47,4 @@ class OrderListBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(95);
 }

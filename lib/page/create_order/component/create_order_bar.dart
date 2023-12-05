@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/bar/bar_large.dart';
+import 'package:sales_management/component/bar/function_bar_item.dart';
 
 import '../../../component/header.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/svg_loader.dart';
 
-class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
+class CreateOrderBar extends BarLarge {
   final VoidCallback onBackPressed;
   const CreateOrderBar({super.key, required this.onBackPressed});
 
@@ -48,40 +49,6 @@ class CreateOrderBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         extendsWidget: SizedBox(),
         onBackPressed: onBackPressed,
-      ),
-    );
-  }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(64);
-}
-
-class FunctionItem extends StatelessWidget {
-  final String icon;
-  final String title;
-  final Widget? iconSvg;
-  final VoidCallback? onTap;
-  const FunctionItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.iconSvg,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          iconSvg ?? LoadSvg(assetPath: icon),
-          Text(
-            title,
-            style: subInfoStyMedium400Light,
-          )
-        ],
       ),
     );
   }

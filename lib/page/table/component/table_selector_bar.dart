@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sales_management/page/create_order/component/create_order_bar.dart';
+import 'package:sales_management/component/bar/bar_large.dart';
+import 'package:sales_management/component/bar/function_bar_item.dart';
 
 import '../../../component/header.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
-class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
+class TableSelectorBar extends BarLarge {
   final bool onEditting;
   final VoidCallback onBackPressed;
   final VoidCallback onEdit;
@@ -53,8 +54,4 @@ class TableSelectorBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(64);
 }

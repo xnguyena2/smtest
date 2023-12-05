@@ -81,7 +81,7 @@ class MonthlyReport extends StatelessWidget {
         text = '6m';
         break;
       default:
-        return Container();
+        return const SizedBox();
     }
 
     return Text(text, style: style, textAlign: TextAlign.center);
