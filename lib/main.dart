@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: ReportPage(),
+      home: HomePage(),
     );
   }
 }

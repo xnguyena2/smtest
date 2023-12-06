@@ -11,7 +11,7 @@ Future<ListDateBenifitDataResult> getReportOfCurrentMonthByDate() async {
   String from = getFirstDateTimeOfCurrentMonth();
   String to = getCurrentDateTimeNow();
   final request =
-      PackageID.currentMonth(groupID, from: from, to: to, status: 'CREATE');
+      PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
 
   print(request.toJson());
 

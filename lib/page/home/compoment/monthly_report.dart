@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
 import 'package:sales_management/page/report/api/list_date_benefit.dart';
+import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/utils.dart';
 
 import '../../../utils/constants.dart';
@@ -94,7 +95,7 @@ class MonthlyReport extends StatelessWidget {
       );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = subInfoStyMedium400;
+    const style = subInfoStySmall;
     Widget text;
     int ts = listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
     String txt = ts == 0 ? '--/--/--' : timeStampToFormat(ts);
@@ -195,9 +196,19 @@ class MonthlyReport extends StatelessWidget {
             title: 'Báo cáo tháng này',
             titleImg: 'svg/report_header.svg',
             endChild: enableShowReportPageBtn
-                ? NavigationNext(
-                    title: 'Xem chi tiết',
-                    assetPath: 'svg/small_chart.svg',
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReportPage(),
+                        ),
+                      );
+                    },
+                    child: NavigationNext(
+                      title: 'Xem chi tiết',
+                      assetPath: 'svg/small_chart.svg',
+                    ),
                   )
                 : SizedBox(),
           ),

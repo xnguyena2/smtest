@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/compoment/order_list.dart';
+import 'package:sales_management/page/report/api/list_date_benefit.dart';
+import 'package:sales_management/page/report/api/report_api.dart';
 import 'package:sales_management/utils/constants.dart';
 
 import '../compoment/guide.dart';
@@ -29,10 +32,20 @@ class _ManagementState extends State<Management> {
           QuickReport(
             benifitByMonth: widget.benifitByMonth,
           ),
-          Guide(),
+          // Guide(),
           MainFunction(),
-          MonthlyReport(),
-          OrderList(),
+          FetchAPI<ListDateBenifitDataResult>(
+            future: getReportOfCurrentMonthByDate(),
+            successBuilder: (ListDateBenifitDataResult) {
+              return MonthlyReport(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.symmetric(vertical: 10),
+                enableShowReportPageBtn: true,
+                listResult: ListDateBenifitDataResult,
+              );
+            },
+          ),
+          // OrderList(),
         ],
       ),
     );

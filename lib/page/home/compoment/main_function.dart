@@ -4,6 +4,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
+import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/page/table/table_page.dart';
 
 import '../../../utils/constants.dart';
@@ -74,6 +75,13 @@ class MainFunction extends StatelessWidget {
                         packageDataResponse: null,
                         onUpdated: (packageDataResponse) {},
                       ),
+                    ),
+                  );
+                case 'Report':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReportPage(),
                     ),
                   );
               }

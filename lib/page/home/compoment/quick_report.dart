@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/report/report_page.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -112,7 +113,7 @@ class WidgetContent extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
@@ -126,9 +127,19 @@ class WidgetContent extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            NavigationNext(
-                              title: 'Báo cáo lãi lỗ',
-                              assetPath: 'svg/small_chart.svg',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReportPage(),
+                                  ),
+                                );
+                              },
+                              child: NavigationNext(
+                                title: 'Báo cáo lãi lỗ',
+                                assetPath: 'svg/small_chart.svg',
+                              ),
                             ),
                             SizedBox(width: 8.5),
                           ],
