@@ -109,6 +109,11 @@ const TextStyle totalMoneyStylexXLarge = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle totalMoneyStylexXLargeBlack = TextStyle(
+  fontSize: 21,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle totalMoneyHeaderStylexXLarge = TextStyle(
   fontSize: 19,
   fontWeight: FontWeight.w600,
