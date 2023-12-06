@@ -1,14 +1,24 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
+import 'package:sales_management/page/report/api/list_date_benefit.dart';
+import 'package:sales_management/utils/utils.dart';
 
 import '../../../utils/constants.dart';
 import 'header.dart';
 
 class MonthlyReport extends StatelessWidget {
-  const MonthlyReport({super.key});
-
-  final bool isShowingMainData = true;
+  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? margin;
+  final bool enableShowReportPageBtn;
+  final ListDateBenifitDataResult? listResult;
+  const MonthlyReport({
+    super.key,
+    this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+    this.enableShowReportPageBtn = true,
+    this.margin = null,
+    this.listResult,
+  });
 
   LineChartData get sampleData1 => LineChartData(
         lineTouchData: lineTouchData1,
@@ -34,10 +44,19 @@ class MonthlyReport extends StatelessWidget {
           },
         ).toList(),
         handleBuiltInTouches: true,
-        touchTooltipData: const LineTouchTooltipData(
-          tooltipBgColor: White,
-          tooltipBorder: BorderSide(color: borderColor, width: 0.5),
-        ),
+        touchTooltipData: LineTouchTooltipData(
+            tooltipBgColor: White,
+            tooltipBorder: BorderSide(color: borderColor, width: 0.5),
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((LineBarSpot touchedSpot) {
+                final textStyle = TextStyle(
+                  color: touchedSpot.bar.color,
+                  fontWeight: FontWeight.bold,
+                );
+                return LineTooltipItem(
+                    MoneyFormater.format(touchedSpot.y) + 'k', textStyle);
+              }).toList();
+            }),
       );
 
   FlTitlesData get titlesData1 => FlTitlesData(
@@ -56,61 +75,30 @@ class MonthlyReport extends StatelessWidget {
       );
 
   List<LineChartBarData> get lineBarsData1 => [
-        lineChartBarData1_1,
-        lineChartBarData1_2,
-        lineChartBarData1_3,
+        lineProfitData,
+        lineCostData,
+        lineRevenueData,
       ];
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyBlackMedium;
-    String text;
-    switch (value.toInt()) {
-      case 1:
-        text = '1m';
-        break;
-      case 2:
-        text = '2m';
-        break;
-      case 3:
-        text = '3m';
-        break;
-      case 4:
-        text = '5m';
-        break;
-      case 5:
-        text = '6m';
-        break;
-      default:
-        return const SizedBox();
-    }
-
-    return Text(text, style: style, textAlign: TextAlign.center);
+    return Text(MoneyFormater.format(value) + 'k',
+        style: style, textAlign: TextAlign.center);
   }
 
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
-        interval: 1,
-        reservedSize: 40,
+        interval: 100000,
+        // reservedSize: 40,
       );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyMedium400;
     Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('SEPT', style: style);
-        break;
-      case 7:
-        text = const Text('OCT', style: style);
-        break;
-      case 12:
-        text = const Text('DEC', style: style);
-        break;
-      default:
-        text = const Text('');
-        break;
-    }
+    int ts = listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
+    String txt = ts == 0 ? '--/--/--' : timeStampToFormat(ts);
+    text = Text(txt, style: style);
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
@@ -120,10 +108,10 @@ class MonthlyReport extends StatelessWidget {
   }
 
   SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 25,
-        interval: 1,
         getTitlesWidget: bottomTitleWidgets,
+        showTitles: true,
+        interval: 1, //1 day
+        // reservedSize: 25,
       );
 
   FlGridData get gridData => FlGridData(
@@ -143,75 +131,76 @@ class MonthlyReport extends StatelessWidget {
         ),
       );
 
-  LineChartBarData get lineChartBarData1_1 => LineChartBarData(
+  LineChartBarData get lineProfitData => LineChartBarData(
+        curveSmoothness: 0.09,
         isCurved: true,
-        color: Colors.green,
-        barWidth: 2,
+        color: ProfitColor,
+        barWidth: 1,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(
           show: false,
         ),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 1.5),
-          FlSpot(5, 1.4),
-          FlSpot(7, 3.4),
-          FlSpot(10, 2),
-          FlSpot(12, 2.2),
-          FlSpot(13, 1.8),
-        ],
+        spots: listResult == null
+            ? []
+            : listResult!.listResultFlat
+                .map((e) =>
+                    FlSpot(e.offset.toDouble(), e.dateOfMonth.profit / 1000))
+                .toList(),
       );
 
-  LineChartBarData get lineChartBarData1_2 => LineChartBarData(
+  LineChartBarData get lineCostData => LineChartBarData(
+        curveSmoothness: 0.09,
         isCurved: true,
-        color: Colors.pink,
-        barWidth: 2,
+        color: CostColor,
+        barWidth: 1,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(
           show: false,
           color: Colors.pink.withOpacity(0),
         ),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 2.8),
-          FlSpot(7, 1.2),
-          FlSpot(10, 2.8),
-          FlSpot(12, 2.6),
-          FlSpot(13, 3.9),
-        ],
+        spots: listResult == null
+            ? []
+            : listResult!.listResultFlat
+                .map((e) =>
+                    FlSpot(e.offset.toDouble(), e.dateOfMonth.cost / 1000))
+                .toList(),
       );
 
-  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
+  LineChartBarData get lineRevenueData => LineChartBarData(
+        curveSmoothness: 0.09,
         isCurved: true,
-        color: Colors.cyan,
-        barWidth: 2,
+        color: RevenueColor,
+        barWidth: 1,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 2.8),
-          FlSpot(3, 1.9),
-          FlSpot(6, 3),
-          FlSpot(10, 1.3),
-          FlSpot(13, 2.5),
-        ],
+        spots: listResult == null
+            ? []
+            : listResult!.listResultFlat
+                .map((e) =>
+                    FlSpot(e.offset.toDouble(), e.dateOfMonth.revenue / 1000))
+                .toList(),
       );
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+    return Container(
+      padding: padding,
+      margin: margin,
       child: Column(
         children: [
-          const header(
-              title: 'Báo cáo tháng này',
-              titleImg: 'svg/report_header.svg',
-              endChild: NavigationNext(
-                title: 'Xem chi tiết',
-                assetPath: 'svg/small_chart.svg',
-              )),
+          header(
+            title: 'Báo cáo tháng này',
+            titleImg: 'svg/report_header.svg',
+            endChild: enableShowReportPageBtn
+                ? NavigationNext(
+                    title: 'Xem chi tiết',
+                    assetPath: 'svg/small_chart.svg',
+                  )
+                : SizedBox(),
+          ),
           AspectRatio(
             aspectRatio: 1.23,
             child: Container(

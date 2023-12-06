@@ -38,6 +38,10 @@ const Color ShowdownColor25 = Color.fromARGB(64, 0, 0, 0);
 const Color AlertColor = Color(0xFFC20202);
 const Color SelectTableBackgroundColor = Color(0x1980A91A);
 
+const Color RevenueColor = Color.fromARGB(255, 0, 37, 204);
+const Color ProfitColor = Color(0xFF239A66);
+const Color CostColor = Color.fromARGB(255, 204, 0, 0);
+
 const Color textNormalLightColor = Color(0xFF323232);
 const Color textSubLightColor = Color(0xFF404040);
 
@@ -118,6 +122,36 @@ const TextStyle headStyleXXLarge = TextStyle(
 const TextStyle headStyleXLarge = TextStyle(
   fontSize: 17,
   fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleXLargeSemiBoldHigh = TextStyle(
+  color: HighColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleXLargeSemiBoldRevenue = TextStyle(
+  color: RevenueColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleXLargeSemiBoldProfit = TextStyle(
+  color: ProfitColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleXLargeSemiBoldRed = TextStyle(
+  color: Red,
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleXLargeSemiBoldCost = TextStyle(
+  color: CostColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
 );
 
 const TextStyle headStyleXLargeLigh = TextStyle(

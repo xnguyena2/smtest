@@ -34,6 +34,13 @@ class PackageID extends BaseID {
     packageSecondId = packageDataResponse.packageSecondId;
   }
 
+  PackageID.currentMonth(String groupID,
+      {this.from, this.to, this.status, int page = 0, int size = 10000})
+      : super(group_id: groupID, page: page, size: size) {
+    deviceId = '';
+    packageSecondId = '';
+  }
+
   Map<String, dynamic> toJson() {
     final _data = super.toJson();
     _data['device_id'] = deviceId;

@@ -12,6 +12,32 @@ String getCreateAtNow() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(DateTime.now().toUtc());
 }
 
+String getCurrentDateTimeNow() {
+  return DateFormat("y-MM-ddTHH:mm:ss.S").format(DateTime.now());
+}
+
+String getFirstDateTimeOfCurrentMonth() {
+  final now = DateTime.now();
+  var date = DateTime(now.year, now.month, 1);
+  return DateFormat("y-MM-ddTHH:mm:ss.S").format(date);
+}
+
+int extractTimeStamp(String local_time) {
+  DateTime dt = DateFormat("y-MM-dd").parse(local_time);
+  int ts = (dt.millisecondsSinceEpoch).floor();
+  return ts;
+}
+
+String timeStampToFormat(int timeStamp) {
+  DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+  return DateFormat("dd/MM/yy").format(dt);
+}
+
+String timeStampToServerFormat(int timeStamp) {
+  DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+  return DateFormat("y-MM-dd").format(dt);
+}
+
 String formatLocalDateTimeOfDateTime(DateTime dateTime) {
   final format = DateFormat('HH:mm dd-MM-yyyy');
   return format.format(dateTime.toLocal());

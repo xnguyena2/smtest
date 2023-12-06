@@ -9,7 +9,7 @@ class ReportBar extends BarSmall {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: White,
+      decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
         title: 'Báo cáo',
         funcWidget: SizedBox(),
