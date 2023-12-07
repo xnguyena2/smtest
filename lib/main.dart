@@ -6,11 +6,13 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/address/api/model/region.dart';
 import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
+import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
@@ -43,16 +45,9 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(BootStrapDataAdapter());
   Hive.registerAdapter(DeviceConfigAdapter());
   Hive.registerAdapter(BenifitByMonthAdapter());
+  Hive.registerAdapter(TokenStorageAdapter());
 
   await Hive.openBox(hiveSettingBox);
-  initData();
-}
-
-void initData() {
-  loadBootstrap(groupID).then((value) {
-    var box = Hive.box(hiveSettingBox);
-    box.put(hiveConfigKey, value);
-  });
 }
 
 Future<void> main() async {
@@ -77,7 +72,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sổ Điện Tử',
       scrollBehavior: MyCustomScrollBehavior(),
       theme: ThemeData(
         colorScheme:
@@ -92,7 +87,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: headStyleLarge,
         ),
       ),
-      home: CreateStorePage(),
+      home: FlashPage(),
     );
   }
 }

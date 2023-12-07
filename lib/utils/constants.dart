@@ -6,9 +6,15 @@ const String host =
 
 const String hiveSettingBox = 'settings';
 const String hiveConfigKey = 'config';
+const String hiveTokenKey = 'token';
 
-const String deviceID = 'admintestting';
-const String groupID = 'trumbien_store';
+String deviceID = 'admintestting';
+String groupID = 'trumbien_store';
+
+void setGlobalValue({required String deviceId, required String groupId}) {
+  deviceID = deviceId;
+  groupID = groupId;
+}
 
 //formater
 final MoneyFormater =
@@ -211,6 +217,12 @@ const TextStyle customerNameBigHight = TextStyle(
 
 const TextStyle customerNameBigLight400 = TextStyle(
   color: Black40,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle customerNameBigHardLight400 = TextStyle(
+  color: Black70,
   fontSize: 16,
   fontWeight: FontWeight.w400,
 );

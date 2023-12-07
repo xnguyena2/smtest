@@ -8,9 +8,11 @@ class ListDateBenifitDataResult {
   late final List<BenifitByDateOfMonth> listResult;
   late final List<BenifitByDateOfMonthWithOffset> listResultFlat;
   ListDateBenifitDataResult.fromJson(Map<String, dynamic> json) {
-    listResult = List.from(json['list_result'])
-        .map((e) => BenifitByDateOfMonth.fromJson(e))
-        .toList();
+    listResult = json['list_result'] == null
+        ? []
+        : List.from(json['list_result'])
+            .map((e) => BenifitByDateOfMonth.fromJson(e))
+            .toList();
   }
   int firstDate = 0;
   int lastDate = 0;
@@ -20,10 +22,6 @@ class ListDateBenifitDataResult {
   double totalProfit = 0;
 
   void fillAllEmpty(String from, String to) {
-    if (listResult.isEmpty) {
-      listResultFlat = [];
-    }
-
     firstDate = extractTimeStamp(from);
     lastDate = extractTimeStamp(to);
 

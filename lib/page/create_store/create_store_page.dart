@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
+import 'package:sales_management/page/create_store/api/create_store_api.dart';
+import 'package:sales_management/page/create_store/api/model/update_password.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -8,85 +11,78 @@ class CreateStorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // createAccount(UpdatePassword(
+    //     username: 'username',
+    //     oldpassword: '',
+    //     newpassword: 'newpassword',
+    //     group_id: 'shop_ban_chuoi',
+    //     roles: []));
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          color: White,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.topCenter,
+        backgroundColor: White,
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Positioned(
-                    top: -250,
-                    child: Column(
-                      children: [
-                        LoadSvg(assetPath: 'svg/logo.svg'),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        Text(
-                          'Sổ Bán Hàng Điện Tử',
-                          style: totalMoneyStylexXLargeBlack,
-                        ),
-                      ],
-                    ),
+                  LoadSvg(assetPath: 'svg/logo.svg'),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Sổ Bán Hàng Điện Tử',
+                    style: totalMoneyStylexXLargeBlack,
+                  ),
+                  SizedBox(
+                    height: 30,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Form(
                       child: Column(
                         children: [
                           TextFormField(
-                            decoration: const InputDecoration(
+                            style: customerNameBig400,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(8),
+                              labelStyle: customerNameBigHardLight400,
                               labelText: 'Tên cửa hàng',
-                              enabledBorder: OutlineInputBorder(
-                                  // borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                  // borderSide: BorderSide(color: Colors.grey, width: 0.0),
-                                  ),
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                borderRadius: defaultBorderRadius,
+                                borderSide:
+                                    BorderSide(color: Black40, width: 1.0),
+                              ),
                             ),
                             onFieldSubmitted: (value) {},
                             onChanged: (value) {},
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length < 3) {
-                                return 'First Name must contain at least 3 characters';
-                              } else if (value
-                                  .contains(RegExp(r'^[0-9_\-=@,\.;]+$'))) {
-                                return 'First Name cannot contain special characters';
-                              }
-                              return null;
-                            },
+                            validator: (value) {},
                           ),
                           SizedBox(
                             height: 30,
                           ),
                           TextFormField(
-                            decoration: const InputDecoration(
+                            style: customerNameBig400,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(8),
+                              labelStyle: customerNameBigHardLight400,
                               labelText: 'Số điện thoại',
-                              enabledBorder: OutlineInputBorder(
-                                  // borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                  // borderSide: BorderSide(color: Colors.grey, width: 0.0),
-                                  ),
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                borderRadius: defaultBorderRadius,
+                                borderSide:
+                                    BorderSide(color: Black40, width: 1.0),
+                              ),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onFieldSubmitted: (value) {},
                             onChanged: (value) {},
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length < 3) {
-                                return 'First Name must contain at least 3 characters';
-                              } else if (value
-                                  .contains(RegExp(r'^[0-9_\-=@,\.;]+$'))) {
-                                return 'First Name cannot contain special characters';
-                              }
-                              return null;
-                            },
+                            validator: (value) {},
                           ),
                           SizedBox(
                             height: 30,
@@ -107,9 +103,16 @@ class CreateStorePage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Product of Nguyen Pong'),
+                  SizedBox(
+                    height: 30,
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

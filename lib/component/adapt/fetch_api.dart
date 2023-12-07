@@ -6,8 +6,12 @@ typedef SuccessBuilder<T> = ReturnCallbackArg<T, Widget>;
 class FetchAPI<T> extends StatelessWidget {
   final Future<T> future;
   final SuccessBuilder<T> successBuilder;
+  final Widget? loading;
   const FetchAPI(
-      {super.key, required this.future, required this.successBuilder});
+      {super.key,
+      required this.future,
+      required this.successBuilder,
+      this.loading});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +27,11 @@ class FetchAPI<T> extends StatelessWidget {
           final data = snapshot.data!;
           return successBuilder(data);
         }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+        return loading != null
+            ? loading!
+            : const Center(
+                child: CircularProgressIndicator(),
+              );
       },
     );
   }
