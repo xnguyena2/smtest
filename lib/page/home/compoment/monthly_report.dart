@@ -46,6 +46,7 @@ class MonthlyReport extends StatelessWidget {
         ).toList(),
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
+            fitInsideHorizontally: true,
             tooltipBgColor: White,
             tooltipBorder: BorderSide(color: borderColor, width: 0.5),
             getTooltipItems: (touchedSpots) {
@@ -55,9 +56,7 @@ class MonthlyReport extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 );
                 return LineTooltipItem(
-                    MoneyFormater.format(touchedSpot.y) +
-                        (touchedSpot.y > 0 ? 'k' : ''),
-                    textStyle);
+                    MoneyFormater.format(touchedSpot.y * 1000), textStyle);
               }).toList();
             }),
       );
@@ -85,14 +84,23 @@ class MonthlyReport extends StatelessWidget {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyBlackMedium;
-    return Text(MoneyFormater.format(value) + (value > 0 ? 'k' : ''),
-        style: style, textAlign: TextAlign.center);
+    String txt = '';
+    if (value > 1000000) {
+      txt = '${MoneyFormater.format(value / 1000000)}tỷ';
+    } else if (value > 1000) {
+      txt = '${MoneyFormater.format(value / 1000)}tr';
+    } else if (value > 0) {
+      txt = '${MoneyFormater.format(value)}k';
+    } else {
+      txt = MoneyFormater.format(value);
+    }
+    return Text(txt, style: style, textAlign: TextAlign.center);
   }
 
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
-        interval: 100000,
+        // interval: 100000,
         // reservedSize: 40,
       );
 
