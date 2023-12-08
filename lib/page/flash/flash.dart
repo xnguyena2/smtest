@@ -12,43 +12,46 @@ import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
+Future<void> initData() async {
+  await loadBootstrap(groupID).then((value) {
+    var box = Hive.box(hiveSettingBox);
+    box.put(hiveConfigKey, value);
+  });
+}
+
+Future<User?> loadData() async {
+  var box = Hive.box(hiveSettingBox);
+  TokenStorage? tokenStorage =
+      box.get(hiveTokenKey); // TokenStorage(token: token);
+  if (tokenStorage == null) {
+    return null;
+  }
+  setToken(tokenStorage.token);
+  User user = await getMyInfomation();
+  setGlobalValue(deviceId: user.username, groupId: user.groupId);
+  await initData();
+  return user;
+}
+
 class FlashPage extends StatelessWidget {
   const FlashPage({super.key});
 
-  Future<void> initData() async {
-    await loadBootstrap(groupID).then((value) {
-      var box = Hive.box(hiveSettingBox);
-      box.put(hiveConfigKey, value);
-    });
-  }
-
-  Future<int> loadData() async {
-    var box = Hive.box(hiveSettingBox);
-    TokenStorage? tokenStorage =
-        TokenStorage(token: token); // box.get(hiveTokenKey);
-    if (tokenStorage != null) {
-      setToken(tokenStorage.token);
-      User user = await getMyInfomation();
-      print(user.toJson());
-      await initData();
-      return 1;
-    }
-    return 0;
-  }
-
   @override
   Widget build(BuildContext context) {
-    loadData();
-    return FetchAPI<int>(
-      future: loadData(),
-      successBuilder: (int) {
-        if (int == 0) {
-          return CreateStorePage();
+    loadData().then(
+      (value) {
+        if (value == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => CreateStorePage()),
+              (Route<dynamic> route) => false);
+          return;
         }
-        return HomePage();
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false);
       },
-      loading: FlashScreen(),
     );
+    return FlashScreen();
   }
 }
 

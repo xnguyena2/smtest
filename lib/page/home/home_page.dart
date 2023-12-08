@@ -20,37 +20,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<BenifitByMonth?> getBenifitOfMonth(Box<dynamic> box) async {
-    BootStrapData? config = box.get(hiveConfigKey);
-    if (config == null) {
-      return null;
-    }
-
-    return config.benifit;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box>(
-      valueListenable:
-          Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
-      builder: (BuildContext context, Box<dynamic> value, Widget? child) {
-        return FetchAPI<BenifitByMonth?>(
-          future: getBenifitOfMonth(value),
-          successBuilder: (benifitByMonth) {
-            Widget page = Management(
-              benifitByMonth: benifitByMonth,
-            );
-            return SafeArea(
-              child: Scaffold(
-                appBar: HomeAppBar(),
-                bottomNavigationBar: BottomBar(),
-                body: page,
-              ),
-            );
-          },
-        );
-      },
+    Widget page = Management();
+    return SafeArea(
+      child: Scaffold(
+        appBar: HomeAppBar(),
+        bottomNavigationBar: BottomBar(),
+        body: page,
+      ),
     );
   }
 }

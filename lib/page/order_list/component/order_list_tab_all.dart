@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/order_list/component/order_list_package_item.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/svg_loader.dart';
 
 class OrderListAllPackageTab extends StatefulWidget {
   final ListPackageDetailResult data;
+  final VoidCallback createNewOrder;
   const OrderListAllPackageTab({
     super.key,
     required this.data,
+    required this.createNewOrder,
   });
 
   @override
@@ -26,6 +30,30 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
     listPackage.sort(
       (a, b) => b.createat?.compareTo(a.createat ?? '') ?? 0,
     );
+    if (listPackage.isEmpty) {
+      return Center(
+        child: GestureDetector(
+          onTap: widget.createNewOrder,
+          child: HighBorderContainer(
+            isHight: true,
+            padding: EdgeInsets.symmetric(vertical: 11, horizontal: 18),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LoadSvg(assetPath: 'svg/plus_large.svg'),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Tạo đơn hàng',
+                  style: headStyleSemiLargeHigh500,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       color: BackgroundColor,

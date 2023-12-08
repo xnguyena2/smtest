@@ -32,19 +32,19 @@ class TableSelectorBar extends BarLarge {
                   title: 'Sửa',
                   onTap: onEdit,
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
-                FunctionItem(
-                  icon: '',
-                  iconSvg: LoadSvg(
-                    assetPath: 'svg/order.svg',
-                    width: 27,
-                    height: 27,
-                    color: Black,
-                  ),
-                  title: 'Đơn hàng',
-                ),
+                // const SizedBox(
+                //   width: 20,
+                // ),
+                // FunctionItem(
+                //   icon: '',
+                //   iconSvg: LoadSvg(
+                //     assetPath: 'svg/order.svg',
+                //     width: 27,
+                //     height: 27,
+                //     color: Black,
+                //   ),
+                //   title: 'Đơn hàng',
+                // ),
               ]
             ],
           ),

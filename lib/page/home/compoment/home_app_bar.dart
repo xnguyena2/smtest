@@ -37,13 +37,14 @@ class HomeAppBar extends BarMedium {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Shop Bán Chuối',
+                deviceID,
                 style: headStyleLargeWhite,
               ),
               Text(
-                ' Thông tin cửa hàng >',
+                'Thông tin cửa hàng >',
                 style: subInfoStyWhiteMedium,
               ),
             ],

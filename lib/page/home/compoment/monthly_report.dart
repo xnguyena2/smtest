@@ -17,7 +17,7 @@ class MonthlyReport extends StatelessWidget {
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
     this.enableShowReportPageBtn = true,
-    this.margin = null,
+    this.margin,
     this.listResult,
   });
 
@@ -55,7 +55,9 @@ class MonthlyReport extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 );
                 return LineTooltipItem(
-                    MoneyFormater.format(touchedSpot.y) + 'k', textStyle);
+                    MoneyFormater.format(touchedSpot.y) +
+                        (touchedSpot.y > 0 ? 'k' : ''),
+                    textStyle);
               }).toList();
             }),
       );
@@ -83,7 +85,7 @@ class MonthlyReport extends StatelessWidget {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyBlackMedium;
-    return Text(MoneyFormater.format(value) + 'k',
+    return Text(MoneyFormater.format(value) + (value > 0 ? 'k' : ''),
         style: style, textAlign: TextAlign.center);
   }
 

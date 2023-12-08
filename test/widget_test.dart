@@ -14,7 +14,7 @@ import 'package:sales_management/page/account/api/account_api.dart';
 void main() {
   testWidgets('signin test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await signin();
+    await signin('binhdiepquin', 'binhdiepquin123');
   });
 
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

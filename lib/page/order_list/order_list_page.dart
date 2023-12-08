@@ -18,6 +18,25 @@ class OrderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addNewOrder = () async {
+      PackageDataResponse? newO;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateOrderPage(
+            data: PackageDataResponse(items: [], buyer: null),
+            onUpdated: (package) {
+              newO = package;
+            },
+            onDelete: (PackageDataResponse) {},
+          ),
+        ),
+      );
+      if (newO != null) {
+        context.read<NewOrderProvider>().updateValue = newO!;
+      }
+    };
+
     return LoadingOverlayAlt(
       child: MultiProvider(
         providers: [
@@ -42,24 +61,7 @@ class OrderListPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: floatBottomBorderRadius,
                 ),
-                onPressed: () async {
-                  PackageDataResponse? newO;
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateOrderPage(
-                        data: PackageDataResponse(items: [], buyer: null),
-                        onUpdated: (package) {
-                          newO = package;
-                        },
-                        onDelete: (PackageDataResponse) {},
-                      ),
-                    ),
-                  );
-                  if (newO != null) {
-                    context.read<NewOrderProvider>().updateValue = newO!;
-                  }
-                },
+                onPressed: addNewOrder,
                 child: LoadSvg(
                   assetPath: 'svg/plus_large_width_2.svg',
                   color: White,
@@ -71,6 +73,7 @@ class OrderListPage extends StatelessWidget {
               successBuilder: (data) {
                 return Body(
                   data: data,
+                  addNewOrder: addNewOrder,
                 );
               },
             ),
@@ -83,9 +86,11 @@ class OrderListPage extends StatelessWidget {
 
 class Body extends StatelessWidget {
   final ListPackageDetailResult data;
+  final VoidCallback addNewOrder;
   const Body({
     super.key,
     required this.data,
+    required this.addNewOrder,
   });
 
   @override
@@ -138,8 +143,11 @@ class Body extends StatelessWidget {
               children: [
                 OrderListAllPackageTab(
                   data: data,
+                  createNewOrder: addNewOrder,
                 ),
-                Placeholder(),
+                Center(
+                  child: Text('Chưa có đơn nào!'),
+                ),
               ],
             ),
           ),

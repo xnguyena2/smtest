@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/category_selector.dart';
+import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/component/table_area.dart';
 import 'package:sales_management/page/table/component/table_status.dart';
@@ -11,12 +12,14 @@ import 'package:sales_management/utils/svg_loader.dart';
 class TableBody extends StatefulWidget {
   final onTableSelected done;
   final ListAreDataResult data;
+  final VoidCallback createNewArea;
   final isEditting;
   const TableBody({
     super.key,
     required this.data,
     required this.done,
     required this.isEditting,
+    required this.createNewArea,
   });
 
   @override
@@ -46,6 +49,30 @@ class _TableBodyState extends State<TableBody> {
 
   @override
   Widget build(BuildContext context) {
+    if (listAreaData.isEmpty) {
+      return Center(
+        child: GestureDetector(
+          onTap: widget.createNewArea,
+          child: HighBorderContainer(
+            isHight: true,
+            padding: EdgeInsets.symmetric(vertical: 11, horizontal: 18),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LoadSvg(assetPath: 'svg/plus_large.svg'),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Tạo khu vực',
+                  style: headStyleSemiLargeHigh500,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       color: BackgroundColor,

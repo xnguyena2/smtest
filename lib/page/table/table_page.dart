@@ -36,6 +36,30 @@ class _TablePageState extends State<TablePage> {
 
   @override
   Widget build(BuildContext context) {
+    final addNewArea = () {
+      final areaData = AreaData(
+          id: 0, groupId: groupID, createat: null, areaId: '', listTable: []);
+      showDefaultModal(
+        context: context,
+        content: ModalCreateArea(
+          area: areaData,
+          onDone: (newArea) {
+            updateAreaData(areaData).then(
+              (value) {
+                context.read<StorageProvider>().listAreaData?.add(value);
+                showNotification(context, 'Thêm vùng thành công!');
+                setState(() {});
+              },
+            ).onError(
+              (error, stackTrace) {
+                showAlert(context, 'Không thể cập nhật!');
+              },
+            );
+          },
+        ),
+      );
+    };
+
     return SafeArea(
       child: Scaffold(
         appBar: TableSelectorBar(
@@ -61,6 +85,7 @@ class _TablePageState extends State<TablePage> {
               data: data,
               done: widget.done,
               isEditting: isEditting,
+              createNewArea: addNewArea,
             );
           },
         ),
@@ -71,37 +96,7 @@ class _TablePageState extends State<TablePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: floatBottomBorderRadius,
                 ),
-                onPressed: () {
-                  final areaData = AreaData(
-                      id: 0,
-                      groupId: groupID,
-                      createat: null,
-                      areaId: '',
-                      listTable: []);
-                  showDefaultModal(
-                    context: context,
-                    content: ModalCreateArea(
-                      area: areaData,
-                      onDone: (newArea) {
-                        updateAreaData(areaData).then(
-                          (value) {
-                            context
-                                .read<StorageProvider>()
-                                .listAreaData
-                                ?.add(value);
-                            showNotification(
-                                context, 'Thêm vùng thành công!');
-                            setState(() {});
-                          },
-                        ).onError(
-                          (error, stackTrace) {
-                            showAlert(context, 'Không thể cập nhật!');
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
+                onPressed: addNewArea,
                 icon: LoadSvg(
                   assetPath: 'svg/plus_large_width_2.svg',
                   color: White,

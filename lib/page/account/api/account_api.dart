@@ -7,12 +7,12 @@ import 'package:sales_management/api/token.dart';
 import 'package:sales_management/page/account/api/model/authentication_request.dart';
 import 'package:sales_management/page/account/api/model/token.dart';
 
-Future<Token> signin() async {
+Future<Token> signin(String userName, String password) async {
   String passEncoded =
-      md5.convert(utf8.encode('binhdiepquin123')).toString().toUpperCase();
+      md5.convert(utf8.encode(password)).toString().toUpperCase();
   print(passEncoded);
   final request =
-      AuthenticationRequest(password: passEncoded, username: 'binhdiepquin');
+      AuthenticationRequest(password: passEncoded, username: userName);
 
   final response = await postE('/auth/signin', request);
 

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
@@ -53,7 +54,9 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     final listCategoryContent = config.deviceConfig?.categorys ?? '';
     listCategory = ['Tất cả'];
 
-    final List<String> allCat = List.from(jsonDecode(listCategoryContent));
+    final List<String> allCat = listCategoryContent.isEmpty
+        ? []
+        : List.from(jsonDecode(listCategoryContent));
     listCategory.addAll(allCat);
 
     listAllProduct = flatten<BeerSubmitData>(results.map(
@@ -120,6 +123,9 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final addNewProduct = () {
+      showProductInfo(BeerSubmitData.createEmpty(groupID, generateUUID()));
+    };
     return SafeArea(
       child: MultiProvider(
         providers: [
@@ -147,10 +153,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: floatBottomBorderRadius,
                   ),
-                  onPressed: () {
-                    showProductInfo(
-                        BeerSubmitData.createEmpty(groupID, generateUUID()));
-                  },
+                  onPressed: addNewProduct,
                   child: LoadSvg(
                     assetPath: 'svg/plus_large_width_2.svg',
                     color: White,
@@ -164,6 +167,32 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               return FetchAPI<BootStrapData?>(
                 future: loadConfig, //getall(),
                 successBuilder: (BootStrapData? data) {
+                  if (listAllProduct.isEmpty) {
+                    return Center(
+                      child: GestureDetector(
+                        onTap: addNewProduct,
+                        child: HighBorderContainer(
+                          isHight: true,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 11, horizontal: 18),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              LoadSvg(assetPath: 'svg/plus_large.svg'),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Tạo sản phẩm',
+                                style: headStyleSemiLargeHigh500,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return SingleChildScrollView(
                     child: Container(
                       padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),

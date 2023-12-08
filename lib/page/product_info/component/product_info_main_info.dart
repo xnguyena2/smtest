@@ -41,7 +41,9 @@ class _MainProductInfoState extends State<MainProductInfo> {
 
     final listCategoryContent = config?.deviceConfig?.categorys ?? '';
 
-    listCategory = List.from(jsonDecode(listCategoryContent));
+    listCategory = listCategoryContent.isEmpty
+        ? []
+        : List.from(jsonDecode(listCategoryContent));
     return config;
   }
 
