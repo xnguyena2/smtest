@@ -18,25 +18,6 @@ class OrderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addNewOrder = () async {
-      PackageDataResponse? newO;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CreateOrderPage(
-            data: PackageDataResponse(items: [], buyer: null),
-            onUpdated: (package) {
-              newO = package;
-            },
-            onDelete: (PackageDataResponse) {},
-          ),
-        ),
-      );
-      if (newO != null) {
-        context.read<NewOrderProvider>().updateValue = newO!;
-      }
-    };
-
     return LoadingOverlayAlt(
       child: MultiProvider(
         providers: [
@@ -47,38 +28,58 @@ class OrderListPage extends StatelessWidget {
             create: (_) => NewOrderProvider(),
           )
         ],
-        child: SafeArea(
-          child: Scaffold(
-            appBar: OrderListBar(
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            floatingActionButton: Builder(builder: (context) {
-              return FloatingActionButton.small(
-                elevation: 2,
-                backgroundColor: MainHighColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: floatBottomBorderRadius,
+        child: Builder(builder: (context) {
+          final addNewOrder = () async {
+            PackageDataResponse? newO;
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateOrderPage(
+                  data: PackageDataResponse(items: [], buyer: null),
+                  onUpdated: (package) {
+                    newO = package;
+                  },
+                  onDelete: (PackageDataResponse) {},
                 ),
-                onPressed: addNewOrder,
-                child: LoadSvg(
-                  assetPath: 'svg/plus_large_width_2.svg',
-                  color: White,
-                ),
-              );
-            }),
-            body: FetchAPI<ListPackageDetailResult>(
-              future: getAllPackage(groupID),
-              successBuilder: (data) {
-                return Body(
-                  data: data,
-                  addNewOrder: addNewOrder,
+              ),
+            );
+            if (newO != null) {
+              context.read<NewOrderProvider>().updateValue = newO!;
+            }
+          };
+          return SafeArea(
+            child: Scaffold(
+              appBar: OrderListBar(
+                onBackPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              floatingActionButton: Builder(builder: (context) {
+                return FloatingActionButton.small(
+                  elevation: 2,
+                  backgroundColor: MainHighColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: floatBottomBorderRadius,
+                  ),
+                  onPressed: addNewOrder,
+                  child: LoadSvg(
+                    assetPath: 'svg/plus_large_width_2.svg',
+                    color: White,
+                  ),
                 );
-              },
+              }),
+              body: FetchAPI<ListPackageDetailResult>(
+                future: getAllPackage(groupID),
+                successBuilder: (data) {
+                  return Body(
+                    data: data,
+                    addNewOrder: addNewOrder,
+                  );
+                },
+              ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

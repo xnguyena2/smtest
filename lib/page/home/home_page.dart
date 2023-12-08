@@ -4,6 +4,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/page/report/report_page.dart';
@@ -27,7 +28,11 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: HomeAppBar(),
         bottomNavigationBar: BottomBar(),
-        body: page,
+        body: RefreshIndicator(
+            onRefresh: () async {
+              return initData();
+            },
+            child: page),
       ),
     );
   }

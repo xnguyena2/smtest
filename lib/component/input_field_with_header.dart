@@ -42,11 +42,30 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
   late TextEditingController txtControler =
       TextEditingController(text: widget.initValue);
   final FocusNode txtFocus = FocusNode();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     isError = widget.initValue?.isEmpty ?? true;
+    if (widget.isNumberOnly && widget.isMoneyFormat) {
+      print('txt: ${txtControler.text}');
+      txtControler.text = CurrencyInputFormatter()
+          .formatEditUpdate(TextEditingValue(text: ''),
+              TextEditingValue(text: txtControler.text))
+          .text;
+      txtFocus.addListener(onSelection);
+    }
+  }
+
+  void onSelection() {
+    if (txtFocus.hasFocus) {
+      txtControler.selection = TextSelection.fromPosition(
+        TextPosition(
+          offset: txtControler.text.length,
+        ),
+      );
+    }
   }
 
   @override
@@ -116,13 +135,18 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               inputFormatters: widget.isNumberOnly
                                   ? [
                                       FilteringTextInputFormatter.digitsOnly,
-                                      // if (widget.isMoneyFormat)
-                                      //   CurrencyInputFormatter()
+                                      if (widget.isMoneyFormat)
+                                        CurrencyInputFormatter()
                                     ]
                                   : null,
                               onChanged: (text) {
                                 isError = text.isEmpty;
-                                widget.onChanged?.call(text);
+                                String txt = text;
+                                if (widget.isNumberOnly &&
+                                    widget.isMoneyFormat) {
+                                  txt = text.replaceAll(',', '');
+                                }
+                                widget.onChanged?.call(txt);
                                 setState(() {});
                               },
                               maxLines: 1,
@@ -172,26 +196,26 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
 }
 
 class CurrencyInputFormatter extends TextInputFormatter {
+  @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
-    final int selectionIndexFromTheRight =
-        newValue.text.length - newValue.selection.end;
+    // final int selectionIndexFromTheRight =
+    //     newValue.text.length - newValue.selection.end;
 
-    double value = double.parse(newValue.text);
-    print(selectionIndexFromTheRight);
+    print(newValue.text);
+    double value = double.tryParse(newValue.text) ?? 0;
+    // print(selectionIndexFromTheRight);
 
     final formatter = MoneyFormater;
 
     String newText = formatter.format(value);
-    print(newText);
 
     return newValue.copyWith(
       text: newText,
-      selection: new TextSelection.collapsed(
-          offset: newText.length - selectionIndexFromTheRight),
+      selection: new TextSelection.collapsed(offset: newText.length),
     );
   }
 }

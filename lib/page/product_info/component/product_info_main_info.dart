@@ -98,6 +98,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                 Expanded(
                   child: InputFiledWithHeader(
                     isNumberOnly: true,
+                    isMoneyFormat: true,
                     initValue:
                         (product.getBuyPrice <= 0 ? '' : product.getBuyPrice)
                             .toString(),
