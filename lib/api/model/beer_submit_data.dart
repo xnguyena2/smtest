@@ -92,6 +92,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     return _data;
   }
 
+  BeerSubmitData clone() {
+    return BeerSubmitData.fromJson(toJson());
+  }
+
   BeerSubmitData cloneMainData(BeerUnit? unit) {
     return BeerSubmitData(
       groupId: groupId,
@@ -135,7 +139,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   }
 
   String get get_show_name =>
-      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})';
+      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})'.replaceAll('()', '');
 
   void copyImg(BeerSubmitData oldProduct) {
     images.clear();

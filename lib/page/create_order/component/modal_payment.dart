@@ -52,6 +52,7 @@ class _ModalModalPaymentState extends State<ModalPayment> {
               header: 'Khách trả',
               hint: 'số tiền khách trả',
               isNumberOnly: true,
+              isMoneyFormat: true,
               onChanged: (v) {
                 value = double.tryParse(v) ?? 0;
                 isActiveOk = value > 0;

@@ -235,7 +235,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                                 final item = listProduct[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    showProductInfo(item);
+                                    showProductInfo(item.clone());
                                   },
                                   child: ProductManagerItem(
                                     productData: item,
