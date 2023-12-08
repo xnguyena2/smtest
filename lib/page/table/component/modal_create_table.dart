@@ -83,42 +83,38 @@ class _ModalCreateTableState extends State<ModalCreateTable> {
           children: [
             ColoredBox(
               color: White,
-              child: Row(
-                children: [
-                  TabBar(
-                    onTap: (tabIndex) {
-                      this.tabIndex = tabIndex;
-                      setState(() {});
-                    },
-                    padding: EdgeInsets.zero,
-                    labelPadding: EdgeInsets.zero,
-                    isScrollable: true,
-                    indicatorColor: HighColor,
-                    labelColor: HighColor,
-                    labelStyle: headStyleMedium500,
-                    indicatorWeight: 1,
-                    tabs: [
-                      Tab(
-                        child: SizedBox(
-                          width: tabWidth,
-                          child: const Center(
-                              child: Text(
-                            'Tạo 1 bàn',
-                            style: headStyleSmallLarge,
-                          )),
-                        ),
-                      ),
-                      Tab(
-                        child: SizedBox(
-                          width: tabWidth,
-                          child: const Center(
-                              child: Text(
-                            'Tạo hàng loạt',
-                            style: headStyleSmallLarge,
-                          )),
-                        ),
-                      ),
-                    ],
+              child: TabBar(
+                onTap: (tabIndex) {
+                  this.tabIndex = tabIndex;
+                  setState(() {});
+                },
+                padding: EdgeInsets.zero,
+                labelPadding: EdgeInsets.zero,
+                isScrollable: true,
+                indicatorColor: HighColor,
+                labelColor: HighColor,
+                labelStyle: headStyleMedium500,
+                indicatorWeight: 1,
+                tabs: [
+                  Tab(
+                    child: SizedBox(
+                      width: tabWidth,
+                      child: const Center(
+                          child: Text(
+                        'Tạo 1 bàn',
+                        style: headStyleSmallLarge,
+                      )),
+                    ),
+                  ),
+                  Tab(
+                    child: SizedBox(
+                      width: tabWidth,
+                      child: const Center(
+                          child: Text(
+                        'Tạo hàng loạt',
+                        style: headStyleSmallLarge,
+                      )),
+                    ),
                   ),
                 ],
               ),
