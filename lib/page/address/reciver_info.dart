@@ -73,6 +73,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
+      bottom: false,
       child: Scaffold(
         appBar: AddressSelectBar(
           onBackPressed: () {

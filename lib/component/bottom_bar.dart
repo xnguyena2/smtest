@@ -29,7 +29,8 @@ class BottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.only(
+          right: 15, left: 15, bottom: MediaQuery.of(context).padding.bottom),
       decoration: BoxDecoration(
         color: White,
         boxShadow: [wholeShadow],

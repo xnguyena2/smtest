@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: SafeArea(
         top: false,
+        bottom: false,
         child: Scaffold(
           appBar: HomeAppBar(),
           bottomNavigationBar: BottomBar(),
@@ -49,6 +50,7 @@ class BottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 46,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       decoration: const BoxDecoration(color: White, boxShadow: [wholeShadow]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

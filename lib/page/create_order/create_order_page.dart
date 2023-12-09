@@ -44,6 +44,7 @@ class CreateOrderPage extends StatelessWidget {
         ],
         child: SafeArea(
           top: false,
+          bottom: false,
           child: Scaffold(
             appBar: CreateOrderBar(
               onBackPressed: () {

@@ -18,7 +18,11 @@ class ProductSelectorBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     PackageDataResponse? package = context.watch<ProductProvider>().getPackage;
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(
+          top: 10,
+          right: 10,
+          left: 10,
+          bottom: MediaQuery.of(context).padding.bottom),
       decoration: BoxDecoration(
         color: White,
         boxShadow: [wholeShadow],

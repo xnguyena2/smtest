@@ -128,6 +128,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     };
     return SafeArea(
       top: false,
+      bottom: false,
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
