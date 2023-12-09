@@ -127,6 +127,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
       showProductInfo(BeerSubmitData.createEmpty(groupID, generateUUID()));
     };
     return SafeArea(
+      top: false,
+      bottom: false,
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(

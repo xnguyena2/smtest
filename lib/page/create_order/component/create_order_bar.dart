@@ -12,6 +12,7 @@ class CreateOrderBar extends BarLarge {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
         title: 'Chi tiết đơn',

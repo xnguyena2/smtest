@@ -61,6 +61,8 @@ class _TablePageState extends State<TablePage> {
     };
 
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         appBar: TableSelectorBar(
           onBackPressed: () {

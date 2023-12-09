@@ -25,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Widget page = Management();
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         appBar: HomeAppBar(),
         bottomNavigationBar: BottomBar(),

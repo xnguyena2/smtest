@@ -43,6 +43,8 @@ class ProductInfoBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         appBar: ProductInfoBar(),
         body: Container(

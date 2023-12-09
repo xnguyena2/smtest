@@ -18,6 +18,7 @@ class OrderListBar extends BarXLarge {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       color: White,
       child: Header(
         title: 'Đơn hàng',

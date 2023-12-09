@@ -98,6 +98,8 @@ class _LocationSelectState extends State<LocationSelect> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         appBar: AddressSelectBar(
           onBackPressed: () {
