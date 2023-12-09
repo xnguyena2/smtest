@@ -48,9 +48,10 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: 46,
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      height: 46 + bottomPadding,
+      padding: EdgeInsets.only(bottom: bottomPadding),
       decoration: const BoxDecoration(color: White, boxShadow: [wholeShadow]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
