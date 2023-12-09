@@ -29,7 +29,7 @@ class MainFunction extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 80,
+          maxCrossAxisExtent: 100,
           childAspectRatio: 1 / 1,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
