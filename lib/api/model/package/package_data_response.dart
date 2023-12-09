@@ -174,7 +174,7 @@ class PackageDataResponse extends PackageDetail {
   double get profitExpect => price - cost;
 
   PaymentStatus paymentStatus() {
-    if (payment >= price && isDone) {
+    if (payment >= finalPrice && isDone) {
       return PaymentStatus.DONE; //'Đã thanh toán';
     }
     if (payment > 0) {

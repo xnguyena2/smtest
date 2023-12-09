@@ -24,17 +24,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Widget page = Management();
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: Scaffold(
-        appBar: HomeAppBar(),
-        bottomNavigationBar: BottomBar(),
-        body: RefreshIndicator(
-            onRefresh: () async {
-              return initData();
-            },
-            child: page),
+    return RefreshIndicator(
+      onRefresh: () async {
+        return initData();
+      },
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Scaffold(
+          appBar: HomeAppBar(),
+          bottomNavigationBar: BottomBar(),
+          body: page,
+        ),
       ),
     );
   }
