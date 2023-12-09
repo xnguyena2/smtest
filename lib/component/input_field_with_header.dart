@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class InputFiledWithHeader extends StatefulWidget {
   final String header;
@@ -49,8 +50,8 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
     super.initState();
     isError = widget.initValue?.isEmpty ?? true;
     if (widget.isNumberOnly && widget.isMoneyFormat) {
-      print('txt: ${txtControler.text}');
-      txtControler.text = MoneyFormater.format(txtControler.text);
+      double number = double.tryParse(txtControler.text) ?? 0;
+      txtControler.text = MoneyFormater.format(number);
       txtFocus.addListener(onSelection);
     }
   }
