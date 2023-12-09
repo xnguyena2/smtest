@@ -11,7 +11,7 @@ class ProductInfoBar extends BarSmall {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       color: White,
       child: Header(
         title: 'Tạo sản phẩm',

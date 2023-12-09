@@ -64,7 +64,6 @@ class FlashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      bottom: false,
       child: Scaffold(
         body: Container(
           color: White,

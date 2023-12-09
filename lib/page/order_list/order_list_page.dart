@@ -49,7 +49,6 @@ class OrderListPage extends StatelessWidget {
           };
           return SafeArea(
             top: false,
-            bottom: false,
             child: Scaffold(
               appBar: OrderListBar(
                 onBackPressed: () {

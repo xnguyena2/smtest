@@ -81,8 +81,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                   child: InputFiledWithHeader(
                     isNumberOnly: true,
                     isMoneyFormat: true,
-                    initValue: (product.getPrice <= 0 ? '' : product.getPrice)
-                        .toString(),
+                    initValue: product.getPrice.toString(),
                     header: 'Giá bán',
                     hint: '0.000',
                     isImportance: true,
@@ -99,9 +98,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                   child: InputFiledWithHeader(
                     isNumberOnly: true,
                     isMoneyFormat: true,
-                    initValue:
-                        (product.getBuyPrice <= 0 ? '' : product.getBuyPrice)
-                            .toString(),
+                    initValue: product.getBuyPrice.toString(),
                     header: 'Giá vốn',
                     hint: '0.000',
                     isImportance: true,

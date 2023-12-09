@@ -55,7 +55,6 @@ class _CreateStorePageState extends State<CreateStorePage> {
       child: Builder(builder: (context) {
         return SafeArea(
           top: false,
-          bottom: false,
           child: Scaffold(
             backgroundColor: White,
             resizeToAvoidBottomInset: false,

@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
       },
       child: SafeArea(
         top: false,
-        bottom: false,
         child: Scaffold(
           appBar: HomeAppBar(),
           bottomNavigationBar: BottomBar(),
