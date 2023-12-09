@@ -69,3 +69,7 @@ String generateUUID() {
   var uuid = Uuid();
   return uuid.v1();
 }
+
+double tryParseMoney(String money) {
+  return double.tryParse(money.replaceAll(',', '')) ?? 0;
+}

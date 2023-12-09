@@ -171,7 +171,7 @@ class PackageDataResponse extends PackageDetail {
     return total;
   }
 
-  double get profitExpect => price - cost;
+  double get profitExpect => finalPrice - cost;
 
   PaymentStatus paymentStatus() {
     if (payment >= finalPrice && isDone) {

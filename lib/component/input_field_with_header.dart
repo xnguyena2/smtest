@@ -50,10 +50,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
     isError = widget.initValue?.isEmpty ?? true;
     if (widget.isNumberOnly && widget.isMoneyFormat) {
       print('txt: ${txtControler.text}');
-      txtControler.text = CurrencyInputFormatter()
-          .formatEditUpdate(TextEditingValue(text: ''),
-              TextEditingValue(text: txtControler.text))
-          .text;
+      txtControler.text = MoneyFormater.format(txtControler.text);
       txtFocus.addListener(onSelection);
     }
   }

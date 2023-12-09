@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
+import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
@@ -13,6 +14,7 @@ import 'package:sales_management/page/product_selector/component/provider_produc
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class TotalPrice extends StatefulWidget {
   final VoidCallback onUpdate;
@@ -52,7 +54,7 @@ class _TotalPriceState extends State<TotalPrice> {
     super.initState();
     data = widget.data;
     if (data.discountPercent != 0 || data.discountAmount != 0) {
-      isDiscountPercent = data.discountPercent >= 0;
+      isDiscountPercent = data.discountPercent > 0;
     }
     discountTxtController.text = isDiscountPercent
         ? data.discountPercent.toString()
@@ -139,7 +141,9 @@ class _TotalPriceState extends State<TotalPrice> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         if (isDiscountPercent)
-                          LengthLimitingTextInputFormatter(3),
+                          LengthLimitingTextInputFormatter(2)
+                        else
+                          CurrencyInputFormatter(),
                       ],
                       maxLines: 1,
                       style: headStyleXLargeHigh,
@@ -152,7 +156,7 @@ class _TotalPriceState extends State<TotalPrice> {
                         if (isDiscountPercent) {
                           data.discountPercent = double.tryParse(value) ?? 0;
                         } else {
-                          data.discountAmount = double.tryParse(value) ?? 0;
+                          data.discountAmount = tryParseMoney(value);
                         }
                         context.read<ProductProvider>().justRefresh();
                         setState(() {});
@@ -169,7 +173,7 @@ class _TotalPriceState extends State<TotalPrice> {
               Text(
                 isDiscountPercent
                     ? data.discountPercent.toString()
-                    : data.discountAmount.toString(),
+                    : MoneyFormater.format(data.discountAmount),
                 style: headStyleXXLarge,
               ),
           ],
@@ -197,6 +201,7 @@ class _TotalPriceState extends State<TotalPrice> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
+                        CurrencyInputFormatter(),
                       ],
                       maxLines: 1,
                       style: headStyleXLargeHigh,
@@ -206,7 +211,7 @@ class _TotalPriceState extends State<TotalPrice> {
                         border: InputBorder.none,
                       ),
                       onChanged: (value) {
-                        data.shipPrice = double.tryParse(value) ?? 0;
+                        data.shipPrice = tryParseMoney(value);
                         context.read<ProductProvider>().justRefresh();
                         setState(() {});
                       },
@@ -251,7 +256,7 @@ class _TotalPriceState extends State<TotalPrice> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Lợi nhuận dự kiến của đơn này',
+              'Lợi nhuận dự kiến',
               style: headStyleXLargeLigh,
             ),
             Text(

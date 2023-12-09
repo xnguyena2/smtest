@@ -5,11 +5,13 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/image_loading.dart';
+import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class ListProduct extends StatefulWidget {
   final PackageDataResponse data;
@@ -186,7 +188,7 @@ class _ProductItemState extends State<ProductItem> {
   late final ProductInPackageResponse productInPackageResponse;
   late String? imgUrl;
   late int unitNo;
-  final TextEditingController priceTxtController = TextEditingController();
+  final TextEditingController noUnitTxtController = TextEditingController();
   final TextEditingController discountTxtController = TextEditingController();
   final FocusNode priceFocus = FocusNode();
   final FocusNode discountFocus = FocusNode();
@@ -201,21 +203,21 @@ class _ProductItemState extends State<ProductItem> {
     productInPackageResponse = widget.productInPackageResponse;
     imgUrl = productInPackageResponse.beerSubmitData?.getFristLargeImg;
     unitNo = productInPackageResponse.numberUnit;
-    priceTxtController.text = unitNo.toString();
+    noUnitTxtController.text = unitNo.toString();
     if (productInPackageResponse.discountPercent != 0 ||
         productInPackageResponse.discountAmount != 0) {
       isDiscountPercent = productInPackageResponse.discountPercent > 0;
     }
     discountTxtController.text = isDiscountPercent
         ? productInPackageResponse.discountPercent.toString()
-        : productInPackageResponse.discountAmount.toString();
+        : MoneyFormater.format(productInPackageResponse.discountAmount);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    priceTxtController.dispose();
+    noUnitTxtController.dispose();
     discountTxtController.dispose();
     priceFocus.dispose();
     discountFocus.dispose();
@@ -227,23 +229,23 @@ class _ProductItemState extends State<ProductItem> {
       return;
     }
     productInPackageResponse.numberUnit--;
+    itemPackageChagneNo();
+  }
+
+  void addItemToPackage() {
+    productInPackageResponse.numberUnit++;
+    setState(() {});
+  }
+
+  void itemPackageChagneNo() {
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
-    priceTxtController.text = unitNo.toString();
+    noUnitTxtController.text = unitNo.toString();
     widget.onRefreshData();
     if (unitNo <= 0) {
       widget.onRemoveItem();
       return;
     }
-    setState(() {});
-  }
-
-  void addItemToPackage() {
-    productInPackageResponse.numberUnit++;
-    widget.updateNumberUnit(productInPackageResponse);
-    unitNo = productInPackageResponse.numberUnit;
-    priceTxtController.text = unitNo.toString();
-    widget.onRefreshData();
     setState(() {});
   }
 
@@ -312,7 +314,7 @@ class _ProductItemState extends State<ProductItem> {
                               ),
                               Expanded(
                                 child: TextFormField(
-                                  controller: priceTxtController,
+                                  controller: noUnitTxtController,
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                   style: headStyleSemiLarge500,
@@ -332,33 +334,34 @@ class _ProductItemState extends State<ProductItem> {
                                     }
                                     productInPackageResponse.numberUnit =
                                         int.tryParse(value) ?? 0;
-                                    if (productInPackageResponse.numberUnit <=
-                                        0) {
-                                      productInPackageResponse.numberUnit =
-                                          1; //set to 1 so can run remove func
-                                      removeItemToPackage();
-                                    }
+                                    itemPackageChagneNo();
                                   },
                                   onEditingComplete: () {
                                     if (valueEmpty) {
-                                      priceTxtController.text =
+                                      noUnitTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   },
                                   onTapOutside: (e) {
                                     if (valueEmpty) {
-                                      priceTxtController.text =
+                                      noUnitTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   },
                                   onFieldSubmitted: (v) {
                                     if (valueEmpty) {
-                                      priceTxtController.text =
+                                      noUnitTxtController.text =
                                           productInPackageResponse.numberUnit
                                               .toString();
                                     }
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                   },
                                 ),
                               ),
@@ -452,9 +455,13 @@ class _ProductItemState extends State<ProductItem> {
                                         child: TextFormField(
                                           focusNode: priceFocus,
                                           textAlign: TextAlign.right,
-                                          initialValue: productInPackageResponse
-                                              .price
-                                              .toString(),
+                                          initialValue: MoneyFormater.format(
+                                              productInPackageResponse.price),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            CurrencyInputFormatter(),
+                                          ],
                                           maxLines: 1,
                                           style: customerNameBigHight,
                                           decoration: InputDecoration(
@@ -531,7 +538,9 @@ class _ProductItemState extends State<ProductItem> {
                                                 .digitsOnly,
                                             if (isDiscountPercent)
                                               LengthLimitingTextInputFormatter(
-                                                  3),
+                                                  2)
+                                            else
+                                              CurrencyInputFormatter(),
                                           ],
                                           textAlign: TextAlign.right,
                                           maxLines: 1,
@@ -549,7 +558,7 @@ class _ProductItemState extends State<ProductItem> {
                                             } else {
                                               productInPackageResponse
                                                       .discountAmount =
-                                                  double.tryParse(value) ?? 0;
+                                                  tryParseMoney(value);
                                             }
                                             widget.onRefreshData();
                                             setState(() {});
