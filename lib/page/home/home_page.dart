@@ -35,7 +35,10 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Color(0xFF1F6C98),
           appBar: HomeAppBar(),
           bottomNavigationBar: BottomBar(),
-          body: page,
+          body: ColoredBox(
+            color: BackgroundColor,
+            child: page,
+          ),
         ),
       ),
     );
