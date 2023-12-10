@@ -95,7 +95,7 @@ class _TableItemState extends State<TableItem> {
                             width: 5,
                           ),
                           Text(
-                            tableDetailData.price.toString(),
+                            MoneyFormater.format(tableDetailData.price),
                             style: subInfoStyLargeTable400,
                           )
                         ],
