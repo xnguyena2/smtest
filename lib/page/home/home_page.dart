@@ -34,10 +34,7 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           appBar: HomeAppBar(),
           bottomNavigationBar: BottomBar(),
-          body: ColoredBox(
-            color: Color(0xFF1F6C98),
-            child: page,
-          ),
+          body: page,
         ),
       ),
     );

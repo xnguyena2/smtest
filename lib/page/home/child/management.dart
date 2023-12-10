@@ -46,8 +46,23 @@ class _ManagementState extends State<Management> {
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  QuickReport(
-                    benifitByMonth: benifitByMonth,
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        top: -600,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 600,
+                          color: Color(0xFF1F6C98),
+                        ),
+                      ),
+                      QuickReport(
+                        benifitByMonth: benifitByMonth,
+                      ),
+                    ],
                   ),
                   // Guide(),
                   MainFunction(),
