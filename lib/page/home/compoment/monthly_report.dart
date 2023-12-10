@@ -197,47 +197,51 @@ class MonthlyReport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      margin: margin,
-      child: Column(
-        children: [
-          header(
-            title: 'Báo cáo tháng này',
-            titleImg: 'svg/report_header.svg',
-            endChild: enableShowReportPageBtn
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ReportPage(),
-                        ),
-                      );
-                    },
-                    child: NavigationNext(
-                      title: 'Xem chi tiết',
-                      assetPath: 'svg/small_chart.svg',
-                    ),
-                  )
-                : SizedBox(),
-          ),
-          AspectRatio(
-            aspectRatio: 1.23,
-            child: Container(
-              margin: const EdgeInsets.only(top: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-              decoration: BoxDecoration(
-                color: White,
-                borderRadius: defaultBorderRadius,
-              ),
-              child: LineChart(
-                sampleData1,
-                duration: const Duration(milliseconds: 250),
+    return ColoredBox(
+      color: BackgroundColor,
+      child: Container(
+        padding: padding,
+        margin: margin,
+        child: Column(
+          children: [
+            header(
+              title: 'Báo cáo tháng này',
+              titleImg: 'svg/report_header.svg',
+              endChild: enableShowReportPageBtn
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReportPage(),
+                          ),
+                        );
+                      },
+                      child: NavigationNext(
+                        title: 'Xem chi tiết',
+                        assetPath: 'svg/small_chart.svg',
+                      ),
+                    )
+                  : SizedBox(),
+            ),
+            AspectRatio(
+              aspectRatio: 1.23,
+              child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                decoration: BoxDecoration(
+                  color: White,
+                  borderRadius: defaultBorderRadius,
+                ),
+                child: LineChart(
+                  sampleData1,
+                  duration: const Duration(milliseconds: 250),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

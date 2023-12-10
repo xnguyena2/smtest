@@ -23,90 +23,93 @@ class MainFunction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 100,
-          childAspectRatio: 1 / 1,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemCount: listMainFunction.length,
-        itemBuilder: (context, index) {
-          var item = listMainFunction[index];
-          return GestureDetector(
-            onTap: () {
-              switch (item['page']) {
-                case 'Create_Order':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateOrderPage(
-                        data: PackageDataResponse(items: [], buyer: null),
-                        onUpdated: (package) {},
-                        onDelete: (PackageDataResponse) {},
+    return ColoredBox(
+      color: BackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 100,
+            childAspectRatio: 1 / 1,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: listMainFunction.length,
+          itemBuilder: (context, index) {
+            var item = listMainFunction[index];
+            return GestureDetector(
+              onTap: () {
+                switch (item['page']) {
+                  case 'Create_Order':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateOrderPage(
+                          data: PackageDataResponse(items: [], buyer: null),
+                          onUpdated: (package) {},
+                          onDelete: (PackageDataResponse) {},
+                        ),
                       ),
-                    ),
-                  );
-                case 'Table':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TablePage(
-                        done: (table) {},
+                    );
+                  case 'Table':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TablePage(
+                          done: (table) {},
+                        ),
                       ),
-                    ),
-                  );
-                case 'List_Order':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderListPage(),
-                    ),
-                  );
-                case 'Product':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductSelectorPage(
-                        packageDataResponse: null,
-                        onUpdated: (packageDataResponse) {},
+                    );
+                  case 'List_Order':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderListPage(),
                       ),
+                    );
+                  case 'Product':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductSelectorPage(
+                          packageDataResponse: null,
+                          onUpdated: (packageDataResponse) {},
+                        ),
+                      ),
+                    );
+                  case 'Report':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReportPage(),
+                      ),
+                    );
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: White,
+                    borderRadius: defaultBorderRadius,
+                    boxShadow: const [defaultShadow]),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    LoadSvg(
+                      assetPath: item['icon'].toString(),
+                      width: 40,
                     ),
-                  );
-                case 'Report':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReportPage(),
-                    ),
-                  );
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: White,
-                  borderRadius: defaultBorderRadius,
-                  boxShadow: const [defaultShadow]),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  LoadSvg(
-                    assetPath: item['icon'].toString(),
-                    width: 40,
-                  ),
-                  Text(
-                    item['name'].toString(),
-                    style: subInfoStyLarge400,
-                  )
-                ],
+                    Text(
+                      item['name'].toString(),
+                      style: subInfoStyLarge400,
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
