@@ -43,6 +43,7 @@ class _ManagementState extends State<Management> {
           future: getBenifitOfMonth(value),
           successBuilder: (benifitByMonth) {
             return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   QuickReport(
