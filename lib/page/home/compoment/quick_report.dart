@@ -21,9 +21,12 @@ class QuickReport extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return WidgetContent(
-      screenWidth: screenWidth,
-      benifitByMonth: benifitByMonth,
+    return ColoredBox(
+      color: BackgroundColor,
+      child: WidgetContent(
+        screenWidth: screenWidth,
+        benifitByMonth: benifitByMonth,
+      ),
     );
   }
 }
