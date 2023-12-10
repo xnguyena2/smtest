@@ -319,7 +319,6 @@ class _ProductItemState extends State<ProductItem> {
                                   maxLines: 1,
                                   style: headStyleSemiLarge500,
                                   keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.done,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
