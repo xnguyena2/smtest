@@ -35,40 +35,43 @@ class _ManagementState extends State<Management> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box>(
-      valueListenable:
-          Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
-      builder: (BuildContext context, Box<dynamic> value, Widget? child) {
-        return FetchAPI<BenifitByMonth?>(
-          future: getBenifitOfMonth(value),
-          successBuilder: (benifitByMonth) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  QuickReport(
-                    benifitByMonth: benifitByMonth,
-                  ),
-                  // Guide(),
-                  MainFunction(),
-                  FetchAPI<ListDateBenifitDataResult>(
-                    future: getReportOfCurrentMonthByDate(),
-                    successBuilder: (ListDateBenifitDataResult) {
-                      return MonthlyReport(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        enableShowReportPageBtn: true,
-                        listResult: ListDateBenifitDataResult,
-                      );
-                    },
-                  ),
-                  // OrderList(),
-                ],
-              ),
-            );
-          },
-        );
-      },
+    return ColoredBox(
+      color: BackgroundColor,
+      child: ValueListenableBuilder<Box>(
+        valueListenable:
+            Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+        builder: (BuildContext context, Box<dynamic> value, Widget? child) {
+          return FetchAPI<BenifitByMonth?>(
+            future: getBenifitOfMonth(value),
+            successBuilder: (benifitByMonth) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    QuickReport(
+                      benifitByMonth: benifitByMonth,
+                    ),
+                    // Guide(),
+                    MainFunction(),
+                    FetchAPI<ListDateBenifitDataResult>(
+                      future: getReportOfCurrentMonthByDate(),
+                      successBuilder: (ListDateBenifitDataResult) {
+                        return MonthlyReport(
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          enableShowReportPageBtn: true,
+                          listResult: ListDateBenifitDataResult,
+                        );
+                      },
+                    ),
+                    // OrderList(),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
