@@ -140,6 +140,8 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                       padding:
                                           EdgeInsets.symmetric(vertical: 12),
                                       onPressed: () {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
                                         LoadingOverlayAlt.of(context).show();
                                         createAccount(
                                           UpdatePassword(
