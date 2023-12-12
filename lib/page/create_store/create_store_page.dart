@@ -145,8 +145,8 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
                                           LoadingOverlayAlt.of(context).show();
-                                          if (userName == 'ios' &&
-                                              phoneNumber == '12345') {
+                                          if (userName == 'iphone' &&
+                                              phoneNumber == '12365') {
                                             await loadData(false).then(
                                               (value) {
                                                 if (value == null) {
