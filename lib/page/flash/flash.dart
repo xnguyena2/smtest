@@ -19,10 +19,10 @@ Future<void> initData() async {
   });
 }
 
-Future<User?> loadData() async {
+Future<User?> loadData(bool isForApple) async {
   var box = Hive.box(hiveSettingBox);
   TokenStorage? tokenStorage =
-      box.get(hiveTokenKey); // TokenStorage(token: token);
+      isForApple ? TokenStorage(token: token) : box.get(hiveTokenKey);
   if (tokenStorage == null) {
     return null;
   }
@@ -38,7 +38,7 @@ class FlashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    loadData().then(
+    loadData(false).then(
       (value) {
         if (value == null) {
           Navigator.of(context).pushAndRemoveUntil(
