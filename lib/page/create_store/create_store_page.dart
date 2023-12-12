@@ -147,7 +147,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           LoadingOverlayAlt.of(context).show();
                                           if (userName == 'iphone' &&
                                               phoneNumber == '12365') {
-                                            await loadData(false).then(
+                                            await loadData(true).then(
                                               (value) {
                                                 if (value == null) {
                                                   showAlert(context,
