@@ -7,6 +7,7 @@ const String host =
 const String hiveSettingBox = 'settings';
 const String hiveConfigKey = 'config';
 const String hiveTokenKey = 'token';
+const String Seperate = '<=>';
 
 String deviceID = 'admintestting';
 String groupID = 'trumbien_store';

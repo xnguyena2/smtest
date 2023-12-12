@@ -31,7 +31,8 @@ Future<User?> loadData(bool isForApple) async {
   }
   setToken(tokenStorage.token);
   User user = await getMyInfomation();
-  setGlobalValue(deviceId: user.username, groupId: user.groupId);
+  String userName = user.username.split(Seperate).first;
+  setGlobalValue(deviceId: userName, groupId: user.groupId);
   await initData();
   return user;
 }

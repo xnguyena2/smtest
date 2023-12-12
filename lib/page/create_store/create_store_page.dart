@@ -169,9 +169,11 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                 .hide();
                                             return;
                                           }
+                                          final userNameClear =
+                                              '${userName}${Seperate}$phoneNumber';
                                           createAccount(
                                             UpdatePassword(
-                                                username: userName,
+                                                username: userNameClear,
                                                 oldpassword: '',
                                                 newpassword: 'newpassword',
                                                 group_id:
@@ -180,7 +182,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                 phone_number: phoneNumber),
                                           ).then((value) {
                                             trySigin(
-                                              userName,
+                                              userNameClear,
                                               'newpassword',
                                               5,
                                               () {
