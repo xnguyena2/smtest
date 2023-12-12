@@ -10,7 +10,7 @@ import 'package:sales_management/page/account/api/model/token.dart';
 Future<Token> signin(String userName, String password) async {
   String passEncoded =
       md5.convert(utf8.encode(password)).toString().toUpperCase();
-  print(passEncoded);
+
   final request =
       AuthenticationRequest(password: passEncoded, username: userName);
 
