@@ -21,6 +21,7 @@ import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/report/report_page.dart';
+import 'package:sales_management/page/store_info/store_info_page.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 
 import 'my_custom_scroll_behavior.dart';

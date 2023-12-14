@@ -11,10 +11,15 @@ const String Seperate = '<=>';
 
 String deviceID = 'admintestting';
 String groupID = 'trumbien_store';
+String userPhoneNumber = '0987654321';
 
-void setGlobalValue({required String deviceId, required String groupId}) {
+void setGlobalValue(
+    {required String deviceId,
+    required String groupId,
+    String phoneNumber = '0987654321'}) {
   deviceID = deviceId;
   groupID = groupId;
+  userPhoneNumber = phoneNumber;
 }
 
 //formater
@@ -72,6 +77,8 @@ final Border mainHighBorder = Border.all(color: MainHighColor);
 final Border tableHighBorder = Border.all(color: TableHighColor);
 
 final Border categoryBorder = Border.all(color: Color(0xFFB8B8B8));
+
+final Border alertBorder = Border.all(color: AlertColor);
 
 const BoxShadow defaultShadow = BoxShadow(
   color: borderColorLight,

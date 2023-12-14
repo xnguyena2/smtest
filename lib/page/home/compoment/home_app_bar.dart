@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/bar/bar_medium.dart';
+import 'package:sales_management/page/store_info/store_info_page.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class HomeAppBar extends BarMedium {
@@ -25,34 +26,44 @@ class HomeAppBar extends BarMedium {
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Padding(
         padding: EdgeInsets.only(top: topPadding),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.black,
-              foregroundImage: AssetImage(
-                "assets/images/shop_logo_big.png",
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StoreInfoPage(),
               ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  deviceID,
-                  style: headStyleLargeWhite,
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.black,
+                foregroundImage: AssetImage(
+                  "assets/images/shop_logo_big.png",
                 ),
-                Text(
-                  'Thông tin cửa hàng >',
-                  style: subInfoStyWhiteMedium,
-                ),
-              ],
-            )
-          ],
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deviceID,
+                    style: headStyleLargeWhite,
+                  ),
+                  Text(
+                    'Thông tin cửa hàng >',
+                    style: subInfoStyWhiteMedium,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

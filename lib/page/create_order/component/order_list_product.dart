@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/image_loading.dart';
@@ -673,49 +674,6 @@ class TextUnderlineCustome extends StatelessWidget {
           ),
         )
       ],
-    );
-  }
-}
-
-class RoundBtn extends StatelessWidget {
-  final String txt;
-  final Widget icon;
-  final bool isSelected;
-  final VoidCallback onPressed;
-  const RoundBtn({
-    super.key,
-    required this.txt,
-    required this.icon,
-    required this.onPressed,
-    this.isSelected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: defaultBorderRadius,
-          border: isSelected ? tableHighBorder : lightBorder,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              txt,
-              style: isSelected
-                  ? headStyleSemiLargeHigh500
-                  : headStyleSemiLargeLigh500,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
