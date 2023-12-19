@@ -20,13 +20,15 @@ class BootStrapDataAdapter extends TypeAdapter<BootStrapData> {
       products: (fields[0] as List).cast<BeerSubmitData>(),
       carousel: (fields[1] as List).cast<String>(),
       deviceConfig: fields[3] as DeviceConfig?,
-    )..benifit = fields[4] as BenifitByMonth;
+    )
+      ..benifit = fields[4] as BenifitByMonth
+      ..store = fields[5] as Store?;
   }
 
   @override
   void write(BinaryWriter writer, BootStrapData obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.products)
       ..writeByte(1)
@@ -34,7 +36,9 @@ class BootStrapDataAdapter extends TypeAdapter<BootStrapData> {
       ..writeByte(3)
       ..write(obj.deviceConfig)
       ..writeByte(4)
-      ..write(obj.benifit);
+      ..write(obj.benifit)
+      ..writeByte(5)
+      ..write(obj.store);
   }
 
   @override

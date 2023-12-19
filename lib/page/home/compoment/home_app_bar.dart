@@ -11,8 +11,27 @@ class HomeAppBar extends BarMedium {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
+    return HomeBarContent(topPadding: topPadding);
+  }
+}
+
+class HomeBarContent extends StatefulWidget {
+  const HomeBarContent({
+    super.key,
+    required this.topPadding,
+  });
+
+  final double topPadding;
+
+  @override
+  State<HomeBarContent> createState() => _HomeBarContentState();
+}
+
+class _HomeBarContentState extends State<HomeBarContent> {
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: 60 + topPadding,
+      height: 60 + widget.topPadding,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -25,15 +44,16 @@ class HomeAppBar extends BarMedium {
       ),
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Padding(
-        padding: EdgeInsets.only(top: topPadding),
+        padding: EdgeInsets.only(top: widget.topPadding),
         child: GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => StoreInfoPage(),
               ),
             );
+            setState(() {});
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -53,7 +73,7 @@ class HomeAppBar extends BarMedium {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    deviceID,
+                    storeName,
                     style: headStyleLargeWhite,
                   ),
                   Text(

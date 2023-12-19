@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/page/create_store/api/model/store.dart';
 
 part 'bootstrap.g.dart';
 
@@ -23,6 +24,9 @@ class BootStrapData {
   @HiveField(4)
   late final BenifitByMonth benifit;
 
+  @HiveField(5)
+  late Store? store;
+
   BootStrapData.fromJson(Map<String, dynamic> json) {
     carousel = List.from(json['carousel']).map((e) => e.toString()).toList();
     products = List.from(json['products'])
@@ -30,6 +34,7 @@ class BootStrapData {
         .toList();
     deviceConfig = DeviceConfig.fromJson(json['deviceConfig']);
     benifit = BenifitByMonth.fromJson(json['benifit']);
+    store = Store.fromJson(json['store']);
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +43,7 @@ class BootStrapData {
     _data['carousel'] = carousel;
     _data['deviceConfig'] = deviceConfig?.toJson();
     _data['benifit'] = benifit.toJson();
+    _data['store'] = store?.toJson();
     return _data;
   }
 

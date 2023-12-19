@@ -14,6 +14,11 @@ import 'package:sales_management/utils/svg_loader.dart';
 
 Future<void> initData() async {
   await loadBootstrap(groupID).then((value) {
+    setGlobalValue(
+        store_ame: value.store?.name ?? '',
+        groupId: groupID,
+        phoneNumber: value.store?.phone ?? '',
+        device_id: deviceID);
     var box = Hive.box(hiveSettingBox);
     box.put(hiveConfigKey, value);
   });
@@ -31,11 +36,11 @@ Future<User?> loadData(bool isForApple) async {
   }
   setToken(tokenStorage.token);
   User user = await getMyInfomation();
-  String userName = user.username.split(Seperate).first;
   setGlobalValue(
-      deviceId: userName,
+      store_ame: '',
       groupId: user.groupId,
-      phoneNumber: user.phone_number ?? '');
+      phoneNumber: user.phone_number ?? '',
+      device_id: user.username);
   await initData();
   return user;
 }
@@ -57,7 +62,11 @@ class FlashPage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => HomePage()),
             (Route<dynamic> route) => false);
       },
-    );
+    ).onError((error, stackTrace) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => CreateStorePage()),
+          (Route<dynamic> route) => false);
+    });
     return FlashScreen();
   }
 }

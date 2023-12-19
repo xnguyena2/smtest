@@ -7,6 +7,7 @@ import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/account/api/model/token.dart';
 import 'package:sales_management/page/create_store/api/create_store_api.dart';
+import 'package:sales_management/page/create_store/api/model/store_init_data.dart';
 import 'package:sales_management/page/create_store/api/model/update_password.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/home_page.dart';
@@ -169,21 +170,17 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                 .hide();
                                             return;
                                           }
-                                          final userNameClear =
-                                              '${userName}${Seperate}$phoneNumber';
-                                          createAccount(
-                                            UpdatePassword(
-                                                username: userNameClear,
-                                                oldpassword: '',
-                                                newpassword: 'newpassword',
-                                                group_id:
-                                                    '${removeVNTones(userName).replaceAll(' ', '_')}_$phoneNumber',
-                                                roles: [],
-                                                phone_number: phoneNumber),
+                                          final storeName = userName;
+                                          final defaultPassword = 'newpassword';
+                                          createAccountAndStore(
+                                            StoreInitData.fromStoreNameAndPhone(
+                                                storeName,
+                                                defaultPassword,
+                                                phoneNumber),
                                           ).then((value) {
                                             trySigin(
-                                              userNameClear,
-                                              'newpassword',
+                                              phoneNumber,
+                                              defaultPassword,
                                               5,
                                               () {
                                                 LoadingOverlayAlt.of(context)
