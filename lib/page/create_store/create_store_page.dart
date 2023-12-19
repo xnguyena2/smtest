@@ -142,13 +142,13 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                         txt: 'Tạo cửa hàng',
                                         padding:
                                             EdgeInsets.symmetric(vertical: 12),
-                                        onPressed: () async {
+                                        onPressed: () {
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
                                           LoadingOverlayAlt.of(context).show();
                                           if (userName == 'iphone' &&
                                               phoneNumber == '12365') {
-                                            await loadData(true).then(
+                                            loadData(true).then(
                                               (value) {
                                                 if (value == null) {
                                                   showAlert(context,
@@ -165,9 +165,15 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                                 route) =>
                                                             false);
                                               },
-                                            );
-                                            LoadingOverlayAlt.of(context)
-                                                .hide();
+                                            ).then((value) {
+                                              LoadingOverlayAlt.of(context)
+                                                  .hide();
+                                            }).onError((error, stackTrace) {
+                                              LoadingOverlayAlt.of(context)
+                                                  .hide();
+                                              showAlert(context,
+                                                  'Không thể vào cửa hàng!');
+                                            });
                                             return;
                                           }
                                           final storeName = userName;
