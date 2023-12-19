@@ -203,6 +203,16 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   void deleteImg(Images img) {
     images.remove(img);
   }
+
+  bool get isAvariable => status == 'AVARIABLE';
+
+  void changeStatus(bool st) {
+    if (st) {
+      status = 'AVARIABLE';
+      return;
+    }
+    status = 'SOLD_OUT';
+  }
 }
 
 @HiveType(typeId: 4)

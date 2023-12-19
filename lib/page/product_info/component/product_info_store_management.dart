@@ -33,9 +33,12 @@ class StoreManagement extends StatelessWidget {
                 style: customerNameBig400,
               ),
               SwitchBigBtn(
-                firstTxt: 'Còn hàng',
-                secondTxt: 'Hết hàng',
-                isDisable: true,
+                secondTxt: 'Còn hàng',
+                firstTxt: 'Hết hàng',
+                selectedIndex: this.product.isAvariable ? 1 : 0,
+                onChanged: (status) {
+                  this.product.changeStatus(status);
+                },
               )
             ],
           ),

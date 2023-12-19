@@ -5,7 +5,6 @@ import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
-import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/page/table/table_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -90,12 +89,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                   MaterialPageRoute(
                     builder: (context) => TablePage(
                       done: (table) {
-                        table.packageSecondId = data.packageSecondId;
-                        data.areaId = table.areaId;
-                        data.areaName = table.detail;
-                        data.tableId = table.tableId;
-                        data.tableName = table.tableName;
-                        data.setAction(() => setPackageId(table));
+                        data.setTable(table);
                       },
                     ),
                   ),

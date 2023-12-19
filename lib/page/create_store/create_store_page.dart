@@ -148,6 +148,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           LoadingOverlayAlt.of(context).show();
                                           if (userName == 'iphone' &&
                                               phoneNumber == '12365') {
+                                            print('loading default user!');
                                             loadData(true).then(
                                               (value) {
                                                 if (value == null) {

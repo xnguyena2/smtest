@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/transaction.dart';
+import 'package:sales_management/page/table/api/model/area_table.dart';
+import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/constants.dart';
 
 enum DeliverType { deliver, takeaway, table }
@@ -106,6 +108,15 @@ class PackageDetail extends BaseEntity {
     _data['progress'] = progress == null ? null : jsonEncode(progress);
     _data['status'] = status?.name;
     return _data;
+  }
+
+  void setTable(TableDetailData table) {
+    table.setPackageID = this.packageSecondId;
+    areaId = table.areaId;
+    areaName = table.detail;
+    tableId = table.tableId;
+    tableName = table.tableName;
+    setAction(() => setPackageId(table));
   }
 
   bool get isDone => status == PackageStatusType.DONE;

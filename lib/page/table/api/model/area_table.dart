@@ -175,6 +175,8 @@ class TableDetailData extends BaseEntity {
     return TableDetailData.fromJson(toJson());
   }
 
+  void set setPackageID(String value) => packageSecondId = value;
+
   bool get isUsed => packageSecondId != null && price >= 0;
 
   Duration get calcTimeUsed =>

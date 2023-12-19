@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/report/report_page.dart';
+import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/table_page.dart';
 
 import '../../../utils/constants.dart';
@@ -40,7 +42,7 @@ class MainFunction extends StatelessWidget {
           itemBuilder: (context, index) {
             var item = listMainFunction[index];
             return GestureDetector(
-              onTap: () {
+              onTap: () async {
                 switch (item['page']) {
                   case 'Create_Order':
                     Navigator.push(
@@ -54,11 +56,31 @@ class MainFunction extends StatelessWidget {
                       ),
                     );
                   case 'Table':
-                    Navigator.push(
+                    TableDetailData? tableDetailData = null;
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => TablePage(
-                          done: (table) {},
+                          done: (table) {
+                            tableDetailData = table;
+                          },
+                        ),
+                      ),
+                    );
+                    if (tableDetailData == null) {
+                      return;
+                    }
+                    final newOrder =
+                        PackageDataResponse(items: [], buyer: null);
+                    newOrder.packageType = DeliverType.table;
+                    newOrder.setTable(tableDetailData!);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateOrderPage(
+                          data: newOrder,
+                          onUpdated: (package) {},
+                          onDelete: (PackageDataResponse) {},
                         ),
                       ),
                     );

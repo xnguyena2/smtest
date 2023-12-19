@@ -27,12 +27,9 @@ Future<void> initData() async {
 Future<User?> loadData(bool isForApple) async {
   var box = Hive.box(hiveSettingBox);
   TokenStorage? tokenStorage =
-      box.get(hiveTokenKey); // TokenStorage(token: token);
+      isForApple ? TokenStorage(token: testToken) : box.get(hiveTokenKey);
   if (tokenStorage == null) {
-    if (!isForApple) {
-      return null;
-    }
-    tokenStorage = TokenStorage(token: token);
+    return null;
   }
   setToken(tokenStorage.token);
   User user = await getMyInfomation();
