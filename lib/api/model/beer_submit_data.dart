@@ -119,7 +119,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       beerSecondID: productID,
       name: '',
       category: '',
-      status: '',
+      status: 'AVARIABLE',
       listUnit: [
         BeerUnit(
             groupId: groupID,

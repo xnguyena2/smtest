@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
@@ -19,10 +21,11 @@ class ProductSelectorBottomBar extends StatelessWidget {
     PackageDataResponse? package = context.watch<ProductProvider>().getPackage;
     return Container(
       padding: EdgeInsets.only(
-          top: 10,
-          right: 10,
-          left: 10,
-          bottom: MediaQuery.of(context).padding.bottom),
+        top: 10,
+        right: 10,
+        left: 10,
+        bottom: max(10, MediaQuery.of(context).padding.bottom),
+      ),
       decoration: BoxDecoration(
         color: White,
         boxShadow: [wholeShadow],

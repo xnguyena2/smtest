@@ -10,9 +10,11 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bar.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_bottombar.dart';
+import 'package:sales_management/page/product_selector/component/product_selector_manager_item.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -35,11 +37,7 @@ class ProductSelectorPage extends StatefulWidget {
 class _ProductSelectorPageState extends State<ProductSelectorPage> {
   late Future<BootStrapData?> loadConfig;
   late List<BeerSubmitData> listAllProduct;
-  late List<BeerSubmitData> listProduct;
-  late List<BeerSubmitData> listProductOfCat;
   late List<String> listCategory;
-
-  List<String> listCateSelected = ['Tất cả'];
 
   late final isProductSelector = widget.packageDataResponse != null;
 
@@ -67,7 +65,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
-    listProductOfCat = listProduct = listAllProduct;
     return config;
   }
 
@@ -97,7 +94,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
-    listProductOfCat = listProduct = listAllProduct;
     return config;
   }
 
@@ -133,144 +129,195 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
         providers: [
           ChangeNotifierProvider(
             create: (_) => ProductProvider(widget.packageDataResponse),
-          )
-        ],
-        child: Scaffold(
-          appBar: ProductSelectorBar(
-            onBackPressed: () {
-              Navigator.pop(context);
-            },
-            onChanged: (searchTxt) {
-              listProduct = listProductOfCat
-                  .where((element) => element.searchMatch(searchTxt))
-                  .toList();
-              setState(() {});
-            },
           ),
-          floatingActionButton: isProductSelector
-              ? null
-              : FloatingActionButton.small(
-                  elevation: 2,
-                  backgroundColor: MainHighColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: floatBottomBorderRadius,
+          ChangeNotifierProvider(
+            create: (_) => SearchProvider(''),
+          ),
+        ],
+        child: Builder(builder: (context) {
+          return Scaffold(
+            appBar: ProductSelectorBar(
+              onBackPressed: () {
+                Navigator.pop(context);
+              },
+              onChanged: (searchTxt) {
+                context.read<SearchProvider>().updateValue = searchTxt;
+              },
+            ),
+            floatingActionButton: isProductSelector
+                ? null
+                : FloatingActionButton.small(
+                    elevation: 2,
+                    backgroundColor: MainHighColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: floatBottomBorderRadius,
+                    ),
+                    onPressed: addNewProduct,
+                    child: LoadSvg(
+                      assetPath: 'svg/plus_large_width_2.svg',
+                      color: White,
+                    ),
                   ),
-                  onPressed: addNewProduct,
-                  child: LoadSvg(
-                    assetPath: 'svg/plus_large_width_2.svg',
-                    color: White,
-                  ),
-                ),
-          body: ValueListenableBuilder<Box>(
-            valueListenable:
-                Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
-            builder: (context, value, child) {
-              loadConfig = getAllProduct(value);
-              return FetchAPI<BootStrapData?>(
-                future: loadConfig, //getall(),
-                successBuilder: (BootStrapData? data) {
-                  if (listAllProduct.isEmpty) {
-                    return Center(
-                      child: GestureDetector(
-                        onTap: addNewProduct,
-                        child: HighBorderContainer(
-                          isHight: true,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 11, horizontal: 18),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              LoadSvg(assetPath: 'svg/plus_large.svg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Tạo sản phẩm',
-                                style: headStyleSemiLargeHigh500,
-                              ),
-                            ],
+            body: ValueListenableBuilder<Box>(
+              valueListenable:
+                  Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+              builder: (context, value, child) {
+                loadConfig = getAllProduct(value);
+                return FetchAPI<BootStrapData?>(
+                  future: loadConfig, //getall(),
+                  successBuilder: (BootStrapData? data) {
+                    if (listAllProduct.isEmpty) {
+                      return Center(
+                        child: GestureDetector(
+                          onTap: addNewProduct,
+                          child: HighBorderContainer(
+                            isHight: true,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 11, horizontal: 18),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                LoadSvg(assetPath: 'svg/plus_large.svg'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Tạo sản phẩm',
+                                  style: headStyleSemiLargeHigh500,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                      );
+                    }
+                    return _BodyContenState(
+                      listCategory: listCategory,
+                      listAllProduct: listAllProduct,
+                      packageDataResponse: widget.packageDataResponse,
+                      showProduct: (BeerSubmitData) {
+                        showProductInfo(BeerSubmitData);
+                      },
                     );
-                  }
-
-                  return SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
-                      color: BackgroundColor,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CategorySelector(
-                            listCategory: listCategory,
-                            multiSelected: false,
-                            onChanged: (listCategorySelected) {
-                              listCateSelected = listCategorySelected;
-                              final String? firstCat =
-                                  listCategorySelected.firstOrNull;
-                              if (firstCat == null || firstCat == 'Tất cả') {
-                                listProductOfCat = listProduct = listAllProduct;
-                                setState(() {});
-                                return;
-                              }
-                              listProductOfCat = listProduct = listAllProduct
-                                  .where((element) => element
-                                      .isContainCategory(listCateSelected))
-                                  .toList();
-
-                              setState(() {});
-                            },
-                            itemsSelected: listCateSelected,
-                            firstWidget:
-                                LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
-                            isFlip: false,
-                          ),
-                          if (isProductSelector)
-                            selectProduct()
-                          else
-                            ListView.separated(
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                final item = listProduct[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    showProductInfo(item.clone());
-                                  },
-                                  child: ProductManagerItem(
-                                    productData: item,
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
-                                height: 10,
-                              ),
-                              itemCount: listProduct.length,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-          bottomNavigationBar: isProductSelector
-              ? ProductSelectorBottomBar(
-                  done: () {
-                    widget.onUpdated(widget.packageDataResponse!);
-                    Navigator.pop(context);
                   },
-                  cancel: () {
-                    Navigator.pop(context);
-                  },
-                )
-              : null,
+                );
+              },
+            ),
+            bottomNavigationBar: isProductSelector
+                ? ProductSelectorBottomBar(
+                    done: () {
+                      widget.onUpdated(widget.packageDataResponse!);
+                      Navigator.pop(context);
+                    },
+                    cancel: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                : null,
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _BodyContenState extends StatefulWidget {
+  final PackageDataResponse? packageDataResponse;
+  final List<String> listCategory;
+  final List<BeerSubmitData> listAllProduct;
+  final VoidCallbackArg<BeerSubmitData> showProduct;
+  const _BodyContenState({
+    super.key,
+    required this.listCategory,
+    required this.listAllProduct,
+    required this.packageDataResponse,
+    required this.showProduct,
+  });
+
+  @override
+  State<_BodyContenState> createState() => __BodyContenStateState();
+}
+
+class __BodyContenStateState extends State<_BodyContenState> {
+  late List<BeerSubmitData> listProduct;
+  late List<BeerSubmitData> listProductOfCat;
+  List<String> listCateSelected = ['Tất cả'];
+
+  late final isProductSelector = widget.packageDataResponse != null;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    listProductOfCat = listProduct = widget.listAllProduct;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filter = context.watch<SearchProvider>().getTxt ?? '';
+    listProduct = listProductOfCat
+        .where((element) => element.searchMatch(filter))
+        .toList();
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(left: 15, right: 15, bottom: 20),
+        color: BackgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CategorySelector(
+              listCategory: widget.listCategory,
+              multiSelected: false,
+              onChanged: (listCategorySelected) {
+                listCateSelected = listCategorySelected;
+                final String? firstCat = listCategorySelected.firstOrNull;
+                if (firstCat == null || firstCat == 'Tất cả') {
+                  listProductOfCat = listProduct = widget.listAllProduct;
+                  setState(() {});
+                  return;
+                }
+                listProductOfCat = listProduct = widget.listAllProduct
+                    .where((element) =>
+                        element.isContainCategory(listCateSelected))
+                    .toList();
+                print(listProduct.length);
+
+                setState(() {});
+              },
+              itemsSelected: listCateSelected,
+              firstWidget: LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
+              isFlip: false,
+            ),
+            if (isProductSelector) selectProduct() else listAllProductInfo(),
+          ],
         ),
       ),
+    );
+  }
+
+  ListView listAllProductInfo() {
+    print('refresh: ${listProduct.length}');
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final item = listProduct[index];
+        final productUnitID = item.listUnit?.firstOrNull?.beerUnitSecondId;
+        return GestureDetector(
+          key: ValueKey(productUnitID),
+          onTap: () {
+            widget.showProduct(item.clone());
+          },
+          child: ProductManagerItem(
+            productData: item,
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => const SizedBox(
+        height: 10,
+      ),
+      itemCount: listProduct.length,
     );
   }
 
@@ -289,7 +336,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
         if (index == listProduct.length) {
           return GestureDetector(
             onTap: () {
-              showProductInfo(
+              widget.showProduct(
                   BeerSubmitData.createEmpty(groupID, generateUUID()));
             },
             child: Container(
@@ -336,76 +383,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
           },
         );
       },
-    );
-  }
-}
-
-class ProductManagerItem extends StatelessWidget {
-  final BeerSubmitData productData;
-  const ProductManagerItem({
-    super.key,
-    required this.productData,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final imgUrl = productData.getFristLargeImg;
-    final name = productData.get_show_name;
-    final price = productData.getRealPrice;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: White,
-        borderRadius: defaultBorderRadius,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ConstrainedBox(
-          constraints: BoxConstraints.tight(Size.fromHeight(70)),
-          child: Row(
-            children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: defaultBorder,
-                    color: BackgroundColor,
-                    borderRadius: defaultBorderRadius,
-                    image: DecorationImage(
-                      image: (imgUrl == null
-                          ? const AssetImage(
-                              'assets/images/product.png',
-                            )
-                          : NetworkImage(imgUrl)) as ImageProvider,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 18,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      name,
-                      style: headStyleSemiLarge500,
-                    ),
-                    Text(
-                      MoneyFormater.format(price),
-                      style: headStyleSemiLargeHigh500,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

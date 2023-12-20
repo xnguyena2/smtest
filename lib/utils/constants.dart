@@ -35,6 +35,7 @@ const Color BackgroundColorLigh = Color(0xFFFEFEFE);
 const Color BackgroundRed = Color(0xFFFFF2F2);
 const Color BackgroundHigh = Color(0x1926B074);
 const Color White = Colors.white;
+const Color White70 = Color.fromARGB(178, 255, 255, 255);
 const Color Black = Colors.black;
 const Color Red = Colors.red;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
