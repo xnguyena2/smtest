@@ -231,7 +231,9 @@ class ProductInPackageResponse extends UserPackage {
 
   ProductInPackageResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
-    beerSubmitData = BeerSubmitData.fromJson(json['beerSubmitData']);
+    final productJson = json['beerSubmitData'];
+    beerSubmitData =
+        productJson == null ? null : BeerSubmitData.fromJson(productJson);
   }
 
   Map<String, dynamic> toJson() {
@@ -239,6 +241,8 @@ class ProductInPackageResponse extends UserPackage {
     _data['beerSubmitData'] = beerSubmitData?.toJson();
     return _data;
   }
+
+  String get get_show_name => beerSubmitData?.get_show_name ?? 'Removed';
 
   double get priceDiscount =>
       (price * (1 - discountPercent / 100) - discountAmount);

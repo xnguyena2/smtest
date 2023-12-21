@@ -235,7 +235,7 @@ class _ProductItemState extends State<ProductItem> {
 
   void addItemToPackage() {
     productInPackageResponse.numberUnit++;
-    setState(() {});
+    itemPackageChagneNo();
   }
 
   void itemPackageChagneNo() {
@@ -255,8 +255,7 @@ class _ProductItemState extends State<ProductItem> {
     String priceDiscountFormat = productInPackageResponse.priceDiscountFormat;
     String totalPriceFormat =
         MoneyFormater.format(productInPackageResponse.totalPriceDiscount);
-    String productName =
-        productInPackageResponse.beerSubmitData?.get_show_name ?? 'Removed';
+    String productName = productInPackageResponse.get_show_name;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
