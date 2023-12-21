@@ -9,6 +9,7 @@ import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/high_border_container.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
@@ -89,6 +90,20 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     return config;
   }
 
+  Future<BootStrapData?> updateProduct(BeerSubmitData product) async {
+    var box = Hive.box(hiveSettingBox);
+    BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
+
+    config.addOrReplaceProduct(product);
+
+    box.put(hiveConfigKey, config);
+
+    return config;
+  }
+
   Future<BootStrapData?> deleteProduct(BeerSubmitData product) async {
     var box = Hive.box(hiveSettingBox);
     BootStrapData? config = box.get(hiveConfigKey);
@@ -136,101 +151,104 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
       showProductInfo(BeerSubmitData.createEmpty(groupID, generateUUID()));
     }
 
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => ProductProvider(widget.packageDataResponse),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => SearchProvider(''),
-          ),
-        ],
-        child: Builder(builder: (context) {
-          return Scaffold(
-            appBar: ProductSelectorBar(
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
-              onChanged: (searchTxt) {
-                context.read<SearchProvider>().updateValue = searchTxt;
-              },
+    return LoadingOverlayAlt(
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => ProductProvider(widget.packageDataResponse),
             ),
-            floatingActionButton: isProductSelector
-                ? null
-                : FloatingActionButton.small(
-                    elevation: 2,
-                    backgroundColor: MainHighColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: floatBottomBorderRadius,
+            ChangeNotifierProvider(
+              create: (_) => SearchProvider(''),
+            ),
+          ],
+          child: Builder(builder: (context) {
+            return Scaffold(
+              appBar: ProductSelectorBar(
+                onBackPressed: () {
+                  Navigator.pop(context);
+                },
+                onChanged: (searchTxt) {
+                  context.read<SearchProvider>().updateValue = searchTxt;
+                },
+              ),
+              floatingActionButton: isProductSelector
+                  ? null
+                  : FloatingActionButton.small(
+                      elevation: 2,
+                      backgroundColor: MainHighColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: floatBottomBorderRadius,
+                      ),
+                      onPressed: addNewProduct,
+                      child: LoadSvg(
+                        assetPath: 'svg/plus_large_width_2.svg',
+                        color: White,
+                      ),
                     ),
-                    onPressed: addNewProduct,
-                    child: LoadSvg(
-                      assetPath: 'svg/plus_large_width_2.svg',
-                      color: White,
-                    ),
-                  ),
-            body: ValueListenableBuilder<Box>(
-              valueListenable:
-                  Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
-              builder: (context, value, child) {
-                loadConfig = getAllProduct(value);
-                return FetchAPI<BootStrapData?>(
-                  future: loadConfig, //getall(),
-                  successBuilder: (BootStrapData? data) {
-                    if (listAllProduct.isEmpty) {
-                      return Center(
-                        child: GestureDetector(
-                          onTap: addNewProduct,
-                          child: HighBorderContainer(
-                            isHight: true,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 11, horizontal: 18),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                LoadSvg(assetPath: 'svg/plus_large.svg'),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Tạo sản phẩm',
-                                  style: headStyleSemiLargeHigh500,
-                                ),
-                              ],
+              body: ValueListenableBuilder<Box>(
+                valueListenable:
+                    Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+                builder: (context, value, child) {
+                  loadConfig = getAllProduct(value);
+                  return FetchAPI<BootStrapData?>(
+                    future: loadConfig, //getall(),
+                    successBuilder: (BootStrapData? data) {
+                      if (listAllProduct.isEmpty) {
+                        return Center(
+                          child: GestureDetector(
+                            onTap: addNewProduct,
+                            child: HighBorderContainer(
+                              isHight: true,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 11, horizontal: 18),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  LoadSvg(assetPath: 'svg/plus_large.svg'),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'Tạo sản phẩm',
+                                    style: headStyleSemiLargeHigh500,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+                        );
+                      }
+                      return _BodyContenState(
+                        key: _keyBody,
+                        listCategory: listCategory,
+                        listAllProduct: listAllProduct,
+                        packageDataResponse: widget.packageDataResponse,
+                        showProduct: (BeerSubmitData) {
+                          showProductInfo(BeerSubmitData);
+                        },
+                        updateProduct: updateProduct,
                       );
-                    }
-                    return _BodyContenState(
-                      key: _keyBody,
-                      listCategory: listCategory,
-                      listAllProduct: listAllProduct,
-                      packageDataResponse: widget.packageDataResponse,
-                      showProduct: (BeerSubmitData) {
-                        showProductInfo(BeerSubmitData);
+                    },
+                  );
+                },
+              ),
+              bottomNavigationBar: isProductSelector
+                  ? ProductSelectorBottomBar(
+                      done: () {
+                        widget.onUpdated(widget.packageDataResponse!);
+                        Navigator.pop(context);
                       },
-                    );
-                  },
-                );
-              },
-            ),
-            bottomNavigationBar: isProductSelector
-                ? ProductSelectorBottomBar(
-                    done: () {
-                      widget.onUpdated(widget.packageDataResponse!);
-                      Navigator.pop(context);
-                    },
-                    cancel: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                : null,
-          );
-        }),
+                      cancel: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  : null,
+            );
+          }),
+        ),
       ),
     );
   }
@@ -241,12 +259,15 @@ class _BodyContenState extends StatefulWidget {
   final List<String> listCategory;
   final List<BeerSubmitData> listAllProduct;
   final VoidCallbackArg<BeerSubmitData> showProduct;
+  final VoidCallbackArg<BeerSubmitData> updateProduct;
+
   const _BodyContenState({
     super.key,
     required this.listCategory,
     required this.listAllProduct,
     required this.packageDataResponse,
     required this.showProduct,
+    required this.updateProduct,
   });
 
   @override
@@ -399,6 +420,10 @@ class __BodyContenStateState extends State<_BodyContenState> {
             widget.packageDataResponse!
                 .addOrUpdateProduct(productInPackageResponse);
             context.read<ProductProvider>().justRefresh();
+          },
+          onChanged: (p) {
+            widget.updateProduct(p);
+            setState(() {});
           },
         );
       },
