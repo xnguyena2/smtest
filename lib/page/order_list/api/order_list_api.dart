@@ -34,7 +34,7 @@ Future<ResponseResult> updatePackage(ProductPackage productPackage) async {
   final request = productPackage;
   // print(request.toJson());
 
-  final response = await postC('/package/update', request);
+  final response = await postC('/package/updatenotcheck', request);
 
   print(response.statusCode);
   if (response.statusCode == 200) {

@@ -59,9 +59,23 @@ class _TotalPriceState extends State<TotalPrice> {
     }
     discountTxtController.text = isDiscountPercent
         ? data.discountPercent.toString()
-        : data.discountAmount.toString();
+        : MoneyFormater.format(data.discountAmount);
 
-    shipTxtController.text = data.shipPrice.toString();
+    shipTxtController.text = MoneyFormater.format(data.shipPrice);
+
+    discountFocus.addListener(() {
+      if (discountFocus.hasFocus) {
+        discountTxtController.selection = TextSelection(
+            baseOffset: 0, extentOffset: discountTxtController.text.length);
+      }
+    });
+
+    shipFocus.addListener(() {
+      if (shipFocus.hasFocus) {
+        shipTxtController.selection = TextSelection(
+            baseOffset: 0, extentOffset: shipTxtController.text.length);
+      }
+    });
   }
 
   @override
@@ -141,9 +155,10 @@ class _TotalPriceState extends State<TotalPrice> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        if (isDiscountPercent)
-                          LengthLimitingTextInputFormatter(2)
-                        else
+                        if (isDiscountPercent) ...[
+                          LengthLimitingTextInputFormatter(2),
+                          FilteringTextInputFormatter.deny(RegExp(r'^0+')),
+                        ] else
                           CurrencyInputFormatter(),
                       ],
                       maxLines: 1,
