@@ -35,19 +35,15 @@ class ProductSelectorPage extends StatefulWidget {
 }
 
 class _ProductSelectorPageState extends State<ProductSelectorPage> {
+  final GlobalKey<__BodyContenStateState> _keyBody = GlobalKey();
+
   late Future<BootStrapData?> loadConfig;
   late List<BeerSubmitData> listAllProduct;
   late List<String> listCategory;
 
   late final isProductSelector = widget.packageDataResponse != null;
 
-  Future<BootStrapData?> getAllProduct(Box<dynamic> box) async {
-    // var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
-    if (config == null) {
-      return null;
-    }
-
+  void loadDataFrom({required BootStrapData config}) {
     final results = config.products;
     final listCategoryContent = config.deviceConfig?.categorys ?? '';
     listCategory = ['Tất cả'];
@@ -65,6 +61,15 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
+  }
+
+  Future<BootStrapData?> getAllProduct(Box<dynamic> box) async {
+    // var box = Hive.box(hiveSettingBox);
+    BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
+    loadDataFrom(config: config);
     return config;
   }
 
@@ -79,21 +84,8 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
 
     box.put(hiveConfigKey, config);
 
-    final results = config.products;
-    final listCategoryContent = config.deviceConfig?.categorys ?? '';
-    listCategory = ['Tất cả'];
+    loadDataFrom(config: config);
 
-    final List<String> allCat = List.from(jsonDecode(listCategoryContent));
-    listCategory.addAll(allCat);
-
-    listAllProduct = flatten<BeerSubmitData>(results.map(
-      (e) {
-        return e.flatUnit();
-      },
-    ));
-    listAllProduct.sort(
-      (a, b) => a.name.compareTo(b.name),
-    );
     return config;
   }
 
@@ -105,6 +97,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
           product: product,
           onAdded: (product) {
             loadConfig = addProduct(product);
+            _keyBody.currentState?.updateListProduct(listAllProduct);
           },
         ),
       ),
@@ -119,9 +112,10 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final addNewProduct = () {
+    addNewProduct() {
       showProductInfo(BeerSubmitData.createEmpty(groupID, generateUUID()));
-    };
+    }
+
     return SafeArea(
       top: false,
       bottom: false,
@@ -192,6 +186,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                       );
                     }
                     return _BodyContenState(
+                      key: _keyBody,
                       listCategory: listCategory,
                       listAllProduct: listAllProduct,
                       packageDataResponse: widget.packageDataResponse,
@@ -252,6 +247,11 @@ class __BodyContenStateState extends State<_BodyContenState> {
     listProductOfCat = listProduct = widget.listAllProduct;
   }
 
+  void updateListProduct(List<BeerSubmitData> listAllProduct) {
+    listProductOfCat = listProduct = listAllProduct;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final filter = context.watch<SearchProvider>().getTxt ?? '';
@@ -296,7 +296,6 @@ class __BodyContenStateState extends State<_BodyContenState> {
   }
 
   ListView listAllProductInfo() {
-    print('refresh: ${listProduct.length}');
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,

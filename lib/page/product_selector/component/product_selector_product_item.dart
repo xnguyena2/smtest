@@ -32,6 +32,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late ProductInPackageResponse? productInPackage;
   late int unitNo;
   final TextEditingController txtController = TextEditingController();
+  late bool isAvariable;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     productInPackage = widget.productInPackageResponse;
     unitNo = productInPackage?.numberUnit ?? 0;
     txtController.text = unitNo.toString();
+    isAvariable = widget.productData.isAvariable;
   }
 
   void removeItemToPackage() {
@@ -70,7 +72,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: addItemToPackage,
+      onTap: isAvariable ? addItemToPackage : null,
       child: Container(
         decoration: BoxDecoration(
           color: White,
