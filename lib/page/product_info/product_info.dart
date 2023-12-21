@@ -9,6 +9,7 @@ import 'package:sales_management/page/product_info/component/product_info_img_ma
 import 'package:sales_management/page/product_info/component/product_info_main_info.dart';
 import 'package:sales_management/page/product_info/component/product_info_store_management.dart';
 import 'package:sales_management/page/product_info/component/product_more_setting.dart';
+import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -16,16 +17,22 @@ import 'package:sales_management/utils/typedef.dart';
 class ProductInfo extends StatelessWidget {
   final BeerSubmitData product;
   final VoidCallbackArg<BeerSubmitData>? onAdded;
+  final VoidCallbackArg<BeerSubmitData>? onDeleted;
   const ProductInfo({
     super.key,
     required this.product,
     this.onAdded,
+    this.onDeleted,
   });
 
   @override
   Widget build(BuildContext context) {
     return LoadingOverlayAlt(
-      child: ProductInfoBody(product: product, onAdded: onAdded),
+      child: ProductInfoBody(
+        product: product,
+        onAdded: onAdded,
+        onDeleted: onDeleted,
+      ),
     );
   }
 }
@@ -35,10 +42,12 @@ class ProductInfoBody extends StatelessWidget {
     super.key,
     required this.product,
     required this.onAdded,
+    this.onDeleted,
   });
 
   final BeerSubmitData product;
   final VoidCallbackArg<BeerSubmitData>? onAdded;
+  final VoidCallbackArg<BeerSubmitData>? onDeleted;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +85,7 @@ class ProductInfoBody extends StatelessWidget {
         ),
         bottomNavigationBar: BottomBar(
           okBtnTxt: 'Cập nhật',
+          enableDelete: true,
           done: () {
             LoadingOverlayAlt.of(context).show();
             createProduct(product).then((value) {
@@ -90,7 +100,19 @@ class ProductInfoBody extends StatelessWidget {
             });
           },
           cancel: () {
-            Navigator.pop(context);
+            showDefaultDialog(context, 'Xác nhận xóa!',
+                'Bạn có chắc muốn xóa sản phẩm?', onOk: () {
+              LoadingOverlayAlt.of(context).show();
+              deleteProduct(product).then((value) {
+                LoadingOverlayAlt.of(context).hide();
+                onDeleted?.call(product);
+                Navigator.pop(context);
+              }).onError((error, stackTrace) {
+                LoadingOverlayAlt.of(context).hide();
+                showAlert(
+                    context, 'Lỗi hệ thống không thể xóa sản phẩm!!!');
+              });
+            }, onCancel: () {});
           },
         ),
       ),

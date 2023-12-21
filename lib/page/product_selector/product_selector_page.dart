@@ -89,6 +89,22 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     return config;
   }
 
+  Future<BootStrapData?> deleteProduct(BeerSubmitData product) async {
+    var box = Hive.box(hiveSettingBox);
+    BootStrapData? config = box.get(hiveConfigKey);
+    if (config == null) {
+      return null;
+    }
+
+    config.deleteProduct(product);
+
+    box.put(hiveConfigKey, config);
+
+    loadDataFrom(config: config);
+
+    return config;
+  }
+
   void showProductInfo(BeerSubmitData product) {
     Navigator.push(
       context,
@@ -97,6 +113,10 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
           product: product,
           onAdded: (product) {
             loadConfig = addProduct(product);
+            _keyBody.currentState?.updateListProduct(listAllProduct);
+          },
+          onDeleted: (product) {
+            loadConfig = deleteProduct(product);
             _keyBody.currentState?.updateListProduct(listAllProduct);
           },
         ),

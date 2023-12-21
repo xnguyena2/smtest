@@ -23,6 +23,22 @@ Future<BeerSubmitData> createProduct(BeerSubmitData product) async {
   }
 }
 
+Future<int> deleteProduct(BeerSubmitData product) async {
+  // print(request.toJson());
+
+  final response = await deleteC(
+      '/beer/admin/delete/${product.groupId}/${product.beerSecondID}', null);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    debugPrint(response.body, wrapWidth: 1024);
+    return response.statusCode;
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
 Future<Images> uploadFile(String path, Uint8List photoBytes,
     {VoidCallbackArg<double>? onUploadProgress}) async {
   final request = await createMultiPartRequest(path, photoBytes);

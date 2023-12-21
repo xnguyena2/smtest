@@ -51,6 +51,18 @@ Future<Response> getE(String path) {
   );
 }
 
+Future<Response> deleteC(String path, Object? body) {
+  Map<String, String> requestHeaders = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Cookie': '$CookiePrefix=$token',
+  };
+  return delete(
+    Uri.parse('$host$path'),
+    body: jsonEncode(body),
+    headers: requestHeaders,
+  );
+}
+
 Future<MultipartRequest> createMultiPartRequest(
     String path, Uint8List bytes) async {
   ///MultiPart request

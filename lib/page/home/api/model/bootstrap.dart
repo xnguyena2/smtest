@@ -56,6 +56,15 @@ class BootStrapData {
     }
     products[index] = p;
   }
+
+  void deleteProduct(BeerSubmitData p) {
+    int index = products
+        .indexWhere((element) => element.beerSecondID == p.beerSecondID);
+    if (index < 0) {
+      return;
+    }
+    products.removeAt(index);
+  }
 }
 
 @HiveType(typeId: 3)
