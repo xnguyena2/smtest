@@ -9,6 +9,7 @@ import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
+import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -196,6 +197,7 @@ class _ProductItemState extends State<ProductItem> {
   final FocusNode noteFocus = FocusNode();
   bool valueEmpty = false;
   bool isDiscountPercent = false;
+  bool isProductValid = true;
 
   @override
   void initState() {
@@ -212,6 +214,9 @@ class _ProductItemState extends State<ProductItem> {
     discountTxtController.text = isDiscountPercent
         ? productInPackageResponse.discountPercent.toString()
         : MoneyFormater.format(productInPackageResponse.discountAmount);
+    isProductValid = !(productInPackageResponse.beerSubmitData == null ||
+        productInPackageResponse.beerSubmitData?.isAvariable == false);
+    print(isProductValid);
   }
 
   @override
@@ -257,388 +262,424 @@ class _ProductItemState extends State<ProductItem> {
         MoneyFormater.format(productInPackageResponse.totalPriceDiscount);
     String productName = productInPackageResponse.get_show_name;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 80,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                      border: defaultBorder,
-                      borderRadius: defaultSquareBorderRadius,
-                      color: BackgroundColor),
-                  child: Center(
-                    child: imgUrl == null
-                        ? LoadSvg(
-                            assetPath: 'svg/product.svg', width: 20, height: 20)
-                        : AspectRatio(
-                            aspectRatio: 1 / 1,
-                            child: ImageLoading(url: imgUrl!),
-                          ),
-                  ),
-                ),
-                SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        productName,
-                        style: headStyleXLarge,
-                      ),
-                      if (widget.isEditting)
-                        Container(
-                          width: 127,
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              borderRadius: defaultBorderRadius,
-                              border: defaultBorder),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  removeItemToPackage();
-                                },
-                                child: LoadSvg(
-                                    assetPath: 'svg/minus.svg',
-                                    width: 20,
-                                    height: 20),
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  controller: noUnitTxtController,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  style: headStyleSemiLarge500,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    isDense: true,
-                                    border: InputBorder.none,
-                                  ),
-                                  onChanged: (value) {
-                                    valueEmpty = value.isEmpty;
-                                    if (valueEmpty) {
-                                      return;
-                                    }
-                                    productInPackageResponse.numberUnit =
-                                        int.tryParse(value) ?? 0;
-                                    itemPackageChagneNo();
-                                  },
-                                  onEditingComplete: () {
-                                    if (valueEmpty) {
-                                      noUnitTxtController.text =
-                                          productInPackageResponse.numberUnit
-                                              .toString();
-                                    }
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
-                                  onTapOutside: (e) {
-                                    if (valueEmpty) {
-                                      noUnitTxtController.text =
-                                          productInPackageResponse.numberUnit
-                                              .toString();
-                                    }
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
-                                  onFieldSubmitted: (v) {
-                                    if (valueEmpty) {
-                                      noUnitTxtController.text =
-                                          productInPackageResponse.numberUnit
-                                              .toString();
-                                    }
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  addItemToPackage();
-                                },
-                                child: LoadSvg(
-                                    assetPath: 'svg/plus.svg',
-                                    width: 20,
-                                    height: 20,
-                                    color: TableHighColor),
-                              )
-                            ],
-                          ),
-                        )
-                    ],
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 80,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (!widget.isEditting) ...[
-                      Text(
-                        priceDiscountFormat,
-                        style: headStyleBigMediumBlackLight,
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                          border: defaultBorder,
+                          borderRadius: defaultSquareBorderRadius,
+                          color: BackgroundColor),
+                      child: Center(
+                        child: imgUrl == null
+                            ? LoadSvg(
+                                assetPath: 'svg/product.svg',
+                                width: 20,
+                                height: 20)
+                            : AspectRatio(
+                                aspectRatio: 1 / 1,
+                                child: ImageLoading(url: imgUrl!),
+                              ),
                       ),
-                      Text(
-                        'x${productInPackageResponse.numberUnit}',
-                        style: headStyleBigMedium,
-                      )
-                    ],
-                    if (widget.isEditting)
-                      GestureDetector(
-                        onTap: () {
-                          _container_edit_height = max_height;
-                          setState(() {});
-                        },
-                        child: TextUnderlineCustome(
-                            totalPriceFormat: totalPriceFormat),
-                      )
-                    else
-                      Text(
-                        totalPriceFormat,
-                        style: headStyleXLarge,
-                      )
-                  ],
-                )
-              ],
-            ),
-          ),
-          if (widget.isEditting)
-            AnimatedContainer(
-              height: _container_edit_height,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.fastOutSlowIn,
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: SizedBox(
-                  height: max_height,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: 7,
-                      ),
-                      Divider(
-                        color: Black15,
-                        thickness: 0.3,
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Giá bán',
-                                      style: headStyleSemiLargeLigh500,
-                                    ),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          focusNode: priceFocus,
-                                          textAlign: TextAlign.right,
-                                          initialValue: MoneyFormater.format(
-                                              productInPackageResponse.price),
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter
-                                                .digitsOnly,
-                                            CurrencyInputFormatter(),
-                                          ],
-                                          maxLines: 1,
-                                          style: customerNameBigHight,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                          onChanged: (value) {
-                                            productInPackageResponse.price =
-                                                double.tryParse(value) ?? 0;
-                                            widget.onRefreshData();
-                                            setState(() {});
-                                          },
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => priceFocus.requestFocus(),
-                                        child: LoadSvg(
-                                            assetPath:
-                                                'svg/edit_pencil_line_01.svg'),
-                                      )
-                                    ],
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            productName,
+                            style: headStyleXLarge,
+                          ),
+                          if (widget.isEditting)
+                            Container(
+                              width: 127,
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  borderRadius: defaultBorderRadius,
+                                  border: defaultBorder),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      removeItemToPackage();
+                                    },
+                                    child: LoadSvg(
+                                        assetPath: 'svg/minus.svg',
+                                        width: 20,
+                                        height: 20),
                                   ),
-                                )
-                              ],
-                            ),
-                            Row(
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: noUnitTxtController,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      style: headStyleSemiLarge500,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.zero,
+                                        isDense: true,
+                                        border: InputBorder.none,
+                                      ),
+                                      onChanged: (value) {
+                                        valueEmpty = value.isEmpty;
+                                        if (valueEmpty) {
+                                          return;
+                                        }
+                                        productInPackageResponse.numberUnit =
+                                            int.tryParse(value) ?? 0;
+                                        itemPackageChagneNo();
+                                      },
+                                      onEditingComplete: () {
+                                        if (valueEmpty) {
+                                          noUnitTxtController.text =
+                                              productInPackageResponse
+                                                  .numberUnit
+                                                  .toString();
+                                        }
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
+                                      onTapOutside: (e) {
+                                        if (valueEmpty) {
+                                          noUnitTxtController.text =
+                                              productInPackageResponse
+                                                  .numberUnit
+                                                  .toString();
+                                        }
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
+                                      onFieldSubmitted: (v) {
+                                        if (valueEmpty) {
+                                          noUnitTxtController.text =
+                                              productInPackageResponse
+                                                  .numberUnit
+                                                  .toString();
+                                        }
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      addItemToPackage();
+                                    },
+                                    child: LoadSvg(
+                                        assetPath: 'svg/plus.svg',
+                                        width: 20,
+                                        height: 20,
+                                        color: TableHighColor),
+                                  )
+                                ],
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (!widget.isEditting) ...[
+                          Text(
+                            priceDiscountFormat,
+                            style: headStyleBigMediumBlackLight,
+                          ),
+                          Text(
+                            'x${productInPackageResponse.numberUnit}',
+                            style: headStyleBigMedium,
+                          )
+                        ],
+                        if (widget.isEditting)
+                          GestureDetector(
+                            onTap: () {
+                              _container_edit_height = max_height;
+                              setState(() {});
+                            },
+                            child: TextUnderlineCustome(
+                                totalPriceFormat: totalPriceFormat),
+                          )
+                        else
+                          Text(
+                            totalPriceFormat,
+                            style: headStyleXLarge,
+                          )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              if (widget.isEditting)
+                AnimatedContainer(
+                  height: _container_edit_height,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.fastOutSlowIn,
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: max_height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Divider(
+                            color: Black15,
+                            thickness: 0.3,
+                          ),
+                          Expanded(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Chiết khấu',
-                                      style: headStyleSemiLargeLigh500,
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Giá bán',
+                                          style: headStyleSemiLargeLigh500,
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 18,
-                                    ),
-                                    SwitchBtn(
-                                      firstTxt: 'VND',
-                                      secondTxt: '%',
-                                      enableIndex: isDiscountPercent ? 1 : 0,
-                                      onChanged: (index) {
-                                        if (index == 0) {
-                                          isDiscountPercent = false;
-                                          productInPackageResponse
-                                              .discountPercent = 0;
-                                          productInPackageResponse
-                                              .discountAmount = 0;
-                                        } else {
-                                          isDiscountPercent = true;
-                                          productInPackageResponse
-                                              .discountAmount = 0;
-                                          productInPackageResponse
-                                              .discountPercent = 0;
-                                        }
-                                        discountTxtController.text = '0';
-                                        widget.onRefreshData();
-                                        setState(() {});
-                                      },
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              focusNode: priceFocus,
+                                              textAlign: TextAlign.right,
+                                              initialValue:
+                                                  MoneyFormater.format(
+                                                      productInPackageResponse
+                                                          .price),
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                                CurrencyInputFormatter(),
+                                              ],
+                                              maxLines: 1,
+                                              style: customerNameBigHight,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.zero,
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                productInPackageResponse.price =
+                                                    double.tryParse(value) ?? 0;
+                                                widget.onRefreshData();
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                priceFocus.requestFocus(),
+                                            child: LoadSvg(
+                                                assetPath:
+                                                    'svg/edit_pencil_line_01.svg'),
+                                          )
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: discountTxtController,
-                                          focusNode: discountFocus,
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter
-                                                .digitsOnly,
-                                            if (isDiscountPercent)
-                                              LengthLimitingTextInputFormatter(
-                                                  2)
-                                            else
-                                              CurrencyInputFormatter(),
-                                          ],
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          style: customerNameBigHight,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                          onChanged: (value) {
-                                            if (isDiscountPercent) {
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Chiết khấu',
+                                          style: headStyleSemiLargeLigh500,
+                                        ),
+                                        SizedBox(
+                                          width: 18,
+                                        ),
+                                        SwitchBtn(
+                                          firstTxt: 'VND',
+                                          secondTxt: '%',
+                                          enableIndex:
+                                              isDiscountPercent ? 1 : 0,
+                                          onChanged: (index) {
+                                            if (index == 0) {
+                                              isDiscountPercent = false;
                                               productInPackageResponse
-                                                      .discountPercent =
-                                                  double.tryParse(value) ?? 0;
+                                                  .discountPercent = 0;
+                                              productInPackageResponse
+                                                  .discountAmount = 0;
                                             } else {
+                                              isDiscountPercent = true;
                                               productInPackageResponse
-                                                      .discountAmount =
-                                                  tryParseMoney(value);
+                                                  .discountAmount = 0;
+                                              productInPackageResponse
+                                                  .discountPercent = 0;
                                             }
+                                            discountTxtController.text = '0';
                                             widget.onRefreshData();
                                             setState(() {});
                                           },
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () =>
-                                            discountFocus.requestFocus(),
-                                        child: LoadSvg(
-                                            assetPath:
-                                                'svg/edit_pencil_line_01.svg'),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Ghi chú',
-                                      style: headStyleSemiLargeLigh500,
+                                        )
+                                      ],
                                     ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: discountTxtController,
+                                              focusNode: discountFocus,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly,
+                                                if (isDiscountPercent)
+                                                  LengthLimitingTextInputFormatter(
+                                                      2)
+                                                else
+                                                  CurrencyInputFormatter(),
+                                              ],
+                                              textAlign: TextAlign.right,
+                                              maxLines: 1,
+                                              style: customerNameBigHight,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.zero,
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                if (isDiscountPercent) {
+                                                  productInPackageResponse
+                                                          .discountPercent =
+                                                      double.tryParse(value) ??
+                                                          0;
+                                                } else {
+                                                  productInPackageResponse
+                                                          .discountAmount =
+                                                      tryParseMoney(value);
+                                                }
+                                                widget.onRefreshData();
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                discountFocus.requestFocus(),
+                                            child: LoadSvg(
+                                                assetPath:
+                                                    'svg/edit_pencil_line_01.svg'),
+                                          )
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          focusNode: noteFocus,
-                                          textAlign: TextAlign.right,
-                                          initialValue:
-                                              productInPackageResponse.note,
-                                          maxLines: 1,
-                                          style: customerNameBig,
-                                          decoration: InputDecoration(
-                                            hintText: 'Ghi chú',
-                                            contentPadding: EdgeInsets.zero,
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                          ),
-                                          onChanged: (value) {
-                                            productInPackageResponse.note =
-                                                value;
-                                          },
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Ghi chú',
+                                          style: headStyleSemiLargeLigh500,
                                         ),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              focusNode: noteFocus,
+                                              textAlign: TextAlign.right,
+                                              initialValue:
+                                                  productInPackageResponse.note,
+                                              maxLines: 1,
+                                              style: customerNameBig,
+                                              decoration: InputDecoration(
+                                                hintText: 'Ghi chú',
+                                                contentPadding: EdgeInsets.zero,
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value) {
+                                                productInPackageResponse.note =
+                                                    value;
+                                              },
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                noteFocus.requestFocus(),
+                                            child: LoadSvg(
+                                                assetPath:
+                                                    'svg/edit_pencil_line_01.svg'),
+                                          )
+                                        ],
                                       ),
-                                      GestureDetector(
-                                        onTap: () => noteFocus.requestFocus(),
-                                        child: LoadSvg(
-                                            assetPath:
-                                                'svg/edit_pencil_line_01.svg'),
-                                      )
-                                    ],
-                                  ),
-                                )
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              _container_edit_height = 0;
+                              setState(() {});
+                            },
+                            child: LoadSvg(assetPath: 'svg/collapse.svg'),
+                          )
+                        ],
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _container_edit_height = 0;
-                          setState(() {});
-                        },
-                        child: LoadSvg(assetPath: 'svg/collapse.svg'),
-                      )
-                    ],
+                    ),
                   ),
+                ),
+            ],
+          ),
+        ),
+        if (!isProductValid)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                showDefaultDialog(context, 'Thông báo!',
+                    'có vẻ sản phẩm đã hết hàng hoặc bị xóa, bạn hãy kiểm tra lại tình trạng sản phẩm đảm bảo rằng vẫn còn hàng để tiếp tục bán!!',
+                    onOk: () {}, onCancel: () {});
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: White70,
+                  borderRadius: defaultBorderRadius,
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
