@@ -121,7 +121,7 @@ class MonthlyReport extends StatelessWidget {
   SideTitles get bottomTitles => SideTitles(
         getTitlesWidget: bottomTitleWidgets,
         showTitles: true,
-        interval: 1, //1 day
+        // interval: 1, //1 day
         // reservedSize: 25,
       );
 

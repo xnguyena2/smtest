@@ -70,6 +70,20 @@ class MainFunction extends StatelessWidget {
                     if (tableDetailData == null) {
                       return;
                     }
+                    if (tableDetailData!.isUsed) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateOrderPage(
+                            packageID: tableDetailData!.packageSecondId,
+                            data: PackageDataResponse(items: [], buyer: null),
+                            onUpdated: (package) {},
+                            onDelete: (PackageDataResponse) {},
+                          ),
+                        ),
+                      );
+                      return;
+                    }
                     final newOrder =
                         PackageDataResponse(items: [], buyer: null);
                     newOrder.packageType = DeliverType.table;

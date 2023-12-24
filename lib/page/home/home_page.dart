@@ -6,9 +6,11 @@ import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/home/child/income_outcome.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/svg_loader.dart';
 import 'compoment/home_app_bar.dart';
@@ -21,9 +23,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Widget page;
+  final Widget homePage = Management();
+  final Widget inoutPage = IncomeOutComme();
+  int currentPage = 1;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    page = homePage;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget page = Management();
     return RefreshIndicator(
       onRefresh: () async {
         return initData();
@@ -33,7 +45,24 @@ class _HomePageState extends State<HomePage> {
         bottom: false,
         child: Scaffold(
           appBar: HomeAppBar(),
-          bottomNavigationBar: BottomBar(),
+          bottomNavigationBar: BottomBar(
+            onPageSelected: (page) {
+              print(page);
+              if (page == 1) {
+                this.page = homePage;
+                if (currentPage != page) {
+                  setState(() {});
+                }
+              }
+              if (page == 2) {
+                this.page = inoutPage;
+                if (currentPage != page) {
+                  setState(() {});
+                }
+              }
+              currentPage = page;
+            },
+          ),
           body: page,
         ),
       ),
@@ -42,8 +71,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class BottomBar extends StatelessWidget {
+  final VoidCallbackArg<int> onPageSelected;
   const BottomBar({
     super.key,
+    required this.onPageSelected,
   });
 
   @override
@@ -57,7 +88,9 @@ class BottomBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              onPageSelected(1);
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -91,12 +124,7 @@ class BottomBar extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ReportPage(),
-                ),
-              );
+              onPageSelected(2);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

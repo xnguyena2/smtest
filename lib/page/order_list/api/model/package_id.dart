@@ -1,5 +1,6 @@
 import 'package:sales_management/api/model/base_id.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/utils/constants.dart';
 
 class PackageID extends BaseID {
   late final String? packageSecondId;
@@ -25,6 +26,13 @@ class PackageID extends BaseID {
     from = json['from'];
     to = json['to'];
     status = json['status'];
+  }
+
+  PackageID.fromPackageID(String id,
+      {this.from, this.to, this.status, int page = 0, int size = 10000})
+      : super(group_id: groupID, page: page, size: size) {
+    deviceId = null;
+    packageSecondId = id;
   }
 
   PackageID.fromPackageDataResponse(PackageDataResponse packageDataResponse,

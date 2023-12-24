@@ -14,16 +14,7 @@ import '../compoment/main_function.dart';
 import '../compoment/monthly_report.dart';
 import '../compoment/quick_report.dart';
 
-class Management extends StatefulWidget {
-  const Management({
-    super.key,
-  });
-
-  @override
-  State<Management> createState() => _ManagementState();
-}
-
-class _ManagementState extends State<Management> {
+class Management extends StatelessWidget {
   Future<BenifitByMonth?> getBenifitOfMonth(Box<dynamic> box) async {
     BootStrapData? config = box.get(hiveConfigKey);
     if (config == null) {
@@ -32,6 +23,10 @@ class _ManagementState extends State<Management> {
 
     return config.benifit;
   }
+
+  const Management({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

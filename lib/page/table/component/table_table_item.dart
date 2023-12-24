@@ -41,7 +41,7 @@ class _TableItemState extends State<TableItem> {
     String timeElasped = tableDetailData.timeElapsed;
     return GestureDetector(
       onTap: () {
-        if (isSelected || widget.isEditting) {
+        if (widget.isEditting) {
           return;
         }
         widget.done(tableDetailData);
