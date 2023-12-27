@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/expand/app_expansion_panel.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/page/transaction/api/model/list_payment_transaction.dart';
+import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/page/transaction/component/income_outcome_bar.dart';
 import 'package:sales_management/page/transaction/component/modal_create_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -17,14 +20,21 @@ class IncomeOutComme extends StatelessWidget {
       bottom: false,
       child: Scaffold(
         appBar: IncomeOutComeBar(),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              MainCard(),
-              _ListTransaction(),
-            ],
-          ),
+        body: FetchAPI<ListPaymentTransactionDataResult>(
+          future: getTransactionsReportOfCurrentMonthByDate(),
+          successBuilder: (listPaymentTransactionDataResult) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  MainCard(
+                    data: listPaymentTransactionDataResult,
+                  ),
+                  _ListTransaction(),
+                ],
+              ),
+            );
+          },
         ),
         bottomNavigationBar: BottomBar(
           headOkbtn: LoadSvg(assetPath: 'svg/plus_circle.svg'),
@@ -228,8 +238,10 @@ class TransactionByDate extends StatelessWidget {
 }
 
 class MainCard extends StatelessWidget {
+  final ListPaymentTransactionDataResult data;
   const MainCard({
     super.key,
+    required this.data,
   });
 
   @override
@@ -270,7 +282,7 @@ class MainCard extends StatelessWidget {
             height: 15,
           ),
           Text(
-            '60.000.000',
+            MoneyFormater.format(data.balance),
             style: totalMoneyStylexXXLargeWhite,
           ),
           SizedBox(
@@ -282,7 +294,7 @@ class MainCard extends StatelessWidget {
               Expanded(
                 child: InOutTotal(
                   isIncome: false,
-                  txt: '60.000.000',
+                  txt: MoneyFormater.format(data.totalOutCome),
                 ),
               ),
               SizedBox(
@@ -291,7 +303,7 @@ class MainCard extends StatelessWidget {
               Expanded(
                 child: InOutTotal(
                   isIncome: true,
-                  txt: '60.000.000',
+                  txt: MoneyFormater.format(data.totalIncome),
                 ),
               )
             ],

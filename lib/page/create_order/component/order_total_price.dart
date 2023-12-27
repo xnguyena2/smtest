@@ -311,7 +311,8 @@ class _TotalPriceState extends State<TotalPrice> {
                 content: ModalPayment(
                   finalPrice: finalPrice - payment,
                   onDone: (value) {
-                    data.addtransaction(value, 'Tiền mặt', '');
+                    data.addtransaction(value, 'Tiền mặt',
+                        'Thanh toán trước đơn: ${data.id}');
                     context.read<ProductProvider>().justRefresh();
                     updatePackage(ProductPackage.fromPackageDataResponse(data))
                         .then((value) => widget.onUpdate())

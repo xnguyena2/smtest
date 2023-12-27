@@ -22,6 +22,11 @@ String getFirstDateTimeOfCurrentMonth() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(date);
 }
 
+String getDateinWeekofTimeStamp(String timeStamp) {
+  DateTime dt = DateFormat("y-MM-dd").parse(timeStamp);
+  return DateFormat('EEEE').format(dt);
+}
+
 int extractTimeStamp(String local_time) {
   DateTime dt = DateFormat("y-MM-dd").parse(local_time);
   int ts = (dt.millisecondsSinceEpoch).floor();

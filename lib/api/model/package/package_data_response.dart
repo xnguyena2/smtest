@@ -5,6 +5,8 @@ import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
+import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -188,13 +190,27 @@ class PackageDataResponse extends PackageDetail {
     String type,
     String detail,
   ) {
+    createTransaction(PaymentTransaction(
+            groupId: groupId,
+            transaction_second_id: null,
+            packageSecondId: packageSecondId,
+            amount: payment,
+            category: 'Bán hàng',
+            money_source: 'Tiền mặt',
+            device_id: deviceId,
+            note: detail,
+            transaction_type: TType.INCOME))
+        .then((value) {
+      print('make transaction success');
+    });
     super.addtransaction(payment, type, detail);
   }
 
   void makeDone() {
     if (payment < finalPrice) {
       print('payment: $payment, finalPrice: $finalPrice');
-      addtransaction(finalPrice - payment, 'Tiền mặt', '');
+      addtransaction(
+          finalPrice - payment, 'Tiền mặt', 'Hoàn thành đơn: $id');
     }
     donePayment();
   }
