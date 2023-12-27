@@ -11,11 +11,13 @@ class ApproveBtn extends BaseBtn {
     bool isSmallTxt = false,
     bool isActiveOk = false,
     Color backgroundColor = TableHighColor,
+    Widget? headIcon,
   }) : super(
           txt: txt,
           backgroundColor: backgroundColor,
           padding: padding,
           isSmallTxt: isSmallTxt,
           onPressed: isActiveOk ? onPressed : null,
+          headIcon: headIcon,
         );
 }

@@ -115,10 +115,22 @@ const TextStyle moneyStyleSuperLargeHigh = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle totalMoneyStylexXXLargeWhite = TextStyle(
+  color: White,
+  fontSize: 26,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle totalMoneyStylexXXLarge = TextStyle(
   color: Red,
   fontSize: 26,
   fontWeight: FontWeight.w500,
+);
+
+const TextStyle totalMoneyStylexxXLarge = TextStyle(
+  color: White,
+  fontSize: 22,
+  fontWeight: FontWeight.w600,
 );
 
 const TextStyle totalMoneyStylexXLarge = TextStyle(
@@ -139,11 +151,6 @@ const TextStyle totalMoneyHeaderStylexXLarge = TextStyle(
 
 const TextStyle headStyleXXLarge = TextStyle(
   fontSize: 18,
-  fontWeight: FontWeight.w500,
-);
-
-const TextStyle headStyleXLarge = TextStyle(
-  fontSize: 17,
   fontWeight: FontWeight.w500,
 );
 
@@ -177,8 +184,18 @@ const TextStyle headStyleXLargeSemiBoldCost = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle headStyleXLargeSemiBold = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle headStyleXLargeLigh = TextStyle(
   color: textSubLightColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleXLarge = TextStyle(
   fontSize: 17,
   fontWeight: FontWeight.w500,
 );
@@ -206,6 +223,18 @@ const TextStyle headStyleXLarge400 = TextStyle(
 
 const TextStyle customerNameBigWhite600 = TextStyle(
   color: White,
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle customerNameBigHigh600 = TextStyle(
+  color: TableHighColor,
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle customerNameBigRed600 = TextStyle(
+  color: Red,
   fontSize: 16,
   fontWeight: FontWeight.w600,
 );
@@ -332,6 +361,12 @@ const TextStyle headStyleLargeRed = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle headStyleLargeWhiteLigh = TextStyle(
+  color: White70,
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle headStyleLargeWhite = TextStyle(
   color: White,
   fontSize: 14,
@@ -362,6 +397,12 @@ const TextStyle headStyleMediumHigh500 = TextStyle(
 
 const TextStyle headStyleMediumWhite500 = TextStyle(
   color: White,
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleMediumWhiteLigh500 = TextStyle(
+  color: White70,
   fontSize: 13,
   fontWeight: FontWeight.w500,
 );

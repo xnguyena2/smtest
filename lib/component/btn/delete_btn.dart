@@ -9,5 +9,6 @@ class DeleteBtn extends BaseBtn {
     required super.onPressed,
     super.backgroundColor = Red,
     super.isSmallTxt = false,
+    super.headIcon,
   });
 }

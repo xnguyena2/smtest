@@ -13,6 +13,8 @@ class BottomBar extends StatelessWidget {
   final bool enableDelete;
   final bool hideDeleteBtn;
   final Widget? midleWidget;
+  final Widget? headOkbtn;
+  final Widget? headCancelbtn;
   const BottomBar({
     super.key,
     required this.done,
@@ -23,6 +25,8 @@ class BottomBar extends StatelessWidget {
     this.enableDelete = false,
     this.hideDeleteBtn = false,
     this.midleWidget,
+    this.headOkbtn,
+    this.headCancelbtn,
   });
 
   @override
@@ -45,11 +49,13 @@ class BottomBar extends StatelessWidget {
                       txt: cancelBtnTxt ?? 'Xóa',
                       padding: EdgeInsets.symmetric(vertical: 12),
                       onPressed: cancel,
+                      headIcon: headCancelbtn,
                     )
                   : CancelBtn(
                       txt: cancelBtnTxt ?? 'Hủy',
                       padding: EdgeInsets.symmetric(vertical: 12),
                       onPressed: cancel,
+                      headIcon: headCancelbtn,
                     ),
             ),
             SizedBox(
@@ -68,6 +74,7 @@ class BottomBar extends StatelessWidget {
               txt: okBtnTxt ?? 'Đã giao',
               padding: EdgeInsets.symmetric(vertical: 12),
               onPressed: done,
+              headIcon: headOkbtn,
             ),
           ),
         ],

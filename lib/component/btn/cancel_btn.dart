@@ -11,6 +11,7 @@ class CancelBtn extends BaseBtn {
     super.backgroundColor = White,
     super.isSmallTxt = false,
     super.borderSide = const BorderSide(color: borderColor),
+    super.headIcon,
   }) : super(
           textStyle: isSmallTxt ? subInfoStyLargeLigh400 : headStyleBigMedium,
         );

@@ -9,6 +9,7 @@ class BaseBtn extends StatelessWidget {
   final Color backgroundColor;
   final BorderSide borderSide;
   final TextStyle? textStyle;
+  final Widget? headIcon;
   const BaseBtn({
     super.key,
     required this.txt,
@@ -18,6 +19,7 @@ class BaseBtn extends StatelessWidget {
     this.borderSide = BorderSide.none,
     this.onPressed,
     this.isSmallTxt = false,
+    this.headIcon,
   });
 
   @override
@@ -35,10 +37,23 @@ class BaseBtn extends StatelessWidget {
           borderRadius: defaultBorderRadius,
         ),
       ),
-      child: Text(
-        txt,
-        style: textStyle ??
-            (isSmallTxt ? subInfoStyLargeWhite400 : headStyleBigMediumWhite),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (headIcon != null) ...[
+            headIcon!,
+            SizedBox(
+              width: 8,
+            ),
+          ],
+          Text(
+            txt,
+            style: textStyle ??
+                (isSmallTxt
+                    ? subInfoStyLargeWhite400
+                    : headStyleBigMediumWhite),
+          ),
+        ],
       ),
     );
   }

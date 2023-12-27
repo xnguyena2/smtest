@@ -6,7 +6,7 @@ import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
-import 'package:sales_management/page/home/child/income_outcome.dart';
+import 'package:sales_management/page/transaction/income_outcome.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    page = homePage;
+    page = inoutPage;
   }
 
   @override
@@ -47,18 +47,24 @@ class _HomePageState extends State<HomePage> {
           appBar: HomeAppBar(),
           bottomNavigationBar: BottomBar(
             onPageSelected: (page) {
-              print(page);
               if (page == 1) {
-                this.page = homePage;
-                if (currentPage != page) {
-                  setState(() {});
-                }
+                // this.page = homePage;
+                // if (currentPage != page) {
+                //   setState(() {});
+                // }
               }
               if (page == 2) {
-                this.page = inoutPage;
-                if (currentPage != page) {
-                  setState(() {});
-                }
+                // this.page = inoutPage;
+                // if (currentPage != page) {
+                //   setState(() {});
+                // }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IncomeOutComme(),
+                  ),
+                );
               }
               currentPage = page;
             },
