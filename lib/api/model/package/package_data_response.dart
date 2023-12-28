@@ -210,10 +210,12 @@ class PackageDataResponse extends PackageDetail {
     if (payment < finalPrice) {
       print('payment: $payment, finalPrice: $finalPrice');
       addtransaction(
-          finalPrice - payment, 'Tiền mặt', 'Hoàn thành đơn: $id');
+          finalPrice - payment, 'Tiền mặt', 'Hoàn thành đơn: ${getID}');
     }
     donePayment();
   }
+
+  String get getID => packageSecondId.substring(0, 8);
 
   String? getDoneTime() {
     if (status != PackageStatusType.DONE) {

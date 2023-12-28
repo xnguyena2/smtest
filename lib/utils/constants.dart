@@ -144,6 +144,18 @@ const TextStyle totalMoneyStylexXLargeBlack = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle totalMoneyHeaderStylexXLargeRed = TextStyle(
+  color: Red,
+  fontSize: 19,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle totalMoneyHeaderStylexXLargeHigh = TextStyle(
+  color: TableHighColor,
+  fontSize: 19,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle totalMoneyHeaderStylexXLarge = TextStyle(
   fontSize: 19,
   fontWeight: FontWeight.w600,
@@ -212,6 +224,12 @@ const TextStyle headStyleXLargehightUnderline = TextStyle(
 
 const TextStyle headStyleXLargeHigh = TextStyle(
   color: HighColor,
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleXLargeHighTable = TextStyle(
+  color: TableHighColor,
   fontSize: 17,
   fontWeight: FontWeight.w500,
 );
@@ -300,6 +318,12 @@ const TextStyle headStyleSemiLargeAlert500 = TextStyle(
   fontSize: 15,
 );
 
+const TextStyle headStyleSemiLargeVeryLigh500 = TextStyle(
+  color: Black40,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
 const TextStyle headStyleSemiLarge400 = TextStyle(
   fontWeight: FontWeight.w400,
   fontSize: 15,
@@ -313,6 +337,11 @@ const TextStyle headStyleSemiLargeLight400 = TextStyle(
 
 const TextStyle headStyleSemiLargeHigh400 = TextStyle(
   color: TableHighColor,
+  fontWeight: FontWeight.w400,
+  fontSize: 15,
+);
+const TextStyle headStyleSemiLargeLigh400 = TextStyle(
+  color: Black70,
   fontWeight: FontWeight.w400,
   fontSize: 15,
 );

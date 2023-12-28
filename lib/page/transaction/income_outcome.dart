@@ -7,6 +7,7 @@ import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/page/transaction/component/income_outcome_bar.dart';
 import 'package:sales_management/page/transaction/component/transaction_list.dart';
 import 'package:sales_management/page/transaction/component/transaction_maincard.dart';
+import 'package:sales_management/page/transaction_create/transaction_create.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -61,8 +62,26 @@ class IncomeOutComme extends StatelessWidget {
           headCancelbtn: LoadSvg(assetPath: 'svg/minus_circle.svg'),
           cancelBtnTxt: 'Khoảng chi',
           enableDelete: true,
-          done: () {},
-          cancel: () {},
+          done: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TransactionCreate(
+                  isIncome: true,
+                ),
+              ),
+            );
+          },
+          cancel: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TransactionCreate(
+                  isIncome: false,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

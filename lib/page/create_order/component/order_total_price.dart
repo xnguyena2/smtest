@@ -312,7 +312,7 @@ class _TotalPriceState extends State<TotalPrice> {
                   finalPrice: finalPrice - payment,
                   onDone: (value) {
                     data.addtransaction(value, 'Tiền mặt',
-                        'Thanh toán trước đơn: ${data.id}');
+                        'Thanh toán trước đơn: ${data.getID}');
                     context.read<ProductProvider>().justRefresh();
                     updatePackage(ProductPackage.fromPackageDataResponse(data))
                         .then((value) => widget.onUpdate())

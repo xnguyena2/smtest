@@ -22,7 +22,10 @@ String getFirstDateTimeOfCurrentMonth() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(date);
 }
 
-String getDateinWeekofTimeStampToLocal(String timeStamp) {
+String getDateinWeekofTimeStampToLocal(String? timeStamp) {
+  if (timeStamp == null || timeStamp.isEmpty) {
+    return 'unknow';
+  }
   DateTime dt = DateFormat("y-MM-dd").parse(timeStamp).toLocal();
   return DateFormat('EEEE').format(dt);
 }

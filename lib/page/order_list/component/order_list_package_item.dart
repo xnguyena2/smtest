@@ -92,7 +92,7 @@ class PackageItemDetail extends StatelessWidget {
                       height: 6,
                     ),
                     Text(
-                      '${data.localTimeTxt} - ${data.id}',
+                      '${data.localTimeTxt} - ${data.getID}',
                       style: subInfoStyLargeLigh400,
                     ),
                   ],

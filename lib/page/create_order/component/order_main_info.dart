@@ -28,7 +28,7 @@ class OrderMainInfo extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'ID: ${data.id}',
+                    'ID: ${data.getID}',
                     style: headStyleXLarge400,
                   ),
                   SizedBox(

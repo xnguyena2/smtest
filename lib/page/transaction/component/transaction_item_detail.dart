@@ -3,7 +3,6 @@ import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/page/transaction/component/modal_create_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
-import 'package:sales_management/utils/utils.dart';
 
 class TransactionDetail extends StatelessWidget {
   final PaymentTransaction data;
@@ -21,6 +20,7 @@ class TransactionDetail extends StatelessWidget {
           context: context,
           content: ModalTransactionDetail(
             isIncome: isIncome,
+            data: data,
           ),
         );
       },
