@@ -23,6 +23,39 @@ class ListPaymentTransactionDataResult {
   double totalOutCome = 0;
   double balance = 0;
 
+  void calcData() {
+    Map<int, TransactionByDateOfMonthWithOffset> resultMaped =
+        Map<int, TransactionByDateOfMonthWithOffset>();
+
+    listResult.forEach((element) {
+      if (element.transaction_type == TType.INCOME) {
+        totalIncome += element.amount;
+      }
+      if (element.transaction_type == TType.OUTCOME) {
+        totalOutCome += element.amount;
+      }
+      int ts = element.createat == null
+          ? 0
+          : extractTimeStampToLocal(element.createat!);
+      var currentDate = resultMaped[ts];
+      if (currentDate == null) {
+        resultMaped[ts] =
+            TransactionByDateOfMonthWithOffset(0, ts, transaction: element);
+      } else {
+        currentDate.addTransaction(element);
+      }
+    });
+    balance = totalIncome - totalOutCome;
+
+    listResultFlat = resultMaped.values.toList();
+    listResultFlat.sort(
+      (a, b) => b.timeStamp.compareTo(a.timeStamp),
+    );
+    listResultFlat.forEach((element) {
+      element.sort();
+    });
+  }
+
   void fillAllEmpty(String from, String to) {
     firstDate = extractTimeStamp(from);
     lastDate = extractTimeStamp(to);
@@ -39,8 +72,9 @@ class ListPaymentTransactionDataResult {
       if (element.transaction_type == TType.OUTCOME) {
         totalOutCome += element.amount;
       }
-      int ts =
-          element.createat == null ? 0 : extractTimeStamp(element.createat!);
+      int ts = element.createat == null
+          ? 0
+          : extractTimeStampToLocal(element.createat!);
       var currentDate = resultMaped[ts];
       if (currentDate == null) {
         resultMaped[ts] =
@@ -84,28 +118,38 @@ class TransactionByDateOfMonthWithOffset {
   late final List<PaymentTransaction> transactions;
   int offset;
   final int timeStamp;
+  late final String date;
 
   TransactionByDateOfMonthWithOffset(this.offset, this.timeStamp,
       {required PaymentTransaction? transaction}) {
     if (transaction?.transaction_type == TType.INCOME) {
       totalIncome += transaction?.amount ?? 0;
     }
-    if (transaction?.transaction_type == TType.INCOME) {
+    if (transaction?.transaction_type == TType.OUTCOME) {
       totalOutCome += transaction?.amount ?? 0;
     }
     transactions = transaction == null ? [] : [transaction];
     dateInWeek = transaction?.createat == null
         ? ''
-        : getDateinWeekofTimeStamp(transaction?.createat ?? '');
+        : getDateinWeekofTimeStampToLocal(transaction?.createat ?? '');
+    date = transaction?.createat == null
+        ? ''
+        : formatLocalDateTimeOnlyDateSplash(transaction?.createat ?? '');
   }
 
   void addTransaction(PaymentTransaction transaction) {
     if (transaction.transaction_type == TType.INCOME) {
       totalIncome += transaction.amount;
     }
-    if (transaction.transaction_type == TType.INCOME) {
+    if (transaction.transaction_type == TType.OUTCOME) {
       totalOutCome += transaction.amount;
     }
     transactions.add(transaction);
+  }
+
+  void sort() {
+    transactions.sort(
+      (a, b) => b.onlyTime.compareTo(a.onlyTime),
+    );
   }
 }

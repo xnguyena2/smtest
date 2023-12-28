@@ -1,4 +1,5 @@
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/utils/utils.dart';
 
 enum TType { INCOME, OUTCOME }
 
@@ -25,6 +26,8 @@ class PaymentTransaction extends BaseEntity {
   late final TType? transaction_type;
   late final String? status;
 
+  late final String onlyTime;
+
   PaymentTransaction.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     transaction_second_id = json['transaction_second_id'];
@@ -38,6 +41,8 @@ class PaymentTransaction extends BaseEntity {
         (element) => element.name == json['transaction_type'],
         orElse: () => TType.INCOME);
     status = json['status'];
+
+    onlyTime = formatLocalDateTimeOnlyTime(createat);
   }
 
   Map<String, dynamic> toJson() {

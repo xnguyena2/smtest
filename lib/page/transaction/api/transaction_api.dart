@@ -42,7 +42,8 @@ Future<ListPaymentTransactionDataResult>
     final result = ListPaymentTransactionDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );
-    result.fillAllEmpty(from, to);
+    result.calcData();
+    // result.fillAllEmpty(from, to);
     return result;
   } else {
     // throw Exception('Failed to load data');

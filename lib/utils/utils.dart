@@ -22,8 +22,8 @@ String getFirstDateTimeOfCurrentMonth() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(date);
 }
 
-String getDateinWeekofTimeStamp(String timeStamp) {
-  DateTime dt = DateFormat("y-MM-dd").parse(timeStamp);
+String getDateinWeekofTimeStampToLocal(String timeStamp) {
+  DateTime dt = DateFormat("y-MM-dd").parse(timeStamp).toLocal();
   return DateFormat('EEEE').format(dt);
 }
 
@@ -33,9 +33,23 @@ int extractTimeStamp(String local_time) {
   return ts;
 }
 
+int extractTimeStampToLocal(String local_time) {
+  DateTime dt = DateFormat("y-MM-dd").parse(local_time).toLocal();
+  int ts = (dt.millisecondsSinceEpoch).floor();
+  return ts;
+}
+
 String timeStampToFormat(int timeStamp) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
   return DateFormat("dd/MM/yy").format(dt);
+}
+
+String formatLocalDateTimeOnlyDateSplash(String? dateTime) {
+  if (dateTime == null || dateTime.isEmpty) {
+    return 'unknow';
+  }
+  final format = DateFormat('dd/MM/yy');
+  return format.format(stringToDateTime(dateTime).toLocal());
 }
 
 String timeStampToServerFormat(int timeStamp) {
