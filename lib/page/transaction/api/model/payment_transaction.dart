@@ -1,4 +1,5 @@
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
 enum TType { INCOME, OUTCOME }
@@ -21,12 +22,27 @@ class PaymentTransaction extends BaseEntity {
   late String? device_id;
   late String? packageSecondId;
   late String? note;
-  late final String? category;
-  late final String? money_source;
+  late String? category;
+  late String? money_source;
   late final TType? transaction_type;
-  late final String? status;
+  late String? status;
 
   late final String onlyTime;
+
+  PaymentTransaction.empty(TType type)
+      : super(id: null, groupId: groupID, createat: getCreateAtNow()) {
+    transaction_second_id = generateUUID();
+    amount = 0;
+    device_id = deviceID;
+    packageSecondId = null;
+    note = null;
+    category = null;
+    money_source = null;
+    transaction_type = type;
+    status = null;
+
+    onlyTime = formatLocalDateTimeOnlyTime(createat);
+  }
 
   PaymentTransaction.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -59,7 +75,7 @@ class PaymentTransaction extends BaseEntity {
     return _data;
   }
 
-  // TableDetailData clone() {
-  //   return TableDetailData.fromJson(toJson());
-  // }
+  PaymentTransaction clone() {
+    return PaymentTransaction.fromJson(toJson());
+  }
 }

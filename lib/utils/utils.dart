@@ -8,6 +8,17 @@ DateTime stringToDateTime(String dateValue) {
   return DateFormat("y-MM-ddTHH:mm:ss.S").parse(dateValue, true);
 }
 
+DateTime stringToLocalDateTime(String? dateValue) {
+  if (dateValue == null || dateValue.isEmpty) {
+    return DateTime.now();
+  }
+  return DateFormat("y-MM-ddTHH:mm:ss.S").parse(dateValue);
+}
+
+String localDateTime2ServerToDateTime(DateTime dt) {
+  return DateFormat("y-MM-ddTHH:mm:ss.S").format(dt.toUtc());
+}
+
 String getCreateAtNow() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(DateTime.now().toUtc());
 }
@@ -27,7 +38,8 @@ String getDateinWeekofTimeStampToLocal(String? timeStamp) {
     return 'unknow';
   }
   DateTime dt = DateFormat("y-MM-dd").parse(timeStamp).toLocal();
-  return DateFormat('EEEE').format(dt);
+  // String locale = Localizations.localeOf(context).languageCode;
+  return DateFormat.EEEE('vi').format(dt);
 }
 
 int extractTimeStamp(String local_time) {
@@ -51,7 +63,7 @@ String formatLocalDateTimeOnlyDateSplash(String? dateTime) {
   if (dateTime == null || dateTime.isEmpty) {
     return 'unknow';
   }
-  final format = DateFormat('dd/MM/yy');
+  final format = DateFormat('dd/MM/yyyy');
   return format.format(stringToDateTime(dateTime).toLocal());
 }
 

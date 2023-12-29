@@ -108,6 +108,65 @@ class ListPaymentTransactionDataResult {
   int getTimeStampFrom({required int offset}) {
     return firstDate + offset * 86400000;
   }
+
+  void updateTransaction(PaymentTransaction transaction) {
+    int index = listResult.indexWhere((element) =>
+        element.transaction_second_id == transaction.transaction_second_id);
+    if (index > 0) {
+      var old_transaction = listResult[index];
+      listResult[index] = transaction;
+      int old_ts = old_transaction.createat == null
+          ? 0
+          : extractTimeStampToLocal(old_transaction.createat!);
+      int new_ts = transaction.createat == null
+          ? 0
+          : extractTimeStampToLocal(transaction.createat!);
+      if (old_ts != new_ts) {
+        TransactionByDateOfMonthWithOffset? ListTransaction = null;
+        for (var element in listResultFlat) {
+          if (element.timeStamp == old_ts) {
+            element.removeTransaction(old_transaction);
+            if (element.transactions.isEmpty) {
+              ListTransaction = element;
+              break;
+            }
+          }
+        }
+        if (ListTransaction != null) {
+          listResultFlat.remove(ListTransaction);
+        }
+
+        int index =
+            listResultFlat.indexWhere((element) => element.timeStamp == new_ts);
+        if (index < 0) {
+          listResultFlat.add(TransactionByDateOfMonthWithOffset(0, new_ts,
+              transaction: transaction));
+          listResultFlat.sort(
+            (a, b) => b.timeStamp.compareTo(a.timeStamp),
+          );
+          return;
+        }
+        listResultFlat[index].addTransaction(transaction);
+        listResultFlat[index].sort();
+        return;
+      }
+
+      index =
+          listResultFlat.indexWhere((element) => element.timeStamp == new_ts);
+      if (index < 0) {
+        listResultFlat.add(TransactionByDateOfMonthWithOffset(0, new_ts,
+            transaction: transaction));
+        listResultFlat.sort(
+          (a, b) => b.timeStamp.compareTo(a.timeStamp),
+        );
+        return;
+      }
+      listResultFlat[index].removeTransaction(old_transaction);
+      listResultFlat[index].addTransaction(transaction);
+      listResultFlat[index].sort();
+      return;
+    }
+  }
 }
 
 class TransactionByDateOfMonthWithOffset {
@@ -145,6 +204,19 @@ class TransactionByDateOfMonthWithOffset {
       totalOutCome += transaction.amount;
     }
     transactions.add(transaction);
+  }
+
+  void removeTransaction(PaymentTransaction transaction) {
+    bool success = transactions.remove(transaction);
+    if (!success) {
+      return;
+    }
+    if (transaction.transaction_type == TType.INCOME) {
+      totalIncome -= transaction.amount;
+    }
+    if (transaction.transaction_type == TType.OUTCOME) {
+      totalOutCome -= transaction.amount;
+    }
   }
 
   void sort() {

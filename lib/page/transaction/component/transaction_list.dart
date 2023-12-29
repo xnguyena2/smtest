@@ -17,7 +17,7 @@ class ListTransaction extends StatefulWidget {
 }
 
 class _ListTransactionState extends State<ListTransaction> {
-  late final List<_WrapExpandTransaction> data = widget.data.listResultFlat
+  late List<_WrapExpandTransaction> data = widget.data.listResultFlat
       .map((e) => _WrapExpandTransaction(transaction: e))
       .toList();
   @override
@@ -45,6 +45,13 @@ class _ListTransactionState extends State<ListTransaction> {
                 itemBuilder: (context, index) {
                   return TransactionDetail(
                     data: e.transaction.transactions[index],
+                    onUpdated: (PaymentTransaction) {
+                      widget.data.updateTransaction(PaymentTransaction);
+                      data = widget.data.listResultFlat
+                          .map((e) => _WrapExpandTransaction(transaction: e))
+                          .toList();
+                      setState(() {});
+                    },
                   );
                 },
                 scrollDirection: Axis.vertical,

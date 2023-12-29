@@ -3,12 +3,15 @@ import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/page/transaction/component/modal_create_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 class TransactionDetail extends StatelessWidget {
+  final VoidCallbackArg<PaymentTransaction> onUpdated;
   final PaymentTransaction data;
   const TransactionDetail({
     super.key,
     required this.data,
+    required this.onUpdated,
   });
 
   @override
@@ -21,6 +24,7 @@ class TransactionDetail extends StatelessWidget {
           content: ModalTransactionDetail(
             isIncome: isIncome,
             data: data,
+            onUpdated: onUpdated,
           ),
         );
       },

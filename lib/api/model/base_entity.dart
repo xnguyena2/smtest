@@ -8,7 +8,7 @@ class BaseEntity {
   late final String groupId;
 
   @HiveField(3)
-  late final String? createat;
+  late String? createat;
 
   BaseEntity({
     required this.id,

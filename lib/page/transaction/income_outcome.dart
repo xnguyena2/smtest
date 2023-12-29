@@ -3,6 +3,7 @@ import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/transaction/api/model/list_payment_transaction.dart';
+import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/page/transaction/component/income_outcome_bar.dart';
 import 'package:sales_management/page/transaction/component/transaction_list.dart';
@@ -67,7 +68,8 @@ class IncomeOutComme extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => TransactionCreate(
-                  isIncome: true,
+                  transaction: PaymentTransaction.empty(TType.INCOME),
+                  onUpdated: (PaymentTransaction) {},
                 ),
               ),
             );
@@ -77,7 +79,8 @@ class IncomeOutComme extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => TransactionCreate(
-                  isIncome: false,
+                  transaction: PaymentTransaction.empty(TType.OUTCOME),
+                  onUpdated: (PaymentTransaction) {},
                 ),
               ),
             );
