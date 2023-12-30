@@ -123,6 +123,18 @@ class ListPaymentTransactionDataResult {
     balance = totalIncome - totalOutCome;
   }
 
+  void deleteTransaction(PaymentTransaction transaction) {
+    int index = listResult.indexWhere((element) =>
+        element.transaction_second_id == transaction.transaction_second_id);
+    if (index > 0) {
+      var old_transaction = listResult[index];
+      listResult.removeAt(index);
+      removePlatlistTransaction(transaction, old_transaction);
+      updateTotalValue();
+      return;
+    }
+  }
+
   void updateTransaction(PaymentTransaction transaction) {
     int new_ts = transaction.createat == null
         ? 0

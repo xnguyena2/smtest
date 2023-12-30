@@ -9,6 +9,8 @@ class TransactionProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   PaymentTransaction? get getData => _transaction;
 
+  void cleanData() => _transaction = null;
+
   set updateValue(PaymentTransaction data) {
     _transaction = data;
     notifyListeners();

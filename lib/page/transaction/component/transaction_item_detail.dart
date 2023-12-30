@@ -7,11 +7,13 @@ import 'package:sales_management/utils/typedef.dart';
 
 class TransactionDetail extends StatelessWidget {
   final VoidCallbackArg<PaymentTransaction> onUpdated;
+  final VoidCallbackArg<PaymentTransaction> onDeleted;
   final PaymentTransaction data;
   const TransactionDetail({
     super.key,
     required this.data,
     required this.onUpdated,
+    required this.onDeleted,
   });
 
   @override
@@ -25,6 +27,7 @@ class TransactionDetail extends StatelessWidget {
             isIncome: isIncome,
             data: data,
             onUpdated: onUpdated,
+            onDeleted: onDeleted,
           ),
         );
       },

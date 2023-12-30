@@ -96,6 +96,7 @@ class _BodyContent extends StatelessWidget {
     final newTransaction = context.watch<TransactionProvider>().getData;
     if (newTransaction != null) {
       listPaymentTransactionDataResult.updateTransaction(newTransaction);
+      context.read<TransactionProvider>().cleanData();
     }
     if (listPaymentTransactionDataResult.listResult.isEmpty) {
       return const Center(

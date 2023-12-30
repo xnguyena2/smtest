@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/component/expand/app_expansion_panel.dart';
 import 'package:sales_management/page/transaction/api/model/list_payment_transaction.dart';
 import 'package:sales_management/page/transaction/component/transaction_by_date.dart';
 import 'package:sales_management/page/transaction/component/transaction_item_detail.dart';
 import 'package:sales_management/utils/constants.dart';
+
+import 'transaction_provider.dart';
 
 class ListTransaction extends StatefulWidget {
   final ListPaymentTransactionDataResult data;
@@ -17,26 +20,38 @@ class ListTransaction extends StatefulWidget {
 }
 
 class _ListTransactionState extends State<ListTransaction> {
-  late List<_WrapExpandTransaction> data = widget.data.listResultFlat
-      .map((e) => _WrapExpandTransaction(transaction: e))
-      .toList();
+  late List<TransactionByDateOfMonthWithOffset> data =
+      widget.data.listResultFlat;
+  late Map<int, bool> expanedStatus = Map.fromEntries(data.map(
+    (e) => MapEntry(e.timeStamp, true),
+  ));
+
+  void updateExpanedStatus() {
+    Map<int, bool> newMap = Map();
+    data.forEach((element) {
+      var status = expanedStatus[element.timeStamp];
+      newMap[element.timeStamp] = status ?? true;
+    });
+    expanedStatus = newMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppExpansionPanelList(
       expandedHeaderPadding: EdgeInsets.zero,
       dividerColor: White,
       expansionCallback: (panelIndex, isExpanded) {
-        data[panelIndex].isExpanded = !isExpanded;
+        expanedStatus[expanedStatus.keys.elementAt(panelIndex)] = !isExpanded;
         setState(() {});
       },
       children: data
           .map(
             (e) => ExpansionPanel(
-              isExpanded: e.isExpanded,
+              isExpanded: expanedStatus[e.timeStamp] ?? true,
               canTapOnHeader: true,
               headerBuilder: (context, isExpanded) {
                 return TransactionByDate(
-                  transaction: e.transaction,
+                  transaction: e,
                 );
               },
               body: ListView.separated(
@@ -44,18 +59,25 @@ class _ListTransactionState extends State<ListTransaction> {
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return TransactionDetail(
-                    data: e.transaction.transactions[index],
+                    data: e.transactions[index],
                     onUpdated: (PaymentTransaction) {
-                      widget.data.updateTransaction(PaymentTransaction);
-                      data = widget.data.listResultFlat
-                          .map((e) => _WrapExpandTransaction(transaction: e))
-                          .toList();
-                      setState(() {});
+                      // widget.data.updateTransaction(PaymentTransaction);
+                      context.read<TransactionProvider>().updateValue =
+                          PaymentTransaction;
+                      data = widget.data.listResultFlat;
+                      updateExpanedStatus();
+                      // setState(() {});
+                    },
+                    onDeleted: (PaymentTransaction) {
+                      widget.data.deleteTransaction(PaymentTransaction);
+                      context.read<TransactionProvider>().justRefresh();
+                      data = widget.data.listResultFlat;
+                      updateExpanedStatus();
                     },
                   );
                 },
                 scrollDirection: Axis.vertical,
-                itemCount: e.transaction.transactions.length,
+                itemCount: e.transactions.length,
                 separatorBuilder: (BuildContext context, int index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: const Divider(
@@ -68,11 +90,4 @@ class _ListTransactionState extends State<ListTransaction> {
           .toList(),
     );
   }
-}
-
-class _WrapExpandTransaction {
-  final TransactionByDateOfMonthWithOffset transaction;
-  bool isExpanded = true;
-
-  _WrapExpandTransaction({required this.transaction});
 }
