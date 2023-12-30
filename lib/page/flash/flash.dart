@@ -87,7 +87,19 @@ class FlashScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LoadSvg(assetPath: 'svg/logo.svg'),
+                  Column(
+                    children: [
+                      LoadSvg(assetPath: 'svg/logo.svg'),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text('Version: ${appVersion}'),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text('Đang tải..'),
+                    ],
+                  ),
                 ],
               ),
             ],

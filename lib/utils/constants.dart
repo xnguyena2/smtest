@@ -9,6 +9,8 @@ const String hiveConfigKey = 'config';
 const String hiveTokenKey = 'token';
 const String Seperate = '<=>';
 
+const String appVersion = '1.1.0';
+
 String storeName = 'trumbien store';
 String groupID = 'trumbien_store';
 String deviceID = 'admintestting';

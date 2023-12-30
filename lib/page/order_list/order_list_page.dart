@@ -8,6 +8,7 @@ import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
 import 'package:sales_management/page/order_list/provider/new_order_provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
+import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
@@ -29,23 +30,22 @@ class OrderListPage extends StatelessWidget {
           )
         ],
         child: Builder(builder: (context) {
-          final addNewOrder = () async {
-            PackageDataResponse? newO;
-            await Navigator.push(
+          final newOrderEvent = (PackageDataResponse p) {
+            context.read<NewOrderProvider>().updateValue = p!;
+          };
+          final addNewOrder = () {
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CreateOrderPage(
-                  data: PackageDataResponse(items: [], buyer: null),
-                  onUpdated: (package) {
-                    newO = package;
-                  },
-                  onDelete: (PackageDataResponse) {},
+                builder: (context) => ProductSelectorPage(
+                  firstSelectProductWhenCreateOrder: true,
+                  onUpdatedPasstoCreateOrder: newOrderEvent,
+                  packageDataResponse:
+                      PackageDataResponse(items: [], buyer: null),
+                  onUpdated: (PackageDataResponse) {},
                 ),
               ),
             );
-            if (newO != null) {
-              context.read<NewOrderProvider>().updateValue = newO!;
-            }
           };
           return SafeArea(
             top: false,

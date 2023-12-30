@@ -10,6 +10,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
+import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
@@ -26,10 +27,17 @@ import 'package:sales_management/utils/utils.dart';
 import '../../component/category_selector.dart';
 
 class ProductSelectorPage extends StatefulWidget {
+  final bool firstSelectProductWhenCreateOrder;
+  final VoidCallbackArg<PackageDataResponse>? onUpdatedPasstoCreateOrder;
   final PackageDataResponse? packageDataResponse;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
-  const ProductSelectorPage(
-      {super.key, required this.packageDataResponse, required this.onUpdated});
+  const ProductSelectorPage({
+    super.key,
+    required this.packageDataResponse,
+    required this.onUpdated,
+    this.firstSelectProductWhenCreateOrder = false,
+    this.onUpdatedPasstoCreateOrder,
+  });
 
   @override
   State<ProductSelectorPage> createState() => _ProductSelectorPageState();
@@ -238,6 +246,21 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
               bottomNavigationBar: isProductSelector
                   ? ProductSelectorBottomBar(
                       done: () {
+                        if (widget.firstSelectProductWhenCreateOrder) {
+                          print('object');
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateOrderPage(
+                                data: widget.packageDataResponse!,
+                                onUpdated: widget.onUpdatedPasstoCreateOrder!,
+                                onDelete: (PackageDataResponse) {},
+                              ),
+                            ),
+                          );
+                          return;
+                        }
                         widget.onUpdated(widget.packageDataResponse!);
                         Navigator.pop(context);
                       },
