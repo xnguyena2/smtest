@@ -41,7 +41,7 @@ class _ListTransactionState extends State<ListTransaction> {
       expandedHeaderPadding: EdgeInsets.zero,
       dividerColor: White,
       expansionCallback: (panelIndex, isExpanded) {
-        expanedStatus[expanedStatus.keys.elementAt(panelIndex)] = !isExpanded;
+        expanedStatus[data[panelIndex].timeStamp] = !isExpanded;
         setState(() {});
       },
       children: data

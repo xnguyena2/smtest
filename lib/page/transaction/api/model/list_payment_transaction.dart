@@ -126,13 +126,13 @@ class ListPaymentTransactionDataResult {
   void deleteTransaction(PaymentTransaction transaction) {
     int index = listResult.indexWhere((element) =>
         element.transaction_second_id == transaction.transaction_second_id);
-    if (index > 0) {
-      var old_transaction = listResult[index];
-      listResult.removeAt(index);
-      removePlatlistTransaction(transaction, old_transaction);
-      updateTotalValue();
+    if (index < 0) {
       return;
     }
+    var old_transaction = listResult[index];
+    listResult.removeAt(index);
+    removePlatlistTransaction(transaction, old_transaction);
+    updateTotalValue();
   }
 
   void updateTransaction(PaymentTransaction transaction) {
@@ -141,7 +141,7 @@ class ListPaymentTransactionDataResult {
         : extractTimeStampToLocal(transaction.createat!);
     int index = listResult.indexWhere((element) =>
         element.transaction_second_id == transaction.transaction_second_id);
-    if (index > 0) {
+    if (index >= 0) {
       var old_transaction = listResult[index];
       listResult[index] = transaction;
       removePlatlistTransaction(transaction, old_transaction);

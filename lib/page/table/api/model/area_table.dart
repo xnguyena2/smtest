@@ -115,9 +115,10 @@ class AreaData extends BaseEntity {
     int foundIndex =
         listTable?.indexWhere((element) => element.tableId == table.tableId) ??
             -1;
-    if (foundIndex >= 0) {
-      listTable?.remove(listTable![foundIndex]);
+    if (foundIndex < 0) {
+      return;
     }
+    listTable?.remove(listTable![foundIndex]);
   }
 
   AreaData clone() {
