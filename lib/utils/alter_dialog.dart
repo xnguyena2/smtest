@@ -21,22 +21,30 @@ showDefaultDialog(BuildContext context, String title, String messanger,
           style: headStyleSemiLarge,
         ),
         actions: <Widget>[
-          CancelBtn(
-            txt: 'Hủy',
-            padding: EdgeInsets.all(16),
-            onPressed: () {
-              Navigator.pop(context);
-              onCancel();
-            },
-          ),
-          ApproveBtn(
-            isActiveOk: true,
-            txt: 'OK',
-            padding: EdgeInsets.all(16),
-            onPressed: () {
-              Navigator.pop(context);
-              onOk();
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CancelBtn(
+                txt: 'Hủy',
+                padding: EdgeInsets.all(16),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onCancel();
+                },
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              ApproveBtn(
+                isActiveOk: true,
+                txt: 'OK',
+                padding: EdgeInsets.all(16),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onOk();
+                },
+              ),
+            ],
           ),
         ],
       ),
