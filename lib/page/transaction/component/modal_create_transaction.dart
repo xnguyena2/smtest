@@ -38,6 +38,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
   late final isOfPackage = widget.data.packageSecondId != null;
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return LoadingOverlayAlt(
       child: Builder(builder: (context) {
         return ModalBase(
@@ -131,7 +132,8 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                 height: 4,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    EdgeInsets.only(left: 16, right: 16, bottom: bottomPadding),
                 child: Row(
                   children: [
                     Expanded(
