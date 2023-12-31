@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/page/order_list/component/order_list_package_item.dart';
+import 'package:sales_management/page/order_list/provider/new_order_provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -23,9 +24,16 @@ class OrderListAllPackageTab extends StatefulWidget {
 class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
   @override
   Widget build(BuildContext context) {
+    final data = widget.data;
+    final newO = context.watch<NewOrderProvider>().getData;
+    if (newO != null) {
+      data.addNewListOrder(newO);
+      context.read<NewOrderProvider>().clean();
+    }
+
     final filter = context.watch<SearchProvider>().getTxt ?? '';
     WrapListFilter wrapListFilter =
-        WrapListFilter(listPackageDetailResult: widget.data, filter: filter);
+        WrapListFilter(listPackageDetailResult: data, filter: filter);
     List<PackageDataResponse> listPackage = wrapListFilter.getListResult();
     listPackage.sort(
       (a, b) => b.createat?.compareTo(a.createat ?? '') ?? 0,

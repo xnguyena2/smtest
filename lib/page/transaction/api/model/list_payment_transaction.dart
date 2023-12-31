@@ -60,8 +60,6 @@ class ListPaymentTransactionDataResult {
     firstDate = extractTimeStamp(from);
     lastDate = extractTimeStamp(to);
 
-    print('firstDate: $firstDate, lastDate: $lastDate');
-
     Map<int, TransactionByDateOfMonthWithOffset> resultMaped =
         Map<int, TransactionByDateOfMonthWithOffset>();
 

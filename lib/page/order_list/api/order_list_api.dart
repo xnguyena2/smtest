@@ -8,10 +8,11 @@ import 'package:sales_management/api/model/response_result.dart';
 import 'package:sales_management/api/model/user_info_query.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 
-Future<ListPackageDetailResult> getAllPackage(String groupID) async {
+Future<ListPackageDetailResult> getAllPackage(String groupID,
+    {int page = 0, int size = 1000}) async {
   final request = UserInfoQuery(
-    page: 0,
-    size: 1000,
+    page: page,
+    size: size,
     id: '',
     group_id: groupID,
   );

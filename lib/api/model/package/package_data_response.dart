@@ -50,6 +50,10 @@ class ListPackageDetailResult {
   void addNewOrder(PackageDataResponse newO) {
     listResult.add(newO);
   }
+
+  void addNewListOrder(List<PackageDataResponse> newO) {
+    listResult.addAll(newO);
+  }
 }
 
 class PackageDataResponse extends PackageDetail {
