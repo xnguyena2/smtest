@@ -279,8 +279,7 @@ class InputText extends StatelessWidget {
       ),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+        hintStyle: headStyleBigMediumBlackLight,
         filled: true,
         fillColor: BackgroundColorLigh,
         hoverColor: BackgroundColorLigh,

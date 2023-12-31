@@ -143,6 +143,10 @@ class PackageDataResponse extends PackageDetail {
   }
 
   void updateBuyer(AddressData addressData) {
+    if (!addressData.isValidData()) {
+      buyer = null;
+      return;
+    }
     if (buyer == null) {
       buyer =
           BuyerData.fromPackageDataResponseAndAddressData(this, addressData);

@@ -81,4 +81,8 @@ class AddressData {
     _data['region_text_format'] = regionTextFormat;
     return _data;
   }
+
+  bool isValidData() {
+    return phoneNumber.isNotEmpty;
+  }
 }
