@@ -7,9 +7,10 @@ import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
-Future<ListDateBenifitDataResult> getReportOfCurrentMonthByDate() async {
-  String from = getFirstDateTimeOfCurrentMonth();
-  String to = getCurrentDateTimeNow();
+Future<ListDateBenifitDataResult> getReportOfCurrentMonthByDate(
+    {String? start, String? end}) async {
+  String from = start ?? getFirstDateTimeOfCurrentMonth();
+  String to = end ?? getCurrentDateTimeNow();
   final request =
       PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
 
