@@ -11,6 +11,7 @@ import 'package:sales_management/page/order_list/provider/search_provider.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 import 'component/order_list_bar.dart';
 
@@ -30,10 +31,11 @@ class OrderListPage extends StatelessWidget {
           )
         ],
         child: Builder(builder: (context) {
-          final newOrderEvent = (PackageDataResponse p) {
-            context.read<NewOrderProvider>().updateValue = p!;
-          };
-          final addNewOrder = () {
+          newOrderEvent(PackageDataResponse p) {
+            context.read<NewOrderProvider>().updateValue = [p];
+          }
+
+          addNewOrder() {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -46,7 +48,8 @@ class OrderListPage extends StatelessWidget {
                 ),
               ),
             );
-          };
+          }
+
           return SafeArea(
             top: false,
             bottom: false,
@@ -70,14 +73,8 @@ class OrderListPage extends StatelessWidget {
                   ),
                 );
               }),
-              body: FetchAPI<ListPackageDetailResult>(
-                future: getAllPackage(groupID),
-                successBuilder: (data) {
-                  return Body(
-                    data: data,
-                    addNewOrder: addNewOrder,
-                  );
-                },
+              body: Body(
+                addNewOrder: addNewOrder,
               ),
             ),
           );
@@ -88,26 +85,21 @@ class OrderListPage extends StatelessWidget {
 }
 
 class Body extends StatelessWidget {
-  final ListPackageDetailResult data;
   final VoidCallback addNewOrder;
-  const Body({
+  final _LoadMoreTrigger _loadMoreTrigger = _LoadMoreTrigger();
+  Body({
     super.key,
-    required this.data,
     required this.addNewOrder,
   });
 
   @override
   Widget build(BuildContext context) {
-    final newO = context.watch<NewOrderProvider>().getData;
-    if (newO != null) {
-      data.addNewOrder(newO);
-    }
     return DefaultTabController(
       length: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ColoredBox(
+          const ColoredBox(
             color: White,
             child: TabBar(
               padding: EdgeInsets.zero,
@@ -142,20 +134,68 @@ class Body extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: TabBarView(
-              children: [
-                OrderListAllPackageTab(
-                  data: data,
-                  createNewOrder: addNewOrder,
-                ),
-                Center(
-                  child: Text('Chưa có đơn nào!'),
-                ),
-              ],
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                if (_loadMoreTrigger.canLoadMore() &&
+                    scrollInfo.metrics.axis == Axis.vertical &&
+                    scrollInfo.metrics.pixels /
+                            scrollInfo.metrics.maxScrollExtent >
+                        0.8) {
+                  _loadMoreTrigger.loadMore((result) {
+                    context.read<NewOrderProvider>().updateValue =
+                        result.listResult;
+                  });
+                }
+                return true;
+              },
+              child: TabBarView(
+                children: [
+                  FetchAPI<ListPackageDetailResult>(
+                    future: getAllPackage(groupID, page: 0, size: 10),
+                    successBuilder: (data) {
+                      return OrderListAllPackageTab(
+                        data: data,
+                        createNewOrder: addNewOrder,
+                      );
+                    },
+                  ),
+                  const Center(
+                    child: Text('Chưa có đơn nào!'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+class _LoadMoreTrigger {
+  bool loading = false;
+  bool _canLoadMore = true;
+  int currentPage = 0;
+
+  void reset() {
+    loading = false;
+    _canLoadMore = true;
+    currentPage = 0;
+  }
+
+  bool canLoadMore() {
+    return _canLoadMore && loading == false;
+  }
+
+  void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
+    loading = true;
+    currentPage++;
+    getAllPackage(groupID, page: currentPage, size: 10).then((value) {
+      onDone(value);
+      _canLoadMore = value.listResult.isNotEmpty;
+      loading = false;
+    }).onError((error, stackTrace) {
+      loading = false;
+    });
   }
 }

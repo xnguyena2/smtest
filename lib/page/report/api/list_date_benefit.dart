@@ -25,8 +25,6 @@ class ListDateBenifitDataResult {
     firstDate = extractTimeStamp(from);
     lastDate = extractTimeStamp(to);
 
-    print('firstDate: $firstDate, lastDate: $lastDate');
-
     Map<int, BenifitByDateOfMonthWithOffset> resultMaped =
         Map<int, BenifitByDateOfMonthWithOffset>();
     listResult.forEach((element) {

@@ -5,11 +5,16 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 class NewOrderProvider with ChangeNotifier, DiagnosticableTreeMixin {
   NewOrderProvider();
 
-  PackageDataResponse? _data;
+  List<PackageDataResponse>? _data;
 
-  PackageDataResponse? get getData => _data;
+  List<PackageDataResponse>? get getData => _data;
 
-  set updateValue(PackageDataResponse data) {
+  void clean() {
+    _data?.clear();
+    _data = null;
+  }
+
+  set updateValue(List<PackageDataResponse> data) {
     _data = data;
     notifyListeners();
   }
