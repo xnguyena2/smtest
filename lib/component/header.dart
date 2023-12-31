@@ -5,6 +5,7 @@ import '../utils/constants.dart';
 
 class Header extends StatelessWidget {
   final String title;
+  final Widget? tailHeader;
   final Widget funcWidget;
   final Widget? extendsWidget;
   final VoidCallback? onBackPressed;
@@ -13,7 +14,8 @@ class Header extends StatelessWidget {
       required this.title,
       required this.funcWidget,
       required this.extendsWidget,
-      this.onBackPressed});
+      this.onBackPressed,
+      this.tailHeader});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +27,14 @@ class Header extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              HeaderTitle(
-                title: title,
-                onBackPressed: onBackPressed,
+              Row(
+                children: [
+                  HeaderTitle(
+                    title: title,
+                    onBackPressed: onBackPressed,
+                  ),
+                  tailHeader ?? SizedBox(),
+                ],
               ),
               funcWidget
             ],

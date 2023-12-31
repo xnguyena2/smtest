@@ -6,9 +6,30 @@ import 'package:sales_management/page/report/api/report_api.dart';
 import 'package:sales_management/page/report/component/report_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
-class ReportPage extends StatelessWidget {
+class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
+
+  @override
+  State<ReportPage> createState() => _ReportPageState();
+}
+
+class _ReportPageState extends State<ReportPage> {
+  late Future<ListDateBenifitDataResult> _loadData;
+  String? start;
+  String? end;
+
+  void refresh() {
+    _loadData = getReportOfCurrentMonthByDate(start: start, end: end);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +37,17 @@ class ReportPage extends StatelessWidget {
       top: false,
       bottom: false,
       child: Scaffold(
-        appBar: ReportBar(),
+        appBar: ReportBar(
+          onChagneDateTime: (DateTimeRange) {
+            start = localDateTime2ServerFormat(DateTimeRange.start);
+            end = localDateTime2ServerFormat(
+                DateTimeRange.end.add(Duration(days: 1)));
+            refresh();
+            setState(() {});
+          },
+        ),
         body: FetchAPI<ListDateBenifitDataResult>(
-          future: getReportOfCurrentMonthByDate(),
+          future: _loadData,
           successBuilder: (ListDateBenifitDataResult) {
             double totalRevenue = ListDateBenifitDataResult.totalRevenue;
             double totalCost = ListDateBenifitDataResult.totalCost;
