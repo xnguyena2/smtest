@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sales_management/component/bar/bar_large.dart';
+import 'package:sales_management/component/bar/bar_small.dart';
 
 import '../../../component/header.dart';
 import '../../../utils/constants.dart';
 
-class AddressSelectBar extends BarLarge {
+class AddressSelectBar extends BarSmall {
   final VoidCallback onBackPressed;
   const AddressSelectBar({super.key, required this.onBackPressed});
 

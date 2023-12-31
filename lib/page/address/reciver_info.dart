@@ -88,7 +88,6 @@ class _ReciverInfoState extends State<ReciverInfo> {
               TitleHeader("Liên hệ"),
               InputText(
                 key: ValueKey('reciverFullName ${addressData.reciverFullName}'),
-                isAutoFocus: true,
                 hint: "Họ và tên",
                 textInputType: TextInputType.name,
                 onChanged: (value) {
@@ -99,6 +98,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
               const Divider(height: 1),
               InputText(
                 key: phoneNumbeKey,
+                isAutoFocus: true,
                 hint: "Số điện thoại",
                 initialValue: addressData.phoneNumber,
                 onChanged: (String value) {
