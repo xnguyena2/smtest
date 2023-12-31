@@ -77,7 +77,7 @@ class _TransactionCreateState extends State<TransactionCreate> {
                           ),
                           Text(
                             '${getDateinWeekofTimeStampToLocal(transaction.createat)}, ${formatLocalDateTimeOnlyDateSplash(transaction.createat)}',
-                            style: headStyleXLargeHighTable,
+                            style: customerNameBigHight,
                           ),
                           SizedBox(
                             width: 2,

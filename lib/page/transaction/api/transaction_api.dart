@@ -48,9 +48,10 @@ Future<String> deleteTransaction(PaymentTransaction transaction) async {
 }
 
 Future<ListPaymentTransactionDataResult>
-    getTransactionsReportOfCurrentMonthByDate() async {
-  String from = getFirstDateTimeOfCurrentMonth();
-  String to = getCurrentDateTimeNow();
+    getTransactionsReportOfCurrentMonthByDate(
+        {String? start, String? end}) async {
+  String from = start ?? getFirstDateTimeOfCurrentMonth();
+  String to = end ?? getCurrentDateTimeNow();
   final request = PackageID.currentMonth(groupID, from: from, to: to);
 
   // print(request.toJson());

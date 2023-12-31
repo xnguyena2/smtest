@@ -19,6 +19,10 @@ String localDateTime2ServerToDateTime(DateTime dt) {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(dt.toUtc());
 }
 
+String localDateTime2ServerFormat(DateTime dt) {
+  return DateFormat("y-MM-ddTHH:mm:ss.S").format(dt);
+}
+
 String getCreateAtNow() {
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(DateTime.now().toUtc());
 }
@@ -57,6 +61,11 @@ int extractTimeStampToLocal(String local_time) {
 String timeStampToFormat(int timeStamp) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
   return DateFormat("dd/MM/yy").format(dt);
+}
+
+String formatLocalDateTimeOnlyDateSplashFromDate(DateTime dateTime) {
+  final format = DateFormat('dd/MM/yyyy');
+  return format.format(dateTime.toLocal());
 }
 
 String formatLocalDateTimeOnlyDateSplash(String? dateTime) {

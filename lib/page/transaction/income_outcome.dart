@@ -13,9 +13,31 @@ import 'package:sales_management/page/transaction/component/transaction_provider
 import 'package:sales_management/page/transaction_create/transaction_create.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
-class IncomeOutComme extends StatelessWidget {
+class IncomeOutComme extends StatefulWidget {
   const IncomeOutComme({super.key});
+
+  @override
+  State<IncomeOutComme> createState() => _IncomeOutCommeState();
+}
+
+class _IncomeOutCommeState extends State<IncomeOutComme> {
+  late Future<ListPaymentTransactionDataResult> _loadData;
+  String? start;
+  String? end;
+
+  void refresh() {
+    _loadData =
+        getTransactionsReportOfCurrentMonthByDate(start: start, end: end);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +48,20 @@ class IncomeOutComme extends StatelessWidget {
           top: false,
           bottom: false,
           child: Scaffold(
-            appBar: const IncomeOutComeBar(),
+            appBar: IncomeOutComeBar(
+              onChagneDateTime: (DateTimeRange) {
+                start = localDateTime2ServerFormat(DateTimeRange.start);
+                end = localDateTime2ServerFormat(
+                    DateTimeRange.end.add(Duration(days: 1)));
+                refresh();
+                setState(() {});
+              },
+            ),
             body: FetchAPI<ListPaymentTransactionDataResult>(
-              future: getTransactionsReportOfCurrentMonthByDate(),
+              future: _loadData,
               successBuilder: (listPaymentTransactionDataResult) {
+                print(
+                    'found: ${listPaymentTransactionDataResult.listResult.length}');
                 return _BodyContent(
                   listPaymentTransactionDataResult:
                       listPaymentTransactionDataResult,
