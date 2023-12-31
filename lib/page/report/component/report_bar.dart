@@ -12,7 +12,7 @@ class ReportBar extends BarSmall {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
-        title: 'Báo cáo',
+        title: 'Báo cáo - tháng này',
         funcWidget: SizedBox(),
         extendsWidget: SizedBox(),
         onBackPressed: () {
