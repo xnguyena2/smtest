@@ -14,7 +14,7 @@ class IncomeOutComeBar extends BarSmall {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       color: White,
       child: Header(
-        title: 'Thu chi',
+        title: 'Thu chi - Tháng này',
         funcWidget: SizedBox(),
         extendsWidget: SizedBox(),
         onBackPressed: () {
