@@ -27,6 +27,7 @@ class ListProduct extends StatefulWidget {
 }
 
 class _ListProductState extends State<ListProduct> {
+  final bool enableAllFunction = false;
   late final PackageDataResponse data;
   String currentPriceType = 'retailprice';
   late bool isDone = data.isDone;
@@ -50,17 +51,19 @@ class _ListProductState extends State<ListProduct> {
               padding: EdgeInsets.only(left: 15, right: 15, top: 10),
               child: Row(
                 children: [
-                  Expanded(
-                    child: RoundBtn(
-                      icon: LoadSvg(
-                          assetPath: 'svg/print.svg', width: 20, height: 20),
-                      txt: 'In bếp',
-                      onPressed: () {},
+                  if (enableAllFunction) ...[
+                    Expanded(
+                      child: RoundBtn(
+                        icon: LoadSvg(
+                            assetPath: 'svg/print.svg', width: 20, height: 20),
+                        txt: 'In bếp',
+                        onPressed: () {},
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 18,
-                  ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
                   Expanded(
                     child: RoundBtn(
                       isSelected: true,
@@ -84,82 +87,89 @@ class _ListProductState extends State<ListProduct> {
                         context.read<ProductProvider>().justRefresh();
                         setState(() {});
                       },
+                      padding: data.items.isNotEmpty
+                          ? const EdgeInsets.symmetric(vertical: 10)
+                          : const EdgeInsets.symmetric(vertical: 50),
                     ),
                   )
                 ],
               ),
             ),
-          SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Giá áp dụng:',
-                  style: headStyleSemiLargeLigh500,
-                ),
-                Row(
-                  children: [
-                    CheckRadioItem<String>(
-                      txt: 'Giá lẻ',
-                      groupValue: currentPriceType,
-                      value: 'retailprice',
-                      onChanged: (value) {
-                        currentPriceType = 'retailprice';
-                      },
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    CheckRadioItem<String>(
-                      txt: 'Giá sỉ',
-                      groupValue: currentPriceType,
-                      value: 'wholesale',
-                      onChanged: (value) {
-                        currentPriceType = 'wholesale';
-                      },
-                    )
-                  ],
-                )
-              ],
+          if (enableAllFunction) ...[
+            SizedBox(
+              height: 15,
             ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final item = data.items[index];
-              return ProductItem(
-                key: ValueKey(
-                    '${item.productSecondId + item.productUnitSecondId}${item.numberUnit}'),
-                isEditting: !isDone,
-                productInPackageResponse: item,
-                updateNumberUnit: (productInPackageResponse) {
-                  data.addOrUpdateProduct(productInPackageResponse);
-                },
-                onRefreshData: () {
-                  data.updatePrice();
-                  context.read<ProductProvider>().justRefresh();
-                },
-                onRemoveItem: () {
-                  setState(() {});
-                },
-              );
-            },
-            separatorBuilder: (context, index) => const SizedBox(
-                height: 15,
-                child: Divider(
-                  color: Black40,
-                )),
-            itemCount: data.items.length,
-          ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Giá áp dụng:',
+                    style: headStyleSemiLargeLigh500,
+                  ),
+                  Row(
+                    children: [
+                      CheckRadioItem<String>(
+                        txt: 'Giá lẻ',
+                        groupValue: currentPriceType,
+                        value: 'retailprice',
+                        onChanged: (value) {
+                          currentPriceType = 'retailprice';
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      CheckRadioItem<String>(
+                        txt: 'Giá sỉ',
+                        groupValue: currentPriceType,
+                        value: 'wholesale',
+                        onChanged: (value) {
+                          currentPriceType = 'wholesale';
+                        },
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+          if (data.items.isNotEmpty) ...[
+            SizedBox(
+              height: 25,
+            ),
+            ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final item = data.items[index];
+                return ProductItem(
+                  key: ValueKey(
+                      '${item.productSecondId + item.productUnitSecondId}${item.numberUnit}'),
+                  isEditting: !isDone,
+                  productInPackageResponse: item,
+                  updateNumberUnit: (productInPackageResponse) {
+                    data.addOrUpdateProduct(productInPackageResponse);
+                  },
+                  onRefreshData: () {
+                    data.updatePrice();
+                    context.read<ProductProvider>().justRefresh();
+                  },
+                  onRemoveItem: () {
+                    setState(() {});
+                  },
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(
+                  height: 15,
+                  child: Divider(
+                    color: Black40,
+                  )),
+              itemCount: data.items.length,
+            ),
+          ],
         ],
       ),
     );

@@ -121,6 +121,8 @@ class PackageDetail extends BaseEntity {
 
   bool get isDone => status == PackageStatusType.DONE;
 
+  bool get haveTransaction => progress?.transaction?.isNotEmpty == true;
+
   void donePayment() {
     status = PackageStatusType.DONE;
   }
