@@ -72,10 +72,12 @@ class CreateOrderPage extends StatelessWidget {
                             done: () {
                               LoadingOverlayAlt.of(context).show();
                               data.runPendingAction();
-                              data.makeDone();
-                              updatePackage(
-                                      ProductPackage.fromPackageDataResponse(
-                                          data))
+                              final transaction = data.makeDone();
+                              final productWithPackge =
+                                  ProductPackage.fromPackageDataResponse(data);
+
+                              updatePackageWithTransactions(productWithPackge,
+                                      paymentTransaction: transaction)
                                   .then((value) {
                                 onUpdated(data);
                                 context.read<ProductProvider>().justRefresh();
@@ -97,6 +99,7 @@ class CreateOrderPage extends StatelessWidget {
                                           PackageID.fromPackageDataResponse(
                                               data))
                                       .then((value) {
+                                    data.deletedOrder();
                                     onDelete(data);
                                     Navigator.pop(context);
                                     LoadingOverlayAlt.of(context).hide();

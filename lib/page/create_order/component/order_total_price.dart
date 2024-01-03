@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
+import 'package:sales_management/api/model/package/product_packge_with_transaction.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
@@ -311,10 +312,13 @@ class _TotalPriceState extends State<TotalPrice> {
                 content: ModalPayment(
                   finalPrice: finalPrice - payment,
                   onDone: (value) {
-                    data.addtransaction(value, 'Tiền mặt',
-                        'Thanh toán trước đơn: ${data.getID}');
+                    final paymentTransaction = data.addtransaction(value,
+                        'Tiền mặt', 'Thanh toán trước đơn: ${data.getID}');
                     context.read<ProductProvider>().justRefresh();
-                    updatePackage(ProductPackage.fromPackageDataResponse(data))
+                    updatePackageWithTransaction(ProductPackgeWithTransaction(
+                            productPackage:
+                                ProductPackage.fromPackageDataResponse(data),
+                            transation: paymentTransaction))
                         .then((value) => widget.onUpdate())
                         .catchError(
                       (error, stackTrace) {

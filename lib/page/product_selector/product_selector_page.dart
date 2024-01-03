@@ -29,6 +29,7 @@ import '../../component/category_selector.dart';
 class ProductSelectorPage extends StatefulWidget {
   final bool firstSelectProductWhenCreateOrder;
   final VoidCallbackArg<PackageDataResponse>? onUpdatedPasstoCreateOrder;
+  final VoidCallbackArg<PackageDataResponse>? onDeletedPasstoCreateOrder;
   final PackageDataResponse? packageDataResponse;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
   const ProductSelectorPage({
@@ -37,6 +38,7 @@ class ProductSelectorPage extends StatefulWidget {
     required this.onUpdated,
     this.firstSelectProductWhenCreateOrder = false,
     this.onUpdatedPasstoCreateOrder,
+    this.onDeletedPasstoCreateOrder,
   });
 
   @override
@@ -247,7 +249,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                   ? ProductSelectorBottomBar(
                       done: () {
                         if (widget.firstSelectProductWhenCreateOrder) {
-                          print('object');
                           Navigator.pop(context);
                           Navigator.push(
                             context,
@@ -255,7 +256,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                               builder: (context) => CreateOrderPage(
                                 data: widget.packageDataResponse!,
                                 onUpdated: widget.onUpdatedPasstoCreateOrder!,
-                                onDelete: (PackageDataResponse) {},
+                                onDelete: widget.onDeletedPasstoCreateOrder!,
                               ),
                             ),
                           );

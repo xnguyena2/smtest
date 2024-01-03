@@ -161,6 +161,7 @@ class PackageItemDetail extends StatelessWidget {
                             deletePackage(
                                     PackageID.fromPackageDataResponse(data))
                                 .then((value) {
+                              data.deletedOrder();
                               onDelete(data);
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(
@@ -193,10 +194,12 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn đóng đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            data.makeDone();
-                            updatePackage(
-                                    ProductPackage.fromPackageDataResponse(
-                                        data))
+                            final transaction = data.makeDone();
+                            final productWithPackge =
+                                ProductPackage.fromPackageDataResponse(data);
+
+                            updatePackageWithTransactions(productWithPackge,
+                                    paymentTransaction: transaction)
                                 .then((value) {
                               onUpdated(data);
                               LoadingOverlayAlt.of(context).hide();

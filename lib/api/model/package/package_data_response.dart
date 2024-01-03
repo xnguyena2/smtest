@@ -38,21 +38,48 @@ class WrapListFilter {
 class ListPackageDetailResult {
   ListPackageDetailResult({
     required this.listResult,
-  });
+  }) : mapExist = {};
   late final List<PackageDataResponse> listResult;
+  late final Map<String, PackageDataResponse> mapExist;
 
   ListPackageDetailResult.fromJson(Map<String, dynamic> json) {
     listResult = List.from(json['list_result'])
         .map((e) => PackageDataResponse.fromJson(e))
         .toList();
+    mapExist = Map.fromEntries(listResult.map(
+        (e) => MapEntry<String, PackageDataResponse>(e.packageSecondId, e)));
   }
 
   void addNewOrder(PackageDataResponse newO) {
+    if (mapExist.containsKey(newO.packageSecondId)) return;
+    mapExist[newO.packageSecondId] = newO;
     listResult.add(newO);
   }
 
-  void addNewListOrder(List<PackageDataResponse> newO) {
-    listResult.addAll(newO);
+  void deleteNewOrder(PackageDataResponse newO) {
+    final obj = mapExist.remove(newO.packageSecondId);
+    if (obj != null) {
+      listResult.remove(obj);
+    }
+  }
+
+  void updateListOrder(List<PackageDataResponse> newO) {
+    newO.forEach((element) {
+      if (element.isDeleted()) {
+        deleteNewOrder(element);
+      } else {
+        addNewOrder(element);
+      }
+    });
+  }
+
+  void updateOrder(PackageDataResponse newO) {
+    final foundObj = mapExist[newO.packageSecondId];
+    if (foundObj == null) return;
+    final index = listResult.indexOf(foundObj);
+    if (index < 0) return;
+    listResult[index] = newO;
+    mapExist[newO.packageSecondId] = newO;
   }
 }
 
@@ -193,34 +220,32 @@ class PackageDataResponse extends PackageDetail {
     return PaymentStatus.NOT_PAY; //'Chưa thanh toán';
   }
 
-  void addtransaction(
+  PaymentTransaction addtransaction(
     double payment,
     String type,
     String detail,
   ) {
-    createTransaction(PaymentTransaction(
-            groupId: groupId,
-            transaction_second_id: null,
-            packageSecondId: packageSecondId,
-            amount: payment,
-            category: 'Bán hàng',
-            money_source: 'Tiền mặt',
-            device_id: deviceId,
-            note: detail,
-            transaction_type: TType.INCOME))
-        .then((value) {
-      print('make transaction success');
-    });
     super.addtransaction(payment, type, detail);
+    return PaymentTransaction(
+        groupId: groupId,
+        transaction_second_id: null,
+        packageSecondId: packageSecondId,
+        amount: payment,
+        category: 'Bán hàng',
+        money_source: 'Tiền mặt',
+        device_id: deviceId,
+        note: detail,
+        transaction_type: TType.INCOME);
   }
 
-  void makeDone() {
+  PaymentTransaction? makeDone() {
+    donePayment();
     if (payment < finalPrice) {
       print('payment: $payment, finalPrice: $finalPrice');
-      addtransaction(
+      return addtransaction(
           finalPrice - payment, 'Tiền mặt', 'Hoàn thành đơn: ${getID}');
     }
-    donePayment();
+    return null;
   }
 
   String get getID => packageSecondId.substring(0, 8);

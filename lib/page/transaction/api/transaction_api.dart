@@ -10,7 +10,6 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
 Future<String> createTransaction(PaymentTransaction transaction) async {
-  print(transaction.toJson());
   final request = transaction;
 
   final response = await postC(
