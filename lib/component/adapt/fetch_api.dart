@@ -23,7 +23,8 @@ class FetchAPI<T> extends StatelessWidget {
             child: Text(snapshot.error.toString()),
           );
         }
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
           final data = snapshot.data!;
           return successBuilder(data);
         }

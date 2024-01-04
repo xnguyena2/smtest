@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/compoment/order_list.dart';
@@ -16,7 +17,7 @@ import '../compoment/quick_report.dart';
 
 class Management extends StatelessWidget {
   Future<BenifitByMonth?> getBenifitOfMonth(Box<dynamic> box) async {
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap(box);
     if (config == null) {
       return null;
     }
@@ -31,8 +32,7 @@ class Management extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
-      valueListenable:
-          Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+      valueListenable: LocalStorage.getListenBootStrapKey(),
       builder: (BuildContext context, Box<dynamic> value, Widget? child) {
         return FetchAPI<BenifitByMonth?>(
           future: getBenifitOfMonth(value),

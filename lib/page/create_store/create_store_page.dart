@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
@@ -196,13 +197,8 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                     'Không thể tạo cửa hàng!');
                                               },
                                               (token) async {
-                                                var box =
-                                                    Hive.box(hiveSettingBox);
-                                                box.put(
-                                                  hiveTokenKey,
-                                                  TokenStorage(
-                                                      token: token.token),
-                                                );
+                                                LocalStorage.cleanBox();
+                                                LocalStorage.putToken(token);
 
                                                 await loadData(false).then(
                                                   (value) {

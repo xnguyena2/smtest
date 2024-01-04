@@ -4,9 +4,6 @@ import 'package:intl/intl.dart';
 const String host =
     "https://web-production-865f.up.railway.app"; // 'http://192.168.1.212:5001'; //
 
-const String hiveSettingBox = 'settings';
-const String hiveConfigKey = 'config';
-const String hiveTokenKey = 'token';
 const String Seperate = '<=>';
 
 const String appVersion = '1.1.0';
@@ -16,6 +13,11 @@ String groupID = 'trumbien_store';
 String deviceID = 'admintestting';
 String userPhoneNumber = '0987654321';
 bool haveInteret = false;
+
+void changeInterNetStatus(bool status) {
+  print('change status: $status');
+  haveInteret = status;
+}
 
 void setGlobalValue(
     {required String store_ame,

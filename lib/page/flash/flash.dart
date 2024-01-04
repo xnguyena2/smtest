@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/api/token.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -19,15 +20,13 @@ Future<void> initData() async {
         groupId: groupID,
         phoneNumber: value.store?.phone ?? '',
         device_id: deviceID);
-    var box = Hive.box(hiveSettingBox);
-    box.put(hiveConfigKey, value);
+    LocalStorage.setBootstrapData(value);
   });
 }
 
 Future<User?> loadData(bool isForApple) async {
-  var box = Hive.box(hiveSettingBox);
   TokenStorage? tokenStorage =
-      isForApple ? TokenStorage(token: testToken) : box.get(hiveTokenKey);
+      isForApple ? TokenStorage(token: testToken) : LocalStorage.getToken();
   if (tokenStorage == null) {
     return null;
   }

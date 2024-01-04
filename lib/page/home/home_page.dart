@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -10,6 +13,7 @@ import 'package:sales_management/page/transaction/income_outcome.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/svg_loader.dart';
@@ -26,12 +30,75 @@ class _HomePageState extends State<HomePage> {
   late Widget page;
   final Widget homePage = Management();
   final Widget inoutPage = IncomeOutComme();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   int currentPage = 1;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     page = homePage;
+    bool ignore = true;
+    _connectivitySubscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult connectivityResult) {
+      if (connectivityResult == ConnectivityResult.mobile) {
+        changeInterNetStatus(true);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showNotification(context, 'Đang sử dụng mạng điện thoại!');
+      } else if (connectivityResult == ConnectivityResult.wifi) {
+        changeInterNetStatus(true);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showNotification(context, 'Đang sử dụng mạng wifi!');
+      } else if (connectivityResult == ConnectivityResult.ethernet) {
+        changeInterNetStatus(true);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showNotification(context, 'Đang sử dụng mạng có dây!');
+      } else if (connectivityResult == ConnectivityResult.vpn) {
+        changeInterNetStatus(true);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showNotification(context, 'Đang sử dụng mạng vpn!');
+      } else if (connectivityResult == ConnectivityResult.bluetooth) {
+        changeInterNetStatus(false);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showAlert(context, 'Mất kết nối!');
+      } else if (connectivityResult == ConnectivityResult.other) {
+        changeInterNetStatus(false);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showAlert(context, 'Mất kết nối!');
+      } else if (connectivityResult == ConnectivityResult.none) {
+        changeInterNetStatus(false);
+        if (ignore) {
+          ignore = false;
+          return;
+        }
+        showAlert(context, 'Mất kết nối!');
+      }
+    });
+  }
+
+// Be sure to cancel subscription after you are done
+  @override
+  dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
   @override

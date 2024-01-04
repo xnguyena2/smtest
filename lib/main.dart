@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
@@ -51,8 +53,39 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(BenifitByMonthAdapter());
   Hive.registerAdapter(TokenStorageAdapter());
   Hive.registerAdapter(StoreAdapter());
+  Hive.registerAdapter(RequestStorageAdapter());
+  Hive.registerAdapter(RequestTypeAdapter());
 
-  await Hive.openBox(hiveSettingBox);
+  await LocalStorage.openBox();
+  LocalStorage.getDependRequest();
+}
+
+void checkInternetConnection() async {
+  final connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile) {
+    // I am connected to a mobile network.
+    changeInterNetStatus(true);
+  } else if (connectivityResult == ConnectivityResult.wifi) {
+    // I am connected to a wifi network.
+    changeInterNetStatus(true);
+  } else if (connectivityResult == ConnectivityResult.ethernet) {
+    // I am connected to a ethernet network.
+    changeInterNetStatus(true);
+  } else if (connectivityResult == ConnectivityResult.vpn) {
+    // I am connected to a vpn network.
+    // Note for iOS and macOS:
+    // There is no separate network interface type for [vpn].
+    // It returns [other] on any device (also simulator)
+    changeInterNetStatus(true);
+  } else if (connectivityResult == ConnectivityResult.bluetooth) {
+    // I am connected to a bluetooth.
+    changeInterNetStatus(false);
+  } else if (connectivityResult == ConnectivityResult.other) {
+    // I am connected to a network which is not in the above mentioned networks.
+    changeInterNetStatus(false);
+  } else if (connectivityResult == ConnectivityResult.none) {
+    changeInterNetStatus(false);
+  }
 }
 
 Future<void> main() async {

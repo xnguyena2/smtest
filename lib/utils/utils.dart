@@ -58,6 +58,12 @@ int extractTimeStampToLocal(String local_time) {
   return ts;
 }
 
+int currentTimeStampLocal() {
+  DateTime dt = DateTime.now();
+  int ts = (dt.millisecondsSinceEpoch).floor();
+  return ts;
+}
+
 String timeStampToFormat(int timeStamp) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
   return DateFormat("dd/MM/yy").format(dt);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
@@ -19,8 +20,7 @@ class StoreInfoPage extends StatelessWidget {
   const StoreInfoPage({super.key});
 
   Future<Store?> getBenifitOfMonth() async {
-    var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
     }
@@ -29,10 +29,9 @@ class StoreInfoPage extends StatelessWidget {
   }
 
   void updateStoreData(Store store) {
-    var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap();
     config?.store = store;
-    box.put(hiveConfigKey, config);
+    LocalStorage.setBootstrapData(config);
     setGlobalValue(
         store_ame: store.name,
         groupId: groupID,
@@ -146,8 +145,7 @@ class StoreInfoPage extends StatelessWidget {
                                 onOk: () {
                                   LoadingOverlayAlt.of(context).show();
                                   deleteStore().then((value) {
-                                    var box = Hive.box(hiveSettingBox);
-                                    box.delete(hiveTokenKey);
+                                    LocalStorage.cleanBox();
                                     LoadingOverlayAlt.of(context).hide();
 
                                     Navigator.of(context).pushAndRemoveUntil(
