@@ -124,6 +124,7 @@ class _TotalPriceState extends State<TotalPrice> {
                   width: 18,
                 ),
                 SwitchBtn(
+                  isEnable: isEditting,
                   firstTxt: 'VND',
                   secondTxt: '%',
                   enableIndex: isDiscountPercent ? 1 : 0,

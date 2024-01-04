@@ -123,7 +123,7 @@ class WidgetContent extends StatelessWidget {
                           children: [
                             SizedBox(width: 8.5),
                             Text(
-                              'Tháng này',
+                              'Hôm nay',
                               style: subInfoStyLarge500,
                             ),
                           ],

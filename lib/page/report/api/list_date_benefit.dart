@@ -20,6 +20,7 @@ class ListDateBenifitDataResult {
   double totalRevenue = 0;
   double totalCost = 0;
   double totalProfit = 0;
+  int numOrder = 0;
 
   void fillAllEmpty(String from, String to) {
     firstDate = extractTimeStamp(from);
@@ -27,6 +28,8 @@ class ListDateBenifitDataResult {
 
     Map<int, BenifitByDateOfMonthWithOffset> resultMaped =
         Map<int, BenifitByDateOfMonthWithOffset>();
+    numOrder = listResult.fold(
+        0, (previousValue, element) => previousValue + element.count);
     listResult.forEach((element) {
       totalRevenue += element.revenue;
       totalCost += element.cost;

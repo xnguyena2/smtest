@@ -15,6 +15,7 @@ String storeName = 'trumbien store';
 String groupID = 'trumbien_store';
 String deviceID = 'admintestting';
 String userPhoneNumber = '0987654321';
+bool haveInteret = false;
 
 void setGlobalValue(
     {required String store_ame,
