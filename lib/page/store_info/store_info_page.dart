@@ -98,6 +98,10 @@ class StoreInfoPage extends StatelessWidget {
                           SizedBox(
                             height: 20,
                           ),
+                          _TableChecker(store: store),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Row(
                             children: [
                               Expanded(
@@ -173,6 +177,64 @@ class StoreInfoPage extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+}
+
+class _TableChecker extends StatefulWidget {
+  final Store? store;
+  const _TableChecker({
+    super.key,
+    this.store,
+  });
+
+  @override
+  State<_TableChecker> createState() => _TableCheckerState();
+}
+
+class _TableCheckerState extends State<_TableChecker> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          height: 24.0,
+          width: 24.0,
+          child: Checkbox(
+            checkColor: Colors.white,
+            fillColor: MaterialStateProperty.resolveWith((states) {
+              const Set<MaterialState> interactiveStates = <MaterialState>{
+                MaterialState.selected,
+              };
+              if (states.any(interactiveStates.contains)) {
+                return TableHighColor;
+              }
+              return White;
+            }),
+            value: widget.store?.haveTable() ?? false,
+            onChanged: (bool? value) {
+              widget.store?.togleTable();
+              setState(() {});
+            },
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              widget.store?.togleTable();
+              setState(() {});
+            },
+            child: const Text(
+              'Cửa hàng có phục vụ tại bàn ăn(Quán ăn, caffe, nhậu,....)',
+              style: headStyleSmallLarge,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

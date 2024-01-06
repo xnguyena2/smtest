@@ -20,6 +20,7 @@ Future<void> initData() async {
   if (bootStrapData == null) {
     return;
   }
+  haveTable = bootStrapData.store?.haveTable() ?? false;
   setGlobalValue(
       store_ame: bootStrapData.store?.name ?? '',
       groupId: groupID,
@@ -35,7 +36,6 @@ Future<User?> loadData(bool isForApple) async {
     return null;
   }
   setToken(tokenStorage.token);
-  print('internet status: $haveInteret');
   User? user =
       haveInteret == false ? LocalStorage.getUser() : await getMyInfomation();
   if (user == null) {

@@ -25,13 +25,14 @@ class StoreAdapter extends TypeAdapter<Store> {
       address: fields[6] as String?,
       phone: fields[7] as String?,
       status: fields[8] as String?,
+      store_type: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Store obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(4)
       ..write(obj.name)
       ..writeByte(5)
@@ -42,6 +43,8 @@ class StoreAdapter extends TypeAdapter<Store> {
       ..write(obj.phone)
       ..writeByte(8)
       ..write(obj.status)
+      ..writeByte(9)
+      ..write(obj.store_type)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)

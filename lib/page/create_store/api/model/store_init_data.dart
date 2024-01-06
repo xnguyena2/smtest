@@ -11,19 +11,25 @@ class StoreInitData {
   late Store store;
   late UpdatePassword newAccount;
 
-  StoreInitData.fromStoreNameAndPhone(
-      String storeName, String password, String phone) {
+  StoreInitData.fromStoreNameAndPhone({
+    required String storeName,
+    required String password,
+    required String phone,
+    required bool haveTable,
+  }) {
     String storeNameClean = removeVNTones(storeName).replaceAll(' ', '_');
     String groupID = '${storeNameClean}_$phone';
     store = Store(
-        id: null,
-        groupId: groupID,
-        createat: null,
-        name: storeName,
-        time_open: null,
-        address: null,
-        phone: phone,
-        status: null);
+      id: null,
+      groupId: groupID,
+      createat: null,
+      name: storeName,
+      time_open: null,
+      address: null,
+      phone: phone,
+      status: null,
+      store_type: haveTable ? 'HAVETABLE' : 'DONTHAVETABLE',
+    );
     newAccount = UpdatePassword(
         username: phone,
         oldpassword: '',

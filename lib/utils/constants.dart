@@ -13,6 +13,7 @@ String groupID = 'trumbien_store';
 String deviceID = 'admintestting';
 String userPhoneNumber = '0987654321';
 bool haveInteret = false;
+bool haveTable = false;
 
 void changeInterNetStatus(bool status) {
   print('change status: $status');
@@ -384,7 +385,14 @@ const TextStyle headStyleBigMediumHigh = TextStyle(
   fontWeight: FontWeight.w400,
 );
 
+const TextStyle headStyleSmallLargeHigh = TextStyle(
+  color: TableHighColor,
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleSmallLarge = TextStyle(
+  color: Black,
   fontSize: 14,
   fontWeight: FontWeight.w500,
 );

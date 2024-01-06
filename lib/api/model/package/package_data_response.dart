@@ -102,6 +102,7 @@ class PackageDataResponse extends PackageDetail {
           discountPercent: 0.0,
           shipPrice: 0.0,
           status: PackageStatusType.CREATE,
+          packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
         );
 
   late final String localTimeTxt;

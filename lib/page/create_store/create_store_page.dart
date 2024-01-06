@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -168,11 +169,18 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    const Expanded(
-                                      child: Text(
-                                        'Cửa hàng có phục vụ tại bàn ăn(Quán ăn, caffe, nhậu,....)',
-                                        style: headStyleSmallLarge,
-                                        overflow: TextOverflow.ellipsis,
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isChecked = !isChecked;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Cửa hàng có phục vụ tại bàn ăn(Quán ăn, caffe, nhậu,....)',
+                                          style: headStyleSmallLarge,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -227,9 +235,11 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           final defaultPassword = 'newpassword';
                                           createAccountAndStore(
                                             StoreInitData.fromStoreNameAndPhone(
-                                                storeName,
-                                                defaultPassword,
-                                                phoneNumber),
+                                              storeName: storeName,
+                                              password: defaultPassword,
+                                              phone: phoneNumber,
+                                              haveTable: isChecked,
+                                            ),
                                           ).then((value) {
                                             trySigin(
                                               phoneNumber,
@@ -286,11 +296,38 @@ class _CreateStorePageState extends State<CreateStorePage> {
                           ),
                         ),
                         SizedBox(
+                          height: 30,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Nếu bạn đã có tài khoảng? ',
+                            style: headStyleSmallLarge,
+                            children: [
+                              TextSpan(
+                                text: 'Đăng nhập bằng mã code!!',
+                                style: headStyleSmallLargeHigh,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
                           height: 10,
                         ),
-                        Text('Product of Nguyen Pong'),
-                        SizedBox(
-                          height: 30,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Product of Nguyen Pong',
+                              style: subInfoStyLarge400,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            LoadSvg(
+                                assetPath: 'svg/cat_face_with_wry_smile.svg'),
+                          ],
                         ),
                       ],
                     ),

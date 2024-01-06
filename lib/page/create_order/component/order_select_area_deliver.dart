@@ -55,13 +55,14 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CheckRadioItem<DeliverType>(
-                txt: 'Ăn tại bàn',
-                groupValue: currentPackgeType,
-                value: DeliverType.table,
-                isDisable: isDone,
-                onChanged: onChanged,
-              ),
+              if (haveTable)
+                CheckRadioItem<DeliverType>(
+                  txt: 'Ăn tại bàn',
+                  groupValue: currentPackgeType,
+                  value: DeliverType.table,
+                  isDisable: isDone,
+                  onChanged: onChanged,
+                ),
               CheckRadioItem<DeliverType>(
                 txt: 'Mang về',
                 groupValue: currentPackgeType,
@@ -78,7 +79,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
               )
             ],
           ),
-          if (isEatAtTable && !isDone) ...[
+          if (isEatAtTable && !isDone && haveTable) ...[
             const SizedBox(
               height: 7,
             ),
