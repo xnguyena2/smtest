@@ -22,6 +22,7 @@ import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
+import 'package:sales_management/page/login_by_qr/login_by_qr.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';

@@ -280,6 +280,12 @@ const TextStyle customerNameBigHight = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle customerNameBigRed = TextStyle(
+  color: Red,
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle customerNameBigLight400 = TextStyle(
   color: Black40,
   fontSize: 16,

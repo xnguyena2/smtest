@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/login_by_qr/login_by_qr.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/report/report_page.dart';
@@ -131,6 +132,13 @@ class MainFunction extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReportPage(),
+                      ),
+                    );
+                  case 'Tokens':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginByQR(),
                       ),
                     );
                 }
