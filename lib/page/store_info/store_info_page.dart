@@ -3,11 +3,13 @@ import 'package:hive/hive.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
+import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
+import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/store_info/api/store_info_api.dart';
 import 'package:sales_management/page/store_info/component/store_info_bar.dart';
@@ -137,6 +139,21 @@ class StoreInfoPage extends StatelessWidget {
                           SizedBox(
                             height: 20,
                           ),
+                          CancelBtn(
+                            txt: 'Đăng xuất',
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            onPressed: () async {
+                              await LocalStorage.cleanBox();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => FlashPage(),
+                                  ),
+                                  (Route<dynamic> route) => false);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           RoundBtn(
                             isDelete: true,
                             icon: LoadSvg(assetPath: 'svg/delete.svg'),
@@ -148,8 +165,8 @@ class StoreInfoPage extends StatelessWidget {
                                 'Bạn có chắc muốn xóa cửa hàng?',
                                 onOk: () {
                                   LoadingOverlayAlt.of(context).show();
-                                  deleteStore().then((value) {
-                                    LocalStorage.cleanBox();
+                                  deleteStore().then((value) async {
+                                    await LocalStorage.cleanBox();
                                     LoadingOverlayAlt.of(context).hide();
 
                                     Navigator.of(context).pushAndRemoveUntil(

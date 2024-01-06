@@ -1,3 +1,4 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:sales_management/page/create_store/api/model/store_init_data.dar
 import 'package:sales_management/page/create_store/api/model/update_password.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/home_page.dart';
+import 'package:sales_management/page/login_by_qr/api/tokens_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -252,7 +254,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                     'Không thể tạo cửa hàng!');
                                               },
                                               (token) async {
-                                                LocalStorage.cleanBox();
+                                                await LocalStorage.cleanBox();
                                                 LocalStorage.putToken(token);
 
                                                 await loadData(false).then(
@@ -265,9 +267,10 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                     Navigator.of(context)
                                                         .pushAndRemoveUntil(
                                                             MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        HomePage()),
+                                                              builder:
+                                                                  (context) =>
+                                                                      HomePage(),
+                                                            ),
                                                             (Route<dynamic>
                                                                     route) =>
                                                                 false);
@@ -307,7 +310,44 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                 text: 'Đăng nhập bằng mã code!!',
                                 style: headStyleSmallLargeHigh,
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {},
+                                  ..onTap = () async {
+                                    var result = await BarcodeScanner.scan();
+
+                                    LoadingOverlayAlt.of(context).show();
+                                    final tokenID = result.rawContent;
+                                    getToken(tokenID).then((token) async {
+                                      await LocalStorage.cleanBox();
+                                      LocalStorage.putToken(token);
+
+                                      await loadData(false).then(
+                                        (value) {
+                                          LoadingOverlayAlt.of(context).hide();
+                                          if (value == null) {
+                                            showAlert(context,
+                                                'Không thể đăng nhập!');
+                                            return;
+                                          }
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(),
+                                                  ),
+                                                  (Route<dynamic> route) =>
+                                                      false);
+                                        },
+                                      ).onError((error, stackTrace) {
+                                        LoadingOverlayAlt.of(context).hide();
+                                        showAlert(
+                                            context, 'Không thể đăng nhập!');
+                                      });
+                                    }).onError((error, stackTrace) {
+                                      LoadingOverlayAlt.of(context).hide();
+                                      showAlert(
+                                          context, 'Không thể đăng nhập!');
+                                    });
+                                    LoadingOverlayAlt.of(context).hide();
+                                  },
                               ),
                             ],
                           ),

@@ -92,8 +92,8 @@ class _QrContent extends StatelessWidget {
                       data: code,
                       size: 300,
                       gapless: false,
-                      embeddedImage:
-                          AssetImage('assets/images/app_logo_50.png'),
+                      // embeddedImage:
+                      //     AssetImage('assets/images/app_logo_50.png'),
                       errorStateBuilder: (cxt, err) {
                         return const Center(
                           child: Text(

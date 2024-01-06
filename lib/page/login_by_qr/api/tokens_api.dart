@@ -45,3 +45,19 @@ Future<Token> createToken(String id) async {
     return Future.error('Failed to load data!!');
   }
 }
+
+Future<Token> getToken(String id) async {
+  final response = await getE(
+    '/token/get/$id',
+  );
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // debugPrint(response.body, wrapWidth: 1024);
+    print(response.body);
+    return Token.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}

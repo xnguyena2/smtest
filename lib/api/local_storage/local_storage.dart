@@ -67,13 +67,13 @@ class LocalStorage {
     return Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]);
   }
 
-  static void cleanBox() {
+  static Future<void> cleanBox() async {
     var box1 = Hive.box(hiveRequestDepend);
     var box2 = Hive.box(hiveRequest);
     var box3 = Hive.box(hiveSettingBox);
-    box1.clear();
-    box2.clear();
-    box3.clear();
+    await box1.clear();
+    await box2.clear();
+    await box3.clear();
   }
 
   static void addDependRequest(
