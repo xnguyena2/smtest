@@ -19,7 +19,7 @@ import 'package:sales_management/utils/svg_loader.dart';
 class StoreInfoPage extends StatelessWidget {
   const StoreInfoPage({super.key});
 
-  Future<Store?> getBenifitOfMonth() async {
+  Future<Store?> getStoreInfo() async {
     BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
@@ -49,7 +49,7 @@ class StoreInfoPage extends StatelessWidget {
           child: Scaffold(
             appBar: StoreInfoBar(),
             body: FetchAPI<Store?>(
-              future: getBenifitOfMonth(),
+              future: getStoreInfo(),
               successBuilder: (store) {
                 return Container(
                   color: BackgroundColor,

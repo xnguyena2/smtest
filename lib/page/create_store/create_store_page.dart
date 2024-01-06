@@ -29,6 +29,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
   String userName = '';
   String phoneNumber = '';
   bool isActiveOk = false;
+  bool isChecked = true;
   void validAllField() {
     if (userName.isEmpty || phoneNumber.isEmpty) {
       isActiveOk = false;
@@ -137,6 +138,50 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                 ),
                                 Row(
                                   children: [
+                                    SizedBox(
+                                      height: 24.0,
+                                      width: 24.0,
+                                      child: Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor:
+                                            MaterialStateProperty.resolveWith(
+                                                (states) {
+                                          const Set<MaterialState>
+                                              interactiveStates =
+                                              <MaterialState>{
+                                            MaterialState.selected,
+                                          };
+                                          if (states.any(
+                                              interactiveStates.contains)) {
+                                            return TableHighColor;
+                                          }
+                                          return White;
+                                        }),
+                                        value: isChecked,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            isChecked = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Expanded(
+                                      child: Text(
+                                        'Cửa hàng có phục vụ tại bàn ăn(Quán ăn, caffe, nhậu,....)',
+                                        style: headStyleSmallLarge,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  children: [
                                     Expanded(
                                       child: ApproveBtn(
                                         isActiveOk: isActiveOk,
@@ -217,7 +262,10 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                                     route) =>
                                                                 false);
                                                   },
-                                                );
+                                                ).onError((error, stackTrace) {
+                                                  showAlert(context,
+                                                      'Không thể vào cửa hàng!');
+                                                });
                                                 LoadingOverlayAlt.of(context)
                                                     .hide();
                                               },

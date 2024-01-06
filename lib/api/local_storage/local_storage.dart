@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/page/account/api/model/token.dart';
+import 'package:sales_management/page/create_store/api/model/user.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -15,11 +16,25 @@ class LocalStorage {
   static const String hiveSettingBox = 'settings';
   static const String hiveConfigKey = 'config';
   static const String hiveTokenKey = 'token';
+  static const String hiveUserInfoKey = 'userinfo';
 
   static Future<void> openBox() async {
     await Hive.openBox(hiveSettingBox);
     await Hive.openBox(hiveRequestDepend);
     await Hive.openBox(hiveRequest);
+  }
+
+  static void putUser(User user) {
+    var box = Hive.box(hiveSettingBox);
+    box.put(
+      hiveUserInfoKey,
+      user,
+    );
+  }
+
+  static User? getUser() {
+    var box = Hive.box(hiveSettingBox);
+    return box.get(hiveUserInfoKey);
   }
 
   static void putToken(Token token) {

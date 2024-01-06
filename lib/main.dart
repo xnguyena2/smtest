@@ -16,6 +16,7 @@ import 'package:sales_management/page/address/api/model/region.dart';
 import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
+import 'package:sales_management/page/create_store/api/model/user.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
@@ -55,12 +56,13 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(StoreAdapter());
   Hive.registerAdapter(RequestStorageAdapter());
   Hive.registerAdapter(RequestTypeAdapter());
+  Hive.registerAdapter(UserAdapter());
 
   await LocalStorage.openBox();
   LocalStorage.getDependRequest();
 }
 
-void checkInternetConnection() async {
+Future<void> checkInternetConnection() async {
   final connectivityResult = await (Connectivity().checkConnectivity());
   if (connectivityResult == ConnectivityResult.mobile) {
     // I am connected to a mobile network.
@@ -100,6 +102,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  await checkInternetConnection();
   await setupHiveDB();
 
   runApp(

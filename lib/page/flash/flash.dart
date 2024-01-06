@@ -9,19 +9,23 @@ import 'package:sales_management/page/create_store/api/model/user.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
 import 'package:sales_management/page/flash/api/flash_api.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 Future<void> initData() async {
-  await loadBootstrap(groupID).then((value) {
-    setGlobalValue(
-        store_ame: value.store?.name ?? '',
-        groupId: groupID,
-        phoneNumber: value.store?.phone ?? '',
-        device_id: deviceID);
-    LocalStorage.setBootstrapData(value);
-  });
+  BootStrapData? bootStrapData =
+      haveInteret ? await loadBootstrap(groupID) : LocalStorage.getBootStrap();
+  if (bootStrapData == null) {
+    return;
+  }
+  setGlobalValue(
+      store_ame: bootStrapData.store?.name ?? '',
+      groupId: groupID,
+      phoneNumber: bootStrapData.store?.phone ?? '',
+      device_id: deviceID);
+  LocalStorage.setBootstrapData(bootStrapData);
 }
 
 Future<User?> loadData(bool isForApple) async {
@@ -31,12 +35,20 @@ Future<User?> loadData(bool isForApple) async {
     return null;
   }
   setToken(tokenStorage.token);
-  User user = await getMyInfomation();
+  print('internet status: $haveInteret');
+  User? user =
+      haveInteret == false ? LocalStorage.getUser() : await getMyInfomation();
+  if (user == null) {
+    return Future.error('User is null!!');
+  }
   setGlobalValue(
       store_ame: '',
       groupId: user.groupId,
       phoneNumber: user.phone_number ?? '',
       device_id: user.username);
+  if (haveInteret) {
+    LocalStorage.putUser(user);
+  }
   await initData();
   return user;
 }
