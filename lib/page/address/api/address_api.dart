@@ -50,7 +50,7 @@ Future<ListBuyerResult> searchUser(String phoneNumber) async {
   final request = SearchQuery(
     query: phoneNumber,
     page: 0,
-    size: 10,
+    size: 3,
     filter: 'default',
     group_id: groupID,
   );

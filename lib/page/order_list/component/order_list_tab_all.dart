@@ -27,7 +27,7 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
     final data = widget.data;
     final newO = context.watch<NewOrderProvider>().getData;
     if (newO != null) {
-      data.addNewListOrder(newO);
+      data.updateListOrder(newO);
       context.read<NewOrderProvider>().clean();
     }
 
@@ -74,11 +74,13 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
           return PackageItemDetail(
             data: listPackage[index],
             onUpdated: (PackageDataResponse) {
-              listPackage[index] = PackageDataResponse;
+              data.updateOrder(PackageDataResponse);
               setState(() {});
             },
             onDelete: (PackageDataResponse) {
-              listPackage.remove(PackageDataResponse);
+              print(data.listResult.length);
+              data.updateListOrder([PackageDataResponse]);
+              print(data.listResult.length);
               setState(() {});
             },
           );

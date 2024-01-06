@@ -31,7 +31,7 @@ class OrderListPage extends StatelessWidget {
           )
         ],
         child: Builder(builder: (context) {
-          newOrderEvent(PackageDataResponse p) {
+          updateOrderEvent(PackageDataResponse p) {
             context.read<NewOrderProvider>().updateValue = [p];
           }
 
@@ -41,7 +41,8 @@ class OrderListPage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => ProductSelectorPage(
                   firstSelectProductWhenCreateOrder: true,
-                  onUpdatedPasstoCreateOrder: newOrderEvent,
+                  onUpdatedPasstoCreateOrder: updateOrderEvent,
+                  onDeletedPasstoCreateOrder: updateOrderEvent,
                   packageDataResponse:
                       PackageDataResponse(items: [], buyer: null),
                   onUpdated: (PackageDataResponse) {},

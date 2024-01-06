@@ -4,7 +4,8 @@ import 'package:sales_management/api/http.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 
 Future<BootStrapData> loadBootstrap(String groupID) async {
-  final response = await getC('/clientdevice/bootstrapfull/${groupID}');
+  final response =
+      await getC('/clientdevice/bootstrapfullbenifitcurrentdate/${groupID}');
 
   print(response.statusCode);
   if (response.statusCode == 200) {

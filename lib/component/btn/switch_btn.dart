@@ -4,6 +4,7 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 class SwitchBtn extends StatelessWidget {
+  final bool isEnable;
   final String firstTxt;
   final String secondTxt;
   final VoidCallbackArg<int> onChanged;
@@ -14,11 +15,13 @@ class SwitchBtn extends StatelessWidget {
     required this.secondTxt,
     required this.onChanged,
     this.enableIndex = 0,
+    this.isEnable = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return SimpleSwitchBtn(
+      isDisable: !isEnable,
       selectedIndex: enableIndex,
       backGroundWidget: Row(
         children: [

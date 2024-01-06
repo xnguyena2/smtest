@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/component/text_round.dart';
-import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 
@@ -15,59 +14,65 @@ class Transaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
+    if (!data.haveTransaction) {
+      return SizedBox();
+    }
     bool isDone = data.isDone;
     double own = data.finalPrice - data.payment;
     String ownFormat = MoneyFormater.format(own);
     final transactions = data.progress?.transaction ?? [];
-    return DefaultPaddingContainer(
+    return Container(
+        color: White,
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        margin: EdgeInsets.only(top: 15),
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (own <= 0 && isDone)
-          Row(
-            children: [
-              TextRound(txt: 'Đã thanh toán', isHigh: true),
-            ],
-          )
-        else
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextRound(txt: 'Khách còn nợ', isHigh: false),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (own <= 0 && isDone)
               Row(
                 children: [
-                  Text(
-                    ownFormat,
-                    style: headStyleLargeRed,
-                  ),
-                  SizedBox(
-                    width: 3,
-                  ),
+                  TextRound(txt: 'Đã thanh toán', isHigh: true),
                 ],
               )
-            ],
-          ),
-        if (transactions.length > 0) ...[
-          SizedBox(
-            height: 10,
-          ),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return TransactionItem(
-                data: transactions[index],
-              );
-            },
-            itemCount: transactions.length,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-        ]
-      ],
-    ));
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextRound(txt: 'Khách còn nợ', isHigh: false),
+                  Row(
+                    children: [
+                      Text(
+                        ownFormat,
+                        style: headStyleLargeRed,
+                      ),
+                      SizedBox(
+                        width: 3,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            if (transactions.length > 0) ...[
+              SizedBox(
+                height: 10,
+              ),
+              ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return TransactionItem(
+                    data: transactions[index],
+                  );
+                },
+                itemCount: transactions.length,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ]
+          ],
+        ));
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/api/token.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -8,36 +9,46 @@ import 'package:sales_management/page/create_store/api/model/user.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
 import 'package:sales_management/page/flash/api/flash_api.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
+import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 Future<void> initData() async {
-  await loadBootstrap(groupID).then((value) {
-    setGlobalValue(
-        store_ame: value.store?.name ?? '',
-        groupId: groupID,
-        phoneNumber: value.store?.phone ?? '',
-        device_id: deviceID);
-    var box = Hive.box(hiveSettingBox);
-    box.put(hiveConfigKey, value);
-  });
+  BootStrapData? bootStrapData =
+      haveInteret ? await loadBootstrap(groupID) : LocalStorage.getBootStrap();
+  if (bootStrapData == null) {
+    return;
+  }
+  haveTable = bootStrapData.store?.haveTable() ?? false;
+  setGlobalValue(
+      store_ame: bootStrapData.store?.name ?? '',
+      groupId: groupID,
+      phoneNumber: bootStrapData.store?.phone ?? '',
+      device_id: deviceID);
+  LocalStorage.setBootstrapData(bootStrapData);
 }
 
 Future<User?> loadData(bool isForApple) async {
-  var box = Hive.box(hiveSettingBox);
   TokenStorage? tokenStorage =
-      isForApple ? TokenStorage(token: testToken) : box.get(hiveTokenKey);
+      isForApple ? TokenStorage(token: testToken) : LocalStorage.getToken();
   if (tokenStorage == null) {
     return null;
   }
   setToken(tokenStorage.token);
-  User user = await getMyInfomation();
+  User? user =
+      haveInteret == false ? LocalStorage.getUser() : await getMyInfomation();
+  if (user == null) {
+    return Future.error('User is null!!');
+  }
   setGlobalValue(
       store_ame: '',
       groupId: user.groupId,
       phoneNumber: user.phone_number ?? '',
       device_id: user.username);
+  if (haveInteret) {
+    LocalStorage.putUser(user);
+  }
   await initData();
   return user;
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/category_selector.dart';
@@ -36,8 +37,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
   late List<String> listCategory;
 
   Future<BootStrapData?> getAllProduct() async {
-    var box = Hive.box(hiveSettingBox);
-    config = box.get(hiveConfigKey);
+    config = LocalStorage.getBootStrap();
 
     final listCategoryContent = config?.deviceConfig?.categorys ?? '';
 
@@ -160,8 +160,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                                 if (config?.deviceConfig != null) {
                                   udpateConfig(config!.deviceConfig!)
                                       .then((value) {
-                                    var box = Hive.box(hiveSettingBox);
-                                    box.put(hiveConfigKey, config);
+                                    LocalStorage.setBootstrapData(config);
                                     showNotification(
                                         context, 'Thêm danh mục thành công!');
                                   }).onError((error, stackTrace) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -29,6 +30,7 @@ import '../../component/category_selector.dart';
 class ProductSelectorPage extends StatefulWidget {
   final bool firstSelectProductWhenCreateOrder;
   final VoidCallbackArg<PackageDataResponse>? onUpdatedPasstoCreateOrder;
+  final VoidCallbackArg<PackageDataResponse>? onDeletedPasstoCreateOrder;
   final PackageDataResponse? packageDataResponse;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
   const ProductSelectorPage({
@@ -37,6 +39,7 @@ class ProductSelectorPage extends StatefulWidget {
     required this.onUpdated,
     this.firstSelectProductWhenCreateOrder = false,
     this.onUpdatedPasstoCreateOrder,
+    this.onDeletedPasstoCreateOrder,
   });
 
   @override
@@ -73,8 +76,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   }
 
   Future<BootStrapData?> getAllProduct(Box<dynamic> box) async {
-    // var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap(box);
     if (config == null) {
       return null;
     }
@@ -83,15 +85,14 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   }
 
   Future<BootStrapData?> addProduct(BeerSubmitData product) async {
-    var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
     }
 
     config.addOrReplaceProduct(product);
 
-    box.put(hiveConfigKey, config);
+    LocalStorage.setBootstrapData(config);
 
     loadDataFrom(config: config);
 
@@ -99,29 +100,27 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   }
 
   Future<BootStrapData?> updateProduct(BeerSubmitData product) async {
-    var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
     }
 
     config.addOrReplaceProduct(product);
 
-    box.put(hiveConfigKey, config);
+    LocalStorage.setBootstrapData(config);
 
     return config;
   }
 
   Future<BootStrapData?> deleteProduct(BeerSubmitData product) async {
-    var box = Hive.box(hiveSettingBox);
-    BootStrapData? config = box.get(hiveConfigKey);
+    BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
     }
 
     config.deleteProduct(product);
 
-    box.put(hiveConfigKey, config);
+    LocalStorage.setBootstrapData(config);
 
     loadDataFrom(config: config);
 
@@ -197,8 +196,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                       ),
                     ),
               body: ValueListenableBuilder<Box>(
-                valueListenable:
-                    Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]),
+                valueListenable: LocalStorage.getListenBootStrapKey(),
                 builder: (context, value, child) {
                   loadConfig = getAllProduct(value);
                   return FetchAPI<BootStrapData?>(
@@ -247,7 +245,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                   ? ProductSelectorBottomBar(
                       done: () {
                         if (widget.firstSelectProductWhenCreateOrder) {
-                          print('object');
                           Navigator.pop(context);
                           Navigator.push(
                             context,
@@ -255,7 +252,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                               builder: (context) => CreateOrderPage(
                                 data: widget.packageDataResponse!,
                                 onUpdated: widget.onUpdatedPasstoCreateOrder!,
-                                onDelete: (PackageDataResponse) {},
+                                onDelete: widget.onDeletedPasstoCreateOrder!,
                               ),
                             ),
                           );

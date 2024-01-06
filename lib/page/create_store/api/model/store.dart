@@ -14,6 +14,7 @@ class Store extends BaseEntity {
     required this.address,
     required this.phone,
     required this.status,
+    required this.store_type,
   });
 
   @HiveField(4)
@@ -31,12 +32,16 @@ class Store extends BaseEntity {
   @HiveField(8)
   late final String? status;
 
+  @HiveField(9)
+  late String? store_type;
+
   Store.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     name = json['name'];
     time_open = json['time_open'];
     address = json['address'];
     phone = json['phone'];
     status = json['status'];
+    store_type = json['store_type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +51,22 @@ class Store extends BaseEntity {
     _data['address'] = address;
     _data['phone'] = phone;
     _data['status'] = status;
+    _data['store_type'] = store_type;
     return _data;
+  }
+
+  bool haveTable() {
+    return store_type == 'HAVETABLE';
+  }
+
+  void togleTable() {
+    if (store_type == 'HAVETABLE') {
+      store_type = 'DONTHAVETABLE';
+      return;
+    }
+    if (store_type == 'DONTHAVETABLE') {
+      store_type = 'HAVETABLE';
+      return;
+    }
   }
 }

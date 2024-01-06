@@ -47,6 +47,9 @@ dependencies:
   uuid: ^4.1.0
   flutter_localizations:
     sdk: flutter
+  connectivity_plus: ^5.0.2
+  qr_flutter: ^4.1.0
+  barcode_scan2: ^4.3.0
 
 dev_dependencies:
   flutter_test:

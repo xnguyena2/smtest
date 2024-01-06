@@ -1,50 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'store.dart';
+part of 'user.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class StoreAdapter extends TypeAdapter<Store> {
+class UserAdapter extends TypeAdapter<User> {
   @override
-  final int typeId = 9;
+  final int typeId = 12;
 
   @override
-  Store read(BinaryReader reader) {
+  User read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Store(
+    return User(
+      username: fields[4] as String,
       id: fields[0] as int?,
       groupId: fields[2] as String,
       createat: fields[3] as String?,
-      name: fields[4] as String,
-      time_open: fields[5] as String?,
-      address: fields[6] as String?,
-      phone: fields[7] as String?,
-      status: fields[8] as String?,
-      store_type: fields[9] as String?,
+      password: fields[5] as String?,
+      createby: fields[6] as String?,
+      phone_number: fields[7] as String?,
+      phone_number_clean: fields[8] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Store obj) {
+  void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(9)
-      ..writeByte(4)
-      ..write(obj.name)
-      ..writeByte(5)
-      ..write(obj.time_open)
-      ..writeByte(6)
-      ..write(obj.address)
-      ..writeByte(7)
-      ..write(obj.phone)
       ..writeByte(8)
-      ..write(obj.status)
-      ..writeByte(9)
-      ..write(obj.store_type)
+      ..writeByte(4)
+      ..write(obj.username)
+      ..writeByte(5)
+      ..write(obj.password)
+      ..writeByte(6)
+      ..write(obj.createby)
+      ..writeByte(7)
+      ..write(obj.phone_number)
+      ..writeByte(8)
+      ..write(obj.phone_number_clean)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)
@@ -59,7 +56,7 @@ class StoreAdapter extends TypeAdapter<Store> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StoreAdapter &&
+      other is UserAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

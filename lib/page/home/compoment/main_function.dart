@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/login_by_qr/login_by_qr.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/report/report_page.dart';
@@ -12,12 +13,21 @@ import 'package:sales_management/page/table/table_page.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
 
-const List<Map<String, String>> listMainFunction = [
+const List<Map<String, String>> listFullMainFunction = [
   {'icon': 'svg/order_food.svg', 'name': 'Tạo đơn', 'page': 'Create_Order'},
   {'icon': 'svg/table_order.svg', 'name': 'Quản lý bàn', 'page': 'Table'},
   {'icon': 'svg/order_manage.svg', 'name': 'Đơn hàng', 'page': 'List_Order'},
   {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
+  {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
+];
+
+const List<Map<String, String>> listNoTableMainFunction = [
+  {'icon': 'svg/order_food.svg', 'name': 'Tạo đơn', 'page': 'Create_Order'},
+  {'icon': 'svg/order_manage.svg', 'name': 'Đơn hàng', 'page': 'List_Order'},
+  {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
+  {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
+  {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
 ];
 
 class MainFunction extends StatelessWidget {
@@ -25,6 +35,8 @@ class MainFunction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final listFunction =
+        haveTable ? listFullMainFunction : listNoTableMainFunction;
     return ColoredBox(
       color: BackgroundColor,
       child: Padding(
@@ -38,9 +50,9 @@ class MainFunction extends StatelessWidget {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: listMainFunction.length,
+          itemCount: listFunction.length,
           itemBuilder: (context, index) {
-            var item = listMainFunction[index];
+            var item = listFunction[index];
             return GestureDetector(
               onTap: () async {
                 switch (item['page']) {
@@ -120,6 +132,13 @@ class MainFunction extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReportPage(),
+                      ),
+                    );
+                  case 'Tokens':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginByQR(),
                       ),
                     );
                 }

@@ -1,6 +1,9 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
@@ -11,6 +14,7 @@ import 'package:sales_management/page/create_store/api/model/store_init_data.dar
 import 'package:sales_management/page/create_store/api/model/update_password.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/home_page.dart';
+import 'package:sales_management/page/login_by_qr/api/tokens_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -28,6 +32,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
   String userName = '';
   String phoneNumber = '';
   bool isActiveOk = false;
+  bool isChecked = true;
   void validAllField() {
     if (userName.isEmpty || phoneNumber.isEmpty) {
       isActiveOk = false;
@@ -136,6 +141,57 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                 ),
                                 Row(
                                   children: [
+                                    SizedBox(
+                                      height: 24.0,
+                                      width: 24.0,
+                                      child: Checkbox(
+                                        checkColor: Colors.white,
+                                        fillColor:
+                                            MaterialStateProperty.resolveWith(
+                                                (states) {
+                                          const Set<MaterialState>
+                                              interactiveStates =
+                                              <MaterialState>{
+                                            MaterialState.selected,
+                                          };
+                                          if (states.any(
+                                              interactiveStates.contains)) {
+                                            return TableHighColor;
+                                          }
+                                          return White;
+                                        }),
+                                        value: isChecked,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            isChecked = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isChecked = !isChecked;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Cửa hàng có phục vụ tại bàn ăn(Quán ăn, caffe, nhậu,....)',
+                                          style: headStyleSmallLarge,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  children: [
                                     Expanded(
                                       child: ApproveBtn(
                                         isActiveOk: isActiveOk,
@@ -181,9 +237,11 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           final defaultPassword = 'newpassword';
                                           createAccountAndStore(
                                             StoreInitData.fromStoreNameAndPhone(
-                                                storeName,
-                                                defaultPassword,
-                                                phoneNumber),
+                                              storeName: storeName,
+                                              password: defaultPassword,
+                                              phone: phoneNumber,
+                                              haveTable: isChecked,
+                                            ),
                                           ).then((value) {
                                             trySigin(
                                               phoneNumber,
@@ -196,13 +254,8 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                     'Không thể tạo cửa hàng!');
                                               },
                                               (token) async {
-                                                var box =
-                                                    Hive.box(hiveSettingBox);
-                                                box.put(
-                                                  hiveTokenKey,
-                                                  TokenStorage(
-                                                      token: token.token),
-                                                );
+                                                await LocalStorage.cleanBox();
+                                                LocalStorage.putToken(token);
 
                                                 await loadData(false).then(
                                                   (value) {
@@ -214,14 +267,18 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                                     Navigator.of(context)
                                                         .pushAndRemoveUntil(
                                                             MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        HomePage()),
+                                                              builder:
+                                                                  (context) =>
+                                                                      HomePage(),
+                                                            ),
                                                             (Route<dynamic>
                                                                     route) =>
                                                                 false);
                                                   },
-                                                );
+                                                ).onError((error, stackTrace) {
+                                                  showAlert(context,
+                                                      'Không thể vào cửa hàng!');
+                                                });
                                                 LoadingOverlayAlt.of(context)
                                                     .hide();
                                               },
@@ -242,11 +299,75 @@ class _CreateStorePageState extends State<CreateStorePage> {
                           ),
                         ),
                         SizedBox(
+                          height: 30,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Nếu bạn đã có tài khoảng? ',
+                            style: headStyleSmallLarge,
+                            children: [
+                              TextSpan(
+                                text: 'Đăng nhập bằng mã code!!',
+                                style: headStyleSmallLargeHigh,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    var result = await BarcodeScanner.scan();
+
+                                    LoadingOverlayAlt.of(context).show();
+                                    final tokenID = result.rawContent;
+                                    getToken(tokenID).then((token) async {
+                                      await LocalStorage.cleanBox();
+                                      LocalStorage.putToken(token);
+
+                                      await loadData(false).then(
+                                        (value) {
+                                          LoadingOverlayAlt.of(context).hide();
+                                          if (value == null) {
+                                            showAlert(context,
+                                                'Không thể đăng nhập!');
+                                            return;
+                                          }
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(),
+                                                  ),
+                                                  (Route<dynamic> route) =>
+                                                      false);
+                                        },
+                                      ).onError((error, stackTrace) {
+                                        LoadingOverlayAlt.of(context).hide();
+                                        showAlert(
+                                            context, 'Không thể đăng nhập!');
+                                      });
+                                    }).onError((error, stackTrace) {
+                                      LoadingOverlayAlt.of(context).hide();
+                                      showAlert(
+                                          context, 'Không thể đăng nhập!');
+                                    });
+                                    LoadingOverlayAlt.of(context).hide();
+                                  },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
                           height: 10,
                         ),
-                        Text('Product of Nguyen Pong'),
-                        SizedBox(
-                          height: 30,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Product of Nguyen Pong',
+                              style: subInfoStyLarge400,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            LoadSvg(
+                                assetPath: 'svg/cat_face_with_wry_smile.svg'),
+                          ],
                         ),
                       ],
                     ),

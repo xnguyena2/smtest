@@ -10,7 +10,7 @@ import 'package:sales_management/utils/constants.dart';
 
 enum DeliverType { deliver, takeaway, table }
 
-enum PackageStatusType { CREATE, DONE }
+enum PackageStatusType { CREATE, DONE, DELETE }
 
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
@@ -46,11 +46,11 @@ class PackageDetail extends BaseEntity {
     required this.shipPrice,
     required this.cost,
     required this.profit,
+    required this.packageType,
     this.areaId,
     this.areaName,
     this.tableId,
     this.tableName,
-    this.packageType = DeliverType.table,
     this.voucher,
     this.note,
     this.image,
@@ -121,6 +121,8 @@ class PackageDetail extends BaseEntity {
 
   bool get isDone => status == PackageStatusType.DONE;
 
+  bool get haveTransaction => progress?.transaction?.isNotEmpty == true;
+
   void donePayment() {
     status = PackageStatusType.DONE;
   }
@@ -168,6 +170,12 @@ class PackageDetail extends BaseEntity {
     this.payment -= undoPrice;
     this.profit = payment - cost;
   }
+
+  void deletedOrder() {
+    status = PackageStatusType.DELETE;
+  }
+
+  bool isDeleted() => status == PackageStatusType.DELETE;
 }
 
 class Progress {

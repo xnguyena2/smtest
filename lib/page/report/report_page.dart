@@ -52,6 +52,7 @@ class _ReportPageState extends State<ReportPage> {
             double totalRevenue = ListDateBenifitDataResult.totalRevenue;
             double totalCost = ListDateBenifitDataResult.totalCost;
             double totalProfit = ListDateBenifitDataResult.totalProfit;
+            int numOrder = ListDateBenifitDataResult.numOrder;
             return SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
@@ -83,14 +84,14 @@ class _ReportPageState extends State<ReportPage> {
                             content: MoneyFormater.format(totalCost),
                             style: headStyleXLargeSemiBoldCost,
                           ),
-                          // SizedBox(
-                          //   height: 24,
-                          // ),
-                          // ReportItemInfo(
-                          //   header: 'Chi phí',
-                          //   content: '0',
-                          //   style: headStyleXLargeSemiBoldRed,
-                          // ),
+                          SizedBox(
+                            height: 24,
+                          ),
+                          ReportItemInfo(
+                            header: 'Đơn hàng',
+                            content: '$numOrder',
+                            style: headStyleXLargeSemiBoldRevenue,
+                          ),
                           // SizedBox(
                           //   height: 24,
                           // ),

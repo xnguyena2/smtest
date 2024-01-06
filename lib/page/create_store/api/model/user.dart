@@ -1,17 +1,34 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 
+part 'user.g.dart';
+
+@HiveType(typeId: 12)
 class User extends BaseEntity {
   User({
     required this.username,
     required super.id,
     required super.groupId,
     required super.createat,
+    this.password,
+    this.createby,
+    this.phone_number,
+    this.phone_number_clean,
   });
 
+  @HiveField(4)
   late final String username;
+
+  @HiveField(5)
   late final String? password;
+
+  @HiveField(6)
   late final String? createby;
+
+  @HiveField(7)
   late final String? phone_number;
+
+  @HiveField(8)
   late final String? phone_number_clean;
 
   User.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

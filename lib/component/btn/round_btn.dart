@@ -7,6 +7,7 @@ class RoundBtn extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onPressed;
   final bool isDelete;
+  final EdgeInsetsGeometry? padding;
   const RoundBtn({
     super.key,
     required this.txt,
@@ -14,6 +15,7 @@ class RoundBtn extends StatelessWidget {
     required this.onPressed,
     this.isSelected = false,
     this.isDelete = false,
+    this.padding = const EdgeInsets.symmetric(vertical: 10),
   });
 
   BoxBorder get getBoxBorder {
@@ -41,7 +43,7 @@ class RoundBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: padding,
         decoration: BoxDecoration(
           borderRadius: defaultBorderRadius,
           border: getBoxBorder,

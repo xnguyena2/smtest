@@ -14,11 +14,14 @@ class BenifitByDateOfMonth {
 
   late final double cost;
 
+  late final int count;
+
   BenifitByDateOfMonth.fromJson(Map<String, dynamic> json) {
     localTime = json['local_time'];
     revenue = json['revenue'] as double;
     profit = json['profit'] as double;
     cost = json['cost'] as double;
+    count = json['count'] as int;
   }
 
   Map<String, dynamic> toJson() {
@@ -27,6 +30,7 @@ class BenifitByDateOfMonth {
     _data['revenue'] = revenue;
     _data['profit'] = profit;
     _data['cost'] = cost;
+    _data['count'] = count;
     return _data;
   }
 }

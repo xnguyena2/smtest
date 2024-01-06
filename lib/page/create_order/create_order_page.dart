@@ -72,10 +72,12 @@ class CreateOrderPage extends StatelessWidget {
                             done: () {
                               LoadingOverlayAlt.of(context).show();
                               data.runPendingAction();
-                              data.makeDone();
-                              updatePackage(
-                                      ProductPackage.fromPackageDataResponse(
-                                          data))
+                              final transaction = data.makeDone();
+                              final productWithPackge =
+                                  ProductPackage.fromPackageDataResponse(data);
+
+                              updatePackageWithTransactions(productWithPackge,
+                                      paymentTransaction: transaction)
                                   .then((value) {
                                 onUpdated(data);
                                 context.read<ProductProvider>().justRefresh();
@@ -97,6 +99,7 @@ class CreateOrderPage extends StatelessWidget {
                                           PackageID.fromPackageDataResponse(
                                               data))
                                       .then((value) {
+                                    data.deletedOrder();
                                     onDelete(data);
                                     Navigator.pop(context);
                                     LoadingOverlayAlt.of(context).hide();
@@ -142,7 +145,7 @@ class CreateOrderPage extends StatelessWidget {
   }
 }
 
-class CreateOrderBody extends StatefulWidget {
+class CreateOrderBody extends StatelessWidget {
   final VoidCallback onUpdated;
   const CreateOrderBody({
     super.key,
@@ -153,21 +156,8 @@ class CreateOrderBody extends StatefulWidget {
   final PackageDataResponse data;
 
   @override
-  State<CreateOrderBody> createState() => _CreateOrderBodyState();
-}
-
-class _CreateOrderBodyState extends State<CreateOrderBody> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initUI();
-  }
-
-  void initUI() {}
-
-  @override
   Widget build(BuildContext context) {
+    final bool isDone = data.isDone;
     return Container(
       // padding: EdgeInsets.symmetric(vertical: 10),
       color: BackgroundColor,
@@ -175,48 +165,49 @@ class _CreateOrderBodyState extends State<CreateOrderBody> {
         child: Column(
           children: [
             SelectAreaAndDeliver(
-              data: widget.data,
+              data: data,
             ),
             SizedBox(
               height: 10,
             ),
-            OrderMainInfo(),
-            SizedBox(
-              height: 15,
-            ),
+            if (isDone) ...[
+              OrderMainInfo(),
+              SizedBox(
+                height: 15,
+              ),
+            ],
             CustomerInfo(
-              data: widget.data,
+              data: data,
             ),
             SizedBox(
               height: 15,
             ),
             ListProduct(
-              data: widget.data,
+              data: data,
             ),
             SizedBox(
               height: 15,
             ),
             TotalPrice(
-              data: widget.data,
+              data: data,
               onUpdate: () {
-                widget.onUpdated();
+                onUpdated();
               },
             ),
-            SizedBox(
-              height: 15,
-            ),
             Transaction(),
-            SizedBox(
-              height: 15,
-            ),
-            Progress(
-              data: widget.data,
-            ),
+            if (isDone) ...[
+              SizedBox(
+                height: 15,
+              ),
+              Progress(
+                data: data,
+              ),
+            ],
             SizedBox(
               height: 15,
             ),
             OrderNote(
-              data: widget.data,
+              data: data,
             ),
           ],
         ),

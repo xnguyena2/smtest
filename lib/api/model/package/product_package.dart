@@ -2,6 +2,7 @@ import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
+import 'package:sales_management/utils/constants.dart';
 
 class ProductPackage extends PackageDetail {
   ProductPackage({
@@ -22,6 +23,7 @@ class ProductPackage extends PackageDetail {
           shipPrice: 0.0,
           cost: 0.0,
           profit: 0.0,
+          packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
         );
 
   ProductPackage.fromPackageDataResponse(
