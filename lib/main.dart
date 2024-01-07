@@ -29,6 +29,7 @@ import 'package:sales_management/page/product_selector/product_selector_page.dar
 import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/page/store_info/store_info_page.dart';
 import 'package:sales_management/utils/storage_provider.dart';
+import 'package:sales_management/utils/utils.dart';
 
 import 'my_custom_scroll_behavior.dart';
 import 'page/table/table_page.dart';
@@ -65,30 +66,7 @@ Future<void> setupHiveDB() async {
 
 Future<void> checkInternetConnection() async {
   final connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.mobile) {
-    // I am connected to a mobile network.
-    changeInterNetStatus(true);
-  } else if (connectivityResult == ConnectivityResult.wifi) {
-    // I am connected to a wifi network.
-    changeInterNetStatus(true);
-  } else if (connectivityResult == ConnectivityResult.ethernet) {
-    // I am connected to a ethernet network.
-    changeInterNetStatus(true);
-  } else if (connectivityResult == ConnectivityResult.vpn) {
-    // I am connected to a vpn network.
-    // Note for iOS and macOS:
-    // There is no separate network interface type for [vpn].
-    // It returns [other] on any device (also simulator)
-    changeInterNetStatus(true);
-  } else if (connectivityResult == ConnectivityResult.bluetooth) {
-    // I am connected to a bluetooth.
-    changeInterNetStatus(false);
-  } else if (connectivityResult == ConnectivityResult.other) {
-    // I am connected to a network which is not in the above mentioned networks.
-    changeInterNetStatus(false);
-  } else if (connectivityResult == ConnectivityResult.none) {
-    changeInterNetStatus(false);
-  }
+  changeInterNetStatus(listenConnection(connectivityResult));
 }
 
 Future<void> main() async {

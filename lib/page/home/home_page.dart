@@ -15,6 +15,7 @@ import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:sales_management/utils/utils.dart';
 
 import '../../utils/svg_loader.dart';
 import 'compoment/home_app_bar.dart';
@@ -41,56 +42,17 @@ class _HomePageState extends State<HomePage> {
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult connectivityResult) {
-      if (connectivityResult == ConnectivityResult.mobile) {
-        changeInterNetStatus(true);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showNotification(context, 'Đang sử dụng mạng điện thoại!');
-      } else if (connectivityResult == ConnectivityResult.wifi) {
-        changeInterNetStatus(true);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showNotification(context, 'Đang sử dụng mạng wifi!');
-      } else if (connectivityResult == ConnectivityResult.ethernet) {
-        changeInterNetStatus(true);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showNotification(context, 'Đang sử dụng mạng có dây!');
-      } else if (connectivityResult == ConnectivityResult.vpn) {
-        changeInterNetStatus(true);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showNotification(context, 'Đang sử dụng mạng vpn!');
-      } else if (connectivityResult == ConnectivityResult.bluetooth) {
-        changeInterNetStatus(false);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showAlert(context, 'Mất kết nối!');
-      } else if (connectivityResult == ConnectivityResult.other) {
-        changeInterNetStatus(false);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showAlert(context, 'Mất kết nối!');
-      } else if (connectivityResult == ConnectivityResult.none) {
-        changeInterNetStatus(false);
-        if (ignore) {
-          ignore = false;
-          return;
-        }
-        showAlert(context, 'Mất kết nối!');
+      final status = listenConnection(connectivityResult);
+      changeInterNetStatus(status);
+      if (ignore) {
+        ignore = false;
+        return;
       }
+      if (status) {
+        showNotification(context, 'Có kết nối internet!');
+        return;
+      }
+      showAlert(context, 'Mất kết nối!');
     });
   }
 
