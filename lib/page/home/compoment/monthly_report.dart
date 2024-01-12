@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
@@ -6,9 +7,8 @@ import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/utils.dart';
 
 import '../../../utils/constants.dart';
-import 'header.dart';
 
-class MonthlyReport extends StatelessWidget {
+class MonthlyReport extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
   final bool enableShowReportPageBtn;
@@ -20,6 +20,26 @@ class MonthlyReport extends StatelessWidget {
     this.margin,
     this.listResult,
   });
+
+  @override
+  State<MonthlyReport> createState() => _MonthlyReportState();
+}
+
+class _MonthlyReportState extends State<MonthlyReport> {
+  static const List<String> list = <String>[
+    'Doanh thu',
+    'Lợi nhuận',
+    'Đơn hàng',
+    'Khách hàng'
+  ];
+  String dropdownValue = list.first;
+
+  List<LineChartBarData> get lineBarsData1 => [
+        if (dropdownValue == 'Doanh thu') lineRevenueData,
+        if (dropdownValue == 'Lợi nhuận') lineProfitData,
+        if (dropdownValue == 'Đơn hàng') lineOrderData,
+        if (dropdownValue == 'Khách hàng') lineBuyerData,
+      ];
 
   LineChartData get sampleData1 => LineChartData(
         lineTouchData: lineTouchData1,
@@ -56,7 +76,7 @@ class MonthlyReport extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 );
                 return LineTooltipItem(
-                    MoneyFormater.format(touchedSpot.y * 1000), textStyle);
+                    MoneyFormater.format(touchedSpot.y), textStyle);
               }).toList();
             }),
       );
@@ -76,23 +96,17 @@ class MonthlyReport extends StatelessWidget {
         ),
       );
 
-  List<LineChartBarData> get lineBarsData1 => [
-        lineProfitData,
-        lineCostData,
-        lineRevenueData,
-      ];
-
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyBlackMedium;
     String txt = '';
-    if (value > 1000000) {
-      txt = '${MoneyFormater.format(value / 1000000)}tỷ';
+    if (value > 1000000000) {
+      txt = '${MoneyFormater.format(value / 1000000000)}tỷ';
+    } else if (value > 1000000) {
+      txt = '${MoneyFormater.format(value / 1000000)}tr';
     } else if (value > 1000) {
-      txt = '${MoneyFormater.format(value / 1000)}tr';
-    } else if (value > 0) {
-      txt = '${MoneyFormater.format(value)}k';
+      txt = '${MoneyFormater.format(value / 1000)}k';
     } else {
-      txt = MoneyFormater.format(value);
+      txt = '$value';
     }
     return Text(txt, style: style, textAlign: TextAlign.center);
   }
@@ -107,7 +121,7 @@ class MonthlyReport extends StatelessWidget {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStySmall;
     Widget text;
-    int ts = listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
+    int ts = widget.listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
     String txt = ts == 0 ? '--/--/--' : timeStampToFormat(ts);
     text = Text(txt, style: style);
 
@@ -152,30 +166,10 @@ class MonthlyReport extends StatelessWidget {
         belowBarData: BarAreaData(
           show: false,
         ),
-        spots: listResult == null
+        spots: widget.listResult == null
             ? []
-            : listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.profit / 1000))
-                .toList(),
-      );
-
-  LineChartBarData get lineCostData => LineChartBarData(
-        curveSmoothness: 0.09,
-        isCurved: true,
-        color: CostColor,
-        barWidth: 1,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: false,
-          color: Colors.pink.withOpacity(0),
-        ),
-        spots: listResult == null
-            ? []
-            : listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.cost / 1000))
+            : widget.listResult!.listResultFlat
+                .map((e) => FlSpot(e.offset.toDouble(), e.dateOfMonth.profit))
                 .toList(),
       );
 
@@ -187,11 +181,46 @@ class MonthlyReport extends StatelessWidget {
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: listResult == null
+        spots: widget.listResult == null
             ? []
-            : listResult!.listResultFlat
+            : widget.listResult!.listResultFlat
+                .map((e) => FlSpot(e.offset.toDouble(), e.dateOfMonth.revenue))
+                .toList(),
+      );
+
+  LineChartBarData get lineBuyerData => LineChartBarData(
+        curveSmoothness: 0.09,
+        isCurved: true,
+        color: CostColor,
+        barWidth: 1,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+        spots: widget.listResult == null
+            ? []
+            : widget.listResult!.listResultFlat
                 .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.revenue / 1000))
+                    FlSpot(e.offset.toDouble(), e.dateOfMonth.buyer.toDouble()))
+                .toList(),
+      );
+
+  LineChartBarData get lineOrderData => LineChartBarData(
+        curveSmoothness: 0.09,
+        isCurved: true,
+        color: CostColor,
+        barWidth: 1,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+        spots: widget.listResult == null
+            ? []
+            : widget.listResult!.listResultFlat
+                .map((e) =>
+                    FlSpot(e.offset.toDouble(), e.dateOfMonth.count.toDouble()))
                 .toList(),
       );
 
@@ -200,29 +229,105 @@ class MonthlyReport extends StatelessWidget {
     return ColoredBox(
       color: BackgroundColor,
       child: Container(
-        padding: padding,
-        margin: margin,
+        padding: widget.padding,
+        margin: widget.margin,
         child: Column(
           children: [
-            header(
-              title: 'Báo cáo tháng này',
-              titleImg: 'svg/report_header.svg',
-              endChild: enableShowReportPageBtn
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ReportPage(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    const Text(
+                      'Báo cáo theo',
+                      style: headStyleLargeBlackLigh,
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        items: list
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: subInfoStyLarge600,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        value: dropdownValue,
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            dropdownValue = value;
+                          });
+                        },
+                        buttonStyleData: ButtonStyleData(
+                          height: 30,
+                          width: 120,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: defaultBorderRadius,
+                            border: tableHighBorder,
+                            color: White,
                           ),
-                        );
-                      },
-                      child: NavigationNext(
-                        title: 'Xem chi tiết',
-                        assetPath: 'svg/small_chart.svg',
+                          elevation: 0,
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                          ),
+                          iconSize: 14,
+                          iconEnabledColor: TableHighColor,
+                          iconDisabledColor: Colors.grey,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 200,
+                          width: 140,
+                          decoration: BoxDecoration(
+                            borderRadius: defaultBorderRadius,
+                            color: White,
+                          ),
+                          offset: const Offset(-20, 0),
+                          scrollbarTheme: ScrollbarThemeData(
+                            radius: const Radius.circular(40),
+                            thickness: MaterialStateProperty.all(6),
+                            thumbVisibility: MaterialStateProperty.all(true),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                          padding: EdgeInsets.only(left: 14, right: 14),
+                        ),
                       ),
-                    )
-                  : SizedBox(),
+                    ),
+                  ],
+                ),
+                widget.enableShowReportPageBtn
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPage(),
+                            ),
+                          );
+                        },
+                        child: NavigationNext(
+                          title: 'Xem chi tiết',
+                          assetPath: 'svg/small_chart.svg',
+                        ),
+                      )
+                    : SizedBox(),
+              ],
             ),
             AspectRatio(
               aspectRatio: 1.23,
@@ -230,9 +335,8 @@ class MonthlyReport extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 10),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: White,
-                  borderRadius: defaultBorderRadius,
                 ),
                 child: LineChart(
                   sampleData1,

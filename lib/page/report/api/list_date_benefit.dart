@@ -20,6 +20,7 @@ class ListDateBenifitDataResult {
   double totalRevenue = 0;
   double totalCost = 0;
   double totalProfit = 0;
+  int numberBuyer = 0;
   int numOrder = 0;
 
   void fillAllEmpty(String from, String to) {
@@ -29,7 +30,9 @@ class ListDateBenifitDataResult {
     Map<int, BenifitByDateOfMonthWithOffset> resultMaped =
         Map<int, BenifitByDateOfMonthWithOffset>();
     numOrder = listResult.fold(
-        0, (previousValue, element) => previousValue + element.count);
+        numberBuyer, (previousValue, element) => previousValue + element.count);
+    numberBuyer = listResult.fold(
+        0, (previousValue, element) => previousValue + element.buyer);
     listResult.forEach((element) {
       totalRevenue += element.revenue;
       totalCost += element.cost;
@@ -49,7 +52,9 @@ class ListDateBenifitDataResult {
               localTime: timeStampToServerFormat(i),
               revenue: 0,
               profit: 0,
-              cost: 0),
+              cost: 0,
+              count: 0,
+              buyer: 0),
         );
       } else {
         p.offset = offset;
