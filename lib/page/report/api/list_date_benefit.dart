@@ -23,7 +23,7 @@ class ListDateBenifitDataResult {
   int numberBuyer = 0;
   int numOrder = 0;
 
-  void fillAllEmpty(String from, String to) {
+  void fillAllEmpty(String from, String to, bool fillAll) {
     firstDate = extractTimeStamp(from);
     lastDate = extractTimeStamp(to);
 
@@ -45,17 +45,19 @@ class ListDateBenifitDataResult {
     for (int i = firstDate; i <= lastDate; i += 86400000) {
       var p = resultMaped[i];
       if (p == null) {
-        resultMaped[i] = BenifitByDateOfMonthWithOffset(
-          offset,
-          i,
-          dateOfMonth: BenifitByDateOfMonth(
-              localTime: timeStampToServerFormat(i),
-              revenue: 0,
-              profit: 0,
-              cost: 0,
-              count: 0,
-              buyer: 0),
-        );
+        if (fillAll) {
+          resultMaped[i] = BenifitByDateOfMonthWithOffset(
+            offset,
+            i,
+            dateOfMonth: BenifitByDateOfMonth(
+                localTime: timeStampToServerFormat(i),
+                revenue: 0,
+                profit: 0,
+                cost: 0,
+                count: 0,
+                buyer: 0),
+          );
+        }
       } else {
         p.offset = offset;
       }

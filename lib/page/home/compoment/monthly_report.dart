@@ -34,7 +34,7 @@ class _MonthlyReportState extends State<MonthlyReport> {
     'Khách hàng'
   ];
   String dropdownValue = list.first;
-  late List<BarChartGroupData> showingBarGroups = widget.listResult == null
+  List<BarChartGroupData> get rawProfitBarGroups => widget.listResult == null
       ? []
       : widget.listResult!.listResultFlat
           .map((e) => BarChartGroupData(
@@ -55,6 +55,79 @@ class _MonthlyReportState extends State<MonthlyReport> {
                 showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
               ))
           .toList();
+  List<BarChartGroupData> get rawRevenueBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!.listResultFlat
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.dateOfMonth.revenue,
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.dateOfMonth.revenue * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+  List<BarChartGroupData> get rawBuyerBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!.listResultFlat
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.dateOfMonth.buyer.toDouble(),
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.dateOfMonth.buyer.toDouble() * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+  List<BarChartGroupData> get rawOrderBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!.listResultFlat
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.dateOfMonth.count.toDouble(),
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.dateOfMonth.count.toDouble() * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+
+  late List<BarChartGroupData> showingBarGroups = groupBarsData1;
+
+  List<BarChartGroupData> get groupBarsData1 {
+    if (dropdownValue == 'Doanh thu') return rawRevenueBarGroups;
+    if (dropdownValue == 'Lợi nhuận') return rawProfitBarGroups;
+    if (dropdownValue == 'Đơn hàng') return rawOrderBarGroups;
+    if (dropdownValue == 'Khách hàng') return rawBuyerBarGroups;
+    return rawRevenueBarGroups;
+  }
 
   List<LineChartBarData> get lineBarsData1 => [
         if (dropdownValue == 'Doanh thu') lineRevenueData,
@@ -288,9 +361,9 @@ class _MonthlyReportState extends State<MonthlyReport> {
                           if (value == null) {
                             return;
                           }
-                          setState(() {
-                            dropdownValue = value;
-                          });
+                          dropdownValue = value;
+                          showingBarGroups = groupBarsData1;
+                          setState(() {});
                         },
                         buttonStyleData: ButtonStyleData(
                           height: 30,
@@ -366,10 +439,9 @@ class _MonthlyReportState extends State<MonthlyReport> {
                     //   sampleData1,
                     //   duration: const Duration(milliseconds: 250),
                     // ),
-                    // _BarCharttt(),
                     BarChart(
+                      swapAnimationDuration: const Duration(milliseconds: 500),
                       BarChartData(
-                        // maxY: 20,
                         barTouchData: BarTouchData(
                           touchTooltipData: BarTouchTooltipData(
                             fitInsideHorizontally: true,
@@ -384,16 +456,18 @@ class _MonthlyReportState extends State<MonthlyReport> {
                             },
                           ),
                           touchCallback: (event, response) {
-                            if (response != null && response.spot != null) {
-                              setState(() {
-                                final x = response.spot!.touchedBarGroup.x;
-                                final isShowing = showingTooltip == x;
-                                if (isShowing) {
-                                  showingTooltip = -1;
-                                } else {
-                                  showingTooltip = x;
-                                }
-                              });
+                            if (response != null &&
+                                response.spot != null &&
+                                event is FlTapUpEvent) {
+                              final x = response.spot!.touchedBarGroup.x;
+                              final isShowing = showingTooltip == x;
+                              if (isShowing) {
+                                showingTooltip = -1;
+                              } else {
+                                showingTooltip = x;
+                              }
+                              showingBarGroups = groupBarsData1;
+                              setState(() {});
                             }
                           },
                           mouseCursorResolver: (event, response) {
@@ -416,159 +490,6 @@ class _MonthlyReportState extends State<MonthlyReport> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _BarCharttt extends StatefulWidget {
-  final Color leftBarColor = Colors.yellow;
-  final Color rightBarColor = Red;
-  final Color avgColor = Colors.orange;
-  _BarCharttt({
-    super.key,
-  });
-
-  @override
-  State<_BarCharttt> createState() => _BarChartttState();
-}
-
-class _BarChartttState extends State<_BarCharttt> {
-  final double width = 7;
-
-  late List<BarChartGroupData> rawBarGroups;
-  late List<BarChartGroupData> showingBarGroups;
-
-  int touchedGroupIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    final barGroup1 = makeGroupData(0, 5, 12);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
-    final barGroup4 = makeGroupData(3, 20, 16);
-    final barGroup5 = makeGroupData(4, 17, 6);
-    final barGroup6 = makeGroupData(5, 19, 1.5);
-    final barGroup7 = makeGroupData(6, 10, 1.5);
-
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-      barGroup7,
-    ];
-
-    rawBarGroups = items;
-
-    showingBarGroups = rawBarGroups;
-  }
-
-  Widget leftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff7589a2),
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
-    String text;
-    if (value == 0) {
-      text = '1K';
-    } else if (value == 10) {
-      text = '5K';
-    } else if (value == 19) {
-      text = '10K';
-    } else {
-      return Container();
-    }
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 0,
-      child: Text(text, style: style),
-    );
-  }
-
-  Widget bottomTitles(double value, TitleMeta meta) {
-    final titles = <String>['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
-
-    final Widget text = Text(
-      titles[value.toInt()],
-      style: const TextStyle(
-        color: Color(0xff7589a2),
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
-    );
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 16, //margin top
-      child: text,
-    );
-  }
-
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
-    return BarChartGroupData(
-      barsSpace: 4,
-      x: x,
-      barRods: [
-        BarChartRodData(
-          toY: y1,
-          color: widget.leftBarColor,
-          width: width,
-        ),
-        BarChartRodData(
-          toY: y2,
-          color: widget.rightBarColor,
-          width: width,
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BarChart(
-      BarChartData(
-        maxY: 20,
-        barTouchData: BarTouchData(
-          touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: Colors.grey,
-            getTooltipItem: (a, b, c, d) => null,
-          ),
-          touchCallback: (FlTouchEvent event, response) {},
-        ),
-        titlesData: FlTitlesData(
-          show: true,
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: bottomTitles,
-              reservedSize: 42,
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 28,
-              interval: 1,
-              getTitlesWidget: leftTitles,
-            ),
-          ),
-        ),
-        borderData: FlBorderData(
-          show: false,
-        ),
-        barGroups: showingBarGroups,
-        gridData: const FlGridData(show: false),
       ),
     );
   }

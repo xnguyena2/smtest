@@ -25,7 +25,7 @@ Future<ListDateBenifitDataResult> getReportOfCurrentMonthByDate(
     final result = ListDateBenifitDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );
-    result.fillAllEmpty(from, to);
+    result.fillAllEmpty(from, to, false);
     return result;
   } else {
     // throw Exception('Failed to load data');
