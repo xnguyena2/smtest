@@ -1,6 +1,6 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/dropdown/dropdown.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
 import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/report_page.dart';
@@ -343,66 +343,14 @@ class _MonthlyReportState extends State<MonthlyReport> {
                     SizedBox(
                       width: 6,
                     ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        items: list
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: subInfoStyLarge600,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        value: dropdownValue,
-                        onChanged: (value) {
-                          if (value == null) {
-                            return;
-                          }
-                          dropdownValue = value;
-                          showingBarGroups = groupBarsData1;
-                          setState(() {});
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 30,
-                          width: 120,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: defaultBorderRadius,
-                            border: tableHighBorder,
-                            color: White,
-                          ),
-                          elevation: 0,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                          ),
-                          iconSize: 14,
-                          iconEnabledColor: TableHighColor,
-                          iconDisabledColor: Colors.grey,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          maxHeight: 200,
-                          width: 140,
-                          decoration: BoxDecoration(
-                            borderRadius: defaultBorderRadius,
-                            color: White,
-                          ),
-                          offset: const Offset(-20, 0),
-                          scrollbarTheme: ScrollbarThemeData(
-                            radius: const Radius.circular(40),
-                            thickness: MaterialStateProperty.all(6),
-                            thumbVisibility: MaterialStateProperty.all(true),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.only(left: 14, right: 14),
-                        ),
-                      ),
+                    DropDownCustome(
+                      list: list,
+                      onChanged: (value) {
+                        dropdownValue = value;
+                        showingTooltip = -1;
+                        showingBarGroups = groupBarsData1;
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),

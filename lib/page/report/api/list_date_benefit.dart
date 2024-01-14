@@ -17,9 +17,12 @@ class ListDateBenifitDataResult {
   int firstDate = 0;
   int lastDate = 0;
 
+  double totalPrice = 0;
   double totalRevenue = 0;
   double totalCost = 0;
   double totalProfit = 0;
+  double totalShipPrice = 0;
+  double totalDiscount = 0;
   int numberBuyer = 0;
   int numOrder = 0;
 
@@ -34,9 +37,12 @@ class ListDateBenifitDataResult {
     numberBuyer = listResult.fold(
         0, (previousValue, element) => previousValue + element.buyer);
     listResult.forEach((element) {
+      totalPrice += element.price;
       totalRevenue += element.revenue;
       totalCost += element.cost;
       totalProfit += element.profit;
+      totalShipPrice += element.ship_price;
+      totalDiscount += element.discount;
       int ts = extractTimeStamp(element.localTime);
       resultMaped[ts] =
           BenifitByDateOfMonthWithOffset(0, ts, dateOfMonth: element);
@@ -50,12 +56,16 @@ class ListDateBenifitDataResult {
             offset,
             i,
             dateOfMonth: BenifitByDateOfMonth(
-                localTime: timeStampToServerFormat(i),
-                revenue: 0,
-                profit: 0,
-                cost: 0,
-                count: 0,
-                buyer: 0),
+              localTime: timeStampToServerFormat(i),
+              revenue: 0,
+              profit: 0,
+              cost: 0,
+              count: 0,
+              buyer: 0,
+              price: 0,
+              ship_price: 0,
+              discount: 0,
+            ),
           );
         }
       } else {

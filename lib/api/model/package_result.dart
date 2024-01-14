@@ -1,5 +1,5 @@
-import 'package:intl/intl.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class PackageResult {
   PackageResult({
@@ -20,13 +20,9 @@ class PackageResult {
 
   void sort() {
     listResult.sort(
-      (a, b) =>
-          stringToDateTime(b.createat).compareTo(stringToDateTime(a.createat)),
+      (a, b) => stringTimeZoneToDateTime(b.createat)
+          .compareTo(stringTimeZoneToDateTime(a.createat)),
     );
-  }
-
-  DateTime stringToDateTime(String dateValue) {
-    return DateFormat("y-MM-ddThh:mm:ss.sssZ").parse(dateValue);
   }
 
   double totalPrice() {

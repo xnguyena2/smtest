@@ -250,7 +250,7 @@ class PackageDataResponse extends PackageDetail {
     return null;
   }
 
-  String get getID => packageSecondId.substring(0, 8);
+  String get getID => packageSecondId.substring(0, 8).toUpperCase();
 
   String? getDoneTime() {
     if (status != PackageStatusType.DONE) {

@@ -1,6 +1,9 @@
 class BenifitByDateOfMonth {
   BenifitByDateOfMonth({
     required this.localTime,
+    required this.price,
+    required this.ship_price,
+    required this.discount,
     required this.revenue,
     required this.profit,
     required this.cost,
@@ -9,6 +12,12 @@ class BenifitByDateOfMonth {
   });
 
   late final String localTime;
+
+  late double price;
+
+  late final double ship_price;
+
+  late final double discount;
 
   late double revenue;
 
@@ -22,6 +31,9 @@ class BenifitByDateOfMonth {
 
   BenifitByDateOfMonth.fromJson(Map<String, dynamic> json) {
     localTime = json['local_time'];
+    price = json['price'] as double;
+    ship_price = json['ship_price'] as double;
+    discount = json['discount'] as double;
     revenue = json['revenue'] as double;
     profit = json['profit'] as double;
     cost = json['cost'] as double;
@@ -32,6 +44,9 @@ class BenifitByDateOfMonth {
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['local_time'] = localTime;
+    _data['ship_price'] = ship_price;
+    _data['discount'] = discount;
+    _data['price'] = price;
     _data['revenue'] = revenue;
     _data['profit'] = profit;
     _data['cost'] = cost;
