@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/page/home/compoment/monthly_report.dart';
-import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/api/report_api.dart';
 import 'package:sales_management/page/report/component/report_as_table.dart';
 import 'package:sales_management/page/report/component/report_bar.dart';
@@ -19,19 +19,21 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  late Future<ListDateBenifitDataResult> _loadData;
+  late Future<ListReportInterface> _loadData;
   String? start;
   String? end;
 
-  void refresh() {
-    _loadData = getReportOfCurrentMonthByDate(start: start, end: end);
+  void refresh(bool today) {
+    _loadData = today
+        ? getReportOfToDay(start: start, end: end)
+        : getReportOfCurrentMonthByDate(start: start, end: end);
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    refresh();
+    refresh(false);
   }
 
   @override
@@ -50,22 +52,26 @@ class _ReportPageState extends State<ReportPage> {
                   start = localDateTime2ServerFormat(DateTimeRange.start);
                   end = localDateTime2ServerFormat(
                       DateTimeRange.end.add(Duration(days: 1)));
-                  refresh();
+                  refresh(false);
                   setState(() {});
                 },
                 onChangeTime: (listTime) {
+                  bool isToday = false;
+                  if (listTime.length == 3) {
+                    isToday = true;
+                  }
                   start = listTime[0];
                   end = listTime[1];
                   if (listTime[0].isEmpty) {
                     start = end = null;
                   }
-                  refresh();
+                  refresh(isToday);
                   setState(() {});
                 },
               ),
             ),
             Expanded(
-              child: FetchAPI<ListDateBenifitDataResult>(
+              child: FetchAPI<ListReportInterface>(
                 future: _loadData,
                 successBuilder: (ListDateBenifitDataResult) {
                   double totalPrice = ListDateBenifitDataResult.totalPrice;

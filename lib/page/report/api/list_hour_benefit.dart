@@ -1,20 +1,20 @@
 import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/component/interface/report_interface.dart';
 import 'package:sales_management/component/interface/report_with_offset_interface.dart';
-import 'package:sales_management/page/home/api/model/benifit_by_date_of_month.dart';
+import 'package:sales_management/page/home/api/model/benifit_by_hour_of_date.dart';
 import 'package:sales_management/utils/utils.dart';
 
-class ListDateBenifitDataResult implements ListReportInterface {
-  ListDateBenifitDataResult({
+class ListHourBenifitDataResult implements ListReportInterface {
+  ListHourBenifitDataResult({
     required this.listResult,
   });
-  late final List<BenifitByDateOfMonth> listResult;
-  late final List<BenifitByDateOfMonthWithOffset> listResultFlat;
-  ListDateBenifitDataResult.fromJson(Map<String, dynamic> json) {
+  late final List<BenifitByHoursOfDate> listResult;
+  late final List<BenifitByHourOfDateWithOffset> listResultFlat;
+  ListHourBenifitDataResult.fromJson(Map<String, dynamic> json) {
     listResult = json['list_result'] == null
         ? []
         : List.from(json['list_result'])
-            .map((e) => BenifitByDateOfMonth.fromJson(e))
+            .map((e) => BenifitByHoursOfDate.fromJson(e))
             .toList();
   }
   int first = 0;
@@ -30,11 +30,11 @@ class ListDateBenifitDataResult implements ListReportInterface {
   int numOrder = 0;
 
   void fillAllEmpty(String from, String to, bool fillAll) {
-    first = extractTimeStamp(from);
-    last = extractTimeStamp(to);
+    first = extractHourTimeStamp(from);
+    last = extractHourTimeStamp(to);
 
-    Map<int, BenifitByDateOfMonthWithOffset> resultMaped =
-        Map<int, BenifitByDateOfMonthWithOffset>();
+    Map<int, BenifitByHourOfDateWithOffset> resultMaped =
+        Map<int, BenifitByHourOfDateWithOffset>();
     numOrder = listResult.fold(
         numberBuyer, (previousValue, element) => previousValue + element.count);
     numberBuyer = listResult.fold(
@@ -46,27 +46,24 @@ class ListDateBenifitDataResult implements ListReportInterface {
       totalProfit += element.profit;
       totalShipPrice += element.ship_price;
       totalDiscount += element.discount;
-      int ts = extractTimeStamp(element.localTime);
-      resultMaped[ts] = BenifitByDateOfMonthWithOffset(0, ts, data: element);
+      int ts = extractHourTimeStamp(element.localTime);
+      resultMaped[ts] = BenifitByHourOfDateWithOffset(0, ts, data: element);
     });
     int offset = 0;
-    for (int i = first; i <= last; i += 86400000) {
+    for (int i = first; i <= last; i += 3600000) {
       var p = resultMaped[i];
       if (p == null) {
         if (fillAll) {
-          resultMaped[i] = BenifitByDateOfMonthWithOffset(
+          resultMaped[i] = BenifitByHourOfDateWithOffset(
             offset,
             i,
-            data: BenifitByDateOfMonth(
-              localTime: timeStampToServerFormat(i),
+            data: BenifitByHoursOfDate(
+              localTime: timeHourStampToServerFormat(i),
               revenue: 0,
               profit: 0,
               cost: 0,
               count: 0,
               buyer: 0,
-              price: 0,
-              ship_price: 0,
-              discount: 0,
             ),
           );
         }
@@ -83,8 +80,8 @@ class ListDateBenifitDataResult implements ListReportInterface {
   }
 
   String getTimeStampFrom({required int offset}) {
-    final ts = first + offset * 86400000;
-    return timeStampToFormat(ts);
+    final ts = first + offset * 3600000;
+    return timeStampToHourFormat(ts);
   }
 
   @override
@@ -100,12 +97,12 @@ class ListDateBenifitDataResult implements ListReportInterface {
   }
 }
 
-class BenifitByDateOfMonthWithOffset implements ReportWithOffset {
+class BenifitByHourOfDateWithOffset implements ReportWithOffset {
   final ReportInterface data;
   int offset;
   final int timeStamp;
 
-  BenifitByDateOfMonthWithOffset(this.offset, this.timeStamp,
+  BenifitByHourOfDateWithOffset(this.offset, this.timeStamp,
       {required this.data});
 
   @override

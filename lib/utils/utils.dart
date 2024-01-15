@@ -75,6 +75,12 @@ int extractTimeStamp(String local_time) {
   return ts;
 }
 
+int extractHourTimeStamp(String local_time) {
+  DateTime dt = DateFormat("y-MM-ddTHH:mm:ss").parse(local_time);
+  int ts = (dt.millisecondsSinceEpoch).floor();
+  return ts;
+}
+
 int extractTimeStampToLocal(String local_time) {
   DateTime dt = DateFormat("y-MM-dd").parse(local_time).toLocal();
   int ts = (dt.millisecondsSinceEpoch).floor();
@@ -90,6 +96,11 @@ int currentTimeStampLocal() {
 String timeStampToFormat(int timeStamp) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
   return DateFormat("dd/MM/yy").format(dt);
+}
+
+String timeStampToHourFormat(int timeStamp) {
+  DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+  return '${DateFormat("HH").format(dt)}h';
 }
 
 String formatLocalDateTimeOnlyDateSplashFromDate(DateTime dateTime) {
@@ -116,6 +127,11 @@ String formatDateTimeOnlyDateSplash(String? dateTime) {
 String timeStampToServerFormat(int timeStamp) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
   return DateFormat("y-MM-dd").format(dt);
+}
+
+String timeHourStampToServerFormat(int timeStamp) {
+  DateTime dt = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+  return DateFormat("y-MM-ddTHH:mm:ss").format(dt);
 }
 
 String formatLocalDateTimeOfDateTime(DateTime dateTime) {

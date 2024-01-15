@@ -1,10 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/dropdown/dropdown.dart';
+import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
-import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/report_page.dart';
-import 'package:sales_management/utils/utils.dart';
 
 import '../../../utils/constants.dart';
 
@@ -12,7 +11,7 @@ class MonthlyReport extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
   final bool enableShowReportPageBtn;
-  final ListDateBenifitDataResult? listResult;
+  final ListReportInterface? listResult;
   const MonthlyReport({
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
@@ -36,18 +35,19 @@ class _MonthlyReportState extends State<MonthlyReport> {
   String dropdownValue = list.first;
   List<BarChartGroupData> get rawProfitBarGroups => widget.listResult == null
       ? []
-      : widget.listResult!.listResultFlat
+      : widget.listResult!
+          .getListResultFlat()
           .map((e) => BarChartGroupData(
                 barsSpace: 4,
                 x: e.offset,
                 barRods: [
                   BarChartRodData(
-                    toY: e.dateOfMonth.profit,
+                    toY: e.data.profit,
                     color: TableHighColor,
                     width: 7,
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
-                      toY: e.dateOfMonth.profit * 1.2,
+                      toY: e.data.profit * 1.2,
                       color: TransaprentColor,
                     ),
                   ),
@@ -57,18 +57,19 @@ class _MonthlyReportState extends State<MonthlyReport> {
           .toList();
   List<BarChartGroupData> get rawRevenueBarGroups => widget.listResult == null
       ? []
-      : widget.listResult!.listResultFlat
+      : widget.listResult!
+          .getListResultFlat()
           .map((e) => BarChartGroupData(
                 barsSpace: 4,
                 x: e.offset,
                 barRods: [
                   BarChartRodData(
-                    toY: e.dateOfMonth.revenue,
+                    toY: e.data.revenue,
                     color: TableHighColor,
                     width: 7,
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
-                      toY: e.dateOfMonth.revenue * 1.2,
+                      toY: e.data.revenue * 1.2,
                       color: TransaprentColor,
                     ),
                   ),
@@ -78,18 +79,19 @@ class _MonthlyReportState extends State<MonthlyReport> {
           .toList();
   List<BarChartGroupData> get rawBuyerBarGroups => widget.listResult == null
       ? []
-      : widget.listResult!.listResultFlat
+      : widget.listResult!
+          .getListResultFlat()
           .map((e) => BarChartGroupData(
                 barsSpace: 4,
                 x: e.offset,
                 barRods: [
                   BarChartRodData(
-                    toY: e.dateOfMonth.buyer.toDouble(),
+                    toY: e.data.buyer.toDouble(),
                     color: TableHighColor,
                     width: 7,
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
-                      toY: e.dateOfMonth.buyer.toDouble() * 1.2,
+                      toY: e.data.buyer.toDouble() * 1.2,
                       color: TransaprentColor,
                     ),
                   ),
@@ -99,18 +101,19 @@ class _MonthlyReportState extends State<MonthlyReport> {
           .toList();
   List<BarChartGroupData> get rawOrderBarGroups => widget.listResult == null
       ? []
-      : widget.listResult!.listResultFlat
+      : widget.listResult!
+          .getListResultFlat()
           .map((e) => BarChartGroupData(
                 barsSpace: 4,
                 x: e.offset,
                 barRods: [
                   BarChartRodData(
-                    toY: e.dateOfMonth.count.toDouble(),
+                    toY: e.data.count.toDouble(),
                     color: TableHighColor,
                     width: 7,
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
-                      toY: e.dateOfMonth.count.toDouble() * 1.2,
+                      toY: e.data.count.toDouble() * 1.2,
                       color: TransaprentColor,
                     ),
                   ),
@@ -216,8 +219,8 @@ class _MonthlyReportState extends State<MonthlyReport> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStySmall;
     Widget text;
-    int ts = widget.listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
-    String txt = ts == 0 ? '--/--/--' : timeStampToFormat(ts);
+    String txt =
+        widget.listResult?.getTimeStampFrom(offset: value.toInt()) ?? '??';
     text = Text(txt, style: style);
 
     return SideTitleWidget(
@@ -263,8 +266,9 @@ class _MonthlyReportState extends State<MonthlyReport> {
         ),
         spots: widget.listResult == null
             ? []
-            : widget.listResult!.listResultFlat
-                .map((e) => FlSpot(e.offset.toDouble(), e.dateOfMonth.profit))
+            : widget.listResult!
+                .getListResultFlat()
+                .map((e) => FlSpot(e.offset.toDouble(), e.data.profit))
                 .toList(),
       );
 
@@ -278,8 +282,9 @@ class _MonthlyReportState extends State<MonthlyReport> {
         belowBarData: BarAreaData(show: false),
         spots: widget.listResult == null
             ? []
-            : widget.listResult!.listResultFlat
-                .map((e) => FlSpot(e.offset.toDouble(), e.dateOfMonth.revenue))
+            : widget.listResult!
+                .getListResultFlat()
+                .map((e) => FlSpot(e.offset.toDouble(), e.data.revenue))
                 .toList(),
       );
 
@@ -295,9 +300,10 @@ class _MonthlyReportState extends State<MonthlyReport> {
         ),
         spots: widget.listResult == null
             ? []
-            : widget.listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.buyer.toDouble()))
+            : widget.listResult!
+                .getListResultFlat()
+                .map(
+                    (e) => FlSpot(e.offset.toDouble(), e.data.buyer.toDouble()))
                 .toList(),
       );
 
@@ -313,9 +319,10 @@ class _MonthlyReportState extends State<MonthlyReport> {
         ),
         spots: widget.listResult == null
             ? []
-            : widget.listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.count.toDouble()))
+            : widget.listResult!
+                .getListResultFlat()
+                .map(
+                    (e) => FlSpot(e.offset.toDouble(), e.data.count.toDouble()))
                 .toList(),
       );
 

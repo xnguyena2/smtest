@@ -27,7 +27,8 @@ class _TimeSelectorState extends State<TimeSelector> {
   void ontap(String value) {
     currentRange = value;
     if (currentRange == 'Hôm nay') {
-      widget.onChangeTime([getLastDateTimeNow(), getCurrentDateTimeNow()]);
+      widget.onChangeTime(
+          [getLastDateTimeNow(), getCurrentDateTimeNow(), 'today']);
       setState(() {});
       return;
     }
