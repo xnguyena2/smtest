@@ -15,6 +15,7 @@ enum PackageStatusType { CREATE, DONE, DELETE }
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;
   late final String? deviceId;
+  late final String? staff_id;
   late String? areaId;
   late String? areaName;
   late String? tableId;
@@ -39,6 +40,7 @@ class PackageDetail extends BaseEntity {
     String? createat,
     required this.packageSecondId,
     required this.deviceId,
+    required this.staff_id,
     required this.price,
     required this.payment,
     required this.discountAmount,
@@ -61,6 +63,7 @@ class PackageDetail extends BaseEntity {
   PackageDetail.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     packageSecondId = json['package_second_id'];
     deviceId = json['device_id'];
+    staff_id = json['staff_id'];
     packageType = DeliverType.values.firstWhere(
         (element) => element.name == json['package_type'],
         orElse: () => DeliverType.table);
@@ -90,6 +93,7 @@ class PackageDetail extends BaseEntity {
     final _data = super.toJson();
     _data['package_second_id'] = packageSecondId;
     _data['device_id'] = deviceId;
+    _data['staff_id'] = staff_id;
     _data['area_id'] = areaId;
     _data['area_name'] = areaName;
     _data['table_id'] = tableId;

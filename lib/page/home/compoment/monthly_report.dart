@@ -1,18 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:sales_management/component/dropdown/dropdown.dart';
+import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/page/home/compoment/navigation_next.dart';
-import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/report_page.dart';
-import 'package:sales_management/utils/utils.dart';
 
 import '../../../utils/constants.dart';
-import 'header.dart';
 
-class MonthlyReport extends StatelessWidget {
+class MonthlyReport extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
   final bool enableShowReportPageBtn;
-  final ListDateBenifitDataResult? listResult;
+  final ListReportInterface? listResult;
   const MonthlyReport({
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
@@ -20,6 +19,125 @@ class MonthlyReport extends StatelessWidget {
     this.margin,
     this.listResult,
   });
+
+  @override
+  State<MonthlyReport> createState() => _MonthlyReportState();
+}
+
+class _MonthlyReportState extends State<MonthlyReport> {
+  late int showingTooltip = -1;
+  static const List<String> list = <String>[
+    'Doanh thu',
+    'Lợi nhuận',
+    'Đơn hàng',
+    'Khách hàng'
+  ];
+  String dropdownValue = list.first;
+  List<BarChartGroupData> get rawProfitBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!
+          .getListResultFlat()
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.data.profit,
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.data.profit * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+  List<BarChartGroupData> get rawRevenueBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!
+          .getListResultFlat()
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.data.revenue,
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.data.revenue * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+  List<BarChartGroupData> get rawBuyerBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!
+          .getListResultFlat()
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.data.buyer.toDouble(),
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.data.buyer.toDouble() * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+  List<BarChartGroupData> get rawOrderBarGroups => widget.listResult == null
+      ? []
+      : widget.listResult!
+          .getListResultFlat()
+          .map((e) => BarChartGroupData(
+                barsSpace: 4,
+                x: e.offset,
+                barRods: [
+                  BarChartRodData(
+                    toY: e.data.count.toDouble(),
+                    color: TableHighColor,
+                    width: 7,
+                    backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.data.count.toDouble() * 1.2,
+                      color: TransaprentColor,
+                    ),
+                  ),
+                ],
+                showingTooltipIndicators: showingTooltip == e.offset ? [0] : [],
+              ))
+          .toList();
+
+  late List<BarChartGroupData> showingBarGroups = groupBarsData1;
+
+  List<BarChartGroupData> get groupBarsData1 {
+    if (dropdownValue == 'Doanh thu') return rawRevenueBarGroups;
+    if (dropdownValue == 'Lợi nhuận') return rawProfitBarGroups;
+    if (dropdownValue == 'Đơn hàng') return rawOrderBarGroups;
+    if (dropdownValue == 'Khách hàng') return rawBuyerBarGroups;
+    return rawRevenueBarGroups;
+  }
+
+  List<LineChartBarData> get lineBarsData1 => [
+        if (dropdownValue == 'Doanh thu') lineRevenueData,
+        if (dropdownValue == 'Lợi nhuận') lineProfitData,
+        if (dropdownValue == 'Đơn hàng') lineOrderData,
+        if (dropdownValue == 'Khách hàng') lineBuyerData,
+      ];
 
   LineChartData get sampleData1 => LineChartData(
         lineTouchData: lineTouchData1,
@@ -56,7 +174,7 @@ class MonthlyReport extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 );
                 return LineTooltipItem(
-                    MoneyFormater.format(touchedSpot.y * 1000), textStyle);
+                    MoneyFormater.format(touchedSpot.y), textStyle);
               }).toList();
             }),
       );
@@ -76,23 +194,17 @@ class MonthlyReport extends StatelessWidget {
         ),
       );
 
-  List<LineChartBarData> get lineBarsData1 => [
-        lineProfitData,
-        lineCostData,
-        lineRevenueData,
-      ];
-
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStyBlackMedium;
     String txt = '';
-    if (value > 1000000) {
-      txt = '${MoneyFormater.format(value / 1000000)}tỷ';
+    if (value > 1000000000) {
+      txt = '${MoneyFormater.format(value / 1000000000)}tỷ';
+    } else if (value > 1000000) {
+      txt = '${MoneyFormater.format(value / 1000000)}tr';
     } else if (value > 1000) {
-      txt = '${MoneyFormater.format(value / 1000)}tr';
-    } else if (value > 0) {
-      txt = '${MoneyFormater.format(value)}k';
+      txt = '${MoneyFormater.format(value / 1000)}k';
     } else {
-      txt = MoneyFormater.format(value);
+      txt = '$value';
     }
     return Text(txt, style: style, textAlign: TextAlign.center);
   }
@@ -107,8 +219,8 @@ class MonthlyReport extends StatelessWidget {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = subInfoStySmall;
     Widget text;
-    int ts = listResult?.getTimeStampFrom(offset: value.toInt()) ?? 0;
-    String txt = ts == 0 ? '--/--/--' : timeStampToFormat(ts);
+    String txt =
+        widget.listResult?.getTimeStampFrom(offset: value.toInt()) ?? '??';
     text = Text(txt, style: style);
 
     return SideTitleWidget(
@@ -152,30 +264,11 @@ class MonthlyReport extends StatelessWidget {
         belowBarData: BarAreaData(
           show: false,
         ),
-        spots: listResult == null
+        spots: widget.listResult == null
             ? []
-            : listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.profit / 1000))
-                .toList(),
-      );
-
-  LineChartBarData get lineCostData => LineChartBarData(
-        curveSmoothness: 0.09,
-        isCurved: true,
-        color: CostColor,
-        barWidth: 1,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: false,
-          color: Colors.pink.withOpacity(0),
-        ),
-        spots: listResult == null
-            ? []
-            : listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.cost / 1000))
+            : widget.listResult!
+                .getListResultFlat()
+                .map((e) => FlSpot(e.offset.toDouble(), e.data.profit))
                 .toList(),
       );
 
@@ -187,11 +280,49 @@ class MonthlyReport extends StatelessWidget {
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: listResult == null
+        spots: widget.listResult == null
             ? []
-            : listResult!.listResultFlat
-                .map((e) =>
-                    FlSpot(e.offset.toDouble(), e.dateOfMonth.revenue / 1000))
+            : widget.listResult!
+                .getListResultFlat()
+                .map((e) => FlSpot(e.offset.toDouble(), e.data.revenue))
+                .toList(),
+      );
+
+  LineChartBarData get lineBuyerData => LineChartBarData(
+        curveSmoothness: 0.09,
+        isCurved: true,
+        color: CostColor,
+        barWidth: 1,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+        spots: widget.listResult == null
+            ? []
+            : widget.listResult!
+                .getListResultFlat()
+                .map(
+                    (e) => FlSpot(e.offset.toDouble(), e.data.buyer.toDouble()))
+                .toList(),
+      );
+
+  LineChartBarData get lineOrderData => LineChartBarData(
+        curveSmoothness: 0.09,
+        isCurved: true,
+        color: CostColor,
+        barWidth: 1,
+        isStrokeCapRound: true,
+        dotData: const FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+        spots: widget.listResult == null
+            ? []
+            : widget.listResult!
+                .getListResultFlat()
+                .map(
+                    (e) => FlSpot(e.offset.toDouble(), e.data.count.toDouble()))
                 .toList(),
       );
 
@@ -200,29 +331,53 @@ class MonthlyReport extends StatelessWidget {
     return ColoredBox(
       color: BackgroundColor,
       child: Container(
-        padding: padding,
-        margin: margin,
+        padding: widget.padding,
+        margin: widget.margin,
         child: Column(
           children: [
-            header(
-              title: 'Báo cáo tháng này',
-              titleImg: 'svg/report_header.svg',
-              endChild: enableShowReportPageBtn
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ReportPage(),
-                          ),
-                        );
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    const Text(
+                      'Báo cáo theo',
+                      style: headStyleLargeBlackLigh,
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    DropDownCustome(
+                      list: list,
+                      onChanged: (value) {
+                        dropdownValue = value;
+                        showingTooltip = -1;
+                        showingBarGroups = groupBarsData1;
+                        setState(() {});
                       },
-                      child: NavigationNext(
-                        title: 'Xem chi tiết',
-                        assetPath: 'svg/small_chart.svg',
-                      ),
-                    )
-                  : SizedBox(),
+                    ),
+                  ],
+                ),
+                widget.enableShowReportPageBtn
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPage(),
+                            ),
+                          );
+                        },
+                        child: NavigationNext(
+                          title: 'Xem chi tiết',
+                          assetPath: 'svg/small_chart.svg',
+                        ),
+                      )
+                    : SizedBox(),
+              ],
             ),
             AspectRatio(
               aspectRatio: 1.23,
@@ -230,13 +385,61 @@ class MonthlyReport extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 10),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: White,
-                  borderRadius: defaultBorderRadius,
                 ),
-                child: LineChart(
-                  sampleData1,
-                  duration: const Duration(milliseconds: 250),
+                child: Stack(
+                  children: [
+                    // LineChart(
+                    //   sampleData1,
+                    //   duration: const Duration(milliseconds: 250),
+                    // ),
+                    BarChart(
+                      swapAnimationDuration: const Duration(milliseconds: 500),
+                      BarChartData(
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            fitInsideHorizontally: true,
+                            tooltipBgColor: Black70,
+                            getTooltipItem: (a, b, c, d) {
+                              const textStyle = TextStyle(
+                                color: White,
+                                fontWeight: FontWeight.bold,
+                              );
+                              return BarTooltipItem(
+                                  MoneyFormater.format(c.toY), textStyle);
+                            },
+                          ),
+                          touchCallback: (event, response) {
+                            if (response != null &&
+                                response.spot != null &&
+                                event is FlTapUpEvent) {
+                              final x = response.spot!.touchedBarGroup.x;
+                              final isShowing = showingTooltip == x;
+                              if (isShowing) {
+                                showingTooltip = -1;
+                              } else {
+                                showingTooltip = x;
+                              }
+                              showingBarGroups = groupBarsData1;
+                              setState(() {});
+                            }
+                          },
+                          mouseCursorResolver: (event, response) {
+                            return response == null || response.spot == null
+                                ? MouseCursor.defer
+                                : SystemMouseCursors.click;
+                          },
+                        ),
+                        titlesData: titlesData1,
+                        borderData: FlBorderData(
+                          show: false,
+                        ),
+                        barGroups: showingBarGroups,
+                        gridData: gridData,
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),

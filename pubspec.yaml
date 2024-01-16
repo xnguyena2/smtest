@@ -50,6 +50,7 @@ dependencies:
   connectivity_plus: ^5.0.2
   qr_flutter: ^4.1.0
   barcode_scan2: ^4.3.0
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:

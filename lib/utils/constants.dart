@@ -47,12 +47,15 @@ const Color Red = Colors.red;
 const Color Black70 = Color.fromARGB(178, 0, 0, 0);
 const Color Black40 = Color.fromARGB(80, 0, 0, 0);
 const Color Black15 = Color.fromARGB(38, 0, 0, 0);
+const Color BlackLigh = Color(0xFF979797);
 const Color HighColor = Color(0xFF0080A9);
 const Color HighColor15 = Color(0x260080A9);
 const Color MainHighColor = Color(0xFF0080A9);
 const Color TableHighColor = Color(0xFF26B074);
 const Color TableHighBGColor = Color(0xFF239A66);
 const Color TableHeaderBGColor = Color(0xFFE4E4E4);
+const Color TransaprentColor = Colors.transparent;
+const Color PurpelColor = Color(0xFF7B00A7);
 const Color borderColor = Color.fromARGB(102, 0, 0, 0);
 const Color borderColorLight = Color.fromARGB(25, 0, 0, 0);
 const Color ShowdownColor = Color.fromARGB(56, 0, 0, 0);
@@ -71,6 +74,8 @@ const Color searchBorderColor = Color(0xFFD7D7D7);
 const Color searchBackgroundColor = Color(0xFFF3F3F3);
 
 final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
+
+final BorderRadius bigRoundBorderRadius = BorderRadius.circular(20);
 
 final BorderRadius defaultSquareBorderRadius = BorderRadius.circular(5);
 
@@ -147,6 +152,11 @@ const TextStyle totalMoneyStylexXLarge = TextStyle(
 
 const TextStyle totalMoneyStylexXLargeBlack = TextStyle(
   fontSize: 21,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle totalMoneyStylexxXLargeBlack = TextStyle(
+  fontSize: 20,
   fontWeight: FontWeight.w500,
 );
 
@@ -312,6 +322,18 @@ const TextStyle headStyleSemiLarge500 = TextStyle(
   fontSize: 15,
 );
 
+const TextStyle headStyleSemiLargeWhite500 = TextStyle(
+  color: White,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLargeSLigh500 = TextStyle(
+  color: BlackLigh,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
+);
+
 const TextStyle headStyleSemiLargeLigh500 = TextStyle(
   color: Black70,
   fontWeight: FontWeight.w500,
@@ -397,6 +419,12 @@ const TextStyle headStyleSmallLargeHigh = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleSmallLargeLigh = TextStyle(
+  color: Black70,
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleSmallLarge = TextStyle(
   color: Black,
   fontSize: 14,
@@ -405,6 +433,12 @@ const TextStyle headStyleSmallLarge = TextStyle(
 
 const TextStyle headStyleLargeRed = TextStyle(
   color: Red,
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleLargeBlackLigh = TextStyle(
+  color: Black70,
   fontSize: 14,
   fontWeight: FontWeight.w600,
 );
@@ -597,6 +631,12 @@ const TextStyle subInfoStyMedium400Light = TextStyle(
   color: Black70,
   fontSize: 11,
   fontWeight: FontWeight.w400,
+);
+
+const TextStyle subInfoStyMedium500White = TextStyle(
+  color: White,
+  fontSize: 11,
+  fontWeight: FontWeight.w500,
 );
 
 const TextStyle subInfoStyMedium500 = TextStyle(

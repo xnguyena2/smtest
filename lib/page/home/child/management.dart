@@ -65,7 +65,6 @@ class Management extends StatelessWidget {
                     future: getReportOfCurrentMonthByDate(),
                     successBuilder: (ListDateBenifitDataResult) {
                       return MonthlyReport(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
                         padding: EdgeInsets.symmetric(vertical: 10),
                         enableShowReportPageBtn: true,
                         listResult: ListDateBenifitDataResult,

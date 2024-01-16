@@ -93,7 +93,8 @@ class PackageDataResponse extends PackageDetail {
           groupId: groupID,
           createat: getCreateAtNow(),
           packageSecondId: generateUUID(),
-          deviceId: deviceID,
+          deviceId: '',
+          staff_id: deviceID,
           price: 0.0,
           cost: 0.0,
           profit: 0.0,
@@ -249,7 +250,7 @@ class PackageDataResponse extends PackageDetail {
     return null;
   }
 
-  String get getID => packageSecondId.substring(0, 8);
+  String get getID => packageSecondId.substring(0, 8).toUpperCase();
 
   String? getDoneTime() {
     if (status != PackageStatusType.DONE) {
