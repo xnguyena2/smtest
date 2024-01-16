@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/high_border_container.dart';
+import 'package:sales_management/page/report/component/report_time_selector.dart';
 import 'package:sales_management/page/transaction/api/model/list_payment_transaction.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/page/transaction/api/transaction_api.dart';
@@ -48,25 +49,42 @@ class _IncomeOutCommeState extends State<IncomeOutComme> {
           top: false,
           bottom: false,
           child: Scaffold(
-            appBar: IncomeOutComeBar(
-              onChagneDateTime: (DateTimeRange) {
-                start = localDateTime2ServerFormat(DateTimeRange.start);
-                end = localDateTime2ServerFormat(
-                    DateTimeRange.end.add(Duration(days: 1)));
-                refresh();
-                setState(() {});
-              },
-            ),
-            body: FetchAPI<ListPaymentTransactionDataResult>(
-              future: _loadData,
-              successBuilder: (listPaymentTransactionDataResult) {
-                print(
-                    'found: ${listPaymentTransactionDataResult.listResult.length}');
-                return _BodyContent(
-                  listPaymentTransactionDataResult:
-                      listPaymentTransactionDataResult,
-                );
-              },
+            appBar: IncomeOutComeBar(),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: TimeSelector(
+                    onChagneDateTime: (DateTimeRange) {
+                      start = localDateTime2ServerFormat(DateTimeRange.start);
+                      end = localDateTime2ServerFormat(
+                          DateTimeRange.end.add(Duration(days: 1)));
+                      refresh();
+                      setState(() {});
+                    },
+                    onChangeTime: (listTime) {
+                      start = listTime[0];
+                      end = listTime[1];
+                      if (listTime[0].isEmpty) {
+                        start = end = null;
+                      }
+                      refresh();
+                      setState(() {});
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: FetchAPI<ListPaymentTransactionDataResult>(
+                    future: _loadData,
+                    successBuilder: (listPaymentTransactionDataResult) {
+                      return _BodyContent(
+                        listPaymentTransactionDataResult:
+                            listPaymentTransactionDataResult,
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             bottomNavigationBar: BottomBar(
               headOkbtn: LoadSvg(assetPath: 'svg/plus_circle.svg'),
