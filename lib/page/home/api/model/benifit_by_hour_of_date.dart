@@ -35,6 +35,9 @@ class BenifitByHoursOfDate implements ReportInterface {
     cost = json['cost'] as double;
     count = json['count'] as int;
     buyer = json['buyer'] as int;
+    price = json['price'] as double;
+    ship_price = json['ship_price'] as double;
+    discount = json['discount'] as double;
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +48,9 @@ class BenifitByHoursOfDate implements ReportInterface {
     _data['cost'] = cost;
     _data['count'] = count;
     _data['buyer'] = buyer;
+    _data['price'] = price;
+    _data['ship_price'] = ship_price;
+    _data['discount'] = discount;
     return _data;
   }
 }
