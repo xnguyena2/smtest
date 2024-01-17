@@ -53,5 +53,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+    <string>Our app uses the camera to capture photos of your product.</string>    
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allows photo access to add photos to your product.</string>
 </dict>
 </plist>
