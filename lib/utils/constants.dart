@@ -460,6 +460,12 @@ const TextStyle headStyleLargeHigh = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle headStyleMedium600White = TextStyle(
+  color: White,
+  fontSize: 13,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle headStyleMedium600 = TextStyle(
   fontSize: 13,
   fontWeight: FontWeight.w600,
