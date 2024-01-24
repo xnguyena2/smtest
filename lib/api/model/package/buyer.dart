@@ -12,7 +12,8 @@ class Buyer extends BaseEntity {
     required this.realPrice,
     required this.totalPrice,
     required this.shipPrice,
-    required this.pointsDiscount,
+    required this.discount,
+    required this.point,
     this.reciverFullname,
     this.phoneNumberClean,
     this.phoneNumber,
@@ -31,7 +32,8 @@ class Buyer extends BaseEntity {
   late final double realPrice;
   late final double totalPrice;
   late final double shipPrice;
-  late final double pointsDiscount;
+  late final double discount;
+  late final int point;
   late final String? status;
 
   Buyer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -46,7 +48,8 @@ class Buyer extends BaseEntity {
     realPrice = json['real_price'];
     totalPrice = json['total_price'];
     shipPrice = json['ship_price'];
-    pointsDiscount = json['points_discount'];
+    discount = json['discount'];
+    point = json['point'];
     status = json['status'];
   }
 
@@ -63,7 +66,8 @@ class Buyer extends BaseEntity {
     _data['real_price'] = realPrice;
     _data['total_price'] = totalPrice;
     _data['ship_price'] = shipPrice;
-    _data['points_discount'] = pointsDiscount;
+    _data['discount'] = discount;
+    _data['point'] = point;
     _data['status'] = status;
     return _data;
   }

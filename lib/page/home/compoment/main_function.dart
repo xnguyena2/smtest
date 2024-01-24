@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
+import 'package:sales_management/page/list_buyer/list_buyer_page.dart';
 import 'package:sales_management/page/login_by_qr/login_by_qr.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
@@ -20,6 +21,7 @@ const List<Map<String, String>> listFullMainFunction = [
   {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
   {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
+  {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
 ];
 
 const List<Map<String, String>> listNoTableMainFunction = [
@@ -28,6 +30,7 @@ const List<Map<String, String>> listNoTableMainFunction = [
   {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
   {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
+  {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
 ];
 
 class MainFunction extends StatelessWidget {
@@ -139,6 +142,13 @@ class MainFunction extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => LoginByQR(),
+                      ),
+                    );
+                  case 'Buyers':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ListBuyerPage(),
                       ),
                     );
                 }

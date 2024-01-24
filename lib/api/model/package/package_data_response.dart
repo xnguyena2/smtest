@@ -6,7 +6,6 @@ import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
-import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -14,6 +13,8 @@ enum PaymentStatus {
   DONE,
   MAKE_SOME_PAY,
   NOT_PAY,
+  CANCEL,
+  RETURN,
 }
 
 class WrapListFilter {
@@ -213,6 +214,13 @@ class PackageDataResponse extends PackageDetail {
   double get profitExpect => finalPrice - cost;
 
   PaymentStatus paymentStatus() {
+    if (status == 'CANCEL') {
+      return PaymentStatus.CANCEL;
+    }
+    if (status == 'RETURN') {
+      return PaymentStatus.RETURN;
+    }
+
     if (payment >= finalPrice && isDone) {
       return PaymentStatus.DONE; //'Đã thanh toán';
     }
@@ -220,6 +228,22 @@ class PackageDataResponse extends PackageDetail {
       return PaymentStatus.MAKE_SOME_PAY; //'Thanh toán một phần';
     }
     return PaymentStatus.NOT_PAY; //'Chưa thanh toán';
+  }
+
+  String getStatusTxt() {
+    final payment = paymentStatus();
+    switch (payment) {
+      case PaymentStatus.CANCEL:
+        return 'Đã hủy';
+      case PaymentStatus.DONE:
+        return 'Đã giao';
+      case PaymentStatus.MAKE_SOME_PAY:
+        return 'Đang giao dịch';
+      case PaymentStatus.NOT_PAY:
+        return 'Chưa thanh toán';
+      case PaymentStatus.RETURN:
+        return 'Trả lại';
+    }
   }
 
   PaymentTransaction addtransaction(
@@ -314,17 +338,19 @@ class BuyerData extends Buyer {
     required this.district,
     required this.ward,
   }) : super(
-            id: 0,
-            groupId: '',
-            createat: '',
-            deviceId: '',
-            regionId: 0,
-            districtId: 0,
-            wardId: 0,
-            realPrice: 0.0,
-            totalPrice: 0.0,
-            shipPrice: 0.0,
-            pointsDiscount: 0.0);
+          id: 0,
+          groupId: '',
+          createat: '',
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0.0,
+          totalPrice: 0.0,
+          shipPrice: 0.0,
+          discount: 0.0,
+          point: 0,
+        );
   late String? region;
   late String? district;
   late String? ward;
@@ -344,17 +370,19 @@ class BuyerData extends Buyer {
   BuyerData.fromPackageDataResponseAndAddressData(
       PackageDataResponse p, AddressData a)
       : super(
-            id: 0,
-            groupId: p.groupId,
-            createat: null,
-            deviceId: '',
-            regionId: 0,
-            districtId: 0,
-            wardId: 0,
-            realPrice: 0.0,
-            totalPrice: 0.0,
-            shipPrice: 0.0,
-            pointsDiscount: 0.0) {
+          id: 0,
+          groupId: p.groupId,
+          createat: null,
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0.0,
+          totalPrice: 0.0,
+          shipPrice: 0.0,
+          discount: 0.0,
+          point: 0,
+        ) {
     updateData(a);
   }
 

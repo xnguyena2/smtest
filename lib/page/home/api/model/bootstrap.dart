@@ -122,11 +122,15 @@ class BenifitByMonth {
   @HiveField(4)
   late final double cost;
 
+  @HiveField(5)
+  late final double? discount;
+
   BenifitByMonth.fromJson(Map<String, dynamic> json) {
     count = json['count'] as int;
     revenue = json['revenue'] as double;
     profit = json['profit'] as double;
     cost = json['cost'] as double;
+    discount = json['discount'] as double;
   }
 
   Map<String, dynamic> toJson() {
@@ -135,6 +139,7 @@ class BenifitByMonth {
     _data['revenue'] = revenue;
     _data['profit'] = profit;
     _data['cost'] = cost;
+    _data['discount'] = discount;
     return _data;
   }
 }
