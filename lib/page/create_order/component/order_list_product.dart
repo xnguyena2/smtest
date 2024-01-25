@@ -226,7 +226,6 @@ class _ProductItemState extends State<ProductItem> {
         : MoneyFormater.format(productInPackageResponse.discountAmount);
     isProductValid = !(productInPackageResponse.beerSubmitData == null ||
         productInPackageResponse.beerSubmitData?.isAvariable == false);
-    print(isProductValid);
   }
 
   @override
@@ -240,10 +239,12 @@ class _ProductItemState extends State<ProductItem> {
     noteFocus.dispose();
   }
 
+  void deleteItem() {
+    productInPackageResponse.numberUnit = 0;
+    itemPackageChagneNo();
+  }
+
   void removeItemToPackage() {
-    if (productInPackageResponse.numberUnit < 1) {
-      return;
-    }
     productInPackageResponse.numberUnit--;
     itemPackageChagneNo();
   }
@@ -272,7 +273,12 @@ class _ProductItemState extends State<ProductItem> {
         MoneyFormater.format(productInPackageResponse.totalPriceDiscount);
     String productName = productInPackageResponse.get_show_name;
 
+    final isWholesaleMode = productInPackageResponse.isWholesaleMode;
+
+    print(totalPriceFormat);
+
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -449,10 +455,10 @@ class _ProductItemState extends State<ProductItem> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
-                          Divider(
+                          const Divider(
                             color: Black15,
                             thickness: 0.3,
                           ),
@@ -464,7 +470,7 @@ class _ProductItemState extends State<ProductItem> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
+                                    const Row(
                                       children: [
                                         Text(
                                           'Giá bán',
@@ -490,14 +496,14 @@ class _ProductItemState extends State<ProductItem> {
                                               ],
                                               maxLines: 1,
                                               style: customerNameBigHight,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 contentPadding: EdgeInsets.zero,
                                                 isDense: true,
                                                 border: InputBorder.none,
                                               ),
                                               onChanged: (value) {
                                                 productInPackageResponse.price =
-                                                    double.tryParse(value) ?? 0;
+                                                    tryParseMoney(value);
                                                 widget.onRefreshData();
                                                 setState(() {});
                                               },
@@ -521,11 +527,11 @@ class _ProductItemState extends State<ProductItem> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                           'Chiết khấu',
                                           style: headStyleSemiLargeLigh500,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 18,
                                         ),
                                         SwitchBtn(
@@ -575,7 +581,7 @@ class _ProductItemState extends State<ProductItem> {
                                               textAlign: TextAlign.right,
                                               maxLines: 1,
                                               style: customerNameBigHight,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 contentPadding: EdgeInsets.zero,
                                                 isDense: true,
                                                 border: InputBorder.none,
@@ -612,7 +618,7 @@ class _ProductItemState extends State<ProductItem> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
+                                    const Row(
                                       children: [
                                         Text(
                                           'Ghi chú',
@@ -631,7 +637,7 @@ class _ProductItemState extends State<ProductItem> {
                                                   productInPackageResponse.note,
                                               maxLines: 1,
                                               style: customerNameBig,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 hintText: 'Ghi chú',
                                                 contentPadding: EdgeInsets.zero,
                                                 isDense: true,
@@ -673,6 +679,17 @@ class _ProductItemState extends State<ProductItem> {
             ],
           ),
         ),
+        if (widget.isEditting)
+          Positioned(
+            top: -8,
+            left: 2,
+            child: GestureDetector(
+              onTap: () {
+                deleteItem();
+              },
+              child: LoadSvg(assetPath: 'svg/close_circle.svg'),
+            ),
+          ),
         if (!isProductValid)
           Positioned.fill(
             child: GestureDetector(

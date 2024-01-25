@@ -206,7 +206,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
     // final int selectionIndexFromTheRight =
     //     newValue.text.length - newValue.selection.end;
 
-    print(newValue.text);
+    // print(newValue.text);
     double value = double.tryParse(newValue.text) ?? 0;
     // print(selectionIndexFromTheRight);
 

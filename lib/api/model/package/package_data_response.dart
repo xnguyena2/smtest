@@ -159,7 +159,6 @@ class PackageDataResponse extends PackageDetail {
     }
     items.add(productInPackageResponse);
     productMap[productUnit.beerUnitSecondId] = productInPackageResponse;
-    updatePrice();
   }
 
   void updateProductMap() {
@@ -330,6 +329,10 @@ class ProductInPackageResponse extends UserPackage {
       numberUnit * (beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0);
 
   String get priceDiscountFormat => MoneyFormater.format(priceDiscount);
+
+  int get getWholesaleNumber => beerSubmitData?.getWholesaleNumber ?? 0;
+
+  bool get isWholesaleMode => numberUnit > getWholesaleNumber;
 }
 
 class BuyerData extends Buyer {
