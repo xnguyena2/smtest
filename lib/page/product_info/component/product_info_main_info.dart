@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -14,6 +13,7 @@ import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/api/model/category_container.dart';
 import 'package:sales_management/page/product_info/component/modal_create_category.dart';
+import 'package:sales_management/page/product_info/component/modal_wholesale_setting.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -117,8 +117,23 @@ class _MainProductInfoState extends State<MainProductInfo> {
               isNumberOnly: true,
               header: 'Giá sỉ',
               hint: '0-0',
+              initValue:
+                  '${MoneyFormater.format(product.getWholesalePrice)}-${product.getWholesaleNumber}',
               isImportance: false,
-              isDisable: true,
+              isDropDown: true,
+              onSelected: () {
+                showDefaultModal(
+                  context: context,
+                  content: ModalWholesaleSetting(
+                    onDone: (p) {
+                      product.setWholesaleNumber(p.getWholesaleNumber);
+                      product.setWholesalePrice(p.getWholesalePrice);
+                      setState(() {});
+                    },
+                    product: product.clone(),
+                  ),
+                );
+              },
             ),
             SizedBox(
               height: 21,

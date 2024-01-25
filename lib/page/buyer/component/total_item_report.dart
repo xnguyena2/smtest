@@ -9,12 +9,14 @@ class TotalReportItem extends StatelessWidget {
     required this.iconPath,
     required this.headerTxt,
     this.bgColor = BackgroundColor,
+    this.unLimitHeader = false,
   });
 
   final String contentTxt;
   final String iconPath;
   final String headerTxt;
   final Color bgColor;
+  final bool unLimitHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,9 @@ class TotalReportItem extends StatelessWidget {
               const SizedBox(
                 width: 9,
               ),
-              Expanded(
+              ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: unLimitHeader ? 1000 : 120),
                 child: Text(
                   headerTxt,
                   overflow: TextOverflow.ellipsis,

@@ -44,6 +44,7 @@ class ReportByProductLastTimeAsTable extends StatelessWidget {
             child: DataTable(
               horizontalMargin: 12,
               headingTextStyle: subInfoStyLarge400,
+              headingRowHeight: 0,
               decoration: const BoxDecoration(
                 color: White,
               ),
@@ -51,49 +52,79 @@ class ReportByProductLastTimeAsTable extends StatelessWidget {
               border: TableBorder.symmetric(
                   inside: const BorderSide(width: 1.5, color: BackgroundColor)),
               columns: const [
-                DataColumn(label: Text('SẢN PHẨM')),
-                DataColumn(label: Text('SL')),
-                DataColumn(label: Text('GẦN NHẤT')),
+                DataColumn(label: SizedBox()),
+                DataColumn(label: SizedBox()),
+                DataColumn(label: SizedBox()),
               ],
-              rows: benifitByProducts
-                  .map(
-                    (e) => DataRow(
-                      cells: <DataCell>[
-                        DataCell(Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${e.product_name}',
-                              style: headStyleMedium,
-                            ),
-                            if (e.product_unit_name?.isNotEmpty == true)
-                              Text(
-                                '${e.product_unit_name}',
-                                style: subStyleMediumNormalLight,
-                              ),
-                          ],
-                        )),
-                        DataCell(
-                          Text(
-                            e.number_unit.toString(),
-                            style: headStyleMedium,
-                          ),
-                        ),
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                formatLocalDateTimeOnlyDateSplash(e.createat),
-                                style: headStyleMedium,
-                              ),
-                            ],
-                          ),
+              rows: [
+                const DataRow(cells: [
+                  DataCell(Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'SẢN PHẨM',
+                        style: subInfoStyLarge400,
+                      ),
+                    ],
+                  )),
+                  DataCell(
+                    Text(
+                      'SL',
+                      style: subInfoStyLarge400,
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'GẦN NHẤT',
+                          style: subInfoStyLarge400,
                         ),
                       ],
                     ),
-                  )
-                  .toList(),
+                  ),
+                ]),
+                ...benifitByProducts
+                    .map(
+                      (e) => DataRow(
+                        cells: <DataCell>[
+                          DataCell(Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${e.product_name}',
+                                style: headStyleMedium,
+                              ),
+                              if (e.product_unit_name?.isNotEmpty == true)
+                                Text(
+                                  '${e.product_unit_name}',
+                                  style: subStyleMediumNormalLight,
+                                ),
+                            ],
+                          )),
+                          DataCell(
+                            Text(
+                              e.number_unit.toString(),
+                              style: headStyleMedium,
+                            ),
+                          ),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formatLocalDateTimeOnlyDateSplash(e.createat),
+                                  style: headStyleMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    .toList()
+              ],
             ),
           ),
           SizedBox(

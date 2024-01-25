@@ -122,16 +122,19 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       status: 'AVARIABLE',
       listUnit: [
         BeerUnit(
-            groupId: groupID,
-            beer: productID,
-            name: '',
-            price: 0,
-            buyPrice: 0,
-            discount: 0,
-            volumetric: 0,
-            weight: 0,
-            beerUnitSecondId: '',
-            status: '')
+          groupId: groupID,
+          beer: productID,
+          name: '',
+          price: 0,
+          buyPrice: 0,
+          discount: 0,
+          volumetric: 0,
+          weight: 0,
+          beerUnitSecondId: '',
+          status: '',
+          wholesale_price: 0,
+          wholesale_number: 0,
+        )
       ],
       list_categorys: [],
       images: [],
@@ -173,6 +176,18 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   double get getBuyPrice => listUnit?[0].buyPrice ?? 0;
 
   double get getPrice => listUnit?[0].price ?? 0;
+
+  double get getWholesalePrice => listUnit?[0].wholesale_price ?? 0;
+
+  int get getWholesaleNumber => listUnit?[0].wholesale_number ?? 0;
+
+  void setWholesalePrice(double price) {
+    listUnit?[0].wholesale_price = price;
+  }
+
+  void setWholesaleNumber(int no) {
+    listUnit?[0].wholesale_number = no;
+  }
 
   bool isContainCategory(List<String> listCat) {
     for (String cat in listCat) {
@@ -311,6 +326,8 @@ class BeerUnit {
     required this.weight,
     required this.beerUnitSecondId,
     required this.status,
+    required this.wholesale_price,
+    required this.wholesale_number,
   }) {
     correctPrice();
   }
@@ -347,6 +364,12 @@ class BeerUnit {
   @HiveField(10)
   late final String status;
 
+  @HiveField(11)
+  late double? wholesale_price;
+
+  @HiveField(12)
+  late int? wholesale_number;
+
   late double realPrice = 0;
 
   void correctPrice() {
@@ -367,6 +390,8 @@ class BeerUnit {
     weight = json['weight'];
     beerUnitSecondId = json['beer_unit_second_id'];
     status = json['status'];
+    wholesale_price = json['wholesale_price'] as double;
+    wholesale_number = json['wholesale_number'] as int;
 
     correctPrice();
   }
@@ -384,6 +409,8 @@ class BeerUnit {
     _data['weight'] = weight;
     _data['beer_unit_second_id'] = beerUnitSecondId;
     _data['status'] = status;
+    _data['wholesale_price'] = wholesale_price;
+    _data['wholesale_number'] = wholesale_number;
     return _data;
   }
 }

@@ -144,6 +144,7 @@ class ReportByBuyerAsTable extends StatelessWidget {
               ),
               child: DataTable(
                 horizontalMargin: 12,
+                headingRowHeight: 0,
                 headingTextStyle: subInfoStyLarge400,
                 decoration: const BoxDecoration(
                   color: White,
@@ -153,50 +154,83 @@ class ReportByBuyerAsTable extends StatelessWidget {
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
                 columns: const [
-                  DataColumn(label: Text('KHÁCH HÀNG')),
-                  DataColumn(label: Text('ĐƠN')),
-                  DataColumn(label: Text('DOANH THU')),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
                 ],
-                rows: ListProductBenifitDataResult.listResult
-                    .map(
-                      (e) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${e.name?.isNotEmpty == true ? e.name : 'Khách lẻ'}',
-                                style: headStyleMedium,
-                              ),
-                              if (e.id?.isNotEmpty == true)
-                                Text(
-                                  '${e.id}',
-                                  style: subStyleMediumNormalLight,
-                                ),
-                            ],
-                          )),
-                          DataCell(
-                            Text(
-                              e.count.toString(),
-                              style: headStyleMedium,
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  MoneyFormater.format(e.revenue),
-                                  style: headStyleMedium,
-                                ),
-                              ],
-                            ),
+                rows: [
+                  const DataRow(
+                    cells: <DataCell>[
+                      DataCell(Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'KHÁCH HÀNG',
+                            style: subInfoStyLarge400,
                           ),
                         ],
+                      )),
+                      DataCell(
+                        Text(
+                          'ĐƠN',
+                          style: subInfoStyLarge400,
+                        ),
                       ),
-                    )
-                    .toList(),
+                      DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'DOANH THU',
+                              style: subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...ListProductBenifitDataResult.listResult
+                      .map(
+                        (e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${e.name?.isNotEmpty == true ? e.name : 'Khách lẻ'}',
+                                  style: headStyleMedium,
+                                ),
+                                if (e.id?.isNotEmpty == true)
+                                  Text(
+                                    '${e.id}',
+                                    style: subStyleMediumNormalLight,
+                                  ),
+                              ],
+                            )),
+                            DataCell(
+                              Text(
+                                e.count.toString(),
+                                style: headStyleMedium,
+                              ),
+                            ),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    MoneyFormater.format(e.revenue),
+                                    style: headStyleMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
             ),
           ],
@@ -240,6 +274,7 @@ class ReportByStaffAsTable extends StatelessWidget {
               child: DataTable(
                 horizontalMargin: 12,
                 headingTextStyle: subInfoStyLarge400,
+                headingRowHeight: 0,
                 decoration: const BoxDecoration(
                   color: White,
                 ),
@@ -248,50 +283,83 @@ class ReportByStaffAsTable extends StatelessWidget {
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
                 columns: const [
-                  DataColumn(label: Text('NHÂN VIÊN')),
-                  DataColumn(label: Text('ĐƠN')),
-                  DataColumn(label: Text('DOANH THU')),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
                 ],
-                rows: ListProductBenifitDataResult.listResult
-                    .map(
-                      (e) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${e.name?.isNotEmpty == true ? e.name == userPhoneNumber ? 'Chú quán' : e.name : 'Chú quán'}',
-                                style: headStyleMedium,
-                              ),
-                              if (e.id?.isNotEmpty == true)
-                                Text(
-                                  '${e.id}',
-                                  style: subStyleMediumNormalLight,
-                                ),
-                            ],
-                          )),
-                          DataCell(
-                            Text(
-                              e.count.toString(),
-                              style: headStyleMedium,
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  MoneyFormater.format(e.revenue),
-                                  style: headStyleMedium,
-                                ),
-                              ],
-                            ),
+                rows: [
+                  const DataRow(
+                    cells: <DataCell>[
+                      DataCell(Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'NHÂN VIÊN',
+                            style: subInfoStyLarge400,
                           ),
                         ],
+                      )),
+                      DataCell(
+                        Text(
+                          'ĐƠN',
+                          style: subInfoStyLarge400,
+                        ),
                       ),
-                    )
-                    .toList(),
+                      DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'DOANH THU',
+                              style: subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...ListProductBenifitDataResult.listResult
+                      .map(
+                        (e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${e.name?.isNotEmpty == true ? e.name == userPhoneNumber ? 'Chú quán' : e.name : 'Chú quán'}',
+                                  style: headStyleMedium,
+                                ),
+                                if (e.id?.isNotEmpty == true)
+                                  Text(
+                                    '${e.id}',
+                                    style: subStyleMediumNormalLight,
+                                  ),
+                              ],
+                            )),
+                            DataCell(
+                              Text(
+                                e.count.toString(),
+                                style: headStyleMedium,
+                              ),
+                            ),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    MoneyFormater.format(e.revenue),
+                                    style: headStyleMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
             ),
           ],
@@ -335,6 +403,7 @@ class ReportByProductAsTable extends StatelessWidget {
               child: DataTable(
                 horizontalMargin: 12,
                 headingTextStyle: subInfoStyLarge400,
+                headingRowHeight: 0,
                 decoration: const BoxDecoration(
                   color: White,
                 ),
@@ -343,49 +412,81 @@ class ReportByProductAsTable extends StatelessWidget {
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
                 columns: const [
-                  DataColumn(label: Text('SẢN PHẨM')),
-                  DataColumn(label: Text('SỐ LƯỢNG')),
-                  DataColumn(label: Text('DOANH THU')),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
                 ],
-                rows: ListProductBenifitDataResult.listResult
-                    .map(
-                      (e) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${e.product_name}',
-                                style: headStyleMedium,
-                              ),
-                              if (e.product_unit_name?.isNotEmpty == true)
-                                Text(
-                                  '${e.product_unit_name}',
-                                  style: subStyleMediumNormalLight,
-                                ),
-                            ],
-                          )),
-                          DataCell(
-                            Text(
-                              e.number_unit.toString(),
-                              style: headStyleMedium,
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  MoneyFormater.format(e.revenue),
-                                  style: headStyleMedium,
-                                ),
-                              ],
-                            ),
+                rows: [
+                  const DataRow(
+                    cells: <DataCell>[
+                      DataCell(Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'SẢN PHẨM',
+                            style: subInfoStyLarge400,
                           ),
                         ],
+                      )),
+                      DataCell(
+                        Text(
+                          'SỐ LƯỢNG',
+                          style: subInfoStyLarge400,
+                        ),
                       ),
-                    )
-                    .toList(),
+                      DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'DOANH THU',
+                              style: subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...ListProductBenifitDataResult.listResult
+                      .map(
+                        (e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${e.product_name}',
+                                  style: headStyleMedium,
+                                ),
+                                if (e.product_unit_name?.isNotEmpty == true)
+                                  Text(
+                                    '${e.product_unit_name}',
+                                    style: subStyleMediumNormalLight,
+                                  ),
+                              ],
+                            )),
+                            DataCell(
+                              Text(
+                                e.number_unit.toString(),
+                                style: headStyleMedium,
+                              ),
+                            ),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    MoneyFormater.format(e.revenue),
+                                    style: headStyleMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
             ),
           ],
@@ -429,6 +530,7 @@ class ReportByOrderAsTable extends StatelessWidget {
               child: DataTable(
                 horizontalMargin: 12,
                 headingTextStyle: subInfoStyLarge400,
+                headingRowHeight: 0,
                 decoration: const BoxDecoration(
                   color: White,
                 ),
@@ -437,42 +539,71 @@ class ReportByOrderAsTable extends StatelessWidget {
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
                 columns: const [
-                  DataColumn(label: Text('ĐƠN HÀNG')),
-                  DataColumn(label: Text('DOANH THU')),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
                 ],
-                rows: ListProductBenifitDataResult.listResult
-                    .map(
-                      (e) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${e.package_second_id.substring(0, 8).toUpperCase()}',
-                                style: headStyleMedium,
-                              ),
-                              Text(
-                                '${formatSplashLocalDateTime(e.createat)}',
-                                style: subStyleMediumNormalLight,
-                              ),
-                            ],
-                          )),
-                          DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                rows: [
+                  const DataRow(
+                    cells: <DataCell>[
+                      DataCell(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ĐƠN HÀNG',
+                              style: subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
+                      DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'DOANH THU',
+                              style: subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...ListProductBenifitDataResult.listResult
+                      .map(
+                        (e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  MoneyFormater.format(e.revenue),
+                                  '${e.package_second_id.substring(0, 8).toUpperCase()}',
                                   style: headStyleMedium,
                                 ),
+                                Text(
+                                  '${formatSplashLocalDateTime(e.createat)}',
+                                  style: subStyleMediumNormalLight,
+                                ),
                               ],
+                            )),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    MoneyFormater.format(e.revenue),
+                                    style: headStyleMedium,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                    .toList(),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
             ),
           ],
@@ -517,6 +648,7 @@ class ReportByDayAsTable extends StatelessWidget {
               child: DataTable(
                 horizontalMargin: 12,
                 headingTextStyle: subInfoStyLarge400,
+                headingRowHeight: 0,
                 decoration: const BoxDecoration(
                   color: White,
                 ),
@@ -525,42 +657,71 @@ class ReportByDayAsTable extends StatelessWidget {
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
                 columns: const [
-                  DataColumn(label: Text('NGÀY')),
-                  DataColumn(label: Text('ĐƠN')),
-                  DataColumn(label: Text('KHÁCH')),
-                  DataColumn(label: Text('D.THU')),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
+                  DataColumn(label: SizedBox()),
                 ],
-                rows: ListProductBenifitDataResult.listResult
-                    .map(
-                      (e) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text(
-                            '${e.localTime}',
-                            style: headStyleMedium,
-                          )),
-                          DataCell(Text(
-                            '${e.count}',
-                            style: headStyleMedium,
-                          )),
-                          DataCell(Text(
-                            '${e.buyer}',
-                            style: headStyleMedium,
-                          )),
-                          DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  MoneyFormater.format(e.revenue),
-                                  style: headStyleMedium,
-                                ),
-                              ],
+                rows: [
+                  const DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text(
+                        'NGÀY',
+                        style: subInfoStyLarge400,
+                      )),
+                      DataCell(Text(
+                        'ĐƠN',
+                        style: subInfoStyLarge400,
+                      )),
+                      DataCell(Text(
+                        'KHÁCH',
+                        style: subInfoStyLarge400,
+                      )),
+                      DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'D.THU',
+                              style: subInfoStyLarge400,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    )
-                    .toList(),
+                    ],
+                  ),
+                  ...ListProductBenifitDataResult.listResult
+                      .map(
+                        (e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(
+                              '${e.localTime}',
+                              style: headStyleMedium,
+                            )),
+                            DataCell(Text(
+                              '${e.count}',
+                              style: headStyleMedium,
+                            )),
+                            DataCell(Text(
+                              '${e.buyer}',
+                              style: headStyleMedium,
+                            )),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    MoneyFormater.format(e.revenue),
+                                    style: headStyleMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
               ),
             ),
           ],

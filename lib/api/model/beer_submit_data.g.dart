@@ -159,13 +159,15 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       weight: fields[8] as double?,
       beerUnitSecondId: fields[9] as String,
       status: fields[10] as String,
+      wholesale_price: fields[11] as double?,
+      wholesale_number: fields[12] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BeerUnit obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.groupId)
       ..writeByte(1)
@@ -187,7 +189,11 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       ..writeByte(9)
       ..write(obj.beerUnitSecondId)
       ..writeByte(10)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(11)
+      ..write(obj.wholesale_price)
+      ..writeByte(12)
+      ..write(obj.wholesale_number);
   }
 
   @override

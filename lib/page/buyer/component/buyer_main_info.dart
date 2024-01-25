@@ -108,6 +108,7 @@ class BuyerMainInfo extends StatelessWidget {
             bgColor: White,
             iconPath: 'svg/points_and_dollars_exchange.svg',
             headerTxt: 'Điểm tích lỹ quy đổi(100k = 1 điểm)',
+            unLimitHeader: true,
             contentTxt:
                 '${MoneyFormater.format(buyerData.realPrice)} - ${MoneyFormater.format(buyerData.discount)} = ${((buyerData.realPrice - buyerData.discount) / 100000).toInt()} điểm',
           ),
