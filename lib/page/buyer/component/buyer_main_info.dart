@@ -21,6 +21,7 @@ class BuyerMainInfo extends StatefulWidget {
 class _BuyerMainInfoState extends State<BuyerMainInfo> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 6,
@@ -114,6 +115,7 @@ class _BuyerMainInfoState extends State<BuyerMainInfo> {
                   iconPath: 'svg/ecommerce_money.svg',
                   headerTxt: 'Tổng doanh thu',
                   contentTxt: MoneyFormater.format(widget.buyerData.realPrice),
+                  maxWidth: (screenWidth - 32 - 20 - 24) / 2 - 41,
                 ),
               ),
               SizedBox(
@@ -124,6 +126,7 @@ class _BuyerMainInfoState extends State<BuyerMainInfo> {
                   iconPath: 'svg/discount_ecommerce_price.svg',
                   headerTxt: 'Tổng tiền đã giảm',
                   contentTxt: MoneyFormater.format(widget.buyerData.discount),
+                  maxWidth: (screenWidth - 32 - 20 - 24) / 2 - 41,
                 ),
               ),
             ],
@@ -135,7 +138,7 @@ class _BuyerMainInfoState extends State<BuyerMainInfo> {
             bgColor: White,
             iconPath: 'svg/points_and_dollars_exchange.svg',
             headerTxt: 'Điểm tích lỹ quy đổi(100k = 1 điểm)',
-            unLimitHeader: true,
+            maxWidth: (screenWidth - 32 - 24),
             contentTxt:
                 '${MoneyFormater.format(widget.buyerData.realPrice)} - ${MoneyFormater.format(widget.buyerData.discount)} = ${((widget.buyerData.realPrice - widget.buyerData.discount) / 100000).toInt()} điểm',
           ),
@@ -146,7 +149,7 @@ class _BuyerMainInfoState extends State<BuyerMainInfo> {
             bgColor: White,
             iconPath: 'svg/point.svg',
             headerTxt: 'Tổng điểm còn lại sau khi dùng',
-            unLimitHeader: true,
+            maxWidth: (screenWidth - 32 - 24),
             contentTxt:
                 '${((widget.buyerData.realPrice - widget.buyerData.discount) / 100000).toInt()} - ${-widget.buyerData.point} = ${widget.buyerData.getTotalPoint} điểm',
           ),

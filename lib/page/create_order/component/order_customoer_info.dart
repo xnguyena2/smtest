@@ -169,10 +169,12 @@ class _CustomerInfoState extends State<CustomerInfo> {
               ),
               child: Row(
                 children: [
-                  Text(
-                    regionTextFormat ?? 'Chọn khách hàng',
-                    style: customerNameBigLigh,
-                    overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Text(
+                      regionTextFormat ?? 'Chọn khách hàng',
+                      style: customerNameBigLigh,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
