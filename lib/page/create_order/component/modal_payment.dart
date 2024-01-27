@@ -72,7 +72,9 @@ class _ModalModalPaymentState extends State<ModalPayment> {
                     text: 'Khách còn nợ: ',
                     style: subInfoStyLargeLigh400,
                     children: [
-                      TextSpan(text: '$own', style: subInfoStyLargeRed400)
+                      TextSpan(
+                          text: MoneyFormater.format(own),
+                          style: subInfoStyLargeRed400)
                     ],
                   ),
                 ),
