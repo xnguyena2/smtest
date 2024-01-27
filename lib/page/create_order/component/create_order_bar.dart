@@ -27,10 +27,10 @@ class CreateOrderBar extends BarLarge {
               // const SizedBox(
               //   width: 20,
               // ),
-              FunctionItem(
-                icon: 'svg/copy.svg',
-                title: 'Copy',
-              ),
+              // FunctionItem(
+              //   icon: 'svg/copy.svg',
+              //   title: 'Copy',
+              // ),
               // const SizedBox(
               //   width: 20,
               // ),

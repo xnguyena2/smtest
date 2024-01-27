@@ -10,8 +10,8 @@ import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
-import 'package:sales_management/page/create_order/component/order_list_product.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/product_selector/component/provider_discount.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
@@ -55,12 +55,8 @@ class _TotalPriceState extends State<TotalPrice> {
     // TODO: implement initState
     super.initState();
     data = widget.data;
-    if (data.discountPercent != 0 || data.discountAmount != 0) {
-      isDiscountPercent = data.discountPercent > 0;
-    }
-    discountTxtController.text = isDiscountPercent
-        ? data.discountPercent.toString()
-        : MoneyFormater.format(data.discountAmount);
+
+    setDiscount();
 
     shipTxtController.text = MoneyFormater.format(data.shipPrice);
 
@@ -79,9 +75,23 @@ class _TotalPriceState extends State<TotalPrice> {
     });
   }
 
+  void setDiscount() {
+    if (data.discountPercent != 0 || data.discountAmount != 0) {
+      isDiscountPercent = data.discountPercent > 0;
+    }
+    discountTxtController.text = isDiscountPercent
+        ? data.discountPercent.toString()
+        : MoneyFormater.format(data.discountAmount);
+  }
+
   @override
   Widget build(BuildContext context) {
     PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
+    double discount = context.watch<DiscountProvider>().getDiscount!;
+    if (discount > 0) {
+      setDiscount();
+      context.read<DiscountProvider>().clean();
+    }
     String totalPrice = data.priceFormat;
     double finalPrice = data.finalPrice;
     double payment = data.payment;
@@ -243,7 +253,7 @@ class _TotalPriceState extends State<TotalPrice> {
               )
             else
               Text(
-                data.shipPrice.toString(),
+                MoneyFormater.format(data.shipPrice),
                 style: headStyleXXLarge,
               ),
           ],

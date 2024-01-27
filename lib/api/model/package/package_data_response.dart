@@ -6,7 +6,6 @@ import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
-import 'package:sales_management/page/transaction/api/transaction_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -14,6 +13,8 @@ enum PaymentStatus {
   DONE,
   MAKE_SOME_PAY,
   NOT_PAY,
+  CANCEL,
+  RETURN,
 }
 
 class WrapListFilter {
@@ -98,6 +99,7 @@ class PackageDataResponse extends PackageDetail {
           price: 0.0,
           cost: 0.0,
           profit: 0.0,
+          point: 0,
           payment: 0.0,
           discountAmount: 0.0,
           discountPercent: 0.0,
@@ -158,7 +160,6 @@ class PackageDataResponse extends PackageDetail {
     }
     items.add(productInPackageResponse);
     productMap[productUnit.beerUnitSecondId] = productInPackageResponse;
-    updatePrice();
   }
 
   void updateProductMap() {
@@ -169,6 +170,11 @@ class PackageDataResponse extends PackageDetail {
       }
       productMap[productUnit.beerUnitSecondId] = element;
     });
+  }
+
+  void cleanBuyer() {
+    buyer = null;
+    point = 0;
   }
 
   void updateBuyer(AddressData addressData) {
@@ -182,6 +188,12 @@ class PackageDataResponse extends PackageDetail {
       return;
     }
     buyer!.updateData(addressData);
+  }
+
+  void applyPoint(int point, double discount) {
+    discountPercent = 0;
+    discountAmount += discount;
+    this.point = -point;
   }
 
   PackageDataResponse clone() {
@@ -213,6 +225,13 @@ class PackageDataResponse extends PackageDetail {
   double get profitExpect => finalPrice - cost;
 
   PaymentStatus paymentStatus() {
+    if (status == 'CANCEL') {
+      return PaymentStatus.CANCEL;
+    }
+    if (status == 'RETURN') {
+      return PaymentStatus.RETURN;
+    }
+
     if (payment >= finalPrice && isDone) {
       return PaymentStatus.DONE; //'Đã thanh toán';
     }
@@ -220,6 +239,22 @@ class PackageDataResponse extends PackageDetail {
       return PaymentStatus.MAKE_SOME_PAY; //'Thanh toán một phần';
     }
     return PaymentStatus.NOT_PAY; //'Chưa thanh toán';
+  }
+
+  String getStatusTxt() {
+    final payment = paymentStatus();
+    switch (payment) {
+      case PaymentStatus.CANCEL:
+        return 'Đã hủy';
+      case PaymentStatus.DONE:
+        return 'Đã giao';
+      case PaymentStatus.MAKE_SOME_PAY:
+        return 'Đang giao dịch';
+      case PaymentStatus.NOT_PAY:
+        return 'Chưa thanh toán';
+      case PaymentStatus.RETURN:
+        return 'Trả lại';
+    }
   }
 
   PaymentTransaction addtransaction(
@@ -306,6 +341,10 @@ class ProductInPackageResponse extends UserPackage {
       numberUnit * (beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0);
 
   String get priceDiscountFormat => MoneyFormater.format(priceDiscount);
+
+  int get getWholesaleNumber => beerSubmitData?.getWholesaleNumber ?? 0;
+
+  bool get isWholesaleMode => numberUnit > getWholesaleNumber;
 }
 
 class BuyerData extends Buyer {
@@ -314,22 +353,46 @@ class BuyerData extends Buyer {
     required this.district,
     required this.ward,
   }) : super(
-            id: 0,
-            groupId: '',
-            createat: '',
-            deviceId: '',
-            regionId: 0,
-            districtId: 0,
-            wardId: 0,
-            realPrice: 0.0,
-            totalPrice: 0.0,
-            shipPrice: 0.0,
-            pointsDiscount: 0.0);
+          id: 0,
+          groupId: groupID,
+          createat: '',
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0.0,
+          totalPrice: 0.0,
+          shipPrice: 0.0,
+          discount: 0.0,
+          point: 0,
+        );
   late String? region;
   late String? district;
   late String? ward;
 
+  BuyerData.uknowBuyer()
+      : super(
+          id: 0,
+          groupId: groupID,
+          createat: null,
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0,
+          totalPrice: 0,
+          shipPrice: 0,
+          discount: 0,
+          point: 0,
+        ) {
+    reciverFullname = 'Khách lẻ';
+    phoneNumber = phoneNumberClean = 'Khách ngẫu nhiên';
+  }
+
+  bool get isUnknowUser => deviceId == '';
+
   void updateData(AddressData data) {
+    deviceId = data.deviceID;
     phoneNumber = data.phoneNumber;
     reciverFullname = data.reciverFullName;
     reciverAddress = data.houseNumber;
@@ -339,22 +402,35 @@ class BuyerData extends Buyer {
     districtId = data.district.id;
     ward = data.ward.name;
     wardId = data.ward.id;
+    totalPrice = data.getBuyerData?.totalPrice ?? 0;
+    realPrice = data.getBuyerData?.realPrice ?? 0;
+    shipPrice = data.getBuyerData?.shipPrice ?? 0;
+    discount = data.getBuyerData?.discount ?? 0;
+    point = data.getBuyerData?.point ?? 0;
+  }
+
+  void updateDeviceID(AddressData data) {
+    if (deviceId.isEmpty) {
+      deviceId = data.deviceID = generateUUID();
+    }
   }
 
   BuyerData.fromPackageDataResponseAndAddressData(
       PackageDataResponse p, AddressData a)
       : super(
-            id: 0,
-            groupId: p.groupId,
-            createat: null,
-            deviceId: '',
-            regionId: 0,
-            districtId: 0,
-            wardId: 0,
-            realPrice: 0.0,
-            totalPrice: 0.0,
-            shipPrice: 0.0,
-            pointsDiscount: 0.0) {
+          id: 0,
+          groupId: p.groupId,
+          createat: null,
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0,
+          totalPrice: 0,
+          shipPrice: 0,
+          discount: 0,
+          point: 0,
+        ) {
     updateData(a);
   }
 
@@ -372,12 +448,12 @@ class BuyerData extends Buyer {
     return _data;
   }
 
-  String? getAddressFormat() {
+  String getAddressFormat() {
     if (region == null) {
-      return null;
+      return 'Chọn địa chỉ';
     }
     if (region!.isEmpty) {
-      return null;
+      return 'Chọn địa chỉ';
     }
     return '${reciverAddress ?? ''}, ${ward ?? ''}, ${district ?? ''}, ${region ?? ''}';
   }

@@ -56,7 +56,7 @@ String getFirstDateTimeOfLastMonth() {
 
 String getLastDateTimeOfLastMonth() {
   final now = DateTime.now();
-  var date = DateTime(now.year, now.month, 0);
+  var date = DateTime(now.year, now.month, 0, 24);
   return DateFormat("y-MM-ddTHH:mm:ss.S").format(date);
 }
 

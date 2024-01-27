@@ -6,7 +6,7 @@ const String host =
 
 const String Seperate = '<=>';
 
-const String appVersion = '1.3.0';
+const String appVersion = '1.4.0';
 
 String storeName = 'trumbien store';
 String groupID = 'trumbien_store';
@@ -213,6 +213,7 @@ const TextStyle headStyleXLargeSemiBoldCost = TextStyle(
 );
 
 const TextStyle headStyleXLargeSemiBold = TextStyle(
+  color: Black,
   fontSize: 17,
   fontWeight: FontWeight.w600,
 );
@@ -273,6 +274,11 @@ const TextStyle customerNameBigRed600 = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle customerNameBig600 = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle customerNameBig = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w500,
@@ -296,6 +302,12 @@ const TextStyle customerNameBigRed = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle customerNameBigHigh400 = TextStyle(
+  color: TableHighColor,
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+);
+
 const TextStyle customerNameBigLight400 = TextStyle(
   color: Black40,
   fontSize: 16,
@@ -309,11 +321,17 @@ const TextStyle customerNameBigHardLight400 = TextStyle(
 );
 
 const TextStyle customerNameBig400 = TextStyle(
+  color: Black,
   fontSize: 16,
   fontWeight: FontWeight.w400,
 );
 
 const TextStyle headStyleSemiLarge = TextStyle(
+  fontSize: 15,
+);
+
+const TextStyle headStyleSemiLarge600 = TextStyle(
+  fontWeight: FontWeight.w600,
   fontSize: 15,
 );
 
@@ -419,6 +437,12 @@ const TextStyle headStyleSmallLargeHigh = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleSmallLargeLLigh = TextStyle(
+  color: Black40,
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleSmallLargeLigh = TextStyle(
   color: Black70,
   fontSize: 14,
@@ -457,6 +481,12 @@ const TextStyle headStyleLargeWhite = TextStyle(
 
 const TextStyle headStyleLargeHigh = TextStyle(
   fontSize: 14,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleMedium600White = TextStyle(
+  color: White,
+  fontSize: 13,
   fontWeight: FontWeight.w600,
 );
 

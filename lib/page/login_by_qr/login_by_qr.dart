@@ -24,7 +24,7 @@ class LoginByQR extends StatelessWidget {
           child: Scaffold(
             backgroundColor: White,
             resizeToAvoidBottomInset: false,
-            appBar: StoreInfoBar(),
+            appBar: LoginQRBar(),
             body: FetchAPI<ListTokensResult>(
               future: getAllTokens(),
               successBuilder: (ListTokensResult) {

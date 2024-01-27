@@ -4,12 +4,12 @@ class ListProductBenifitDataResult {
   ListProductBenifitDataResult({
     required this.listResult,
   });
-  late final List<BenifitByProductOfMonth> listResult;
+  late final List<BenifitByProduct> listResult;
   ListProductBenifitDataResult.fromJson(Map<String, dynamic> json) {
     listResult = json['list_result'] == null
         ? []
         : List.from(json['list_result'])
-            .map((e) => BenifitByProductOfMonth.fromJson(e))
+            .map((e) => BenifitByProduct.fromJson(e))
             .toList();
   }
 }

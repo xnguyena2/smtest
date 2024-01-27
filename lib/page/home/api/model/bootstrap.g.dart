@@ -116,13 +116,13 @@ class BenifitByMonthAdapter extends TypeAdapter<BenifitByMonth> {
       revenue: fields[2] as double,
       profit: fields[3] as double,
       cost: fields[4] as double,
-    );
+    )..discount = fields[5] as double?;
   }
 
   @override
   void write(BinaryWriter writer, BenifitByMonth obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(1)
       ..write(obj.count)
       ..writeByte(2)
@@ -130,7 +130,9 @@ class BenifitByMonthAdapter extends TypeAdapter<BenifitByMonth> {
       ..writeByte(3)
       ..write(obj.profit)
       ..writeByte(4)
-      ..write(obj.cost);
+      ..write(obj.cost)
+      ..writeByte(5)
+      ..write(obj.discount);
   }
 
   @override

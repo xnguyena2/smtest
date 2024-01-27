@@ -4,11 +4,16 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:sales_management/api/local_storage/local_storage.dart';
+import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/page/home/compoment/bottom_bar.dart';
+import 'package:sales_management/page/product_info/product_info.dart';
+import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/transaction/income_outcome.dart';
 import 'package:sales_management/page/home/child/management.dart';
 import 'package:sales_management/page/report/report_page.dart';
@@ -33,10 +38,12 @@ class _HomePageState extends State<HomePage> {
   final Widget inoutPage = IncomeOutComme();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   int currentPage = 1;
+  bool isShowPluss = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isShowPluss = false;
     page = homePage;
     bool ignore = true;
     _connectivitySubscription = Connectivity()
@@ -63,6 +70,11 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void togglePlus() {
+    isShowPluss = !isShowPluss;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -74,7 +86,7 @@ class _HomePageState extends State<HomePage> {
         bottom: false,
         child: Scaffold(
           appBar: HomeAppBar(),
-          bottomNavigationBar: BottomBar(
+          bottomNavigationBar: HomePageBottomBar(
             onPageSelected: (page) {
               if (page == 1) {
                 // this.page = homePage;
@@ -97,83 +109,161 @@ class _HomePageState extends State<HomePage> {
               }
               currentPage = page;
             },
+            onPlustClicked: togglePlus,
           ),
-          body: page,
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: (MediaQuery.of(context).size.height),
+                  ),
+                  child: page),
+              if (isShowPluss)
+                _AddingPopup(
+                  togglePlus: togglePlus,
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class BottomBar extends StatelessWidget {
-  final VoidCallbackArg<int> onPageSelected;
-  const BottomBar({
+class _AddingPopup extends StatelessWidget {
+  final VoidCallback togglePlus;
+  const _AddingPopup({
     super.key,
-    required this.onPageSelected,
+    required this.togglePlus,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-    return Container(
-      height: 46 + bottomPadding,
-      padding: EdgeInsets.only(bottom: bottomPadding),
-      decoration: const BoxDecoration(color: White, boxShadow: [wholeShadow]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          GestureDetector(
-            onTap: () {
-              onPageSelected(1);
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LoadSvg(assetPath: 'svg/home_bar.svg'),
-                const Text(
-                  'Quản lý',
-                  style: subInfoStySmall,
-                )
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CreateOrderPage(
-                    data: PackageDataResponse(items: [], buyer: null),
-                    onUpdated: (package) {},
-                    onDelete: (PackageDataResponse) {},
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: togglePlus,
+        child: ColoredBox(
+          color: Black70,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      togglePlus();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateOrderPage(
+                            data: PackageDataResponse(items: [], buyer: null),
+                            onUpdated: (package) {},
+                            onDelete: (PackageDataResponse) {},
+                          ),
+                        ),
+                      );
+                    },
+                    child: _CreateItem(
+                      txt: 'Thêm đơn hàng',
+                      icon: LoadSvg(assetPath: 'svg/create_order.svg'),
+                    ),
                   ),
-                ),
-              );
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LoadSvg(assetPath: 'svg/plus_bar.svg'),
-              ],
-            ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      togglePlus();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IncomeOutComme(),
+                        ),
+                      );
+                    },
+                    child: _CreateItem(
+                      txt: 'Tạo thu chi',
+                      icon: LoadSvg(assetPath: 'svg/edit_3.svg'),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      togglePlus();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductInfo(
+                            product: BeerSubmitData.createEmpty(
+                                groupID, generateUUID()),
+                            onAdded: (product) {
+                              BootStrapData? config =
+                                  LocalStorage.getBootStrap();
+                              if (config == null) {
+                                return null;
+                              }
+
+                              config.addOrReplaceProduct(product);
+
+                              LocalStorage.setBootstrapData(config);
+                            },
+                            onDeleted: (product) {},
+                          ),
+                        ),
+                      );
+                    },
+                    child: _CreateItem(
+                      txt: 'Tạo sản phẩm',
+                      icon: LoadSvg(
+                          assetPath: 'svg/product.svg', color: TableHighColor),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
+            ],
           ),
-          GestureDetector(
-            onTap: () {
-              onPageSelected(2);
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LoadSvg(assetPath: 'svg/in_out_bar.svg'),
-                const Text(
-                  'Thu chi',
-                  style: subInfoStySmall,
-                )
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
+    );
+  }
+}
+
+class _CreateItem extends StatelessWidget {
+  final String txt;
+  final Widget icon;
+  const _CreateItem({
+    super.key,
+    required this.txt,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          txt,
+          style: headStyleMedium600White,
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        CircleAvatar(
+          backgroundColor: White,
+          radius: 15,
+          child: icon,
+        )
+      ],
     );
   }
 }

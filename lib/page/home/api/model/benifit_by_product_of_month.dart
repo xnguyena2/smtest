@@ -1,11 +1,12 @@
-class BenifitByProductOfMonth {
-  BenifitByProductOfMonth({
+class BenifitByProduct {
+  BenifitByProduct({
     required this.product_name,
     required this.product_unit_name,
     required this.product_second_id,
     required this.product_unit_second_id,
     required this.revenue,
     required this.number_unit,
+    required this.createat,
   });
 
   late final String? product_name;
@@ -14,14 +15,16 @@ class BenifitByProductOfMonth {
   late final String product_unit_second_id;
   late final double revenue;
   late final int number_unit;
+  late final String? createat;
 
-  BenifitByProductOfMonth.fromJson(Map<String, dynamic> json) {
+  BenifitByProduct.fromJson(Map<String, dynamic> json) {
     product_name = json['product_name'];
     product_unit_name = json['product_unit_name'];
     product_second_id = json['product_second_id'];
     product_unit_second_id = json['product_unit_second_id'];
     revenue = json['revenue'] as double;
     number_unit = json['number_unit'] as int;
+    createat = json['createat'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,7 @@ class BenifitByProductOfMonth {
     _data['product_unit_second_id'] = product_unit_second_id;
     _data['revenue'] = revenue;
     _data['number_unit'] = number_unit;
+    _data['createat'] = createat;
     return _data;
   }
 }

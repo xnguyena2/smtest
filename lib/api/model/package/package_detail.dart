@@ -29,6 +29,7 @@ class PackageDetail extends BaseEntity {
   late double shipPrice;
   late double cost;
   late double profit;
+  late int point;
   late String? note;
   late final String? image;
   late Progress? progress;
@@ -48,6 +49,7 @@ class PackageDetail extends BaseEntity {
     required this.shipPrice,
     required this.cost,
     required this.profit,
+    required this.point,
     required this.packageType,
     this.areaId,
     this.areaName,
@@ -79,6 +81,7 @@ class PackageDetail extends BaseEntity {
     shipPrice = json['ship_price'] as double;
     cost = json['cost'] as double;
     profit = json['profit'] as double;
+    point = json['point'] == null ? 0 : json['point'] as int;
     note = json['note'];
     image = json['image'];
     progress = json['progress'] == null
@@ -107,6 +110,7 @@ class PackageDetail extends BaseEntity {
     _data['ship_price'] = shipPrice;
     _data['cost'] = cost;
     _data['profit'] = profit;
+    _data['point'] = point;
     _data['note'] = note;
     _data['image'] = image;
     _data['progress'] = progress == null ? null : jsonEncode(progress);

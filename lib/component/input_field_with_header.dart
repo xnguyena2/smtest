@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
-import 'package:sales_management/utils/utils.dart';
 
 class InputFiledWithHeader extends StatefulWidget {
   final String header;
@@ -206,7 +205,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
     // final int selectionIndexFromTheRight =
     //     newValue.text.length - newValue.selection.end;
 
-    print(newValue.text);
+    // print(newValue.text);
     double value = double.tryParse(newValue.text) ?? 0;
     // print(selectionIndexFromTheRight);
 
