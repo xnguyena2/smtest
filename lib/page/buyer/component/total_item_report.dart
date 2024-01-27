@@ -50,9 +50,13 @@ class TotalReportItem extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          Text(
-            contentTxt,
-            style: headStyleXLargeSemiBold,
+          Tooltip(
+            message: contentTxt,
+            triggerMode: TooltipTriggerMode.tap,
+            child: Text(
+              contentTxt,
+              style: headStyleXLargeSemiBold,
+            ),
           ),
         ],
       ),
