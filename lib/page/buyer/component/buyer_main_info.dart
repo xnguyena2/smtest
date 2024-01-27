@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/buyer/component/total_item_report.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class BuyerMainInfo extends StatelessWidget {
+class BuyerMainInfo extends StatefulWidget {
   const BuyerMainInfo({
     super.key,
     required this.buyerData,
@@ -12,6 +14,11 @@ class BuyerMainInfo extends StatelessWidget {
 
   final BuyerData buyerData;
 
+  @override
+  State<BuyerMainInfo> createState() => _BuyerMainInfoState();
+}
+
+class _BuyerMainInfoState extends State<BuyerMainInfo> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,12 +36,32 @@ class BuyerMainInfo extends StatelessWidget {
                 'Thông tin',
                 style: customerNameBig600,
               ),
-              GestureDetector(
-                child: Text(
-                  'xem thêm >',
-                  style: customerNameBigHigh600,
-                ),
-              )
+              if (!widget.buyerData.isUnknowUser)
+                GestureDetector(
+                  onTap: () async {
+                    AddressData addressData =
+                        AddressData.fromBuyerData(widget.buyerData);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReciverInfo(
+                          addressData: addressData,
+                          done: (data) {
+                            addressData = data;
+                            widget.buyerData.updateData(addressData);
+                          },
+                          delete: () {},
+                          isEdit: false,
+                        ),
+                      ),
+                    );
+                    setState(() {});
+                  },
+                  child: Text(
+                    'xem thêm >',
+                    style: customerNameBigHigh600,
+                  ),
+                )
             ],
           ),
           SizedBox(
@@ -86,7 +113,7 @@ class BuyerMainInfo extends StatelessWidget {
                 child: TotalReportItem(
                   iconPath: 'svg/ecommerce_money.svg',
                   headerTxt: 'Tổng doanh thu',
-                  contentTxt: MoneyFormater.format(buyerData.realPrice),
+                  contentTxt: MoneyFormater.format(widget.buyerData.realPrice),
                 ),
               ),
               SizedBox(
@@ -96,7 +123,7 @@ class BuyerMainInfo extends StatelessWidget {
                 child: TotalReportItem(
                   iconPath: 'svg/discount_ecommerce_price.svg',
                   headerTxt: 'Tổng tiền đã giảm',
-                  contentTxt: MoneyFormater.format(buyerData.discount),
+                  contentTxt: MoneyFormater.format(widget.buyerData.discount),
                 ),
               ),
             ],
@@ -110,7 +137,18 @@ class BuyerMainInfo extends StatelessWidget {
             headerTxt: 'Điểm tích lỹ quy đổi(100k = 1 điểm)',
             unLimitHeader: true,
             contentTxt:
-                '${MoneyFormater.format(buyerData.realPrice)} - ${MoneyFormater.format(buyerData.discount)} = ${((buyerData.realPrice - buyerData.discount) / 100000).toInt()} điểm',
+                '${MoneyFormater.format(widget.buyerData.realPrice)} - ${MoneyFormater.format(widget.buyerData.discount)} = ${((widget.buyerData.realPrice - widget.buyerData.discount) / 100000).toInt()} điểm',
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          TotalReportItem(
+            bgColor: White,
+            iconPath: 'svg/point.svg',
+            headerTxt: 'Tổng điểm còn lại sau khi dùng',
+            unLimitHeader: true,
+            contentTxt:
+                '${((widget.buyerData.realPrice - widget.buyerData.discount) / 100000).toInt()} - ${-widget.buyerData.point} = ${widget.buyerData.getTotalPoint} điểm',
           ),
           SizedBox(
             height: 10,

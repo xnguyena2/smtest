@@ -22,7 +22,7 @@ class ListAddressData {
 
 class AddressData {
   late final String addressID;
-  late final String deviceID;
+  late String deviceID;
   late String reciverFullName;
   late String phoneNumber;
   late String houseNumber;
@@ -30,6 +30,8 @@ class AddressData {
   late Region district;
   late Region ward;
   late String regionTextFormat;
+
+  BuyerData? _buyerData;
 
   AddressData({
     required this.addressID,
@@ -44,6 +46,7 @@ class AddressData {
   });
 
   AddressData.fromBuyerData(BuyerData? b) {
+    _buyerData = b;
     addressID = '';
     deviceID = b?.deviceId ?? '';
     reciverFullName = b?.reciverFullname ?? 'Khách lẻ';
@@ -81,6 +84,8 @@ class AddressData {
     _data['region_text_format'] = regionTextFormat;
     return _data;
   }
+
+  BuyerData? get getBuyerData => _buyerData;
 
   bool isValidData() {
     return phoneNumber.isNotEmpty;

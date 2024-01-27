@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
+import 'package:sales_management/page/address/api/model/address_data.dart';
+import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/buyer/buyer_detail_page.dart';
 import 'package:sales_management/page/list_buyer/api/list_buyer_api.dart';
 import 'package:sales_management/page/list_buyer/api/model/list_buyer.dart';
@@ -8,9 +10,15 @@ import 'package:sales_management/page/list_buyer/component/list_buyer_bar.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
-class ListBuyerPage extends StatelessWidget {
+class ListBuyerPage extends StatefulWidget {
   const ListBuyerPage({super.key});
 
+  @override
+  State<ListBuyerPage> createState() => _ListBuyerPageState();
+}
+
+class _ListBuyerPageState extends State<ListBuyerPage> {
+  ListBuyerDataResult? listBuyerDataResult;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -19,9 +27,46 @@ class ListBuyerPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: White,
         appBar: ListBuyerBar(),
+        floatingActionButton: Builder(builder: (context) {
+          return FloatingActionButton.small(
+            elevation: 2,
+            backgroundColor: MainHighColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: floatBottomBorderRadius,
+            ),
+            onPressed: () {
+              AddressData addressData = AddressData.fromBuyerData(null);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReciverInfo(
+                    addressData: addressData,
+                    done: (data) {
+                      final buyerData =
+                          BuyerData(region: '', district: '', ward: '');
+                      buyerData.updateData(data);
+                      listBuyerDataResult?.listResult.add(buyerData);
+                      setState(() {});
+                    },
+                    delete: () {},
+                    isEdit: false,
+                  ),
+                ),
+              );
+            },
+            child: LoadSvg(
+              assetPath: 'svg/plus_large_width_2.svg',
+              color: White,
+            ),
+          );
+        }),
         body: FetchAPI<ListBuyerDataResult>(
-          future: getAlBuyer(),
+          future: listBuyerDataResult == null
+              ? getAlBuyer()
+              : Future.value(listBuyerDataResult),
           successBuilder: (ListBuyerDataResult) {
+            ListBuyerDataResult.listResult.insert(0, BuyerData.uknowBuyer());
+            listBuyerDataResult = ListBuyerDataResult;
             return ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,

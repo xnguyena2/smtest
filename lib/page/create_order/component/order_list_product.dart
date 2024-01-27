@@ -275,8 +275,6 @@ class _ProductItemState extends State<ProductItem> {
 
     final isWholesaleMode = productInPackageResponse.isWholesaleMode;
 
-    print(totalPriceFormat);
-
     return Stack(
       clipBehavior: Clip.none,
       children: [

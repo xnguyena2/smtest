@@ -99,6 +99,7 @@ class PackageDataResponse extends PackageDetail {
           price: 0.0,
           cost: 0.0,
           profit: 0.0,
+          point: 0,
           payment: 0.0,
           discountAmount: 0.0,
           discountPercent: 0.0,
@@ -171,6 +172,11 @@ class PackageDataResponse extends PackageDetail {
     });
   }
 
+  void cleanBuyer() {
+    buyer = null;
+    point = 0;
+  }
+
   void updateBuyer(AddressData addressData) {
     if (!addressData.isValidData()) {
       buyer = null;
@@ -182,6 +188,12 @@ class PackageDataResponse extends PackageDetail {
       return;
     }
     buyer!.updateData(addressData);
+  }
+
+  void applyPoint(int point, double discount) {
+    discountPercent = 0;
+    discountAmount += discount;
+    this.point = -point;
   }
 
   PackageDataResponse clone() {
@@ -342,7 +354,7 @@ class BuyerData extends Buyer {
     required this.ward,
   }) : super(
           id: 0,
-          groupId: '',
+          groupId: groupID,
           createat: '',
           deviceId: '',
           regionId: 0,
@@ -358,7 +370,29 @@ class BuyerData extends Buyer {
   late String? district;
   late String? ward;
 
+  BuyerData.uknowBuyer()
+      : super(
+          id: 0,
+          groupId: groupID,
+          createat: null,
+          deviceId: '',
+          regionId: 0,
+          districtId: 0,
+          wardId: 0,
+          realPrice: 0,
+          totalPrice: 0,
+          shipPrice: 0,
+          discount: 0,
+          point: 0,
+        ) {
+    reciverFullname = 'Khách lẻ';
+    phoneNumber = phoneNumberClean = 'Khách ngẫu nhiên';
+  }
+
+  bool get isUnknowUser => deviceId == '';
+
   void updateData(AddressData data) {
+    deviceId = data.deviceID;
     phoneNumber = data.phoneNumber;
     reciverFullname = data.reciverFullName;
     reciverAddress = data.houseNumber;
@@ -368,6 +402,17 @@ class BuyerData extends Buyer {
     districtId = data.district.id;
     ward = data.ward.name;
     wardId = data.ward.id;
+    totalPrice = data.getBuyerData?.totalPrice ?? 0;
+    realPrice = data.getBuyerData?.realPrice ?? 0;
+    shipPrice = data.getBuyerData?.shipPrice ?? 0;
+    discount = data.getBuyerData?.discount ?? 0;
+    point = data.getBuyerData?.point ?? 0;
+  }
+
+  void updateDeviceID(AddressData data) {
+    if (deviceId.isEmpty) {
+      deviceId = data.deviceID = generateUUID();
+    }
   }
 
   BuyerData.fromPackageDataResponseAndAddressData(
@@ -380,10 +425,10 @@ class BuyerData extends Buyer {
           regionId: 0,
           districtId: 0,
           wardId: 0,
-          realPrice: 0.0,
-          totalPrice: 0.0,
-          shipPrice: 0.0,
-          discount: 0.0,
+          realPrice: 0,
+          totalPrice: 0,
+          shipPrice: 0,
+          discount: 0,
           point: 0,
         ) {
     updateData(a);
@@ -403,12 +448,12 @@ class BuyerData extends Buyer {
     return _data;
   }
 
-  String? getAddressFormat() {
+  String getAddressFormat() {
     if (region == null) {
-      return null;
+      return 'Chọn địa chỉ';
     }
     if (region!.isEmpty) {
-      return null;
+      return 'Chọn địa chỉ';
     }
     return '${reciverAddress ?? ''}, ${ward ?? ''}, ${district ?? ''}, ${region ?? ''}';
   }

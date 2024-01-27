@@ -29,11 +29,11 @@ class Buyer extends BaseEntity {
   late int regionId;
   late int districtId;
   late int wardId;
-  late final double realPrice;
-  late final double totalPrice;
-  late final double shipPrice;
-  late final double discount;
-  late final int point;
+  late double realPrice;
+  late double totalPrice;
+  late double shipPrice;
+  late double discount;
+  late int point;
   late final String? status;
 
   Buyer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -71,4 +71,6 @@ class Buyer extends BaseEntity {
     _data['status'] = status;
     return _data;
   }
+
+  int get getTotalPoint => ((realPrice - discount) / 100000).toInt() + point;
 }

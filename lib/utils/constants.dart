@@ -213,6 +213,7 @@ const TextStyle headStyleXLargeSemiBoldCost = TextStyle(
 );
 
 const TextStyle headStyleXLargeSemiBold = TextStyle(
+  color: Black,
   fontSize: 17,
   fontWeight: FontWeight.w600,
 );

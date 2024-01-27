@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
-import 'package:sales_management/utils/utils.dart';
 
 class InputFiledWithHeader extends StatefulWidget {
   final String header;

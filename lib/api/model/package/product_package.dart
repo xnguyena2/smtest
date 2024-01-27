@@ -24,6 +24,7 @@ class ProductPackage extends PackageDetail {
           shipPrice: 0.0,
           cost: 0.0,
           profit: 0.0,
+          point: 0,
           packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
         );
 
@@ -42,6 +43,7 @@ class ProductPackage extends PackageDetail {
           shipPrice: packageDataResponse.shipPrice,
           cost: packageDataResponse.cost,
           profit: packageDataResponse.profit,
+          point: packageDataResponse.point,
           areaId: packageDataResponse.areaId,
           areaName: packageDataResponse.areaName,
           tableId: packageDataResponse.tableId,

@@ -18,7 +18,7 @@ Future<ListBuyerDataResult> getAlBuyer() async {
   print(response.statusCode);
   if (response.statusCode == 200) {
     // debugPrint(response.body, wrapWidth: 1024);
-    print(response.body);
+    // print(response.body);
     return ListBuyerDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );

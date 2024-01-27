@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/page/address/api/address_api.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/address/api/model/list_buyer.dart';
 import 'package:sales_management/page/address/component/address_list_buyer.dart';
 import 'package:sales_management/page/address/component/location_select_bar.dart';
+import 'package:sales_management/page/buyer/api/buyer_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/debouncer.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -17,12 +19,14 @@ class ReciverInfo extends StatefulWidget {
   final VoidCallbackArg<AddressData> done;
   final VoidCallback delete;
   final bool isEdit;
+  final bool isEnableFindBuyer;
   const ReciverInfo({
     super.key,
     required this.addressData,
     required this.done,
     required this.isEdit,
     required this.delete,
+    this.isEnableFindBuyer = false,
   });
 
   @override
@@ -65,7 +69,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
     super.initState();
     checkValid();
     loadingListBuyer =
-        searchUser(''); // Future.value(ListBuyerResult(listResult: []));
+        Future.value(ListBuyerResult(listResult: [])); //searchUser(''); //
     initialValue();
   }
 
@@ -103,10 +107,12 @@ class _ReciverInfoState extends State<ReciverInfo> {
                 initialValue: addressData.phoneNumber,
                 onChanged: (String value) {
                   addressData.phoneNumber = value;
-                  searchDebouncer.run(() {
-                    loadingListBuyer = searchUser(value);
-                    setState(() {});
-                  });
+                  if (widget.isEnableFindBuyer) {
+                    searchDebouncer.run(() {
+                      loadingListBuyer = searchUser(value);
+                      setState(() {});
+                    });
+                  }
                 },
                 textInputType: TextInputType.number,
               ),
@@ -209,6 +215,11 @@ class _ReciverInfoState extends State<ReciverInfo> {
                       onPressed: enableDone
                           ? () {
                               // print(addressData.toJson().toString());
+                              final buyer = addressData.getBuyerData ??
+                                  BuyerData(region: '', district: '', ward: '');
+                              buyer.updateData(addressData);
+                              buyer.updateDeviceID(addressData);
+                              createBuyer(buyer);
                               widget.done(addressData);
                               Navigator.pop(context);
                             }
