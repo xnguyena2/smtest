@@ -8,15 +8,15 @@ class TotalReportItem extends StatelessWidget {
     required this.contentTxt,
     required this.iconPath,
     required this.headerTxt,
+    required this.maxWidth,
     this.bgColor = BackgroundColor,
-    this.unLimitHeader = false,
   });
 
   final String contentTxt;
   final String iconPath;
   final String headerTxt;
   final Color bgColor;
-  final bool unLimitHeader;
+  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,15 @@ class TotalReportItem extends StatelessWidget {
                 width: 9,
               ),
               ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: unLimitHeader ? 1000 : 120),
-                child: Text(
-                  headerTxt,
-                  overflow: TextOverflow.ellipsis,
-                  style: headStyleLargeBlackLigh,
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: Tooltip(
+                  message: headerTxt,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Text(
+                    headerTxt,
+                    overflow: TextOverflow.ellipsis,
+                    style: headStyleLargeBlackLigh,
+                  ),
                 ),
               ),
             ],

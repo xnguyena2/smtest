@@ -65,7 +65,10 @@ class _ListBuyerPageState extends State<ListBuyerPage> {
               ? getAlBuyer()
               : Future.value(listBuyerDataResult),
           successBuilder: (ListBuyerDataResult) {
-            ListBuyerDataResult.listResult.insert(0, BuyerData.uknowBuyer());
+            final first = ListBuyerDataResult.listResult.firstOrNull;
+            if (first == null || !first.isUnknowUser) {
+              ListBuyerDataResult.listResult.insert(0, BuyerData.uknowBuyer());
+            }
             listBuyerDataResult = ListBuyerDataResult;
             return ListView.separated(
               scrollDirection: Axis.vertical,

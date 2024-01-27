@@ -118,11 +118,13 @@ class _BuyerStatictisState extends State<BuyerStatictis> {
                         children: [
                           Expanded(
                             child: TotalReportItem(
-                                bgColor: White,
-                                contentTxt: MoneyFormater.format(
-                                    buyerDetail.benifitByMonth.revenue),
-                                iconPath: 'svg/sales_amount.svg',
-                                headerTxt: 'Doanh thu'),
+                              bgColor: White,
+                              contentTxt: MoneyFormater.format(
+                                  buyerDetail.benifitByMonth.revenue),
+                              iconPath: 'svg/sales_amount.svg',
+                              headerTxt: 'Doanh thu',
+                              maxWidth: 100,
+                            ),
                           ),
                           SizedBox(
                             height: 20,
@@ -132,11 +134,13 @@ class _BuyerStatictisState extends State<BuyerStatictis> {
                           ),
                           Expanded(
                             child: TotalReportItem(
-                                bgColor: White,
-                                contentTxt:
-                                    buyerDetail.benifitByMonth.count.toString(),
-                                iconPath: 'svg/order_high.svg',
-                                headerTxt: 'Đã giao'),
+                              bgColor: White,
+                              contentTxt:
+                                  buyerDetail.benifitByMonth.count.toString(),
+                              iconPath: 'svg/order_high.svg',
+                              headerTxt: 'Đã giao',
+                              maxWidth: 100,
+                            ),
                           ),
                         ],
                       ),
