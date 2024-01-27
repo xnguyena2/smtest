@@ -152,7 +152,7 @@ class Body extends StatelessWidget {
               child: TabBarView(
                 children: [
                   FetchAPI<ListPackageDetailResult>(
-                    future: getAllPackage(groupID, page: 0, size: 10),
+                    future: getAllWorkingPackage(groupID, page: 0, size: 10),
                     successBuilder: (data) {
                       return OrderListAllPackageTab(
                         data: data,
@@ -191,7 +191,7 @@ class _LoadMoreTrigger {
   void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
     loading = true;
     currentPage++;
-    getAllPackage(groupID, page: currentPage, size: 10).then((value) {
+    getAllWorkingPackage(groupID, page: currentPage, size: 10).then((value) {
       onDone(value);
       _canLoadMore = value.listResult.isNotEmpty;
       loading = false;

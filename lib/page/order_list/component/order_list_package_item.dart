@@ -158,7 +158,7 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn hủy đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            deletePackage(
+                            cancelPackage(
                                     PackageID.fromPackageDataResponse(data))
                                 .then((value) {
                               data.deletedOrder();

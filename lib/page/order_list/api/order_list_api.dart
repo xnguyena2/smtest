@@ -33,6 +33,29 @@ Future<ListPackageDetailResult> getAllPackage(String groupID,
   }
 }
 
+Future<ListPackageDetailResult> getAllWorkingPackage(String groupID,
+    {int page = 0, int size = 1000}) async {
+  final request = UserInfoQuery(
+    page: page,
+    size: size,
+    id: '',
+    group_id: groupID,
+  );
+
+  final response = await postC('/package/getwokingbygroup', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // debugPrint(response.body, wrapWidth: 1024);
+    return ListPackageDetailResult.fromJson(
+      {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
+    );
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
 Future<PackageDataResponse> getPackage(PackageID packageID) async {
   final request = packageID;
 
@@ -99,6 +122,39 @@ Future<ResponseResult> deletePackage(PackageID packageID) async {
   // print(request.toJson());
 
   final response = await postC('/package/delete', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    debugPrint(response.body, wrapWidth: 1024);
+    return ResponseResult.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<int> cancelPackage(PackageID packageID) async {
+  final request = packageID;
+  // print(request.toJson());
+
+  final response = await postC('/package/cancel', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    debugPrint(response.body, wrapWidth: 1024);
+    // return ResponseResult.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    return response.statusCode;
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<ResponseResult> returnPackage(PackageID packageID) async {
+  final request = packageID;
+  // print(request.toJson());
+
+  final response = await postC('/package/return', request);
 
   print(response.statusCode);
   if (response.statusCode == 200) {
