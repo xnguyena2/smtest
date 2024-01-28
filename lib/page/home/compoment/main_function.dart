@@ -20,7 +20,7 @@ const List<Map<String, String>> listFullMainFunction = [
   {'icon': 'svg/order_manage.svg', 'name': 'Đơn hàng', 'page': 'List_Order'},
   {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
-  {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
+  {'icon': 'svg/staff.svg', 'name': 'Đăng nhập', 'page': 'Tokens'},
   {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
 ];
 
@@ -29,7 +29,7 @@ const List<Map<String, String>> listNoTableMainFunction = [
   {'icon': 'svg/order_manage.svg', 'name': 'Đơn hàng', 'page': 'List_Order'},
   {'icon': 'svg/goods.svg', 'name': 'Sản phẩm', 'page': 'Product'},
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
-  {'icon': 'svg/staff.svg', 'name': 'Nhân viên', 'page': 'Tokens'},
+  {'icon': 'svg/staff.svg', 'name': 'Đăng nhập', 'page': 'Tokens'},
   {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
 ];
 

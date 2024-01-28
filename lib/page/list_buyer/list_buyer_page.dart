@@ -62,13 +62,9 @@ class _ListBuyerPageState extends State<ListBuyerPage> {
         }),
         body: FetchAPI<ListBuyerDataResult>(
           future: listBuyerDataResult == null
-              ? getAlBuyer()
+              ? getAllBuyer()
               : Future.value(listBuyerDataResult),
           successBuilder: (ListBuyerDataResult) {
-            final first = ListBuyerDataResult.listResult.firstOrNull;
-            if (first == null || !first.isUnknowUser) {
-              ListBuyerDataResult.listResult.insert(0, BuyerData.uknowBuyer());
-            }
             listBuyerDataResult = ListBuyerDataResult;
             return ListView.separated(
               scrollDirection: Axis.vertical,

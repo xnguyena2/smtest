@@ -68,11 +68,7 @@ class OrderMainInfo extends StatelessWidget {
             height: 8,
           ),
           Text(
-            status == PaymentStatus.DONE
-                ? 'Đã thanh toán'
-                : status == PaymentStatus.MAKE_SOME_PAY
-                    ? 'Thanh toán một phần'
-                    : 'Chưa thanh toán',
+            data.getStatusTxt(),
             style: status == PaymentStatus.DONE
                 ? headStyleMediumHigh500
                 : headStyleMediumAlert500,

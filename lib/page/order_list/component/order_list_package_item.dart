@@ -126,11 +126,7 @@ class PackageItemDetail extends StatelessWidget {
                       style: headStyleMedium500,
                     ),
                     Text(
-                      status == PaymentStatus.DONE
-                          ? 'Đã thanh toán'
-                          : status == PaymentStatus.MAKE_SOME_PAY
-                              ? 'Thanh toán một phần'
-                              : 'Chưa thanh toán',
+                      data.getStatusTxt(),
                       style: isDone
                           ? subInfoStyMediumHigh400
                           : subInfoStyMediumAlert400,
