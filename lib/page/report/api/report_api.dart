@@ -72,7 +72,7 @@ Future<ListProductBenifitDataResult> getReportOfProduct(
   String from = start ?? getFirstDateTimeOfCurrentMonth();
   String to = end ?? getCurrentDateTimeNow();
   final request =
-      PackageID.currentMonth(groupID, from: from, to: to, status: 'CREATE');
+      PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
 
   // print(request.toJson());
 
