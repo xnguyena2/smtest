@@ -32,7 +32,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
   Widget build(BuildContext context) {
     BuyerData? buyer = widget.data.buyer;
     String? regionTextFormat = buyer?.getAddressFormat();
-    int point = widget.data.point > 0 ? 0 : buyer?.getTotalPoint ?? 0;
+    int point = widget.data.point != 0 ? 0 : buyer?.getTotalPoint ?? 0;
 
     return DefaultPaddingContainer(
       child: Column(
