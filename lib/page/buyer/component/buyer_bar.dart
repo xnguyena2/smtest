@@ -44,7 +44,7 @@ class BuyerDetailBar extends BarMedium {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Khách lẻ',
+                        buyer.reciverFullname ?? 'Khách lẻ',
                         style: headStyleXLarge,
                       ),
                       Text(
