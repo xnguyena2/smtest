@@ -10,7 +10,7 @@ import 'package:sales_management/utils/constants.dart';
 
 enum DeliverType { deliver, takeaway, table }
 
-enum PackageStatusType { CREATE, DONE, DELETE }
+enum PackageStatusType { CREATE, DONE, DELETE, CANCEL, RETURN }
 
 class PackageDetail extends BaseEntity {
   late final String packageSecondId;

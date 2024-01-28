@@ -5,7 +5,7 @@ import 'package:sales_management/page/list_buyer/api/model/list_buyer.dart';
 import 'package:sales_management/page/product_selector/api/model/search_query.dart';
 import 'package:sales_management/utils/constants.dart';
 
-Future<ListBuyerDataResult> getAlBuyer() async {
+Future<ListBuyerDataResult> getAllBuyer() async {
   final request = SearchQuery(
     query: '',
     page: 0,

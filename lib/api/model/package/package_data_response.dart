@@ -225,10 +225,10 @@ class PackageDataResponse extends PackageDetail {
   double get profitExpect => finalPrice - cost;
 
   PaymentStatus paymentStatus() {
-    if (status == 'CANCEL') {
+    if (status == PackageStatusType.CANCEL) {
       return PaymentStatus.CANCEL;
     }
-    if (status == 'RETURN') {
+    if (status == PackageStatusType.RETURN) {
       return PaymentStatus.RETURN;
     }
 
