@@ -8,7 +8,7 @@ bool get isMobile {
   if (kIsWeb) {
     return false;
   } else {
-    return Platform.isIOS || Platform.isAndroid;
+    return Platform.isIOS || Platform.isAndroid || Platform.isWindows;
   }
 }
 

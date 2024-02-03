@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
@@ -10,36 +9,16 @@ import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
 import 'package:sales_management/page/create_store/create_store_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
-import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/store_info/api/store_info_api.dart';
 import 'package:sales_management/page/store_info/component/store_info_bar.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/helper.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class StoreInfoPage extends StatelessWidget {
   const StoreInfoPage({super.key});
-
-  Future<Store?> getStoreInfo() async {
-    BootStrapData? config = LocalStorage.getBootStrap();
-    if (config == null) {
-      return null;
-    }
-
-    return config.store;
-  }
-
-  void updateStoreData(Store store) {
-    BootStrapData? config = LocalStorage.getBootStrap();
-    config?.store = store;
-    LocalStorage.setBootstrapData(config);
-    setGlobalValue(
-        store_ame: store.name,
-        groupId: groupID,
-        phoneNumber: store.phone ?? '',
-        device_id: deviceID);
-  }
 
   @override
   Widget build(BuildContext context) {

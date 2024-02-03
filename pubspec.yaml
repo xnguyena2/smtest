@@ -51,6 +51,11 @@ dependencies:
   qr_flutter: ^4.1.0
   barcode_scan2: ^4.3.0
   dropdown_button2: ^2.3.9
+  number_to_vietnamese_words: ^1.0.1+1
+  screenshot: ^2.1.0
+  share_plus: ^7.2.2
+  flutter_pos_printer_platform_image_3: ^1.1.2
+  flutter_esc_pos_utils: ^1.0.0
 
 dev_dependencies:
   flutter_test:

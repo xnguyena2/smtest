@@ -138,6 +138,12 @@ const TextStyle totalMoneyStylexXXLarge = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle appNameInBillStylexxXLarge = TextStyle(
+  color: Black,
+  fontSize: 25,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle totalMoneyStylexxXLarge = TextStyle(
   color: White,
   fontSize: 22,
@@ -160,6 +166,16 @@ const TextStyle totalMoneyStylexxXLargeBlack = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle goobyeBillStylexxXLargeBlack = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle totalMoneyHeaderStylexxXLarge = TextStyle(
+  fontSize: 19,
+  fontWeight: FontWeight.w700,
+);
+
 const TextStyle totalMoneyHeaderStylexXLargeRed = TextStyle(
   color: Red,
   fontSize: 19,
@@ -177,9 +193,19 @@ const TextStyle totalMoneyHeaderStylexXLarge = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle headStylexXXLarge = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle headStyleXXLarge = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleXXLarge400 = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w400,
 );
 
 const TextStyle headStyleXLargeSemiBoldHigh = TextStyle(
@@ -280,6 +306,7 @@ const TextStyle customerNameBig600 = TextStyle(
 );
 
 const TextStyle customerNameBig = TextStyle(
+  color: Black,
   fontSize: 16,
   fontWeight: FontWeight.w500,
 );
@@ -336,6 +363,7 @@ const TextStyle headStyleSemiLarge600 = TextStyle(
 );
 
 const TextStyle headStyleSemiLarge500 = TextStyle(
+  color: Black,
   fontWeight: FontWeight.w500,
   fontSize: 15,
 );

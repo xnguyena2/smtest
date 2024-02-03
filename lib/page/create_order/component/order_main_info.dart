@@ -4,6 +4,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/print/print_page.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -98,9 +99,19 @@ class TotalPriceInfo extends StatelessWidget {
           style: moneyStyleSuperLarge,
         ),
         ApproveBtn(
+          isActiveOk: true,
           txt: 'Gửi hóa đơn',
           padding: EdgeInsets.symmetric(horizontal: 22, vertical: 10),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PrintPage(
+                  data: data,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

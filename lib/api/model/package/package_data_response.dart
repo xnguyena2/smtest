@@ -448,6 +448,16 @@ class BuyerData extends Buyer {
     return _data;
   }
 
+  String? getAddressFormatNullable() {
+    if (region == null) {
+      return null;
+    }
+    if (region!.isEmpty) {
+      return null;
+    }
+    return '${reciverAddress ?? ''}, ${ward ?? ''}, ${district ?? ''}, ${region ?? ''}';
+  }
+
   String getAddressFormat() {
     if (region == null) {
       return 'Chọn địa chỉ';
