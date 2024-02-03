@@ -7,9 +7,11 @@ import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
 import 'package:sales_management/page/print/component/print_bar.dart';
 import 'package:sales_management/page/print/component/print_content.dart';
+import 'package:sales_management/page/printer/printer_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/helper.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -21,6 +23,32 @@ class PrintPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget? printPageContent;
+    createPrintPage(VoidCallbackArg<Uint8List> onCapture) {
+      ScreenshotController screenshotController = ScreenshotController();
+      screenshotController
+          .captureFromLongWidget(
+        pixelRatio: 1.5,
+        InheritedTheme.captureAll(
+          context,
+          Material(
+            child: SizedBox(
+              width: 400,
+              child: ColoredBox(
+                color: White,
+                child: printPageContent,
+              ),
+            ),
+          ),
+        ),
+        delay: Duration(milliseconds: 100),
+        context: context,
+      )
+          .then((capturedImage) {
+        // Handle captured image
+        onCapture(capturedImage);
+      });
+    }
+
     return SafeArea(
       top: false,
       bottom: false,
@@ -46,28 +74,19 @@ class PrintPage extends StatelessWidget {
           okBtnTxt: 'In hóa đơn',
           isCancelMode: false,
           done: () {
-            ScreenshotController screenshotController = ScreenshotController();
-            screenshotController
-                .captureFromLongWidget(
-              pixelRatio: 1.5,
-              InheritedTheme.captureAll(
+            createPrintPage((capturedImage) {
+              Navigator.push(
                 context,
-                Material(
-                  child: SizedBox(
-                    width: 400,
-                    child: ColoredBox(
-                      color: White,
-                      child: printPageContent,
-                    ),
+                MaterialPageRoute(
+                  builder: (context) => PrinterPage(
+                    capturedImage: capturedImage,
                   ),
                 ),
-              ),
-              delay: Duration(milliseconds: 100),
-              context: context,
-            )
-                .then((capturedImage) {
-              // Handle captured image
-
+              );
+            });
+          },
+          cancel: () {
+            createPrintPage((capturedImage) {
               SnackBar getResultSnackBar(ShareResult result) {
                 return SnackBar(
                   content: Column(
@@ -104,7 +123,6 @@ class PrintPage extends StatelessWidget {
               _onShareXFileFromAssets(context, capturedImage);
             });
           },
-          cancel: () {},
         ),
       ),
     );
