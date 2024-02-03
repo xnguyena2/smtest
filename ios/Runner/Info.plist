@@ -51,5 +51,21 @@
     <string>Our app uses the camera to capture photos of your product and scan QR code.</string>    
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Allows photo access to add photos to your product.</string>
+	
+	<key>NSBluetoothAlwaysUsageDescription</key>  
+	<string>Our app uses Bluetooth to scan and connect to printer</string>  
+	<key>NSBluetoothPeripheralUsageDescription</key>  
+	<string>Our app uses Bluetooth to scan and connect to printer</string>  
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
+	<string>Our app need Location to scan and connect to printer</string>  
+	<key>NSLocationAlwaysUsageDescription</key>  
+	<string>Our app need Location to scan and connect to printer</string>  
+	<key>NSLocationWhenInUseUsageDescription</key>  
+	<string>Our app need Location to scan and connect to printer</string>
 </dict>
 </plist>
