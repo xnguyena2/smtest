@@ -148,6 +148,10 @@ class PackageDetail extends BaseEntity {
 
   String get finalPriceFormat => MoneyFormater.format(finalPrice);
 
+  double get orderDiscount => price * (discountPercent / 100) + discountAmount;
+
+  String get orderDiscountFormat => MoneyFormater.format(orderDiscount);
+
   VoidCallback? beforeUpdate;
 
   void setAction(VoidCallback beforeUpdate) {

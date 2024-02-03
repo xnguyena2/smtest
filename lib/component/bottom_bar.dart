@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/component/btn/delete_btn.dart';
+import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class BottomBar extends StatelessWidget {
@@ -15,6 +16,7 @@ class BottomBar extends StatelessWidget {
   final Widget? midleWidget;
   final Widget? headOkbtn;
   final Widget? headCancelbtn;
+  final bool isCancelMode;
   const BottomBar({
     super.key,
     required this.done,
@@ -27,6 +29,7 @@ class BottomBar extends StatelessWidget {
     this.midleWidget,
     this.headOkbtn,
     this.headCancelbtn,
+    this.isCancelMode = true,
   });
 
   @override
@@ -44,18 +47,26 @@ class BottomBar extends StatelessWidget {
         children: [
           if (hideDeleteBtn == false) ...[
             Expanded(
-              child: enableDelete
-                  ? DeleteBtn(
+              child: isCancelMode
+                  ? (enableDelete
+                      ? DeleteBtn(
+                          txt: cancelBtnTxt ?? 'Xóa',
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          onPressed: cancel,
+                          headIcon: headCancelbtn,
+                        )
+                      : CancelBtn(
+                          txt: cancelBtnTxt ?? 'Hủy',
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          onPressed: cancel,
+                          headIcon: headCancelbtn,
+                        ))
+                  : RoundBtn(
                       txt: cancelBtnTxt ?? 'Xóa',
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      icon: headCancelbtn ?? SizedBox(),
                       onPressed: cancel,
-                      headIcon: headCancelbtn,
-                    )
-                  : CancelBtn(
-                      txt: cancelBtnTxt ?? 'Hủy',
                       padding: EdgeInsets.symmetric(vertical: 12),
-                      onPressed: cancel,
-                      headIcon: headCancelbtn,
+                      isSelected: true,
                     ),
             ),
             SizedBox(
