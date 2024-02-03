@@ -11,6 +11,7 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/helper.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PrintPage extends StatelessWidget {
   const PrintPage({super.key, required this.data});
@@ -67,21 +68,40 @@ class PrintPage extends StatelessWidget {
                 .then((capturedImage) {
               // Handle captured image
 
-              Future<dynamic> ShowCapturedWidget(
-                  BuildContext context, Uint8List capturedImage) {
-                return showDialog(
-                  useSafeArea: false,
-                  context: context,
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: Text("Captured widget screenshot"),
-                    ),
-                    body: Center(child: Image.memory(capturedImage)),
+              SnackBar getResultSnackBar(ShareResult result) {
+                return SnackBar(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Share result: ${result.status}"),
+                      if (result.status == ShareResultStatus.success)
+                        Text("Shared to: ${result.raw}")
+                    ],
                   ),
                 );
               }
 
-              ShowCapturedWidget(context, capturedImage);
+              void _onShareXFileFromAssets(
+                  BuildContext context, Uint8List capturedImage) async {
+                final box = context.findRenderObject() as RenderBox?;
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final shareResult = await Share.shareXFiles(
+                  [
+                    XFile.fromData(
+                      capturedImage,
+                      name: 'reciepts.png',
+                      mimeType: 'image/png',
+                    ),
+                  ],
+                  sharePositionOrigin:
+                      box!.localToGlobal(Offset.zero) & box.size,
+                );
+
+                scaffoldMessenger.showSnackBar(getResultSnackBar(shareResult));
+              }
+
+              _onShareXFileFromAssets(context, capturedImage);
             });
           },
           cancel: () {},

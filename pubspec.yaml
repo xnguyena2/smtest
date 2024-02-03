@@ -53,6 +53,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   number_to_vietnamese_words: ^1.0.1+1
   screenshot: ^2.1.0
+  share_plus: ^7.2.2
 
 dev_dependencies:
   flutter_test:
