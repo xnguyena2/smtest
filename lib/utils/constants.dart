@@ -6,7 +6,7 @@ const String host =
 
 const String Seperate = '<=>';
 
-const String appVersion = '1.4.0';
+const String appVersion = '1.5.0';
 
 String storeName = 'trumbien store';
 String groupID = 'trumbien_store';
