@@ -174,7 +174,7 @@ class _PrinterPageState extends State<PrinterPage> {
 
     final Uint8List imgBytes = widget.capturedImage;
     final img.Image image = img.decodePng(imgBytes)!;
-    print(image.data?.length);
+    print('image data length: ${image.data?.length}');
     generator.image(image);
 
     _printEscPos(bytes, generator);
@@ -184,12 +184,13 @@ class _PrinterPageState extends State<PrinterPage> {
   void _printEscPos(List<int> bytes, Generator generator) async {
     if (selectedPrinter == null) return;
     var bluetoothPrinter = selectedPrinter!;
+    bool isConnected = false;
 
     switch (bluetoothPrinter.typePrinter) {
       case PrinterType.usb:
         bytes += generator.feed(2);
         bytes += generator.cut();
-        await printerManager.connect(
+        isConnected = await printerManager.connect(
             type: bluetoothPrinter.typePrinter,
             model: UsbPrinterInput(
                 name: bluetoothPrinter.deviceName,
@@ -199,7 +200,7 @@ class _PrinterPageState extends State<PrinterPage> {
         break;
       case PrinterType.bluetooth:
         bytes += generator.cut();
-        await printerManager.connect(
+        isConnected = await printerManager.connect(
             type: bluetoothPrinter.typePrinter,
             model: BluetoothPrinterInput(
                 name: bluetoothPrinter.deviceName,
@@ -212,7 +213,7 @@ class _PrinterPageState extends State<PrinterPage> {
       case PrinterType.network:
         bytes += generator.feed(2);
         bytes += generator.cut();
-        await printerManager.connect(
+        isConnected = await printerManager.connect(
             type: bluetoothPrinter.typePrinter,
             model: TcpPrinterInput(ipAddress: bluetoothPrinter.address!));
         break;
@@ -225,6 +226,7 @@ class _PrinterPageState extends State<PrinterPage> {
         pendingTask = null;
       }
     } else {
+      print(isConnected);
       printerManager.send(type: bluetoothPrinter.typePrinter, bytes: bytes);
     }
   }
