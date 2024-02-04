@@ -159,7 +159,7 @@ class _PrinterPageState extends State<PrinterPage> {
     setState(() {});
   }
 
-  Future _printReceiveTest() async {
+  Future<bool> _printReceiveTest() async {
     List<int> bytes = [];
 
     // Xprinter XP-N160I
@@ -177,12 +177,12 @@ class _PrinterPageState extends State<PrinterPage> {
     print('image data length: ${image.data?.length}');
     generator.image(image);
 
-    _printEscPos(bytes, generator);
+    return _printEscPos(bytes, generator);
   }
 
   /// print ticket
-  void _printEscPos(List<int> bytes, Generator generator) async {
-    if (selectedPrinter == null) return;
+  Future<bool> _printEscPos(List<int> bytes, Generator generator) async {
+    if (selectedPrinter == null) return false;
     var bluetoothPrinter = selectedPrinter!;
     bool isConnected = false;
 
@@ -219,6 +219,7 @@ class _PrinterPageState extends State<PrinterPage> {
         break;
       default:
     }
+    if (!isConnected) return false;
     if (bluetoothPrinter.typePrinter == PrinterType.bluetooth &&
         Platform.isAndroid) {
       if (_currentStatus == BTStatus.connected) {
@@ -226,9 +227,9 @@ class _PrinterPageState extends State<PrinterPage> {
         pendingTask = null;
       }
     } else {
-      print(isConnected);
       printerManager.send(type: bluetoothPrinter.typePrinter, bytes: bytes);
     }
+    return true;
   }
 
   // conectar dispositivo
@@ -237,16 +238,15 @@ class _PrinterPageState extends State<PrinterPage> {
     if (selectedPrinter == null) return;
     switch (selectedPrinter!.typePrinter) {
       case PrinterType.usb:
-        await printerManager.connect(
+        _isConnected = await printerManager.connect(
             type: selectedPrinter!.typePrinter,
             model: UsbPrinterInput(
                 name: selectedPrinter!.deviceName,
                 productId: selectedPrinter!.productId,
                 vendorId: selectedPrinter!.vendorId));
-        _isConnected = true;
         break;
       case PrinterType.bluetooth:
-        await printerManager.connect(
+        _isConnected = await printerManager.connect(
             type: selectedPrinter!.typePrinter,
             model: BluetoothPrinterInput(
                 name: selectedPrinter!.deviceName,
@@ -255,10 +255,9 @@ class _PrinterPageState extends State<PrinterPage> {
                 autoConnect: _reconnect));
         break;
       case PrinterType.network:
-        await printerManager.connect(
+        _isConnected = await printerManager.connect(
             type: selectedPrinter!.typePrinter,
             model: TcpPrinterInput(ipAddress: selectedPrinter!.address!));
-        _isConnected = true;
         break;
       default:
     }
@@ -430,9 +429,11 @@ class _PrinterPageState extends State<PrinterPage> {
                                       selectedPrinter?.deviceName
                               ? null
                               : () async {
-                                  _printReceiveTest().onError(
-                                      (error, stackTrace) =>
-                                          showAlert(context, 'Không thể in!'));
+                                  _printReceiveTest().then((value) => value
+                                      ? showNotification(
+                                          context, 'In hóa đơn!')
+                                      : showAlert(
+                                          context, 'Không thể in hóa đơn!'));
                                 },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
