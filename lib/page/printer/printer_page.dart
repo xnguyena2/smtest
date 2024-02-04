@@ -8,6 +8,7 @@ import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_pos_printer_platform_image_3/flutter_pos_printer_platform_image_3.dart';
 import 'package:image/image.dart' as img;
 import 'package:sales_management/page/printer/component/printer_bar.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 
 class PrinterPage extends StatefulWidget {
   final Uint8List capturedImage;
@@ -427,7 +428,9 @@ class _PrinterPageState extends State<PrinterPage> {
                                       selectedPrinter?.deviceName
                               ? null
                               : () async {
-                                  _printReceiveTest();
+                                  _printReceiveTest().onError(
+                                      (error, stackTrace) =>
+                                          showAlert(context, 'Không thể in!'));
                                 },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(
