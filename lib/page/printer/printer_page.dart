@@ -233,9 +233,9 @@ class _PrinterPageState extends State<PrinterPage> {
   }
 
   // conectar dispositivo
-  _connectDevice() async {
+  Future<bool> _connectDevice() async {
     _isConnected = false;
-    if (selectedPrinter == null) return;
+    if (selectedPrinter == null) return false;
     switch (selectedPrinter!.typePrinter) {
       case PrinterType.usb:
         _isConnected = await printerManager.connect(
@@ -263,6 +263,7 @@ class _PrinterPageState extends State<PrinterPage> {
     }
 
     setState(() {});
+    return _isConnected;
   }
 
   @override
@@ -282,7 +283,11 @@ class _PrinterPageState extends State<PrinterPage> {
                       onPressed: selectedPrinter == null || _isConnected
                           ? null
                           : () {
-                              _connectDevice();
+                              _connectDevice().then((value) => value
+                                  ? showNotification(
+                                      context, 'Kết nối máy in')
+                                  : showAlert(context,
+                                      'Không thể kết nối máy in!'));
                             },
                       child:
                           const Text("Kết nối", textAlign: TextAlign.center),
