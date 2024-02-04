@@ -17,6 +17,7 @@ import 'package:sales_management/page/create_order/component/order_total_price.d
 import 'package:sales_management/page/create_order/component/order_transaction.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/print/print_page.dart';
 import 'package:sales_management/page/product_selector/component/provider_discount.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
@@ -86,7 +87,14 @@ class CreateOrderPage extends StatelessWidget {
                                 onUpdated(data);
                                 context.read<ProductProvider>().justRefresh();
                                 LoadingOverlayAlt.of(context).hide();
-                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PrintPage(
+                                      data: data,
+                                    ),
+                                  ),
+                                );
                               }).onError((error, stackTrace) {
                                 showAlert(context, 'Không thể cập nhật!');
                                 LoadingOverlayAlt.of(context).hide();
