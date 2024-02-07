@@ -3,7 +3,6 @@ import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/modal/modal_base.dart';
-import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -69,6 +68,10 @@ class ModalWholesaleSetting extends StatelessWidget {
           ),
           BottomBar(
             done: () {
+              if (product.getWholesalePrice > 0 &&
+                  product.getWholesaleNumber <= 0) {
+                product.setWholesaleNumber(10);
+              }
               onDone(product);
               Navigator.pop(context);
             },

@@ -344,7 +344,14 @@ class ProductInPackageResponse extends UserPackage {
 
   int get getWholesaleNumber => beerSubmitData?.getWholesaleNumber ?? 0;
 
-  bool get isWholesaleMode => numberUnit > getWholesaleNumber;
+  double get getWholesalePrice => beerSubmitData?.getWholesalePrice ?? 0;
+
+  double get getPrice => beerSubmitData?.getPrice ?? 0;
+
+  bool get isWholesaleMode =>
+      getWholesaleNumber > 0 && numberUnit > getWholesaleNumber;
+
+  bool get isApplyWholesaleMode => price == getWholesalePrice;
 }
 
 class BuyerData extends Buyer {

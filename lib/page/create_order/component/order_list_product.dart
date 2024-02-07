@@ -5,6 +5,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/check_radio_item.dart';
+import 'package:sales_management/component/checkbox/check_box.dart';
 import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
@@ -29,7 +30,6 @@ class ListProduct extends StatefulWidget {
 class _ListProductState extends State<ListProduct> {
   final bool enableAllFunction = false;
   late final PackageDataResponse data;
-  String currentPriceType = 'retailprice';
   late bool isDone = data.isDone;
 
   @override
@@ -95,46 +95,6 @@ class _ListProductState extends State<ListProduct> {
                 ],
               ),
             ),
-          if (enableAllFunction) ...[
-            SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Giá áp dụng:',
-                    style: headStyleSemiLargeLigh500,
-                  ),
-                  Row(
-                    children: [
-                      CheckRadioItem<String>(
-                        txt: 'Giá lẻ',
-                        groupValue: currentPriceType,
-                        value: 'retailprice',
-                        onChanged: (value) {
-                          currentPriceType = 'retailprice';
-                        },
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      CheckRadioItem<String>(
-                        txt: 'Giá sỉ',
-                        groupValue: currentPriceType,
-                        value: 'wholesale',
-                        onChanged: (value) {
-                          currentPriceType = 'wholesale';
-                        },
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
           if (data.items.isNotEmpty) ...[
             SizedBox(
               height: 25,
@@ -275,6 +235,8 @@ class _ProductItemState extends State<ProductItem> {
 
     final isWholesaleMode = productInPackageResponse.isWholesaleMode;
 
+    final isApplyWholesaleMode = productInPackageResponse.isApplyWholesaleMode;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -312,9 +274,14 @@ class _ProductItemState extends State<ProductItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            productName,
-                            style: headStyleXLarge,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                productName,
+                                style: headStyleXLarge,
+                              ),
+                            ],
                           ),
                           if (widget.isEditting)
                             Container(
@@ -405,6 +372,12 @@ class _ProductItemState extends State<ProductItem> {
                                 ],
                               ),
                             )
+                          else if (isWholesaleMode && isApplyWholesaleMode)
+                            const Text(
+                              'Đã áp giá sỉ',
+                              style: headStyleSmallLarge,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                         ],
                       ),
                     ),
@@ -412,17 +385,38 @@ class _ProductItemState extends State<ProductItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        if (!widget.isEditting) ...[
-                          Text(
-                            priceDiscountFormat,
-                            style: headStyleBigMediumBlackLight,
-                          ),
-                          Text(
-                            'x${productInPackageResponse.numberUnit}',
-                            style: headStyleBigMedium,
-                          )
-                        ],
-                        if (widget.isEditting)
+                        if (widget.isEditting) ...[
+                          if (isWholesaleMode)
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {});
+                                  },
+                                  child: const Text(
+                                    'Áp giá sỉ:',
+                                    style: headStyleSmallLarge,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                SmallCheckBox(
+                                  key: ValueKey(isApplyWholesaleMode),
+                                  isChecked: isApplyWholesaleMode,
+                                  onChanged: (value) {
+                                    productInPackageResponse.price = value
+                                        ? productInPackageResponse
+                                            .getWholesalePrice
+                                        : productInPackageResponse.getPrice;
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            )
+                          else
+                            SizedBox(),
                           GestureDetector(
                             onTap: () {
                               _container_edit_height = max_height;
@@ -430,12 +424,21 @@ class _ProductItemState extends State<ProductItem> {
                             },
                             child: TextUnderlineCustome(
                                 totalPriceFormat: totalPriceFormat),
-                          )
-                        else
+                          ),
+                        ] else ...[
+                          Text(
+                            priceDiscountFormat,
+                            style: headStyleBigMediumBlackLight,
+                          ),
+                          Text(
+                            'x${productInPackageResponse.numberUnit}',
+                            style: headStyleBigMedium,
+                          ),
                           Text(
                             totalPriceFormat,
                             style: headStyleXLarge,
                           )
+                        ],
                       ],
                     )
                   ],
@@ -481,12 +484,16 @@ class _ProductItemState extends State<ProductItem> {
                                         children: [
                                           Expanded(
                                             child: TextFormField(
+                                              key: ValueKey(
+                                                  '${productInPackageResponse.productUnitSecondId}_${productInPackageResponse.price}'),
                                               focusNode: priceFocus,
                                               textAlign: TextAlign.right,
                                               initialValue:
                                                   MoneyFormater.format(
                                                       productInPackageResponse
                                                           .price),
+                                              keyboardType:
+                                                  TextInputType.number,
                                               inputFormatters: [
                                                 FilteringTextInputFormatter
                                                     .digitsOnly,
