@@ -30,15 +30,7 @@ class PrintPage extends StatelessWidget {
         pixelRatio: 1.5,
         InheritedTheme.captureAll(
           context,
-          Material(
-            child: SizedBox(
-              width: 400,
-              child: ColoredBox(
-                color: White,
-                child: printPageContent,
-              ),
-            ),
-          ),
+          Material(child: printPageContent!),
         ),
         delay: Duration(milliseconds: 100),
         context: context,
@@ -63,7 +55,12 @@ class PrintPage extends StatelessWidget {
               store: store,
             );
             return SingleChildScrollView(
-              child: printPageContent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  printPageContent!,
+                ],
+              ),
             );
           },
         ),
