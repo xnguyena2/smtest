@@ -12,6 +12,7 @@ import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/home_page.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 Future<void> initData() async {
@@ -53,6 +54,25 @@ Future<User?> loadData(bool isForApple) async {
   return user;
 }
 
+Future<User?> loadLocalData() async {
+  TokenStorage? tokenStorage = LocalStorage.getToken();
+  if (tokenStorage == null) {
+    return null;
+  }
+  setToken(tokenStorage.token);
+  User? user = LocalStorage.getUser();
+  if (user == null) {
+    return Future.error('User is null!!');
+  }
+  setGlobalValue(
+      store_ame: '',
+      groupId: user.groupId,
+      phoneNumber: user.phone_number ?? '',
+      device_id: user.username);
+  await initData();
+  return user;
+}
+
 class FlashPage extends StatelessWidget {
   const FlashPage({super.key});
 
@@ -71,9 +91,12 @@ class FlashPage extends StatelessWidget {
             (Route<dynamic> route) => false);
       },
     ).onError((error, stackTrace) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => CreateStorePage()),
-          (Route<dynamic> route) => false);
+      showAlert(context,
+          'Đường truyền có vấn đề không thể kết nối với máy chủ!');
+      changeInterNetStatus(false);
+      loadLocalData().then((value) => Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false));
     });
     return FlashScreen();
   }
