@@ -91,7 +91,7 @@ class _ListBuyerPageState extends State<ListBuyerPage> {
   }
 }
 
-class _BuyerItems extends StatelessWidget {
+class _BuyerItems extends StatefulWidget {
   const _BuyerItems({
     super.key,
     required this.buyer,
@@ -100,6 +100,11 @@ class _BuyerItems extends StatelessWidget {
   final BuyerData buyer;
 
   @override
+  State<_BuyerItems> createState() => _BuyerItemsState();
+}
+
+class _BuyerItemsState extends State<_BuyerItems> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -107,7 +112,10 @@ class _BuyerItems extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => BuyerDetail(
-              buyer: buyer,
+              buyer: widget.buyer,
+              onUpdate: (BuyerData) {
+                setState(() {});
+              },
             ),
           ),
         );
@@ -128,14 +136,14 @@ class _BuyerItems extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${buyer.reciverFullname}',
+                  '${widget.buyer.reciverFullname}',
                   style: headStyleSemiLarge500,
                 ),
                 SizedBox(
                   height: 4,
                 ),
                 Text(
-                  '${buyer.phoneNumber}',
+                  '${widget.buyer.phoneNumber}',
                   style: headStyleSemiLargeSLigh500,
                 ),
               ],
