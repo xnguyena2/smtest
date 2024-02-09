@@ -94,9 +94,17 @@ class FlashPage extends StatelessWidget {
       showAlert(context,
           'Đường truyền có vấn đề không thể kết nối với máy chủ!');
       changeInterNetStatus(false);
-      loadLocalData().then((value) => Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false));
+      loadLocalData().then((value) {
+        if (value == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => CreateStorePage()),
+              (Route<dynamic> route) => false);
+          return;
+        }
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false);
+      });
     });
     return FlashScreen();
   }
