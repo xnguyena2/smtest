@@ -8,6 +8,7 @@ class UserPackage extends BaseEntity {
   late final String productUnitSecondId;
   late int numberUnit;
   late double price;
+  late double buyPrice;
   late double discountAmount;
   late double discountPercent;
   late String? note;
@@ -23,6 +24,7 @@ class UserPackage extends BaseEntity {
     required this.productUnitSecondId,
     required this.numberUnit,
     required this.price,
+    required this.buyPrice,
     required this.discountAmount,
     required this.discountPercent,
     this.note,
@@ -41,6 +43,7 @@ class UserPackage extends BaseEntity {
     productUnitSecondId = productInPackageResponse.productUnitSecondId;
     numberUnit = productInPackageResponse.numberUnit;
     price = productInPackageResponse.price;
+    buyPrice = productInPackageResponse.buyPrice;
     discountAmount = productInPackageResponse.discountAmount;
     discountPercent = productInPackageResponse.discountPercent;
     note = productInPackageResponse.note;
@@ -54,6 +57,7 @@ class UserPackage extends BaseEntity {
     productUnitSecondId = json['product_unit_second_id'];
     numberUnit = json['number_unit'];
     price = json['price'] as double;
+    buyPrice = json['buy_price'] as double;
     discountAmount = json['discount_amount'] as double;
     discountPercent = json['discount_percent'] as double;
     note = json['note'];
@@ -68,6 +72,7 @@ class UserPackage extends BaseEntity {
     _data['product_unit_second_id'] = productUnitSecondId;
     _data['number_unit'] = numberUnit;
     _data['price'] = price;
+    _data['buy_price'] = buyPrice;
     _data['discount_amount'] = discountAmount;
     _data['discount_percent'] = discountPercent;
     _data['note'] = note;

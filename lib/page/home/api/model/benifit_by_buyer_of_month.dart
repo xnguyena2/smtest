@@ -9,12 +9,14 @@ class BenifitByBuyerOfMonth {
   late final String? id;
   late final String? name;
   late final double revenue;
+  late final double profit;
   late final int count;
 
   BenifitByBuyerOfMonth.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     revenue = json['revenue'] as double;
+    profit = json['profit'] as double;
     count = json['count'] as int;
   }
 
@@ -23,6 +25,7 @@ class BenifitByBuyerOfMonth {
     _data['id'] = id;
     _data['name'] = name;
     _data['revenue'] = revenue;
+    _data['profit'] = profit;
     _data['count'] = count;
     return _data;
   }

@@ -313,6 +313,7 @@ class ProductInPackageResponse extends UserPackage {
                 beerSubmitData?.listUnit?.firstOrNull?.beerUnitSecondId ?? '',
             numberUnit: 0,
             price: beerSubmitData?.listUnit?.firstOrNull?.realPrice ?? 0.0,
+            buyPrice: beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0);
   late final BeerSubmitData? beerSubmitData;

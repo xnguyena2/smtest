@@ -10,9 +10,11 @@ import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/page/order_list/component/modal_confirm.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/helper.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
@@ -194,7 +196,7 @@ class PackageItemDetail extends StatelessWidget {
                             final productWithPackge =
                                 ProductPackage.fromPackageDataResponse(data);
 
-                            updatePackageWithTransactions(productWithPackge,
+                            doneOrder(productWithPackge,
                                     paymentTransaction: transaction)
                                 .then((value) {
                               onUpdated(data);

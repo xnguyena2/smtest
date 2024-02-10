@@ -328,7 +328,7 @@ class ReportByStaffAsTable extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${e.name?.isNotEmpty == true ? e.name == userPhoneNumber ? 'Chú quán' : e.name : 'Chú quán'}',
+                                  '${e.name?.isNotEmpty == true ? e.name == userPhoneNumber ? 'Chủ quán' : e.name : 'Chủ quán'}',
                                   style: headStyleMedium,
                                 ),
                                 if (e.id?.isNotEmpty == true)
