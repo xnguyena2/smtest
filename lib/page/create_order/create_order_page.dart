@@ -76,9 +76,8 @@ class CreateOrderPage extends StatelessWidget {
                                 'Đơn này người mua trả lại?',
                                 onOk: () {
                                   LoadingOverlayAlt.of(context).show();
-                                  returnPackage(
-                                          PackageID.fromPackageDataResponse(
-                                              data))
+                                  returnOrder(PackageID.fromPackageDataResponse(
+                                          data))
                                       .then((value) {
                                     data.deletedOrder();
                                     onDelete(data);
