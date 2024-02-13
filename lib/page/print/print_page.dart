@@ -55,11 +55,8 @@ class PrintPage extends StatelessWidget {
               store: store,
             );
             return SingleChildScrollView(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  printPageContent!,
-                ],
+              child: Center(
+                child: printPageContent!,
               ),
             );
           },

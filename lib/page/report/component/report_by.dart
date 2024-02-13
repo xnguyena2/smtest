@@ -12,10 +12,12 @@ import 'package:sales_management/utils/utils.dart';
 class ReportBy extends StatefulWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportBy({
     super.key,
     this.begin,
     this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -39,12 +41,14 @@ class _ReportByState extends State<ReportBy> {
       return ReportByProductAsTable(
         begin: widget.begin,
         end: widget.end,
+        isShowProfit: widget.isShowProfit,
       );
     }
     if (dropdownValue == 'Khách hàng') {
       return ReportByBuyerAsTable(
         begin: widget.begin,
         end: widget.end,
+        isShowProfit: widget.isShowProfit,
       );
     }
 
@@ -52,6 +56,7 @@ class _ReportByState extends State<ReportBy> {
       return ReportByOrderAsTable(
         begin: widget.begin,
         end: widget.end,
+        isShowProfit: widget.isShowProfit,
       );
     }
 
@@ -59,6 +64,7 @@ class _ReportByState extends State<ReportBy> {
       return ReportByDayAsTable(
         begin: widget.begin,
         end: widget.end,
+        isShowProfit: widget.isShowProfit,
       );
     }
 
@@ -66,12 +72,14 @@ class _ReportByState extends State<ReportBy> {
       return ReportByStaffAsTable(
         begin: widget.begin,
         end: widget.end,
+        isShowProfit: widget.isShowProfit,
       );
     }
 
     return ReportByProductAsTable(
       begin: widget.begin,
       end: widget.end,
+      isShowProfit: widget.isShowProfit,
     );
   }
 
@@ -114,10 +122,12 @@ class _ReportByState extends State<ReportBy> {
 class ReportByBuyerAsTable extends StatelessWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportByBuyerAsTable({
     super.key,
     required this.begin,
     required this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -153,15 +163,16 @@ class ReportByBuyerAsTable extends StatelessWidget {
                 border: TableBorder.symmetric(
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: const [
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
+                columns: [
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  if (isShowProfit) const DataColumn(label: SizedBox()),
                 ],
                 rows: [
-                  const DataRow(
+                  DataRow(
                     cells: <DataCell>[
-                      DataCell(Column(
+                      const DataCell(Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -171,23 +182,35 @@ class ReportByBuyerAsTable extends StatelessWidget {
                           ),
                         ],
                       )),
-                      DataCell(
+                      const DataCell(
                         Text(
                           'ĐƠN',
                           style: subInfoStyLarge400,
                         ),
                       ),
-                      DataCell(
+                      const DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'DOANH THU',
+                              'D.THU',
                               style: subInfoStyLarge400,
                             ),
                           ],
                         ),
                       ),
+                      if (isShowProfit)
+                        const DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'L.NHUẬN',
+                                style: subInfoStyLarge400,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                   ...ListProductBenifitDataResult.listResult
@@ -203,9 +226,13 @@ class ReportByBuyerAsTable extends StatelessWidget {
                                   style: headStyleMedium,
                                 ),
                                 if (e.id?.isNotEmpty == true)
-                                  Text(
-                                    '${e.id}',
-                                    style: subStyleMediumNormalLight,
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: 80),
+                                    child: Text(
+                                      '${e.id}',
+                                      style: subStyleMediumNormalLight,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                               ],
                             )),
@@ -226,6 +253,18 @@ class ReportByBuyerAsTable extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (isShowProfit)
+                              DataCell(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      MoneyFormater.format(e.profit),
+                                      style: headStyleMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       )
@@ -243,10 +282,12 @@ class ReportByBuyerAsTable extends StatelessWidget {
 class ReportByStaffAsTable extends StatelessWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportByStaffAsTable({
     super.key,
     required this.begin,
     required this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -282,15 +323,16 @@ class ReportByStaffAsTable extends StatelessWidget {
                 border: TableBorder.symmetric(
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: const [
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
+                columns: [
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  if (isShowProfit) const DataColumn(label: SizedBox()),
                 ],
                 rows: [
-                  const DataRow(
+                  DataRow(
                     cells: <DataCell>[
-                      DataCell(Column(
+                      const DataCell(Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -300,23 +342,35 @@ class ReportByStaffAsTable extends StatelessWidget {
                           ),
                         ],
                       )),
-                      DataCell(
+                      const DataCell(
                         Text(
                           'ĐƠN',
                           style: subInfoStyLarge400,
                         ),
                       ),
-                      DataCell(
+                      const DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'DOANH THU',
+                              'D.THU',
                               style: subInfoStyLarge400,
                             ),
                           ],
                         ),
                       ),
+                      if (isShowProfit)
+                        const DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'L.NHUẬN',
+                                style: subInfoStyLarge400,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                   ...ListProductBenifitDataResult.listResult
@@ -355,6 +409,18 @@ class ReportByStaffAsTable extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (isShowProfit)
+                              DataCell(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      MoneyFormater.format(e.profit),
+                                      style: headStyleMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       )
@@ -372,10 +438,12 @@ class ReportByStaffAsTable extends StatelessWidget {
 class ReportByProductAsTable extends StatelessWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportByProductAsTable({
     super.key,
     required this.begin,
     required this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -411,15 +479,16 @@ class ReportByProductAsTable extends StatelessWidget {
                 border: TableBorder.symmetric(
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: const [
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
+                columns: [
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  if (isShowProfit) const DataColumn(label: SizedBox()),
                 ],
                 rows: [
-                  const DataRow(
+                  DataRow(
                     cells: <DataCell>[
-                      DataCell(Column(
+                      const DataCell(Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
@@ -428,23 +497,35 @@ class ReportByProductAsTable extends StatelessWidget {
                           ),
                         ],
                       )),
-                      DataCell(
+                      const DataCell(
                         Text(
                           'SỐ LƯỢNG',
                           style: subInfoStyLarge400,
                         ),
                       ),
-                      DataCell(
+                      const DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'DOANH THU',
+                              'D.THU',
                               style: subInfoStyLarge400,
                             ),
                           ],
                         ),
                       ),
+                      if (isShowProfit)
+                        const DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'L.NHUẬN',
+                                style: subInfoStyLarge400,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                   ...ListProductBenifitDataResult.listResult
@@ -482,6 +563,18 @@ class ReportByProductAsTable extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (isShowProfit)
+                              DataCell(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      MoneyFormater.format(e.profit),
+                                      style: headStyleMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       )
@@ -499,10 +592,12 @@ class ReportByProductAsTable extends StatelessWidget {
 class ReportByOrderAsTable extends StatelessWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportByOrderAsTable({
     super.key,
     required this.begin,
     required this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -538,14 +633,15 @@ class ReportByOrderAsTable extends StatelessWidget {
                 border: TableBorder.symmetric(
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: const [
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
+                columns: [
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  if (isShowProfit) const DataColumn(label: SizedBox()),
                 ],
                 rows: [
-                  const DataRow(
+                  DataRow(
                     cells: <DataCell>[
-                      DataCell(
+                      const DataCell(
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,17 +653,29 @@ class ReportByOrderAsTable extends StatelessWidget {
                           ],
                         ),
                       ),
-                      DataCell(
+                      const DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'DOANH THU',
+                              'D.THU',
                               style: subInfoStyLarge400,
                             ),
                           ],
                         ),
                       ),
+                      if (isShowProfit)
+                        const DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'L.NHUẬN',
+                                style: subInfoStyLarge400,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                   ...ListProductBenifitDataResult.listResult
@@ -599,6 +707,18 @@ class ReportByOrderAsTable extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (isShowProfit)
+                              DataCell(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      MoneyFormater.format(e.profit),
+                                      style: headStyleMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       )
@@ -616,10 +736,12 @@ class ReportByOrderAsTable extends StatelessWidget {
 class ReportByDayAsTable extends StatelessWidget {
   final String? begin;
   final String? end;
+  final bool isShowProfit;
   const ReportByDayAsTable({
     super.key,
     required this.begin,
     required this.end,
+    required this.isShowProfit,
   });
 
   @override
@@ -656,28 +778,24 @@ class ReportByDayAsTable extends StatelessWidget {
                 border: TableBorder.symmetric(
                     inside:
                         const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: const [
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
-                  DataColumn(label: SizedBox()),
+                columns: [
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  const DataColumn(label: SizedBox()),
+                  if (isShowProfit) const DataColumn(label: SizedBox()),
                 ],
                 rows: [
-                  const DataRow(
+                  DataRow(
                     cells: <DataCell>[
-                      DataCell(Text(
+                      const DataCell(Text(
                         'NGÀY',
                         style: subInfoStyLarge400,
                       )),
-                      DataCell(Text(
+                      const DataCell(Text(
                         'ĐƠN',
                         style: subInfoStyLarge400,
                       )),
-                      DataCell(Text(
-                        'KHÁCH',
-                        style: subInfoStyLarge400,
-                      )),
-                      DataCell(
+                      const DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -688,6 +806,18 @@ class ReportByDayAsTable extends StatelessWidget {
                           ],
                         ),
                       ),
+                      if (isShowProfit)
+                        const DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'L.NHUẬN',
+                                style: subInfoStyLarge400,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                   ...ListProductBenifitDataResult.listResult
@@ -702,10 +832,6 @@ class ReportByDayAsTable extends StatelessWidget {
                               '${e.count}',
                               style: headStyleMedium,
                             )),
-                            DataCell(Text(
-                              '${e.buyer}',
-                              style: headStyleMedium,
-                            )),
                             DataCell(
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -717,6 +843,18 @@ class ReportByDayAsTable extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (isShowProfit)
+                              DataCell(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      MoneyFormater.format(e.profit),
+                                      style: headStyleMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
                           ],
                         ),
                       )

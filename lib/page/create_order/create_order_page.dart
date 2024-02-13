@@ -62,20 +62,45 @@ class CreateOrderPage extends StatelessWidget {
               child: SafeArea(
                 top: false,
                 bottom: false,
-                child: Scaffold(
-                  appBar: CreateOrderBar(
-                    onBackPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  body: CreateOrderBody(
-                    data: data,
-                    onUpdated: () => onUpdated(data),
-                  ),
-                  bottomNavigationBar: data.isDone
-                      ? null
-                      : Builder(
-                          builder: (context) => BottomBar(
+                child: Builder(builder: (context) {
+                  return Scaffold(
+                    appBar: CreateOrderBar(
+                      onBackPressed: () {
+                        Navigator.pop(context);
+                      },
+                      onReturn: data.isDone
+                          ? () {
+                              showDefaultDialog(
+                                context,
+                                'Xác nhận trả đơn!',
+                                'Đơn này người mua trả lại?',
+                                onOk: () {
+                                  LoadingOverlayAlt.of(context).show();
+                                  returnPackage(
+                                          PackageID.fromPackageDataResponse(
+                                              data))
+                                      .then((value) {
+                                    data.deletedOrder();
+                                    onDelete(data);
+                                    Navigator.pop(context);
+                                    LoadingOverlayAlt.of(context).hide();
+                                  }).onError((error, stackTrace) {
+                                    showAlert(context, 'Không thể trả!');
+                                    LoadingOverlayAlt.of(context).hide();
+                                  });
+                                },
+                                onCancel: () {},
+                              );
+                            }
+                          : null,
+                    ),
+                    body: CreateOrderBody(
+                      data: data,
+                      onUpdated: () => onUpdated(data),
+                    ),
+                    bottomNavigationBar: data.isDone
+                        ? null
+                        : BottomBar(
                             done: () {
                               LoadingOverlayAlt.of(context).show();
                               data.runPendingAction();
@@ -148,8 +173,8 @@ class CreateOrderPage extends StatelessWidget {
                               },
                             ),
                           ),
-                        ),
-                ),
+                  );
+                }),
               ),
             ),
           );

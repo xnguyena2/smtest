@@ -6,6 +6,7 @@ import 'package:sales_management/page/report/api/report_api.dart';
 import 'package:sales_management/page/report/component/report_as_table.dart';
 import 'package:sales_management/page/report/component/report_bar.dart';
 import 'package:sales_management/page/report/component/report_by.dart';
+import 'package:sales_management/page/report/component/report_cancel_return_order.dart';
 import 'package:sales_management/page/report/component/report_main_info.dart';
 import 'package:sales_management/page/report/component/report_time_selector.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -140,6 +141,14 @@ class _ReportPageState extends State<ReportPage> {
                             height: 25,
                           ),
                           ReportBy(
+                            begin: start,
+                            end: end,
+                            isShowProfit: true,
+                          ),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          ReportCancelAndReturnOrder(
                             begin: start,
                             end: end,
                           ),

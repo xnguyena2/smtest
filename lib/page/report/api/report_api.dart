@@ -8,6 +8,7 @@ import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/api/list_hour_benefit.dart';
 import 'package:sales_management/page/report/api/list_order_benefit.dart';
 import 'package:sales_management/page/report/api/list_product_benefit.dart';
+import 'package:sales_management/page/report/api/model/count_order_by_date.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -156,6 +157,30 @@ Future<ListOrderBenifitDataResult> getReportOfOrder(
     final result = ListOrderBenifitDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
     );
+    return result;
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<CountOrderByDate> getCancelAndReturnOfOrder(
+    {String? start, String? end}) async {
+  String from = start ?? getFirstDateTimeOfCurrentMonth();
+  String to = end ?? getCurrentDateTimeNow();
+  final request =
+      PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
+
+  // print(request.toJson());
+
+  final response =
+      await postC('/packageorderstatistic/admin/countreturncancel', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // debugPrint(response.body, wrapWidth: 1024);
+    final result =
+        CountOrderByDate.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     return result;
   } else {
     // throw Exception('Failed to load data');
