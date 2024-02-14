@@ -43,12 +43,19 @@ class ListPackageDetailResult {
   late final List<PackageDataResponse> listResult;
   late final Map<String, PackageDataResponse> mapExist;
 
+  int currentID = 0;
+
   ListPackageDetailResult.fromJson(Map<String, dynamic> json) {
     listResult = List.from(json['list_result'])
         .map((e) => PackageDataResponse.fromJson(e))
         .toList();
     mapExist = Map.fromEntries(listResult.map(
         (e) => MapEntry<String, PackageDataResponse>(e.packageSecondId, e)));
+    listResult.forEach((element) {
+      if (currentID == 0 || currentID > (element.id ?? 0)) {
+        currentID = element.id ?? 0;
+      }
+    });
   }
 
   void addNewOrder(PackageDataResponse newO) {

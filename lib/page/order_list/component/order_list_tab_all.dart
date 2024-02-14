@@ -78,9 +78,7 @@ class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
               setState(() {});
             },
             onDelete: (PackageDataResponse) {
-              print(data.listResult.length);
               data.updateListOrder([PackageDataResponse]);
-              print(data.listResult.length);
               setState(() {});
             },
           );

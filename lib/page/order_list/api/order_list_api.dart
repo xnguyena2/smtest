@@ -34,11 +34,11 @@ Future<ListPackageDetailResult> getAllPackage(String groupID,
 }
 
 Future<ListPackageDetailResult> getAllWorkingPackage(String groupID,
-    {int page = 0, int size = 1000}) async {
+    {int id = 0, int page = 0, int size = 1000}) async {
   final request = UserInfoQuery(
     page: page,
     size: size,
-    id: '',
+    id: id == 0 ? '' : id.toString(),
     group_id: groupID,
   );
 

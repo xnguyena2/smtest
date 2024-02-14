@@ -152,7 +152,7 @@ class Body extends StatelessWidget {
               child: TabBarView(
                 children: [
                   FetchAPI<ListPackageDetailResult>(
-                    future: getAllWorkingPackage(groupID, page: 0, size: 10),
+                    future: _loadMoreTrigger.firstLoad(),
                     successBuilder: (data) {
                       return OrderListAllPackageTab(
                         data: data,
@@ -176,22 +176,29 @@ class Body extends StatelessWidget {
 class _LoadMoreTrigger {
   bool loading = false;
   bool _canLoadMore = true;
-  int currentPage = 0;
+  int currentID = 0;
 
   void reset() {
     loading = false;
     _canLoadMore = true;
-    currentPage = 0;
   }
 
   bool canLoadMore() {
     return _canLoadMore && loading == false;
   }
 
+  Future<ListPackageDetailResult> firstLoad() {
+    return getAllWorkingPackage(groupID, id: currentID, size: 10).then((value) {
+      _canLoadMore = value.listResult.isNotEmpty;
+      currentID = value.currentID;
+      return value;
+    });
+  }
+
   void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
     loading = true;
-    currentPage++;
-    getAllWorkingPackage(groupID, page: currentPage, size: 10).then((value) {
+    getAllWorkingPackage(groupID, id: currentID, size: 10).then((value) {
+      currentID = value.currentID;
       onDone(value);
       _canLoadMore = value.listResult.isNotEmpty;
       loading = false;

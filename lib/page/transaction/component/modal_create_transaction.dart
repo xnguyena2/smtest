@@ -164,7 +164,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                       child: RoundBtn(
                         isSelected: true,
                         icon: LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
-                        txt: isOfPackage ? 'Xêm chi tiết' : 'Chỉnh sửa',
+                        txt: isOfPackage ? 'Xem chi tiết' : 'Chỉnh sửa',
                         onPressed: () async {
                           if (isOfPackage) {
                             Navigator.push(
