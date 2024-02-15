@@ -42,8 +42,8 @@ class _ListBuyerPageState extends State<ListBuyerPage> {
                   builder: (context) => ReciverInfo(
                     addressData: addressData,
                     done: (data) {
-                      final buyerData =
-                          BuyerData(region: '', district: '', ward: '');
+                      final buyerData = BuyerData.simpleData(
+                          region: '', district: '', ward: '');
                       buyerData.updateData(data);
                       listBuyerDataResult?.listResult.add(buyerData);
                       setState(() {});

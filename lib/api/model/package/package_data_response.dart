@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/buyer.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
@@ -8,6 +9,8 @@ import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
+
+part 'package_data_response.g.dart';
 
 enum PaymentStatus {
   DONE,
@@ -20,15 +23,18 @@ enum PaymentStatus {
 class WrapListFilter {
   final String filter;
   final ListPackageDetailResult listPackageDetailResult;
+  final List<PackageDataResponse> listPendingOrder;
 
   WrapListFilter({
     required this.listPackageDetailResult,
     required this.filter,
+    required this.listPendingOrder,
   });
 
   List<PackageDataResponse> getListResult() {
-    if (filter.isEmpty) return listPackageDetailResult.listResult;
-    return listPackageDetailResult.listResult
+    listPendingOrder.addAll(listPackageDetailResult.listResult);
+    if (filter.isEmpty) return listPendingOrder;
+    return listPendingOrder
         .where((e) =>
             e.tableName?.contains(filter) == true ||
             e.buyer?.reciverFullname?.contains(filter) == true)
@@ -91,11 +97,45 @@ class ListPackageDetailResult {
   }
 }
 
+@HiveType(typeId: 20)
 class PackageDataResponse extends PackageDetail {
   PackageDataResponse({
+    required super.id,
+    required super.groupId,
+    required super.createat,
+    required super.packageSecondId,
+    required super.deviceId,
+    required super.staff_id,
+    required super.price,
+    required super.cost,
+    required super.profit,
+    required super.point,
+    required super.payment,
+    required super.discountAmount,
+    required super.discountPercent,
+    required super.shipPrice,
+    required super.status,
+    required super.packageType,
+    required super.areaId,
+    required super.areaName,
+    required super.tableId,
+    required super.tableName,
+    required super.voucher,
+    required super.note,
+    required super.image,
+    required super.progress,
     required this.items,
     required this.buyer,
-  })  : localTimeTxt = formatLocalDateTimeOfDateTime(DateTime.now().toUtc()),
+  }) : localTimeTxt = formatLocalDateTimeOfDateTime(DateTime.now().toUtc());
+
+  @HiveField(26)
+  late List<ProductInPackageResponse> items;
+
+  @HiveField(27)
+  late BuyerData? buyer;
+
+  PackageDataResponse.empty()
+      : localTimeTxt = formatLocalDateTimeOfDateTime(DateTime.now().toUtc()),
         super(
           id: 0,
           groupId: groupID,
@@ -113,14 +153,10 @@ class PackageDataResponse extends PackageDetail {
           shipPrice: 0.0,
           status: PackageStatusType.CREATE,
           packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
-        );
-
-  late final String localTimeTxt;
-
-  late List<ProductInPackageResponse> items;
-  late BuyerData? buyer;
-
-  final Map<String, ProductInPackageResponse> productMap = HashMap();
+        ) {
+    items = [];
+    buyer = null;
+  }
 
   PackageDataResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -130,7 +166,8 @@ class PackageDataResponse extends PackageDetail {
     buyer = json['buyer'] == null ? null : BuyerData.fromJson(json['buyer']);
 
     localTimeTxt = formatLocalDateTime(createat);
-    updateProductMap();
+
+    fillData();
   }
 
   Map<String, dynamic> toJson() {
@@ -138,6 +175,16 @@ class PackageDataResponse extends PackageDetail {
     _data['items'] = items.map((e) => e.toJson()).toList();
     _data['buyer'] = buyer?.toJson();
     return _data;
+  }
+
+  late final String localTimeTxt;
+
+  final Map<String, ProductInPackageResponse> productMap = HashMap();
+  bool isLocal = false;
+
+  void fillData({bool isLocal = false}) {
+    this.isLocal = isLocal;
+    updateProductMap();
   }
 
   void updateListProductItem(PackageDataResponse package) {
@@ -306,8 +353,30 @@ class PackageDataResponse extends PackageDetail {
   }
 }
 
+@HiveType(typeId: 19)
 class ProductInPackageResponse extends UserPackage {
+  @HiveField(15)
+  late final BeerSubmitData? beerSubmitData;
+
   ProductInPackageResponse({
+    required super.id,
+    required super.groupId,
+    required super.deviceId,
+    required super.packageSecondId,
+    required super.createat,
+    required super.productSecondId,
+    required super.productUnitSecondId,
+    required super.numberUnit,
+    required super.price,
+    required super.buyPrice,
+    required super.discountAmount,
+    required super.discountPercent,
+    required super.note,
+    required super.status,
+    required this.beerSubmitData,
+  });
+
+  ProductInPackageResponse.fromProductData({
     required this.beerSubmitData,
   }) : super(
             id: 0,
@@ -323,7 +392,6 @@ class ProductInPackageResponse extends UserPackage {
             buyPrice: beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0);
-  late final BeerSubmitData? beerSubmitData;
 
   ProductInPackageResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -362,8 +430,31 @@ class ProductInPackageResponse extends UserPackage {
   bool get isApplyWholesaleMode => price == getWholesalePrice;
 }
 
+@HiveType(typeId: 22)
 class BuyerData extends Buyer {
   BuyerData({
+    required super.id,
+    required super.groupId,
+    required super.createat,
+    required super.deviceId,
+    required super.regionId,
+    required super.districtId,
+    required super.wardId,
+    required super.realPrice,
+    required super.totalPrice,
+    required super.shipPrice,
+    required super.discount,
+    required super.point,
+    required this.region,
+    required this.district,
+    required this.ward,
+    required super.reciverFullname,
+    required super.phoneNumberClean,
+    required super.phoneNumber,
+    required super.reciverAddress,
+    required super.status,
+  });
+  BuyerData.simpleData({
     required this.region,
     required this.district,
     required this.ward,
@@ -381,8 +472,14 @@ class BuyerData extends Buyer {
           discount: 0.0,
           point: 0,
         );
+
+  @HiveField(18)
   late String? region;
+
+  @HiveField(19)
   late String? district;
+
+  @HiveField(20)
   late String? ward;
 
   BuyerData.uknowBuyer()

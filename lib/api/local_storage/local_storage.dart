@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/page/account/api/model/token.dart';
 import 'package:sales_management/page/create_store/api/model/user.dart';
@@ -10,18 +11,27 @@ import 'package:sales_management/utils/utils.dart';
 part 'local_storage.g.dart';
 
 class LocalStorage {
-  static const String hiveRequestDepend = 'requestDepend';
-  static const String hiveRequest = 'request';
-
+  static const String hiveRequestDependBox = 'requestDepend';
+  static const String hiveRequestBox = 'request';
+  static const String hiveOrdersPackageBox = 'orderpackage';
   static const String hiveSettingBox = 'settings';
+
   static const String hiveConfigKey = 'config';
   static const String hiveTokenKey = 'token';
   static const String hiveUserInfoKey = 'userinfo';
 
   static Future<void> openBox() async {
     await Hive.openBox(hiveSettingBox);
-    await Hive.openBox(hiveRequestDepend);
-    await Hive.openBox(hiveRequest);
+    await Hive.openBox(hiveRequestDependBox);
+    await Hive.openBox(hiveRequestBox);
+    await Hive.openBox(hiveOrdersPackageBox);
+  }
+
+  static Future<void> cleanBox() async {
+    await Hive.box(hiveRequestDependBox).clear();
+    await Hive.box(hiveRequestBox).clear();
+    await Hive.box(hiveSettingBox).clear();
+    await Hive.box(hiveOrdersPackageBox).clear();
   }
 
   static void putUser(User user) {
@@ -35,6 +45,21 @@ class LocalStorage {
   static User? getUser() {
     var box = Hive.box(hiveSettingBox);
     return box.get(hiveUserInfoKey);
+  }
+
+  static void putOrderPakage(PackageDataResponse packageDataResponse) {
+    var box = Hive.box(hiveOrdersPackageBox);
+    box.put(
+      packageDataResponse.packageSecondId,
+      packageDataResponse,
+    );
+  }
+
+  static List<PackageDataResponse> getOrderPakage() {
+    var box = Hive.box(hiveOrdersPackageBox);
+    List<PackageDataResponse> allOrders = List.from(box.values);
+    print('order package length: ${allOrders.length}');
+    return allOrders;
   }
 
   static void putToken(Token token) {
@@ -67,18 +92,9 @@ class LocalStorage {
     return Hive.box(hiveSettingBox).listenable(keys: [hiveConfigKey]);
   }
 
-  static Future<void> cleanBox() async {
-    var box1 = Hive.box(hiveRequestDepend);
-    var box2 = Hive.box(hiveRequest);
-    var box3 = Hive.box(hiveSettingBox);
-    await box1.clear();
-    await box2.clear();
-    await box3.clear();
-  }
-
   static void addDependRequest(
       RequestType type, String path, String id, String body) {
-    var box = Hive.box(hiveRequestDepend);
+    var box = Hive.box(hiveRequestDependBox);
     box.put(
       '${path}_$id',
       RequestStorage(
@@ -93,7 +109,7 @@ class LocalStorage {
 
   static void addRequest(
       RequestType type, String path, String id, String body) {
-    var box = Hive.box(hiveRequest);
+    var box = Hive.box(hiveRequestBox);
     box.put(
       '${path}_$id',
       RequestStorage(
@@ -107,7 +123,7 @@ class LocalStorage {
   }
 
   static void getDependRequest() {
-    var box = Hive.box(hiveRequestDepend);
+    var box = Hive.box(hiveRequestDependBox);
     List<RequestStorage> alRequest = List.from(box.values);
     print('depend request length: ${alRequest.length}');
   }

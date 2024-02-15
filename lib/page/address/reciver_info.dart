@@ -216,7 +216,8 @@ class _ReciverInfoState extends State<ReciverInfo> {
                           ? () {
                               // print(addressData.toJson().toString());
                               final buyer = addressData.getBuyerData ??
-                                  BuyerData(region: '', district: '', ward: '');
+                                  BuyerData.simpleData(
+                                      region: '', district: '', ward: '');
                               buyer.updateData(addressData);
                               buyer.updateDeviceID(addressData);
                               createBuyer(buyer);

@@ -1,5 +1,9 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 
+part 'buyer.g.dart';
+
+@HiveType(typeId: 21)
 class Buyer extends BaseEntity {
   Buyer({
     required int id,
@@ -21,19 +25,46 @@ class Buyer extends BaseEntity {
     this.status,
   }) : super(id: id, groupId: groupId, createat: createat);
 
+  @HiveField(4)
   late String deviceId;
+
+  @HiveField(5)
   late String? reciverFullname;
+
+  @HiveField(6)
   late String? phoneNumberClean;
+
+  @HiveField(7)
   late String? phoneNumber;
+
+  @HiveField(8)
   late String? reciverAddress;
+
+  @HiveField(9)
   late int regionId;
+
+  @HiveField(10)
   late int districtId;
+
+  @HiveField(11)
   late int wardId;
+
+  @HiveField(12)
   late double realPrice;
+
+  @HiveField(13)
   late double totalPrice;
+
+  @HiveField(14)
   late double shipPrice;
+
+  @HiveField(15)
   late double discount;
+
+  @HiveField(16)
   late int point;
+
+  @HiveField(17)
   late final String? status;
 
   Buyer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

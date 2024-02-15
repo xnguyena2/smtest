@@ -10,6 +10,11 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
+import 'package:sales_management/api/model/package/buyer.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/package_detail.dart';
+import 'package:sales_management/api/model/package/transaction.dart';
+import 'package:sales_management/api/model/package/user_package.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/page/address/api/model/address_data.dart';
 import 'package:sales_management/page/address/api/model/region.dart';
@@ -59,6 +64,16 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(RequestStorageAdapter());
   Hive.registerAdapter(RequestTypeAdapter());
   Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(TransactionHistoryAdapter());
+  Hive.registerAdapter(PackageDetailAdapter());
+  Hive.registerAdapter(ProgressAdapter());
+  Hive.registerAdapter(DeliverTypeAdapter());
+  Hive.registerAdapter(PackageStatusTypeAdapter());
+  Hive.registerAdapter(BuyerAdapter());
+  Hive.registerAdapter(PackageDataResponseAdapter());
+  Hive.registerAdapter(ProductInPackageResponseAdapter());
+  Hive.registerAdapter(BuyerDataAdapter());
+  Hive.registerAdapter(UserPackageAdapter());
 
   await LocalStorage.openBox();
   LocalStorage.getDependRequest();

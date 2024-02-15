@@ -20,9 +20,9 @@ class BootStrapDataAdapter extends TypeAdapter<BootStrapData> {
       products: (fields[0] as List).cast<BeerSubmitData>(),
       carousel: (fields[1] as List).cast<String>(),
       deviceConfig: fields[3] as DeviceConfig?,
-    )
-      ..benifit = fields[4] as BenifitByMonth
-      ..store = fields[5] as Store?;
+      benifit: fields[4] as BenifitByMonth,
+      store: fields[5] as Store?,
+    );
   }
 
   @override
@@ -116,7 +116,8 @@ class BenifitByMonthAdapter extends TypeAdapter<BenifitByMonth> {
       revenue: fields[2] as double,
       profit: fields[3] as double,
       cost: fields[4] as double,
-    )..discount = fields[5] as double?;
+      discount: fields[5] as double?,
+    );
   }
 
   @override

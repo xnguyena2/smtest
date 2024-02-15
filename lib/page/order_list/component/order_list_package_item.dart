@@ -64,7 +64,7 @@ class PackageItemDetail extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: White,
+          color: data.isLocal ? BackgroundColor : White,
           borderRadius: defaultBorderRadius,
           boxShadow: const [defaultShadow],
         ),

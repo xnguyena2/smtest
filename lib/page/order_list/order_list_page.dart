@@ -43,8 +43,7 @@ class OrderListPage extends StatelessWidget {
                   firstSelectProductWhenCreateOrder: true,
                   onUpdatedPasstoCreateOrder: updateOrderEvent,
                   onDeletedPasstoCreateOrder: updateOrderEvent,
-                  packageDataResponse:
-                      PackageDataResponse(items: [], buyer: null),
+                  packageDataResponse: PackageDataResponse.empty(),
                   onUpdated: (PackageDataResponse) {},
                 ),
               ),

@@ -172,8 +172,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                               MaterialPageRoute(
                                 builder: (context) => CreateOrderPage(
                                   packageID: data.packageSecondId,
-                                  data: PackageDataResponse(
-                                      items: [], buyer: null),
+                                  data: PackageDataResponse.empty(),
                                   onUpdated: (package) {},
                                   onDelete: (PackageDataResponse) {},
                                 ),

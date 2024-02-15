@@ -1,14 +1,22 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/utils/utils.dart';
 
-class TransactionHistory extends BaseEntity {
-  late final String packageSecondId;
-  late final double payment;
-  late final String type;
-  late final String detail;
+part 'transaction.g.dart';
 
-  late final String localDateTxt;
-  late final String localTimeTxt;
+@HiveType(typeId: 16)
+class TransactionHistory extends BaseEntity {
+  @HiveField(4)
+  late final String packageSecondId;
+
+  @HiveField(5)
+  late final double payment;
+
+  @HiveField(6)
+  late final String type;
+
+  @HiveField(7)
+  late final String detail;
 
   TransactionHistory({
     required super.id,
@@ -39,4 +47,8 @@ class TransactionHistory extends BaseEntity {
     _data['detail'] = detail;
     return _data;
   }
+
+  late final String localDateTxt;
+
+  late final String localTimeTxt;
 }

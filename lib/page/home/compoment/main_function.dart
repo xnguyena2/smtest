@@ -64,7 +64,7 @@ class MainFunction extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CreateOrderPage(
-                          data: PackageDataResponse(items: [], buyer: null),
+                          data: PackageDataResponse.empty(),
                           onUpdated: (package) {},
                           onDelete: (PackageDataResponse) {},
                         ),
@@ -91,7 +91,7 @@ class MainFunction extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => CreateOrderPage(
                             packageID: tableDetailData!.packageSecondId,
-                            data: PackageDataResponse(items: [], buyer: null),
+                            data: PackageDataResponse.empty(),
                             onUpdated: (package) {},
                             onDelete: (PackageDataResponse) {},
                           ),
@@ -99,8 +99,7 @@ class MainFunction extends StatelessWidget {
                       );
                       return;
                     }
-                    final newOrder =
-                        PackageDataResponse(items: [], buyer: null);
+                    final newOrder = PackageDataResponse.empty();
                     newOrder.packageType = DeliverType.table;
                     newOrder.setTable(tableDetailData!);
                     Navigator.push(

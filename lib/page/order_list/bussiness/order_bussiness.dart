@@ -1,3 +1,5 @@
+import 'package:sales_management/api/local_storage/local_storage.dart';
+import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/api/model/response_result.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
@@ -22,4 +24,12 @@ Future<ResponseResult> returnOrder(PackageID packageID) {
     refreshBootStrap();
     return value;
   });
+}
+
+List<PackageDataResponse> getAllPendingOrderPackage() {
+  final listOrder = LocalStorage.getOrderPakage();
+  listOrder.forEach((element) {
+    element.fillData(isLocal: true);
+  });
+  return listOrder;
 }
