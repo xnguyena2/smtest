@@ -17,6 +17,8 @@ class BottomBar extends StatelessWidget {
   final Widget? headOkbtn;
   final Widget? headCancelbtn;
   final bool isCancelMode;
+  final bool isShowOkBtn;
+  final Color okBtnColor;
   const BottomBar({
     super.key,
     required this.done,
@@ -30,6 +32,8 @@ class BottomBar extends StatelessWidget {
     this.headOkbtn,
     this.headCancelbtn,
     this.isCancelMode = true,
+    this.isShowOkBtn = true,
+    this.okBtnColor = TableHighColor,
   });
 
   @override
@@ -79,15 +83,17 @@ class BottomBar extends StatelessWidget {
               width: 10,
             ),
           ],
-          Expanded(
-            child: ApproveBtn(
-              isActiveOk: isActiveOk,
-              txt: okBtnTxt ?? 'Đã giao',
-              padding: EdgeInsets.symmetric(vertical: 12),
-              onPressed: done,
-              headIcon: headOkbtn,
+          if (isShowOkBtn)
+            Expanded(
+              child: ApproveBtn(
+                isActiveOk: isActiveOk,
+                txt: okBtnTxt ?? 'Đã giao',
+                padding: EdgeInsets.symmetric(vertical: 12),
+                onPressed: done,
+                headIcon: headOkbtn,
+                backgroundColor: okBtnColor,
+              ),
             ),
-          ),
         ],
       ),
     );

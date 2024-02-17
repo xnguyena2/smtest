@@ -21,20 +21,15 @@ enum PaymentStatus {
 }
 
 class WrapListFilter {
-  final String filter;
   final ListPackageDetailResult listPackageDetailResult;
-  final List<PackageDataResponse> listPendingOrder;
 
   WrapListFilter({
     required this.listPackageDetailResult,
-    required this.filter,
-    required this.listPendingOrder,
   });
 
-  List<PackageDataResponse> getListResult() {
-    listPendingOrder.addAll(listPackageDetailResult.listResult);
-    if (filter.isEmpty) return listPendingOrder;
-    return listPendingOrder
+  List<PackageDataResponse> getListResult({required String filter}) {
+    if (filter.isEmpty) return listPackageDetailResult.listResult;
+    return listPackageDetailResult.listResult
         .where((e) =>
             e.tableName?.contains(filter) == true ||
             e.buyer?.reciverFullname?.contains(filter) == true)
@@ -182,6 +177,16 @@ class PackageDataResponse extends PackageDetail {
   final Map<String, ProductInPackageResponse> productMap = HashMap();
   bool isLocal = false;
 
+  PackageDataResponse clone() {
+    final cl = PackageDataResponse.fromJson(toJson());
+    cl.swithLocalStatus(isLocal);
+    return cl;
+  }
+
+  void swithLocalStatus(bool isLocal) {
+    this.isLocal = isLocal;
+  }
+
   void fillData({bool isLocal = false}) {
     this.isLocal = isLocal;
     updateProductMap();
@@ -248,10 +253,6 @@ class PackageDataResponse extends PackageDetail {
     discountPercent = 0;
     discountAmount += discount;
     this.point = -point;
-  }
-
-  PackageDataResponse clone() {
-    return PackageDataResponse.fromJson(toJson());
   }
 
   void updatePrice() {

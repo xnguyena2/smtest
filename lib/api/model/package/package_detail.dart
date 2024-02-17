@@ -254,7 +254,7 @@ class PackageDetail extends BaseEntity {
     this.profit = payment - cost;
   }
 
-  void deletedOrder() {
+  void markDeletedOrder() {
     status = PackageStatusType.DELETE;
   }
 

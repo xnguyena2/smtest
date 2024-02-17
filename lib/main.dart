@@ -76,7 +76,6 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(UserPackageAdapter());
 
   await LocalStorage.openBox();
-  LocalStorage.getDependRequest();
 }
 
 Future<void> checkInternetConnection() async {

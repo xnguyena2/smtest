@@ -31,6 +31,9 @@ class _CustomerInfoState extends State<CustomerInfo> {
   @override
   Widget build(BuildContext context) {
     BuyerData? buyer = widget.data.buyer;
+    if (buyer?.isUnknowUser == true) {
+      buyer = null;
+    }
     String? regionTextFormat = buyer?.getAddressFormat();
     int point = isDone
         ? 0
@@ -279,6 +282,8 @@ class _FindBuyerDialogState extends State<FindBuyerDialog> {
                     searchUser(text).then((value) {
                       loadingListBuyer = value;
                       setState(() {});
+                    }).onError((error, stackTrace) {
+                      print('Không thể load buyer!');
                     });
                   });
                   setState(() {});

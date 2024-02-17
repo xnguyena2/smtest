@@ -162,6 +162,7 @@ class _AddingPopup extends StatelessWidget {
                             data: PackageDataResponse.empty(),
                             onUpdated: (package) {},
                             onDelete: (PackageDataResponse) {},
+                            isTempOrder: true,
                           ),
                         ),
                       );

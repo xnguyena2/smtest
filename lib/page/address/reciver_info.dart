@@ -68,8 +68,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
   void initState() {
     super.initState();
     checkValid();
-    loadingListBuyer =
-        Future.value(ListBuyerResult(listResult: [])); //searchUser(''); //
+    loadingListBuyer = Future.value(ListBuyerResult(listResult: []));
     initialValue();
   }
 

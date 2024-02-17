@@ -10,11 +10,9 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 
 class OrderListAllPackageTab extends StatefulWidget {
-  final ListPackageDetailResult data;
   final VoidCallback createNewOrder;
   const OrderListAllPackageTab({
     super.key,
-    required this.data,
     required this.createNewOrder,
   });
 
@@ -23,26 +21,27 @@ class OrderListAllPackageTab extends StatefulWidget {
 }
 
 class _OrderListAllPackageTabState extends State<OrderListAllPackageTab> {
+  late final listPendingRequestOrder = getAllPendingOrderPackageRequest();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final data = widget.data;
-    final newO = context.watch<NewOrderProvider>().getData;
-    if (newO != null) {
-      data.updateListOrder(newO);
-      context.read<NewOrderProvider>().clean();
-    }
+    final data = context.watch<NewOrderProvider>().getData;
+    late final WrapListFilter wrapListFilter = WrapListFilter(
+      listPackageDetailResult: data,
+    );
 
     final filter = context.watch<SearchProvider>().getTxt ?? '';
-    final listPendingOrder = getAllPendingOrderPackage();
-    WrapListFilter wrapListFilter = WrapListFilter(
-      listPackageDetailResult: data,
-      filter: filter,
-      listPendingOrder: listPendingOrder,
-    );
-    List<PackageDataResponse> listPackage = wrapListFilter.getListResult();
+    List<PackageDataResponse> listPackage =
+        wrapListFilter.getListResult(filter: filter);
     listPackage.sort(
       (a, b) => b.createat?.compareTo(a.createat ?? '') ?? 0,
     );
+    print('Length: ${listPackage.length}');
     if (listPackage.isEmpty) {
       return Center(
         child: GestureDetector(

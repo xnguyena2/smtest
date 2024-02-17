@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/page/create_order/create_order_page.dart';
-import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
 import 'package:sales_management/page/order_list/provider/new_order_provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
@@ -153,8 +152,8 @@ class Body extends StatelessWidget {
                   FetchAPI<ListPackageDetailResult>(
                     future: _loadMoreTrigger.firstLoad(),
                     successBuilder: (data) {
+                      context.read<NewOrderProvider>().setValue = data;
                       return OrderListAllPackageTab(
-                        data: data,
                         createNewOrder: addNewOrder,
                       );
                     },
@@ -187,16 +186,19 @@ class _LoadMoreTrigger {
   }
 
   Future<ListPackageDetailResult> firstLoad() {
-    return getAllWorkingPackage(groupID, id: currentID, size: 10).then((value) {
+    return getAllWorkingOrderPackge(groupID, id: currentID, size: 10)
+        .then((value) {
       _canLoadMore = value.listResult.isNotEmpty;
       currentID = value.currentID;
+      final listPendingOrder = getAllPendingOrderPackage();
+      value.listResult.insertAll(0, listPendingOrder);
       return value;
     });
   }
 
   void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
     loading = true;
-    getAllWorkingPackage(groupID, id: currentID, size: 10).then((value) {
+    getAllWorkingOrderPackge(groupID, id: currentID, size: 10).then((value) {
       currentID = value.currentID;
       onDone(value);
       _canLoadMore = value.listResult.isNotEmpty;

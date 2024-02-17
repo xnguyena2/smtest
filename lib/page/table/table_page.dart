@@ -36,7 +36,7 @@ class _TablePageState extends State<TablePage> {
 
   @override
   Widget build(BuildContext context) {
-    final addNewArea = () {
+    addNewArea() {
       final areaData = AreaData(
           id: 0, groupId: groupID, createat: null, areaId: '', listTable: []);
       showDefaultModal(
@@ -58,7 +58,7 @@ class _TablePageState extends State<TablePage> {
           },
         ),
       );
-    };
+    }
 
     return SafeArea(
       top: false,

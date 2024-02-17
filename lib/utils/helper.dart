@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
 import 'package:sales_management/page/home/api/home_api.dart';
@@ -30,4 +32,8 @@ Future<void> refreshBootStrap() async {
   }
   BootStrapData bootStrapData = await loadBootstrap(groupID);
   LocalStorage.setBootstrapData(bootStrapData);
+}
+
+String bodyEncode(Object body) {
+  return jsonEncode(body);
 }

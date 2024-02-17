@@ -67,6 +67,7 @@ class PackageItemDetail extends StatelessWidget {
           color: data.isLocal ? BackgroundColor : White,
           borderRadius: defaultBorderRadius,
           boxShadow: const [defaultShadow],
+          border: data.isLocal ? defaultBorder : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +138,91 @@ class PackageItemDetail extends StatelessWidget {
                 )
               ],
             ),
-            if (!isDone) ...[
+            if (data.isLocal) ...[
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Đơn hàng chưa đồng bộ?'),
+                  Row(
+                    children: [
+                      CancelBtn(
+                        txt: 'Hủy',
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        isSmallTxt: true,
+                        onPressed: () {
+                          showDefaultDialog(
+                            context,
+                            'Xác nhận hủy!',
+                            'Bạn có chắc muốn hủy đơn?',
+                            onOk: () {
+                              // LoadingOverlayAlt.of(context).show();
+                              // cancelPackage(
+                              //         PackageID.fromPackageDataResponse(data))
+                              //     .then((value) {
+                              //   data.deletedOrder();
+                              //   onDelete(data);
+                              //   LoadingOverlayAlt.of(context).hide();
+                              // }).catchError(
+                              //   (error, stackTrace) {
+                              //     showAlert(context, 'Lỗi hệ thống!');
+                              //     LoadingOverlayAlt.of(context).hide();
+                              //   },
+                              // );
+                            },
+                            onCancel: () {},
+                          );
+                        },
+                      ),
+                      if (haveInteret) ...[
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ApproveBtn(
+                          isActiveOk: true,
+                          backgroundColor: MainHighColor,
+                          txt: 'Đồng bộ',
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          isSmallTxt: true,
+                          onPressed: () {
+                            print('update package: ${data.packageSecondId}');
+
+                            showDefaultDialog(
+                              context,
+                              'Xác nhận đồng bộ!',
+                              'Bạn có chắc muốn đồng bộ đơn?',
+                              onOk: () {
+                                // LoadingOverlayAlt.of(context).show();
+                                // final transaction = data.makeDone();
+                                // final productWithPackge =
+                                //     ProductPackage.fromPackageDataResponse(data);
+
+                                // doneOrder(productWithPackge,
+                                //         paymentTransaction: transaction)
+                                //     .then((value) {
+                                //   onUpdated(data);
+                                //   LoadingOverlayAlt.of(context).hide();
+                                // }).catchError(
+                                //   (error, stackTrace) {
+                                //     showAlert(context, 'Lỗi hệ thống!');
+                                //     LoadingOverlayAlt.of(context).hide();
+                                //   },
+                                // );
+                              },
+                              onCancel: () {},
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              )
+            ] else if (!isDone) ...[
               SizedBox(
                 height: 10,
               ),
@@ -156,10 +241,7 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn hủy đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            cancelPackage(
-                                    PackageID.fromPackageDataResponse(data))
-                                .then((value) {
-                              data.deletedOrder();
+                            cancelOrderPackage(data, false).then((value) {
                               onDelete(data);
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(
@@ -192,13 +274,8 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn đóng đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            final transaction = data.makeDone();
-                            final productWithPackge =
-                                ProductPackage.fromPackageDataResponse(data);
 
-                            doneOrder(productWithPackge,
-                                    paymentTransaction: transaction)
-                                .then((value) {
+                            doneOrder(data, false).then((value) {
                               onUpdated(data);
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(

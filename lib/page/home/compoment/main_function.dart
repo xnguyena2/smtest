@@ -67,6 +67,7 @@ class MainFunction extends StatelessWidget {
                           data: PackageDataResponse.empty(),
                           onUpdated: (package) {},
                           onDelete: (PackageDataResponse) {},
+                          isTempOrder: true,
                         ),
                       ),
                     );
@@ -109,6 +110,7 @@ class MainFunction extends StatelessWidget {
                           data: newOrder,
                           onUpdated: (package) {},
                           onDelete: (PackageDataResponse) {},
+                          isTempOrder: true,
                         ),
                       ),
                     );

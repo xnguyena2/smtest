@@ -73,16 +73,6 @@ Future<PackageDataResponse> getPackage(PackageID packageID) async {
   }
 }
 
-Future<ResponseResult> updatePackageWithTransactions(
-    ProductPackage productPackage,
-    {PaymentTransaction? paymentTransaction}) {
-  if (paymentTransaction == null) {
-    return updatePackage(productPackage);
-  }
-  return updatePackageWithTransaction(ProductPackgeWithTransaction(
-      productPackage: productPackage, transation: paymentTransaction));
-}
-
 Future<ResponseResult> updatePackageWithTransaction(
     ProductPackgeWithTransaction productPackage) async {
   final request = productPackage;
