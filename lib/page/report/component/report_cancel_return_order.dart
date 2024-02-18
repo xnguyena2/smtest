@@ -19,12 +19,14 @@ class ReportCancelAndReturnOrder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 12),
-          child: Text(
-            'Đơn hủy/trả',
-            style: headStyleLargeBlackLigh,
-          ),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Đơn hủy/trả',
+              style: headStyleLargeBlackLigh,
+            ),
+          ],
         ),
         const SizedBox(
           height: 8,

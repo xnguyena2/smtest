@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
-import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
-import 'package:sales_management/page/order_list/api/model/package_id.dart';
-import 'package:sales_management/page/order_list/api/order_list_api.dart';
 import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
-import 'package:sales_management/page/order_list/component/modal_confirm.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
-import 'package:sales_management/utils/helper.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
@@ -154,24 +148,22 @@ class PackageItemDetail extends StatelessWidget {
                             vertical: 10, horizontal: 15),
                         isSmallTxt: true,
                         onPressed: () {
+                          print('cancel sync package: ${data.packageSecondId}');
                           showDefaultDialog(
                             context,
                             'Xác nhận hủy!',
                             'Bạn có chắc muốn hủy đơn?',
                             onOk: () {
-                              // LoadingOverlayAlt.of(context).show();
-                              // cancelPackage(
-                              //         PackageID.fromPackageDataResponse(data))
-                              //     .then((value) {
-                              //   data.deletedOrder();
-                              //   onDelete(data);
-                              //   LoadingOverlayAlt.of(context).hide();
-                              // }).catchError(
-                              //   (error, stackTrace) {
-                              //     showAlert(context, 'Lỗi hệ thống!');
-                              //     LoadingOverlayAlt.of(context).hide();
-                              //   },
-                              // );
+                              LoadingOverlayAlt.of(context).show();
+                              removeLocalOrder(data).then((value) {
+                                onDelete(data);
+                                LoadingOverlayAlt.of(context).hide();
+                              }).catchError(
+                                (error, stackTrace) {
+                                  showAlert(context, 'Lỗi hệ thống!');
+                                  LoadingOverlayAlt.of(context).hide();
+                                },
+                              );
                             },
                             onCancel: () {},
                           );
@@ -189,29 +181,24 @@ class PackageItemDetail extends StatelessWidget {
                               vertical: 10, horizontal: 15),
                           isSmallTxt: true,
                           onPressed: () {
-                            print('update package: ${data.packageSecondId}');
+                            print('sync package: ${data.packageSecondId}');
 
                             showDefaultDialog(
                               context,
                               'Xác nhận đồng bộ!',
                               'Bạn có chắc muốn đồng bộ đơn?',
                               onOk: () {
-                                // LoadingOverlayAlt.of(context).show();
-                                // final transaction = data.makeDone();
-                                // final productWithPackge =
-                                //     ProductPackage.fromPackageDataResponse(data);
+                                LoadingOverlayAlt.of(context).show();
 
-                                // doneOrder(productWithPackge,
-                                //         paymentTransaction: transaction)
-                                //     .then((value) {
-                                //   onUpdated(data);
-                                //   LoadingOverlayAlt.of(context).hide();
-                                // }).catchError(
-                                //   (error, stackTrace) {
-                                //     showAlert(context, 'Lỗi hệ thống!');
-                                //     LoadingOverlayAlt.of(context).hide();
-                                //   },
-                                // );
+                                syncOrderPackage(data).then((value) {
+                                  onUpdated(data);
+                                  LoadingOverlayAlt.of(context).hide();
+                                }).catchError(
+                                  (error, stackTrace) {
+                                    showAlert(context, 'Lỗi hệ thống!');
+                                    LoadingOverlayAlt.of(context).hide();
+                                  },
+                                );
                               },
                               onCancel: () {},
                             );
@@ -221,7 +208,7 @@ class PackageItemDetail extends StatelessWidget {
                     ],
                   ),
                 ],
-              )
+              ),
             ] else if (!isDone) ...[
               SizedBox(
                 height: 10,

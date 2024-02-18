@@ -28,8 +28,8 @@ class WrapListFilter {
   });
 
   List<PackageDataResponse> getListResult({required String filter}) {
-    if (filter.isEmpty) return listPackageDetailResult.listResult;
-    return listPackageDetailResult.listResult
+    if (filter.isEmpty) return listPackageDetailResult.getList;
+    return listPackageDetailResult.getList
         .where((e) =>
             e.tableName?.contains(filter) == true ||
             e.buyer?.reciverFullname?.contains(filter) == true)
@@ -39,20 +39,27 @@ class WrapListFilter {
 
 class ListPackageDetailResult {
   ListPackageDetailResult({
-    required this.listResult,
-  }) : mapExist = {};
-  late final List<PackageDataResponse> listResult;
+    required List<PackageDataResponse> listResult,
+  }) {
+    _listResult = listResult;
+    _init();
+  }
+  late final List<PackageDataResponse> _listResult;
   late final Map<String, PackageDataResponse> mapExist;
 
   int currentID = 0;
 
   ListPackageDetailResult.fromJson(Map<String, dynamic> json) {
-    listResult = List.from(json['list_result'])
+    _listResult = List.from(json['list_result'])
         .map((e) => PackageDataResponse.fromJson(e))
         .toList();
-    mapExist = Map.fromEntries(listResult.map(
+    _init();
+  }
+
+  void _init() {
+    mapExist = Map.fromEntries(_listResult.map(
         (e) => MapEntry<String, PackageDataResponse>(e.packageSecondId, e)));
-    listResult.forEach((element) {
+    _listResult.forEach((element) {
       if (currentID == 0 || currentID > (element.id ?? 0)) {
         currentID = element.id ?? 0;
       }
@@ -62,13 +69,13 @@ class ListPackageDetailResult {
   void addNewOrder(PackageDataResponse newO) {
     if (mapExist.containsKey(newO.packageSecondId)) return;
     mapExist[newO.packageSecondId] = newO;
-    listResult.add(newO);
+    _listResult.add(newO);
   }
 
   void deleteNewOrder(PackageDataResponse newO) {
     final obj = mapExist.remove(newO.packageSecondId);
     if (obj != null) {
-      listResult.remove(obj);
+      _listResult.remove(obj);
     }
   }
 
@@ -85,11 +92,42 @@ class ListPackageDetailResult {
   void updateOrder(PackageDataResponse newO) {
     final foundObj = mapExist[newO.packageSecondId];
     if (foundObj == null) return;
-    final index = listResult.indexOf(foundObj);
+    final index = _listResult.indexOf(foundObj);
     if (index < 0) return;
-    listResult[index] = newO;
+    _listResult[index] = newO;
     mapExist[newO.packageSecondId] = newO;
   }
+
+  void insertLocalOrder(List<PackageDataResponse> listPendingOrder) {
+    _listResult.insertAll(0, listPendingOrder);
+    for (final element in listPendingOrder) {
+      if (mapExist.containsKey(element.packageSecondId)) {
+        _listResult.remove(element);
+        continue;
+      }
+      mapExist[element.packageSecondId] = element;
+    }
+  }
+
+  void removeAllLocalOrder() {
+    _listResult.forEach((element) {
+      if (element.isLocal) {
+        mapExist.remove(element);
+      }
+    });
+    _listResult.removeWhere((element) => element.isLocal);
+  }
+
+  List<PackageDataResponse> getLocalPackage() {
+    return _listResult.where((element) => element.isLocal).toList();
+  }
+
+  bool get isEmpty => _listResult.isEmpty;
+
+  bool get isHaveLocalOrder =>
+      _listResult.indexWhere((element) => element.isLocal) >= 0;
+
+  List<PackageDataResponse> get getList => _listResult;
 }
 
 @HiveType(typeId: 20)

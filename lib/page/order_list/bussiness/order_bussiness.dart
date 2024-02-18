@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/product_package.dart';
@@ -5,27 +7,29 @@ import 'package:sales_management/api/model/package/product_packge_with_transacti
 import 'package:sales_management/api/model/response_result.dart';
 import 'package:sales_management/page/order_list/api/model/package_id.dart';
 import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/bussiness/package_and_transaction_para.dart';
 import 'package:sales_management/page/transaction/api/model/payment_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/helper.dart';
 
+const funcName = '_updatePackageWithTransactions';
+
+Future<ResponseResult> _invokeFunc(RequestStorage request) {
+  PackageAndTransactionPara productPackgeWithTransaction =
+      PackageAndTransactionPara.fromJson(jsonDecode(request.body));
+  return _updatePackageWithTransactions(
+      productPackgeWithTransaction.packageDataResponse,
+      paymentTransaction: productPackgeWithTransaction.transation);
+}
+
 Future<void> _storage_updatePackageWithTransactions(
     PackageDataResponse packageDataResponse,
     {PaymentTransaction? paymentTransaction}) {
-  final productWithPackge =
-      ProductPackage.fromPackageDataResponse(packageDataResponse);
-  if (paymentTransaction == null) {
-    final body = bodyEncode(productWithPackge);
-    return LocalStorage.addRequest(RequestType.POST_C, 'updatePackage',
-        packageDataResponse.packageSecondId, body);
-  }
-  final body = bodyEncode(ProductPackgeWithTransaction(
-      productPackage: productWithPackge, transation: paymentTransaction));
+  final body = bodyEncode(PackageAndTransactionPara(
+      packageDataResponse: packageDataResponse,
+      transation: paymentTransaction));
   return LocalStorage.addRequest(
-      RequestType.POST_C,
-      'updatePackageWithTransaction',
-      packageDataResponse.packageSecondId,
-      body);
+      RequestType.POST_C, funcName, packageDataResponse.packageSecondId, body);
 }
 
 Future<ResponseResult> _updatePackageWithTransactions(
@@ -127,13 +131,54 @@ Future<ResponseResult> returnOrder(
   return returnPackage(
     packageID,
   ).then((value) {
+    packageDataResponse.markDeletedOrder();
     refreshBootStrap();
     return value;
   });
 }
 
-Future<bool> removeLocalOrder(PackageDataResponse packageDataResponse) {
-  return LocalStorage.removeOrderPakage(packageDataResponse);
+Future<void> syncOrderPackage(PackageDataResponse packageDataResponse,
+    {Duration delay = Duration.zero}) {
+  final request = LocalStorage.getRequest(packageDataResponse);
+  if (request == null) {
+    return Future(() => null);
+  }
+  final path = request.path;
+  if (path != funcName) {
+    return Future(() => null);
+  }
+  return Future.delayed(delay).then(
+    (value) => _invokeFunc(request)
+        .then(
+          (value) =>
+              LocalStorage.removeOrderPakageAndRequest(packageDataResponse),
+        )
+        .then(
+          (value) => packageDataResponse.swithLocalStatus(false),
+        ),
+  );
+}
+
+Future<void> syncAllOrderPackage(
+    List<PackageDataResponse> packageDataResponses) {
+  List<Future<void>> listF = [];
+  int index = 0;
+  for (final packageDataResponse in packageDataResponses) {
+    final clusterDelay = (index / 10).floor();
+    listF.add(syncOrderPackage(packageDataResponse,
+        delay: Duration(seconds: clusterDelay)));
+    index++;
+  }
+  return Future.wait(listF);
+}
+
+Future<void> removeLocalOrder(PackageDataResponse packageDataResponse) {
+  packageDataResponse.markDeletedOrder();
+  return LocalStorage.removeOrderPakageAndRequest(packageDataResponse);
+}
+
+Future<void> removeAllLocalOrder() {
+  return LocalStorage.removeAllOrderPakageAndRequest();
 }
 
 List<PackageDataResponse> getAllPendingOrderPackage() {
@@ -145,7 +190,7 @@ List<PackageDataResponse> getAllPendingOrderPackage() {
 }
 
 Map<String, RequestStorage> getAllPendingOrderPackageRequest() {
-  final listOrder = LocalStorage.getRequest();
+  final listOrder = LocalStorage.getAllRequest();
   return Map.fromEntries(listOrder.map(
     (e) => MapEntry(e.id, e),
   ));

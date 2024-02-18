@@ -55,15 +55,20 @@ class LocalStorage {
     );
   }
 
-  static Future<bool> removeOrderPakage(
+  static Future<void> removeOrderPakageAndRequest(
       PackageDataResponse packageDataResponse) {
     var box = Hive.box(_hiveOrdersPackageBox);
-    if (!box.containsKey(packageDataResponse.packageSecondId)) {
-      return Future.value(false);
-    }
+    var boxRequest = Hive.box(_hiveRequestBox);
+    final id = packageDataResponse.packageSecondId;
 
-    box.delete(packageDataResponse.packageSecondId);
-    return Future.value(true);
+    return box.delete(id).then((value) => boxRequest.delete(id));
+  }
+
+  static Future<void> removeAllOrderPakageAndRequest() {
+    var box = Hive.box(_hiveOrdersPackageBox);
+    var boxRequest = Hive.box(_hiveRequestBox);
+
+    return box.clear().then((value) => boxRequest.clear());
   }
 
   static List<PackageDataResponse> getOrderPakage() {
@@ -139,7 +144,13 @@ class LocalStorage {
     );
   }
 
-  static List<RequestStorage> getRequest() {
+  static RequestStorage? getRequest(PackageDataResponse packageDataResponse) {
+    var box = Hive.box(_hiveRequestBox);
+    final id = packageDataResponse.packageSecondId;
+    return box.get(id);
+  }
+
+  static List<RequestStorage> getAllRequest() {
     var box = Hive.box(_hiveRequestBox);
     List<RequestStorage> allRequests = List.from(box.values);
     print('request length: ${allRequests.length}');

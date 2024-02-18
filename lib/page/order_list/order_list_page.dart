@@ -142,7 +142,7 @@ class Body extends StatelessWidget {
                         0.8) {
                   _loadMoreTrigger.loadMore((result) {
                     context.read<NewOrderProvider>().updateValue =
-                        result.listResult;
+                        result.getList;
                   });
                 }
                 return true;
@@ -188,10 +188,10 @@ class _LoadMoreTrigger {
   Future<ListPackageDetailResult> firstLoad() {
     return getAllWorkingOrderPackge(groupID, id: currentID, size: 10)
         .then((value) {
-      _canLoadMore = value.listResult.isNotEmpty;
+      _canLoadMore = !value.isEmpty;
       currentID = value.currentID;
       final listPendingOrder = getAllPendingOrderPackage();
-      value.listResult.insertAll(0, listPendingOrder);
+      value.insertLocalOrder(listPendingOrder);
       return value;
     });
   }
@@ -201,7 +201,7 @@ class _LoadMoreTrigger {
     getAllWorkingOrderPackge(groupID, id: currentID, size: 10).then((value) {
       currentID = value.currentID;
       onDone(value);
-      _canLoadMore = value.listResult.isNotEmpty;
+      _canLoadMore = !value.isEmpty;
       loading = false;
     }).onError((error, stackTrace) {
       loading = false;

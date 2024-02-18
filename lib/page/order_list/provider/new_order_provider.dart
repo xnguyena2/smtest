@@ -10,11 +10,6 @@ class NewOrderProvider with ChangeNotifier, DiagnosticableTreeMixin {
   ListPackageDetailResult get getData =>
       _data ?? ListPackageDetailResult(listResult: []);
 
-  void clean() {
-    _data?.listResult.clear();
-    _data = null;
-  }
-
   set updateValue(List<PackageDataResponse> data) {
     _data?.updateListOrder(data);
     notifyListeners();

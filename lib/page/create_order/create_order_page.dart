@@ -105,8 +105,51 @@ class CreateOrderPage extends StatelessWidget {
                             okBtnColor: MainHighColor,
                             okBtnTxt: 'Đồng bộ',
                             isShowOkBtn: haveInteret,
-                            done: () {},
-                            cancel: () {},
+                            done: () {
+                              print('sync package: ${data.packageSecondId}');
+
+                              showDefaultDialog(
+                                context,
+                                'Xác nhận đồng bộ!',
+                                'Bạn có chắc muốn đồng bộ đơn?',
+                                onOk: () {
+                                  LoadingOverlayAlt.of(context).show();
+
+                                  syncOrderPackage(data).then((value) {
+                                    onUpdated(data);
+                                    LoadingOverlayAlt.of(context).hide();
+                                    Navigator.pop(context);
+                                  }).catchError(
+                                    (error, stackTrace) {
+                                      showAlert(context, 'Lỗi hệ thống!');
+                                      LoadingOverlayAlt.of(context).hide();
+                                    },
+                                  );
+                                },
+                                onCancel: () {},
+                              );
+                            },
+                            cancel: () {
+                              showDefaultDialog(
+                                context,
+                                'Xác nhận hủy!',
+                                'Bạn có chắc muốn hủy đơn?',
+                                onOk: () {
+                                  LoadingOverlayAlt.of(context).show();
+                                  removeLocalOrder(data).then((value) {
+                                    onDelete(data);
+                                    Navigator.pop(context);
+                                    LoadingOverlayAlt.of(context).hide();
+                                  }).catchError(
+                                    (error, stackTrace) {
+                                      showAlert(context, 'Lỗi hệ thống!');
+                                      LoadingOverlayAlt.of(context).hide();
+                                    },
+                                  );
+                                },
+                                onCancel: () {},
+                              );
+                            },
                           )
                         : (data.isDone
                             ? null
@@ -115,9 +158,6 @@ class CreateOrderPage extends StatelessWidget {
                                   LoadingOverlayAlt.of(context).show();
                                   doneOrder(data, isTempOrder).then((value) {
                                     onUpdated(data);
-                                    context
-                                        .read<ProductProvider>()
-                                        .justRefresh();
                                     LoadingOverlayAlt.of(context).hide();
                                     Navigator.pushReplacement(
                                       context,
@@ -163,9 +203,6 @@ class CreateOrderPage extends StatelessWidget {
                                     updateOrderPackage(data, isTempOrder)
                                         .then((value) {
                                       onUpdated(data);
-                                      context
-                                          .read<ProductProvider>()
-                                          .justRefresh();
                                       LoadingOverlayAlt.of(context).hide();
                                       Navigator.pop(context);
                                     }).onError((error, stackTrace) {
