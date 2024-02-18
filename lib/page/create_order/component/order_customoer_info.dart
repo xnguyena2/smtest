@@ -28,9 +28,10 @@ class CustomerInfo extends StatefulWidget {
 
 class _CustomerInfoState extends State<CustomerInfo> {
   late bool isDone = widget.data.isDone;
+  late BuyerData? buyer = widget.data.buyer;
+
   @override
   Widget build(BuildContext context) {
-    BuyerData? buyer = widget.data.buyer;
     if (buyer?.isUnknowUser == true) {
       buyer = null;
     }
@@ -79,7 +80,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
                             ),
                             if (buyer != null) ...[
                               TextRound(
-                                txt: '${buyer.getTotalPoint} điểm',
+                                txt: '${buyer!.getTotalPoint} điểm',
                                 isHigh: true,
                               ),
                               SizedBox(
@@ -121,7 +122,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
             onTap: isDone
                 ? null
                 : () async {
-                    if (widget.data.buyer == null) {
+                    if (buyer == null) {
                       showGeneralDialog(
                         context: context,
                         barrierDismissible: true,
@@ -149,8 +150,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
                       );
                       return;
                     }
-                    AddressData addressData =
-                        AddressData.fromBuyerData(widget.data.buyer);
+                    AddressData addressData = AddressData.fromBuyerData(buyer);
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
