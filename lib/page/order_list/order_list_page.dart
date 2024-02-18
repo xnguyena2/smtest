@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/page/create_order/create_order_page.dart';
-import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/page/order_list/component/order_list_tab_all.dart';
 import 'package:sales_management/page/order_list/provider/new_order_provider.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
@@ -43,8 +42,7 @@ class OrderListPage extends StatelessWidget {
                   firstSelectProductWhenCreateOrder: true,
                   onUpdatedPasstoCreateOrder: updateOrderEvent,
                   onDeletedPasstoCreateOrder: updateOrderEvent,
-                  packageDataResponse:
-                      PackageDataResponse(items: [], buyer: null),
+                  packageDataResponse: PackageDataResponse.empty(),
                   onUpdated: (PackageDataResponse) {},
                 ),
               ),
@@ -144,7 +142,7 @@ class Body extends StatelessWidget {
                         0.8) {
                   _loadMoreTrigger.loadMore((result) {
                     context.read<NewOrderProvider>().updateValue =
-                        result.listResult;
+                        result.getList;
                   });
                 }
                 return true;
@@ -152,10 +150,10 @@ class Body extends StatelessWidget {
               child: TabBarView(
                 children: [
                   FetchAPI<ListPackageDetailResult>(
-                    future: getAllWorkingPackage(groupID, page: 0, size: 10),
+                    future: _loadMoreTrigger.firstLoad(),
                     successBuilder: (data) {
+                      context.read<NewOrderProvider>().setValue = data;
                       return OrderListAllPackageTab(
-                        data: data,
                         createNewOrder: addNewOrder,
                       );
                     },
@@ -176,24 +174,34 @@ class Body extends StatelessWidget {
 class _LoadMoreTrigger {
   bool loading = false;
   bool _canLoadMore = true;
-  int currentPage = 0;
+  int currentID = 0;
 
   void reset() {
     loading = false;
     _canLoadMore = true;
-    currentPage = 0;
   }
 
   bool canLoadMore() {
     return _canLoadMore && loading == false;
   }
 
+  Future<ListPackageDetailResult> firstLoad() {
+    return getAllWorkingOrderPackge(groupID, id: currentID, size: 10)
+        .then((value) {
+      _canLoadMore = !value.isEmpty;
+      currentID = value.currentID;
+      final listPendingOrder = getAllPendingOrderPackage();
+      value.insertLocalOrder(listPendingOrder);
+      return value;
+    });
+  }
+
   void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
     loading = true;
-    currentPage++;
-    getAllWorkingPackage(groupID, page: currentPage, size: 10).then((value) {
+    getAllWorkingOrderPackge(groupID, id: currentID, size: 10).then((value) {
+      currentID = value.currentID;
       onDone(value);
-      _canLoadMore = value.listResult.isNotEmpty;
+      _canLoadMore = !value.isEmpty;
       loading = false;
     }).onError((error, stackTrace) {
       loading = false;

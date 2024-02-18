@@ -10,10 +10,12 @@ import 'package:sales_management/page/buyer/component/report_by_product.dart';
 import 'package:sales_management/page/buyer/component/total_item_report.dart';
 import 'package:sales_management/page/report/component/report_time_selector.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
 class BuyerDetail extends StatelessWidget {
-  const BuyerDetail({super.key, required this.buyer});
+  const BuyerDetail({super.key, required this.buyer, required this.onUpdate});
+  final VoidCallbackArg<BuyerData> onUpdate;
 
   final BuyerData buyer;
 
@@ -35,6 +37,7 @@ class BuyerDetail extends StatelessWidget {
               ),
               BuyerMainInfo(
                 buyerData: buyer,
+                onUpdate: onUpdate,
               ),
               SizedBox(
                 height: 10,

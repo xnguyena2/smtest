@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/page/create_store/api/model/store.dart';
+import 'package:sales_management/page/home/api/home_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/utils/constants.dart';
 
@@ -21,4 +24,16 @@ void updateStoreData(Store store) {
       groupId: groupID,
       phoneNumber: store.phone ?? '',
       device_id: deviceID);
+}
+
+Future<void> refreshBootStrap() async {
+  if (!haveInteret) {
+    return;
+  }
+  BootStrapData bootStrapData = await loadBootstrap(groupID);
+  LocalStorage.setBootstrapData(bootStrapData);
+}
+
+String bodyEncode(Object body) {
+  return jsonEncode(body);
 }

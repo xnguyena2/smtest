@@ -5,18 +5,19 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 class NewOrderProvider with ChangeNotifier, DiagnosticableTreeMixin {
   NewOrderProvider();
 
-  List<PackageDataResponse>? _data;
+  ListPackageDetailResult? _data;
 
-  List<PackageDataResponse>? get getData => _data;
-
-  void clean() {
-    _data?.clear();
-    _data = null;
-  }
+  ListPackageDetailResult get getData =>
+      _data ?? ListPackageDetailResult(listResult: []);
 
   set updateValue(List<PackageDataResponse> data) {
-    _data = data;
+    _data?.updateListOrder(data);
     notifyListeners();
+  }
+
+  set setValue(ListPackageDetailResult data) {
+    _data = data;
+    // notifyListeners();
   }
 
   /// Makes `Counter` readable inside the devtools by listing all of its properties

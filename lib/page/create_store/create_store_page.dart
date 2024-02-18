@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/storage/token_storage.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
+import 'package:sales_management/component/checkbox/check_box.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/account/api/account_api.dart';
 import 'package:sales_management/page/account/api/model/token.dart';
@@ -141,32 +142,14 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                 ),
                                 Row(
                                   children: [
-                                    SizedBox(
-                                      height: 24.0,
-                                      width: 24.0,
-                                      child: Checkbox(
-                                        checkColor: Colors.white,
-                                        fillColor:
-                                            MaterialStateProperty.resolveWith(
-                                                (states) {
-                                          const Set<MaterialState>
-                                              interactiveStates =
-                                              <MaterialState>{
-                                            MaterialState.selected,
-                                          };
-                                          if (states.any(
-                                              interactiveStates.contains)) {
-                                            return TableHighColor;
-                                          }
-                                          return White;
-                                        }),
-                                        value: isChecked,
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            isChecked = value!;
-                                          });
-                                        },
-                                      ),
+                                    SmallCheckBox(
+                                      isChecked: isChecked,
+                                      onChanged: (value) {
+                                        isChecked = value;
+                                        setState(() {
+                                          isChecked = !isChecked;
+                                        });
+                                      },
                                     ),
                                     const SizedBox(
                                       width: 10,

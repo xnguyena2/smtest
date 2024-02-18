@@ -11,6 +11,8 @@ class BootStrapData {
     required this.products,
     required this.carousel,
     required this.deviceConfig,
+    required this.benifit,
+    required this.store,
   });
   @HiveField(0)
   late final List<BeerSubmitData> products;
@@ -109,6 +111,7 @@ class BenifitByMonth {
     required this.revenue,
     required this.profit,
     required this.cost,
+    required this.discount,
   });
   @HiveField(1)
   late final int count;

@@ -1,16 +1,42 @@
+import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 
+part 'user_package.g.dart';
+
+@HiveType(typeId: 18)
 class UserPackage extends BaseEntity {
+  @HiveField(4)
   late final String packageSecondId;
+
+  @HiveField(5)
   late final String deviceId;
+
+  @HiveField(6)
   late final String productSecondId;
+
+  @HiveField(7)
   late final String productUnitSecondId;
+
+  @HiveField(8)
   late int numberUnit;
+
+  @HiveField(9)
   late double price;
+
+  @HiveField(10)
+  late double buyPrice;
+
+  @HiveField(11)
   late double discountAmount;
+
+  @HiveField(12)
   late double discountPercent;
+
+  @HiveField(13)
   late String? note;
+
+  @HiveField(14)
   late String? status;
 
   UserPackage({
@@ -23,6 +49,7 @@ class UserPackage extends BaseEntity {
     required this.productUnitSecondId,
     required this.numberUnit,
     required this.price,
+    required this.buyPrice,
     required this.discountAmount,
     required this.discountPercent,
     this.note,
@@ -41,6 +68,7 @@ class UserPackage extends BaseEntity {
     productUnitSecondId = productInPackageResponse.productUnitSecondId;
     numberUnit = productInPackageResponse.numberUnit;
     price = productInPackageResponse.price;
+    buyPrice = productInPackageResponse.buyPrice;
     discountAmount = productInPackageResponse.discountAmount;
     discountPercent = productInPackageResponse.discountPercent;
     note = productInPackageResponse.note;
@@ -54,6 +82,7 @@ class UserPackage extends BaseEntity {
     productUnitSecondId = json['product_unit_second_id'];
     numberUnit = json['number_unit'];
     price = json['price'] as double;
+    buyPrice = json['buy_price'] as double;
     discountAmount = json['discount_amount'] as double;
     discountPercent = json['discount_percent'] as double;
     note = json['note'];
@@ -68,6 +97,7 @@ class UserPackage extends BaseEntity {
     _data['product_unit_second_id'] = productUnitSecondId;
     _data['number_unit'] = numberUnit;
     _data['price'] = price;
+    _data['buy_price'] = buyPrice;
     _data['discount_amount'] = discountAmount;
     _data['discount_percent'] = discountPercent;
     _data['note'] = note;

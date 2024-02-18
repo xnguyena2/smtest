@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/transaction.dart';
@@ -8,31 +9,101 @@ import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/constants.dart';
 
-enum DeliverType { deliver, takeaway, table }
+part 'package_detail.g.dart';
 
-enum PackageStatusType { CREATE, DONE, DELETE, CANCEL, RETURN }
+@HiveType(typeId: 15)
+enum DeliverType {
+  @HiveField(0)
+  deliver,
 
+  @HiveField(1)
+  takeaway,
+
+  @HiveField(2)
+  table
+}
+
+@HiveType(typeId: 13)
+enum PackageStatusType {
+  @HiveField(0)
+  CREATE,
+
+  @HiveField(1)
+  DONE,
+
+  @HiveField(2)
+  DELETE,
+
+  @HiveField(3)
+  CANCEL,
+
+  @HiveField(4)
+  RETURN
+}
+
+@HiveType(typeId: 14)
 class PackageDetail extends BaseEntity {
+  @HiveField(4)
   late final String packageSecondId;
+
+  @HiveField(5)
   late final String? deviceId;
+
+  @HiveField(6)
   late final String? staff_id;
+
+  @HiveField(7)
   late String? areaId;
+
+  @HiveField(8)
   late String? areaName;
+
+  @HiveField(9)
   late String? tableId;
+
+  @HiveField(10)
   late String? tableName;
+
+  @HiveField(11)
   late DeliverType packageType;
+
+  @HiveField(12)
   late final String? voucher;
+
+  @HiveField(13)
   late double price;
+
+  @HiveField(14)
   late double payment;
+
+  @HiveField(15)
   late double discountAmount;
+
+  @HiveField(16)
   late double discountPercent;
+
+  @HiveField(17)
   late double shipPrice;
+
+  @HiveField(18)
   late double cost;
+
+  @HiveField(19)
   late double profit;
+
+  @HiveField(20)
   late int point;
+
+  @HiveField(21)
   late String? note;
+
+  @HiveField(22)
   late final String? image;
+
+  @HiveField(23)
   late Progress? progress;
+
+  @HiveField(24)
   late PackageStatusType? status;
 
   PackageDetail({
@@ -183,14 +254,16 @@ class PackageDetail extends BaseEntity {
     this.profit = payment - cost;
   }
 
-  void deletedOrder() {
+  void markDeletedOrder() {
     status = PackageStatusType.DELETE;
   }
 
   bool isDeleted() => status == PackageStatusType.DELETE;
 }
 
+@HiveType(typeId: 17)
 class Progress {
+  @HiveField(0)
   late List<TransactionHistory>? transaction;
 
   Progress({

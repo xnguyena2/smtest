@@ -159,9 +159,10 @@ class _AddingPopup extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => CreateOrderPage(
-                            data: PackageDataResponse(items: [], buyer: null),
+                            data: PackageDataResponse.empty(),
                             onUpdated: (package) {},
                             onDelete: (PackageDataResponse) {},
+                            isTempOrder: true,
                           ),
                         ),
                       );

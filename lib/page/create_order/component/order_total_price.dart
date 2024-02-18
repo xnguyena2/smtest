@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
-import 'package:sales_management/api/model/package/product_package.dart';
-import 'package:sales_management/api/model/package/product_packge_with_transaction.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/btn/switch_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
-import 'package:sales_management/page/order_list/api/order_list_api.dart';
+import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/page/product_selector/component/provider_discount.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/constants.dart';
@@ -21,10 +20,12 @@ import 'package:sales_management/utils/utils.dart';
 class TotalPrice extends StatefulWidget {
   final VoidCallback onUpdate;
   final PackageDataResponse data;
+  final bool isTempOrder;
   const TotalPrice({
     super.key,
     required this.data,
     required this.onUpdate,
+    required this.isTempOrder,
   });
 
   @override
@@ -309,7 +310,7 @@ class _TotalPriceState extends State<TotalPrice> {
             ),
           ],
         ),
-        if (finalPrice - payment > 0) ...[
+        if (finalPrice - payment > 0 && !data.isLocal) ...[
           SizedBox(
             height: 12,
           ),
@@ -323,17 +324,17 @@ class _TotalPriceState extends State<TotalPrice> {
                 content: ModalPayment(
                   finalPrice: finalPrice - payment,
                   onDone: (value) {
-                    final paymentTransaction = data.addtransaction(value,
-                        'Tiền mặt', 'Thanh toán trước đơn: ${data.getID}');
-                    context.read<ProductProvider>().justRefresh();
-                    updatePackageWithTransaction(ProductPackgeWithTransaction(
-                            productPackage:
-                                ProductPackage.fromPackageDataResponse(data),
-                            transation: paymentTransaction))
-                        .then((value) => widget.onUpdate())
-                        .catchError(
+                    LoadingOverlayAlt.of(context).show();
+                    prePayOrder(data, value, widget.isTempOrder).then((value) {
+                      LoadingOverlayAlt.of(context).hide();
+                      context.read<ProductProvider>().justRefresh();
+                      widget.onUpdate();
+                      if (value.isLocal) {
+                        Navigator.pop(context);
+                      }
+                    }).catchError(
                       (error, stackTrace) {
-                        data.removeLastestTransaction();
+                        LoadingOverlayAlt.of(context).hide();
                         context.read<ProductProvider>().justRefresh();
                         widget.onUpdate();
                         showAlert(context, 'Lỗi hệ thống!');

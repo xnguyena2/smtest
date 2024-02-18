@@ -5,14 +5,17 @@ import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/buyer/component/total_item_report.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 class BuyerMainInfo extends StatefulWidget {
   const BuyerMainInfo({
     super.key,
     required this.buyerData,
+    required this.onUpdate,
   });
 
   final BuyerData buyerData;
+  final VoidCallbackArg<BuyerData> onUpdate;
 
   @override
   State<BuyerMainInfo> createState() => _BuyerMainInfoState();
@@ -50,6 +53,7 @@ class _BuyerMainInfoState extends State<BuyerMainInfo> {
                           done: (data) {
                             addressData = data;
                             widget.buyerData.updateData(addressData);
+                            widget.onUpdate(widget.buyerData);
                           },
                           delete: () {},
                           isEdit: false,

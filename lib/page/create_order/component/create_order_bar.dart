@@ -7,7 +7,12 @@ import '../../../utils/constants.dart';
 
 class CreateOrderBar extends BarLarge {
   final VoidCallback onBackPressed;
-  const CreateOrderBar({super.key, required this.onBackPressed});
+  final VoidCallback? onReturn;
+  const CreateOrderBar({
+    super.key,
+    required this.onBackPressed,
+    required this.onReturn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +39,12 @@ class CreateOrderBar extends BarLarge {
               // const SizedBox(
               //   width: 20,
               // ),
-              // FunctionItem(
-              //   icon: 'svg/order_cancel.svg',
-              //   title: 'Trả/Hủy',
-              // ),
+              if (onReturn != null)
+                FunctionItem(
+                  icon: 'svg/order_cancel.svg',
+                  title: 'Trả/Hủy',
+                  onTap: onReturn,
+                ),
               // const SizedBox(
               //   width: 20,
               // ),

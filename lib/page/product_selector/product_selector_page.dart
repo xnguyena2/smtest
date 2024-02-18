@@ -253,6 +253,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                                 data: widget.packageDataResponse!,
                                 onUpdated: widget.onUpdatedPasstoCreateOrder!,
                                 onDelete: widget.onDeletedPasstoCreateOrder!,
+                                isTempOrder: true,
                               ),
                             ),
                           );

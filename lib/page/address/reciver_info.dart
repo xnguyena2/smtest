@@ -68,8 +68,7 @@ class _ReciverInfoState extends State<ReciverInfo> {
   void initState() {
     super.initState();
     checkValid();
-    loadingListBuyer =
-        Future.value(ListBuyerResult(listResult: [])); //searchUser(''); //
+    loadingListBuyer = Future.value(ListBuyerResult(listResult: []));
     initialValue();
   }
 
@@ -216,7 +215,8 @@ class _ReciverInfoState extends State<ReciverInfo> {
                           ? () {
                               // print(addressData.toJson().toString());
                               final buyer = addressData.getBuyerData ??
-                                  BuyerData(region: '', district: '', ward: '');
+                                  BuyerData.simpleData(
+                                      region: '', district: '', ward: '');
                               buyer.updateData(addressData);
                               buyer.updateDeviceID(addressData);
                               createBuyer(buyer);

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/api/model/package/package_detail.dart';
-import 'package:sales_management/api/model/package/product_package.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/btn/cancel_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/component/text_round.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
-import 'package:sales_management/page/order_list/api/model/package_id.dart';
-import 'package:sales_management/page/order_list/api/order_list_api.dart';
-import 'package:sales_management/page/order_list/component/modal_confirm.dart';
+import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
@@ -62,9 +58,10 @@ class PackageItemDetail extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: White,
+          color: data.isLocal ? BackgroundColor : White,
           borderRadius: defaultBorderRadius,
           boxShadow: const [defaultShadow],
+          border: data.isLocal ? defaultBorder : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +132,84 @@ class PackageItemDetail extends StatelessWidget {
                 )
               ],
             ),
-            if (!isDone) ...[
+            if (data.isLocal) ...[
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Đơn hàng chưa đồng bộ?'),
+                  Row(
+                    children: [
+                      CancelBtn(
+                        txt: 'Hủy',
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        isSmallTxt: true,
+                        onPressed: () {
+                          print('cancel sync package: ${data.packageSecondId}');
+                          showDefaultDialog(
+                            context,
+                            'Xác nhận hủy!',
+                            'Bạn có chắc muốn hủy đơn?',
+                            onOk: () {
+                              LoadingOverlayAlt.of(context).show();
+                              removeLocalOrder(data).then((value) {
+                                onDelete(data);
+                                LoadingOverlayAlt.of(context).hide();
+                              }).catchError(
+                                (error, stackTrace) {
+                                  showAlert(context, 'Lỗi hệ thống!');
+                                  LoadingOverlayAlt.of(context).hide();
+                                },
+                              );
+                            },
+                            onCancel: () {},
+                          );
+                        },
+                      ),
+                      if (haveInteret) ...[
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ApproveBtn(
+                          isActiveOk: true,
+                          backgroundColor: MainHighColor,
+                          txt: 'Đồng bộ',
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          isSmallTxt: true,
+                          onPressed: () {
+                            print('sync package: ${data.packageSecondId}');
+
+                            showDefaultDialog(
+                              context,
+                              'Xác nhận đồng bộ!',
+                              'Bạn có chắc muốn đồng bộ đơn?',
+                              onOk: () {
+                                LoadingOverlayAlt.of(context).show();
+
+                                syncOrderPackage(data).then((value) {
+                                  onUpdated(data);
+                                  LoadingOverlayAlt.of(context).hide();
+                                }).catchError(
+                                  (error, stackTrace) {
+                                    showAlert(context, 'Lỗi hệ thống!');
+                                    LoadingOverlayAlt.of(context).hide();
+                                  },
+                                );
+                              },
+                              onCancel: () {},
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ] else if (!isDone) ...[
               SizedBox(
                 height: 10,
               ),
@@ -154,10 +228,7 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn hủy đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            cancelPackage(
-                                    PackageID.fromPackageDataResponse(data))
-                                .then((value) {
-                              data.deletedOrder();
+                            cancelOrderPackage(data, false).then((value) {
                               onDelete(data);
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(
@@ -190,13 +261,8 @@ class PackageItemDetail extends StatelessWidget {
                           'Bạn có chắc muốn đóng đơn?',
                           onOk: () {
                             LoadingOverlayAlt.of(context).show();
-                            final transaction = data.makeDone();
-                            final productWithPackge =
-                                ProductPackage.fromPackageDataResponse(data);
 
-                            updatePackageWithTransactions(productWithPackge,
-                                    paymentTransaction: transaction)
-                                .then((value) {
+                            doneOrder(data, false).then((value) {
                               onUpdated(data);
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(

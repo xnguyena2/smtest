@@ -19,7 +19,9 @@ class PrintContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 400),
+      color: White,
       padding: const EdgeInsets.symmetric(
         horizontal: 12,
       ),

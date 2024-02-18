@@ -66,8 +66,8 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   }
 
   void addItemToPackage() {
-    productInPackage ??=
-        ProductInPackageResponse(beerSubmitData: widget.productData);
+    productInPackage ??= ProductInPackageResponse.fromProductData(
+        beerSubmitData: widget.productData);
     productInPackage!.numberUnit++;
     widget.updateNumberUnit(productInPackage!);
     unitNo = productInPackage!.numberUnit;
