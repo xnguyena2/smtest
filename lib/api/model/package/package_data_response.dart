@@ -464,7 +464,7 @@ class ProductInPackageResponse extends UserPackage {
   double get getPrice => beerSubmitData?.getPrice ?? 0;
 
   bool get isWholesaleMode =>
-      getWholesaleNumber > 0 && numberUnit > getWholesaleNumber;
+      getWholesaleNumber > 0 && numberUnit >= getWholesaleNumber;
 
   bool get isApplyWholesaleMode => price == getWholesalePrice;
 }

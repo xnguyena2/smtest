@@ -28,13 +28,24 @@ class CustomerInfo extends StatefulWidget {
 
 class _CustomerInfoState extends State<CustomerInfo> {
   late bool isDone = widget.data.isDone;
-  late BuyerData? buyer = widget.data.buyer;
+  late BuyerData? buyer;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateBuyer();
+  }
+
+  void updateBuyer() {
+    buyer = widget.data.buyer;
     if (buyer?.isUnknowUser == true) {
       buyer = null;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     String? regionTextFormat = buyer?.getAddressFormat();
     int point = isDone
         ? 0
@@ -131,6 +142,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
                           return FindBuyerDialog(
                             onSelected: (addressData) {
                               widget.data.updateBuyer(addressData);
+                              updateBuyer();
                               setState(() {});
                             },
                           );

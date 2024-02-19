@@ -389,15 +389,10 @@ class _ProductItemState extends State<ProductItem> {
                           if (isWholesaleMode)
                             Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {});
-                                  },
-                                  child: const Text(
-                                    'Áp giá sỉ:',
-                                    style: headStyleSmallLarge,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                const Text(
+                                  'Áp giá sỉ:',
+                                  style: headStyleSmallLarge,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(
                                   width: 10,
@@ -410,6 +405,7 @@ class _ProductItemState extends State<ProductItem> {
                                         ? productInPackageResponse
                                             .getWholesalePrice
                                         : productInPackageResponse.getPrice;
+                                    widget.onRefreshData();
                                     setState(() {});
                                   },
                                 ),
