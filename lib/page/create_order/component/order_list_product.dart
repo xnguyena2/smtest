@@ -162,6 +162,7 @@ class _ProductItemState extends State<ProductItem> {
   late int unitNo;
   final TextEditingController noUnitTxtController = TextEditingController();
   final TextEditingController discountTxtController = TextEditingController();
+  final TextEditingController itemPriceTxtController = TextEditingController();
   final FocusNode priceFocus = FocusNode();
   final FocusNode discountFocus = FocusNode();
   final FocusNode noteFocus = FocusNode();
@@ -186,6 +187,8 @@ class _ProductItemState extends State<ProductItem> {
         : MoneyFormater.format(productInPackageResponse.discountAmount);
     isProductValid = !(productInPackageResponse.beerSubmitData == null ||
         productInPackageResponse.beerSubmitData?.isAvariable == false);
+    itemPriceTxtController.text =
+        MoneyFormater.format(productInPackageResponse.price);
   }
 
   @override
@@ -194,6 +197,7 @@ class _ProductItemState extends State<ProductItem> {
     super.dispose();
     noUnitTxtController.dispose();
     discountTxtController.dispose();
+    itemPriceTxtController.dispose();
     priceFocus.dispose();
     discountFocus.dispose();
     noteFocus.dispose();
@@ -224,6 +228,14 @@ class _ProductItemState extends State<ProductItem> {
       return;
     }
     setState(() {});
+  }
+
+  void applyItemPrice(bool value) {
+    productInPackageResponse.price = value
+        ? productInPackageResponse.getWholesalePrice
+        : productInPackageResponse.getPrice;
+    itemPriceTxtController.text =
+        MoneyFormater.format(productInPackageResponse.price);
   }
 
   @override
@@ -401,10 +413,7 @@ class _ProductItemState extends State<ProductItem> {
                                   key: ValueKey(isApplyWholesaleMode),
                                   isChecked: isApplyWholesaleMode,
                                   onChanged: (value) {
-                                    productInPackageResponse.price = value
-                                        ? productInPackageResponse
-                                            .getWholesalePrice
-                                        : productInPackageResponse.getPrice;
+                                    applyItemPrice(value);
                                     widget.onRefreshData();
                                     setState(() {});
                                   },
@@ -480,14 +489,10 @@ class _ProductItemState extends State<ProductItem> {
                                         children: [
                                           Expanded(
                                             child: TextFormField(
-                                              key: ValueKey(
-                                                  '${productInPackageResponse.productUnitSecondId}_${productInPackageResponse.price}'),
+                                              controller:
+                                                  itemPriceTxtController,
                                               focusNode: priceFocus,
                                               textAlign: TextAlign.right,
-                                              initialValue:
-                                                  MoneyFormater.format(
-                                                      productInPackageResponse
-                                                          .price),
                                               keyboardType:
                                                   TextInputType.number,
                                               inputFormatters: [
