@@ -419,7 +419,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.17"
-  flutter_pos_printer_platform_image_3:
+  flutter_pos_printer_platform_image_3_sdt:
     dependency: "direct main"
     description:
       path: "../flutter_pos_printer_platform"

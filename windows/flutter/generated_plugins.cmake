@@ -5,7 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   file_selector_windows
-  flutter_pos_printer_platform_image_3
+  flutter_pos_printer_platform_image_3_sdt
   network_info_plus
   share_plus
   url_launcher_windows
