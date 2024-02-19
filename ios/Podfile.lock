@@ -12,7 +12,7 @@ PODS:
     - Mantle
     - SDWebImage
     - SDWebImageWebPCoder
-  - flutter_pos_printer_platform_image_3 (0.0.1):
+  - flutter_pos_printer_platform_image_3_sdt (0.0.1):
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
-  - flutter_pos_printer_platform_image_3 (from `.symlinks/plugins/flutter_pos_printer_platform_image_3/ios`)
+  - flutter_pos_printer_platform_image_3_sdt (from `.symlinks/plugins/flutter_pos_printer_platform_image_3_sdt/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -78,8 +78,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
-  flutter_pos_printer_platform_image_3:
-    :path: ".symlinks/plugins/flutter_pos_printer_platform_image_3/ios"
+  flutter_pos_printer_platform_image_3_sdt:
+    :path: ".symlinks/plugins/flutter_pos_printer_platform_image_3_sdt/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   network_info_plus:
@@ -94,7 +94,7 @@ SPEC CHECKSUMS:
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
-  flutter_pos_printer_platform_image_3: 00c882895b89c55a6d369a4203dbd6eebd5c6f9a
+  flutter_pos_printer_platform_image_3_sdt: 392ab3f702ea64b04a983cbec0386ec286cbe9b0
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
@@ -109,4 +109,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2
