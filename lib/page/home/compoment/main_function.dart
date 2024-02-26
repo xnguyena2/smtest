@@ -10,6 +10,8 @@ import 'package:sales_management/page/product_selector/product_selector_page.dar
 import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/table_page.dart';
+import 'package:sales_management/utils/alter_dialog.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -22,6 +24,8 @@ const List<Map<String, String>> listFullMainFunction = [
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
   {'icon': 'svg/staff.svg', 'name': 'Đăng nhập', 'page': 'Tokens'},
   {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
+  {'icon': 'svg/boss_scheme.svg', 'name': 'Nhân viên', 'page': 'Staff'},
+  {'icon': 'svg/warehouse.svg', 'name': 'Kho hàng', 'page': 'Warehourse'},
 ];
 
 const List<Map<String, String>> listNoTableMainFunction = [
@@ -31,6 +35,8 @@ const List<Map<String, String>> listNoTableMainFunction = [
   {'icon': 'svg/report.svg', 'name': 'Báo cáo', 'page': 'Report'},
   {'icon': 'svg/staff.svg', 'name': 'Đăng nhập', 'page': 'Tokens'},
   {'icon': 'svg/buyer.svg', 'name': 'Khách hàng', 'page': 'Buyers'},
+  {'icon': 'svg/boss_scheme.svg', 'name': 'Nhân viên', 'page': 'Staff'},
+  {'icon': 'svg/warehouse.svg', 'name': 'Kho hàng', 'page': 'Warehourse'},
 ];
 
 class MainFunction extends StatelessWidget {
@@ -151,6 +157,22 @@ class MainFunction extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ListBuyerPage(),
                       ),
+                    );
+                  case 'Staff':
+                    showDefaultDialog(
+                      context,
+                      'Chức năng tạm khóa!',
+                      'Nhà phát triển đang fix một số lỗi, sẽ mở tính năng trong bản cập nhật tiếp theo?',
+                      onOk: () {},
+                      onCancel: () {},
+                    );
+                  case 'Warehourse':
+                    showDefaultDialog(
+                      context,
+                      'Chức năng tạm khóa!',
+                      'Nhà phát triển đang fix một số lỗi, sẽ mở tính năng trong bản cập nhật tiếp theo?',
+                      onOk: () {},
+                      onCancel: () {},
                     );
                 }
               },
