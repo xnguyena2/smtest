@@ -4,6 +4,7 @@ import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/product_info/api/product_info_api.dart';
 import 'package:sales_management/page/product_info/component/product_info_bar.dart';
+import 'package:sales_management/page/product_info/component/product_info_create_category.dart';
 import 'package:sales_management/page/product_info/component/product_info_create_combo.dart';
 import 'package:sales_management/page/product_info/component/product_info_img_management.dart';
 import 'package:sales_management/page/product_info/component/product_info_main_info.dart';
@@ -77,8 +78,14 @@ class ProductInfoBody extends StatelessWidget {
                 SizedBox(
                   height: 14,
                 ),
-                CreateCombo(),
-                MoreSetting(),
+                ProductCreateCategory(
+                  product: product,
+                ),
+                SizedBox(
+                  height: 14,
+                ),
+                // CreateCombo(),
+                // MoreSetting(),
               ],
             ),
           ),
