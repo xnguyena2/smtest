@@ -13,13 +13,15 @@ class TableBody extends StatefulWidget {
   final onTableSelected done;
   final ListAreDataResult data;
   final VoidCallback createNewArea;
-  final isEditting;
+  final bool isEditting;
+  final bool isSelectingForOrder;
   const TableBody({
     super.key,
     required this.data,
     required this.done,
     required this.isEditting,
     required this.createNewArea,
+    required this.isSelectingForOrder,
   });
 
   @override
@@ -172,6 +174,7 @@ class _TableBodyState extends State<TableBody> {
                       showNotification(context, 'Xóa thành công!');
                       setState(() {});
                     },
+                    isSelectingForOrder: widget.isSelectingForOrder,
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(

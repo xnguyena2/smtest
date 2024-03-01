@@ -86,6 +86,7 @@ class MainFunction extends StatelessWidget {
                           done: (table) {
                             tableDetailData = table;
                           },
+                          isSelectingForOrder: false,
                         ),
                       ),
                     );

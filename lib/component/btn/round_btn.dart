@@ -8,6 +8,8 @@ class RoundBtn extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isDelete;
   final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
+  final bool isFitContent;
   const RoundBtn({
     super.key,
     required this.txt,
@@ -16,6 +18,8 @@ class RoundBtn extends StatelessWidget {
     this.isSelected = false,
     this.isDelete = false,
     this.padding = const EdgeInsets.symmetric(vertical: 10),
+    this.backgroundColor,
+    this.isFitContent = false,
   });
 
   BoxBorder get getBoxBorder {
@@ -45,11 +49,13 @@ class RoundBtn extends StatelessWidget {
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
+          color: backgroundColor,
           borderRadius: defaultBorderRadius,
           border: getBoxBorder,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: isFitContent ? MainAxisSize.min : MainAxisSize.max,
           children: [
             icon,
             const SizedBox(

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
+import 'package:sales_management/api/model/product_unit_cat_pattern.dart';
 import 'package:sales_management/api/model/result_interface.dart';
 
 part 'beer_submit_data.g.dart';
@@ -23,7 +24,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.images,
     required this.listUnit,
     required this.list_categorys,
-  });
+    required this.unit_category_config,
+  }) : productUnitCatPattern =
+            ProductUnitCatPattern.fromJsonString(unit_category_config);
 
   @HiveField(4)
   late final String beerSecondID;
@@ -58,6 +61,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   @HiveField(14)
   late final String? upc;
 
+  @HiveField(15)
+  late final String? unit_category_config;
+
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
@@ -65,6 +71,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     sku = json['sku'];
     upc = json['upc'];
     category = json['category'];
+    unit_category_config = json['unit_category_config'];
     meta_search = json['meta_search'];
     status = json['status'];
     images = json['images'] == null
@@ -74,6 +81,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
         List.from(json['listUnit']).map((e) => BeerUnit.fromJson(e)).toList();
 
     list_categorys = toListCat(category);
+    productUnitCatPattern =
+        ProductUnitCatPattern.fromJsonString(unit_category_config);
   }
 
   Map<String, dynamic> toJson() {
@@ -85,6 +94,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['sku'] = sku;
     _data['upc'] = upc;
     _data['category'] = category;
+    _data['unit_category_config'] = productUnitCatPattern.toJsonString();
     _data['meta_search'] = meta_search;
     _data['status'] = status;
     _data['images'] = images.map((e) => e.toJson()).toList();
@@ -110,6 +120,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       list_categorys: list_categorys,
       sku: sku,
       upc: upc,
+      unit_category_config: unit_category_config,
     );
   }
 
@@ -138,7 +149,14 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       ],
       list_categorys: [],
       images: [],
+      unit_category_config: '',
     );
+  }
+
+  late ProductUnitCatPattern productUnitCatPattern;
+
+  void setUnitCat(ProductUnitCatPattern productUnitCatPattern) {
+    this.productUnitCatPattern = productUnitCatPattern;
   }
 
   String get get_show_name =>
@@ -151,10 +169,13 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
 
   List<String> toListCat(String? cats) {
     if (cats == null) return [];
-    return cats.split('<<CAT>>');
+    final result = cats.split('<<CAT>>');
+    result.removeWhere((element) => element.isEmpty);
+    return result;
   }
 
   String toListCatTxt(List<String> cats) {
+    cats.removeWhere((element) => element.isEmpty);
     return cats.join('<<CAT>>');
   }
 

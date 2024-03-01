@@ -471,6 +471,12 @@ const TextStyle headStyleSmallLargeLLigh = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleSmallLargeWhite = TextStyle(
+  color: White,
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleSmallLargeLigh = TextStyle(
   color: Black70,
   fontSize: 14,
@@ -491,6 +497,12 @@ const TextStyle headStyleLargeRed = TextStyle(
 
 const TextStyle headStyleLargeBlackLigh = TextStyle(
   color: Black70,
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle headStyleLargeBlackVLigh = TextStyle(
+  color: Black40,
   fontSize: 14,
   fontWeight: FontWeight.w600,
 );

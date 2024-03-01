@@ -17,8 +17,10 @@ import 'component/table_selector_bar.dart';
 typedef onTableSelected = VoidCallbackArg<TableDetailData>;
 
 class TablePage extends StatefulWidget {
+  final bool isSelectingForOrder;
   final VoidCallbackArg<TableDetailData> done;
-  const TablePage({super.key, required this.done});
+  const TablePage(
+      {super.key, required this.done, required this.isSelectingForOrder});
 
   @override
   State<TablePage> createState() => _TablePageState();
@@ -88,6 +90,7 @@ class _TablePageState extends State<TablePage> {
               done: widget.done,
               isEditting: isEditting,
               createNewArea: addNewArea,
+              isSelectingForOrder: widget.isSelectingForOrder,
             );
           },
         ),

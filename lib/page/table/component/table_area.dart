@@ -15,6 +15,7 @@ class TableArea extends StatefulWidget {
   final AreaData data;
   final onTableSelected done;
   final bool isEditting;
+  final bool isSelectingForOrder;
   final VoidCallbackArg<TableDetailData> successNewTable;
   final VoidCallbackArg<AreaData> successNewListTable;
   final VoidCallbackArg<AreaData> successNewUpdateAreaData;
@@ -28,6 +29,7 @@ class TableArea extends StatefulWidget {
     required this.successNewListTable,
     required this.successNewUpdateAreaData,
     required this.successDeleteAreaData,
+    required this.isSelectingForOrder,
   });
 
   @override
@@ -128,6 +130,7 @@ class _TableAreaState extends State<TableArea> {
                   showNotification(context, 'Xóa thành công!');
                   setState(() {});
                 },
+                isSelectingForOrder: widget.isSelectingForOrder,
               );
             },
           ),

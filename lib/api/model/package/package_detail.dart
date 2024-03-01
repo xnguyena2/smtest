@@ -184,7 +184,7 @@ class PackageDetail extends BaseEntity {
     _data['point'] = point;
     _data['note'] = note;
     _data['image'] = image;
-    _data['progress'] = progress == null ? null : jsonEncode(progress);
+    _data['progress'] = progress?.toJsonString();
     _data['status'] = status?.name;
     return _data;
   }
@@ -306,5 +306,9 @@ class Progress {
     final _data = <String, dynamic>{};
     _data['transaction'] = transaction?.map((e) => e.toJson()).toList();
     return _data;
+  }
+
+  String toJsonString() {
+    return jsonEncode(this);
   }
 }

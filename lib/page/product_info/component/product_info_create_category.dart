@@ -40,31 +40,36 @@ class ProductCreateCategory extends StatelessWidget {
           children: [
             Expanded(
               child: RoundBtn(
-                  isSelected: true,
-                  icon: LoadSvg(
-                      assetPath: 'svg/plus_large.svg', width: 20, height: 20),
-                  txt: 'Thêm phân loại',
-                  onPressed: () async {
-                    showDefaultModal(
-                      context: context,
-                      content: ModalCreateProductUnit(
-                          onDone: (category) {}, product: product),
-                    );
-                    // await Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => ProductSelectorPage(
-                    //       packageDataResponse: data.clone(),
-                    //       onUpdated: (PackageDataResponse) {
-                    //         data.updateListProductItem(PackageDataResponse);
-                    //       },
-                    //     ),
-                    //   ),
-                    // );
-                    // context.read<ProductProvider>().justRefresh();
-                    // setState(() {});
-                  },
-                  padding: const EdgeInsets.symmetric(vertical: 10)),
+                isSelected: true,
+                icon: LoadSvg(
+                    assetPath: 'svg/plus_large.svg', width: 20, height: 20),
+                txt: 'Thêm phân loại',
+                onPressed: () async {
+                  showDefaultModal(
+                    context: context,
+                    content: ModalCreateProductUnit(
+                        onDone: (category) {
+                          product.setUnitCat(category);
+                        },
+                        productUnitCatPattern:
+                            product.productUnitCatPattern.clone()),
+                  );
+                  // await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => ProductSelectorPage(
+                  //       packageDataResponse: data.clone(),
+                  //       onUpdated: (PackageDataResponse) {
+                  //         data.updateListProductItem(PackageDataResponse);
+                  //       },
+                  //     ),
+                  //   ),
+                  // );
+                  // context.read<ProductProvider>().justRefresh();
+                  // setState(() {});
+                },
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
             ),
           ],
         )

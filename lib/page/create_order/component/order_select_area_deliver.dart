@@ -92,6 +92,7 @@ class _SelectAreaAndDeliverState extends State<SelectAreaAndDeliver> {
                       done: (table) {
                         data.setTable(table);
                       },
+                      isSelectingForOrder: true,
                     ),
                   ),
                 );

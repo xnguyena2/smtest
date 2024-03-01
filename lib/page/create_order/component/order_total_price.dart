@@ -8,6 +8,7 @@ import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/component/textfield/editable_text_form_field.dart';
 import 'package:sales_management/page/create_order/component/modal_payment.dart';
 import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
 import 'package:sales_management/page/product_selector/component/provider_discount.dart';
@@ -157,46 +158,41 @@ class _TotalPriceState extends State<TotalPrice> {
               ],
             ),
             if (isEditting)
-              Row(
-                children: [
-                  SizedBox(
-                    width: 60,
-                    child: TextFormField(
-                      textAlign: TextAlign.right,
-                      controller: discountTxtController,
-                      focusNode: discountFocus,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        if (isDiscountPercent) ...[
-                          LengthLimitingTextInputFormatter(2),
-                          FilteringTextInputFormatter.deny(RegExp(r'^0+')),
-                        ] else
-                          CurrencyInputFormatter(),
-                      ],
-                      maxLines: 1,
-                      style: headStyleXLargeHigh,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        isDense: true,
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        if (isDiscountPercent) {
-                          data.discountPercent = double.tryParse(value) ?? 0;
-                        } else {
-                          data.discountAmount = tryParseMoney(value);
-                        }
-                        context.read<ProductProvider>().justRefresh();
-                        setState(() {});
-                      },
-                    ),
+              SizedBox(
+                width: 80,
+                child: EditAbleTextFormField(
+                  textAlign: TextAlign.right,
+                  controller: discountTxtController,
+                  focusNode: discountFocus,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    if (isDiscountPercent) ...[
+                      LengthLimitingTextInputFormatter(2),
+                      FilteringTextInputFormatter.deny(RegExp(r'^0+')),
+                    ] else
+                      CurrencyInputFormatter(),
+                  ],
+                  maxLines: 1,
+                  style: headStyleXLargeHigh,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    border: InputBorder.none,
                   ),
-                  GestureDetector(
-                    onTap: () => discountFocus.requestFocus(),
-                    child: LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
-                  )
-                ],
+                  onTapOutside: (event) {
+                    discountFocus.unfocus();
+                  },
+                  onChanged: (value) {
+                    if (isDiscountPercent) {
+                      data.discountPercent = double.tryParse(value) ?? 0;
+                    } else {
+                      data.discountAmount = tryParseMoney(value);
+                    }
+                    context.read<ProductProvider>().justRefresh();
+                    setState(() {});
+                  },
+                ),
               )
             else
               Text(
@@ -219,38 +215,33 @@ class _TotalPriceState extends State<TotalPrice> {
                   isEditting ? headStyleSemiLargeLigh500 : headStyleXLargeLigh,
             ),
             if (isEditting)
-              Row(
-                children: [
-                  SizedBox(
-                    width: 120,
-                    child: TextFormField(
-                      textAlign: TextAlign.right,
-                      controller: shipTxtController,
-                      focusNode: shipFocus,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        CurrencyInputFormatter(),
-                      ],
-                      maxLines: 1,
-                      style: headStyleXLargeHigh,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        isDense: true,
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        data.shipPrice = tryParseMoney(value);
-                        context.read<ProductProvider>().justRefresh();
-                        setState(() {});
-                      },
-                    ),
+              SizedBox(
+                width: 140,
+                child: EditAbleTextFormField(
+                  textAlign: TextAlign.right,
+                  controller: shipTxtController,
+                  focusNode: shipFocus,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    CurrencyInputFormatter(),
+                  ],
+                  maxLines: 1,
+                  style: headStyleXLargeHigh,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    border: InputBorder.none,
                   ),
-                  GestureDetector(
-                    onTap: () => shipFocus.requestFocus(),
-                    child: LoadSvg(assetPath: 'svg/edit_pencil_line_01.svg'),
-                  )
-                ],
+                  onTapOutside: (event) {
+                    shipFocus.unfocus();
+                  },
+                  onChanged: (value) {
+                    data.shipPrice = tryParseMoney(value);
+                    context.read<ProductProvider>().justRefresh();
+                    setState(() {});
+                  },
+                ),
               )
             else
               Text(

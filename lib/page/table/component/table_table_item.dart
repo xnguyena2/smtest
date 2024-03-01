@@ -14,12 +14,14 @@ class TableItem extends StatefulWidget {
   final TableDetailData tableDetailData;
   final onTableSelected done;
   final bool isEditting;
+  final bool isSelectingForOrder;
   const TableItem({
     super.key,
     required this.tableDetailData,
     required this.done,
     required this.isEditting,
     required this.successDeleteTableData,
+    required this.isSelectingForOrder,
   });
 
   @override
@@ -42,6 +44,9 @@ class _TableItemState extends State<TableItem> {
     return GestureDetector(
       onTap: () {
         if (widget.isEditting) {
+          return;
+        }
+        if (widget.isSelectingForOrder && tableDetailData.isUsed) {
           return;
         }
         widget.done(tableDetailData);

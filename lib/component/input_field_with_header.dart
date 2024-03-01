@@ -199,9 +199,9 @@ class CurrencyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
+    // if (newValue.selection.baseOffset == 0) {
+    //   return newValue;
+    // }
     // final int selectionIndexFromTheRight =
     //     newValue.text.length - newValue.selection.end;
 

@@ -8,6 +8,7 @@ import 'package:sales_management/component/check_radio_item.dart';
 import 'package:sales_management/component/checkbox/check_box.dart';
 import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
+import 'package:sales_management/component/textfield/editable_text_form_field.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
@@ -182,9 +183,9 @@ class _ProductItemState extends State<ProductItem> {
         productInPackageResponse.discountAmount != 0) {
       isDiscountPercent = productInPackageResponse.discountPercent > 0;
     }
-    discountTxtController.text = isDiscountPercent
-        ? productInPackageResponse.discountPercent.toString()
-        : MoneyFormater.format(productInPackageResponse.discountAmount);
+    discountTxtController.text = MoneyFormater.format(isDiscountPercent
+        ? productInPackageResponse.discountPercent
+        : productInPackageResponse.discountAmount);
     isProductValid = !(productInPackageResponse.beerSubmitData == null ||
         productInPackageResponse.beerSubmitData?.isAvariable == false);
     itemPriceTxtController.text =
@@ -485,44 +486,32 @@ class _ProductItemState extends State<ProductItem> {
                                       ],
                                     ),
                                     Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              controller:
-                                                  itemPriceTxtController,
-                                              focusNode: priceFocus,
-                                              textAlign: TextAlign.right,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                                CurrencyInputFormatter(),
-                                              ],
-                                              maxLines: 1,
-                                              style: customerNameBigHight,
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                isDense: true,
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (value) {
-                                                productInPackageResponse.price =
-                                                    tryParseMoney(value);
-                                                widget.onRefreshData();
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                priceFocus.requestFocus(),
-                                            child: LoadSvg(
-                                                assetPath:
-                                                    'svg/edit_pencil_line_01.svg'),
-                                          )
+                                      child: EditAbleTextFormField(
+                                        controller: itemPriceTxtController,
+                                        focusNode: priceFocus,
+                                        textAlign: TextAlign.right,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                          CurrencyInputFormatter(),
                                         ],
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        onTapOutside: (event) {
+                                          priceFocus.unfocus();
+                                        },
+                                        onChanged: (value) {
+                                          productInPackageResponse.price =
+                                              tryParseMoney(value);
+                                          widget.onRefreshData();
+                                          setState(() {});
+                                        },
                                       ),
                                     )
                                   ],
@@ -567,55 +556,41 @@ class _ProductItemState extends State<ProductItem> {
                                       ],
                                     ),
                                     Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              controller: discountTxtController,
-                                              focusNode: discountFocus,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                                if (isDiscountPercent)
-                                                  LengthLimitingTextInputFormatter(
-                                                      2)
-                                                else
-                                                  CurrencyInputFormatter(),
-                                              ],
-                                              textAlign: TextAlign.right,
-                                              maxLines: 1,
-                                              style: customerNameBigHight,
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                isDense: true,
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (value) {
-                                                if (isDiscountPercent) {
-                                                  productInPackageResponse
-                                                          .discountPercent =
-                                                      double.tryParse(value) ??
-                                                          0;
-                                                } else {
-                                                  productInPackageResponse
-                                                          .discountAmount =
-                                                      tryParseMoney(value);
-                                                }
-                                                widget.onRefreshData();
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                discountFocus.requestFocus(),
-                                            child: LoadSvg(
-                                                assetPath:
-                                                    'svg/edit_pencil_line_01.svg'),
-                                          )
+                                      child: EditAbleTextFormField(
+                                        controller: discountTxtController,
+                                        focusNode: discountFocus,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                          CurrencyInputFormatter(),
+                                          if (isDiscountPercent)
+                                            LengthLimitingTextInputFormatter(2)
                                         ],
+                                        textAlign: TextAlign.right,
+                                        maxLines: 1,
+                                        style: customerNameBigHight,
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        onTapOutside: (event) {
+                                          discountFocus.unfocus();
+                                        },
+                                        onChanged: (value) {
+                                          if (isDiscountPercent) {
+                                            productInPackageResponse
+                                                    .discountPercent =
+                                                double.tryParse(value) ?? 0;
+                                          } else {
+                                            productInPackageResponse
+                                                    .discountAmount =
+                                                tryParseMoney(value);
+                                          }
+                                          widget.onRefreshData();
+                                          setState(() {});
+                                        },
                                       ),
                                     )
                                   ],
@@ -633,36 +608,25 @@ class _ProductItemState extends State<ProductItem> {
                                       ],
                                     ),
                                     Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextFormField(
-                                              focusNode: noteFocus,
-                                              textAlign: TextAlign.right,
-                                              initialValue:
-                                                  productInPackageResponse.note,
-                                              maxLines: 1,
-                                              style: customerNameBig,
-                                              decoration: const InputDecoration(
-                                                hintText: 'Ghi chú',
-                                                contentPadding: EdgeInsets.zero,
-                                                isDense: true,
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (value) {
-                                                productInPackageResponse.note =
-                                                    value;
-                                              },
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                noteFocus.requestFocus(),
-                                            child: LoadSvg(
-                                                assetPath:
-                                                    'svg/edit_pencil_line_01.svg'),
-                                          )
-                                        ],
+                                      child: EditAbleTextFormField(
+                                        focusNode: noteFocus,
+                                        textAlign: TextAlign.right,
+                                        initialValue:
+                                            productInPackageResponse.note,
+                                        maxLines: 1,
+                                        style: customerNameBig,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Ghi chú',
+                                          contentPadding: EdgeInsets.zero,
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                        ),
+                                        onTapOutside: (event) {
+                                          noteFocus.unfocus();
+                                        },
+                                        onChanged: (value) {
+                                          productInPackageResponse.note = value;
+                                        },
                                       ),
                                     )
                                   ],
