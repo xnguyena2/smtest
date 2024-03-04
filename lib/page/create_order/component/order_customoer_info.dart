@@ -280,6 +280,7 @@ class _FindBuyerDialogState extends State<FindBuyerDialog> {
                 autofocus: true,
                 controller: txtControler,
                 keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],

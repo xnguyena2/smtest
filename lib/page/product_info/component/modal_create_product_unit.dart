@@ -31,13 +31,6 @@ class _ModalCreateProductUnitState extends State<ModalCreateProductUnit> {
       headerTxt: 'Phân loại',
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.only(top: 8),
-            color: BackgroundColorLigh,
-            child: Divider(
-              height: 1,
-            ),
-          ),
           ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 400),
             child: SingleChildScrollView(
@@ -139,17 +132,27 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
   late final ProductUnitCatPatternItem productUnitCatPatternItem =
       widget.productUnitCatPatternItem;
   late final TextEditingController unitCateNameTxtController =
-      TextEditingController(text: productUnitCatPatternItem.id);
+      TextEditingController(text: productUnitCatPatternItem.name);
   final FocusNode unitCatNameFocus = FocusNode();
   final TextEditingController unitNameTxtController = TextEditingController();
   final FocusNode unitNameFocus = FocusNode();
   bool isTextEmpty = false;
   bool isAddingNewItem = false;
-  int indexEditting = -1;
+  String keyEditting = '';
 
   void resetEditting() {
     isAddingNewItem = false;
-    indexEditting = -1;
+    keyEditting = '';
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (productUnitCatPatternItem.name.isEmpty) {
+      unitCatNameFocus.requestFocus();
+    }
   }
 
   @override
@@ -189,7 +192,7 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
                           hintStyle: headStyleLargeBlackVLigh,
                         ),
                         onChanged: (value) {
-                          productUnitCatPatternItem.id = value;
+                          productUnitCatPatternItem.name = value;
                         },
                       ),
                     ),
@@ -227,24 +230,24 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
             runSpacing: 12,
             spacing: 12,
             children: [
-              ...productUnitCatPatternItem.items.asMap().entries.map(
-                    (e) => _CateNamePattern(
-                      name: e.value,
-                      onDelete: (name) {
-                        productUnitCatPatternItem.removeItemAt(e.key);
-                        resetEditting();
-                        setState(() {});
-                      },
-                      onUpdate: (name) {
-                        indexEditting = e.key;
-                        isAddingNewItem = true;
-                        unitNameTxtController.text = name;
-                        unitNameFocus.requestFocus();
-                        setState(() {});
-                      },
-                      isHight: e.key == indexEditting,
-                    ),
-                  ),
+              ...productUnitCatPatternItem.items.entries.map(
+                (e) => _CateNamePattern(
+                  name: e.value,
+                  onDelete: (name) {
+                    productUnitCatPatternItem.removeItemByKey(e.key);
+                    resetEditting();
+                    setState(() {});
+                  },
+                  onUpdate: (name) {
+                    keyEditting = e.key;
+                    isAddingNewItem = true;
+                    unitNameTxtController.text = name;
+                    unitNameFocus.requestFocus();
+                    setState(() {});
+                  },
+                  isHight: e.key == keyEditting,
+                ),
+              ),
               if (!isAddingNewItem)
                 RoundBtn(
                   backgroundColor: White,
@@ -259,7 +262,7 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
                     unitNameFocus.requestFocus();
                     unitNameTxtController.clear();
                     isAddingNewItem = true;
-                    indexEditting = -1;
+                    keyEditting = '';
                     setState(() {});
                   },
                 ),
@@ -314,13 +317,13 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
                       if (name.isEmpty) {
                         return;
                       }
-                      if (indexEditting == -1) {
+                      if (keyEditting.isEmpty) {
                         productUnitCatPatternItem.addItem(name);
                         unitNameTxtController.clear();
                         setState(() {});
                         return;
                       }
-                      productUnitCatPatternItem.updateAt(indexEditting, name);
+                      productUnitCatPatternItem.update(keyEditting, name);
                       resetEditting();
                       setState(() {});
                     },

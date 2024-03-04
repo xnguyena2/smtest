@@ -3,7 +3,7 @@ import 'package:sales_management/utils/constants.dart';
 
 class RoundBtn extends StatelessWidget {
   final String txt;
-  final Widget icon;
+  final Widget? icon;
   final bool isSelected;
   final VoidCallback onPressed;
   final bool isDelete;
@@ -13,7 +13,7 @@ class RoundBtn extends StatelessWidget {
   const RoundBtn({
     super.key,
     required this.txt,
-    required this.icon,
+    this.icon,
     required this.onPressed,
     this.isSelected = false,
     this.isDelete = false,
@@ -57,10 +57,12 @@ class RoundBtn extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: isFitContent ? MainAxisSize.min : MainAxisSize.max,
           children: [
-            icon,
-            const SizedBox(
-              width: 10,
-            ),
+            if (icon != null) ...[
+              icon!,
+              const SizedBox(
+                width: 10,
+              ),
+            ],
             Text(
               txt,
               style: getTextStyle,

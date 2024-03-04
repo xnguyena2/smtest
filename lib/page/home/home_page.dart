@@ -201,8 +201,7 @@ class _AddingPopup extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductInfo(
-                            product: BeerSubmitData.createEmpty(
-                                groupID, generateUUID()),
+                            product: BeerSubmitData.createEmpty(groupID),
                             onAdded: (product) {
                               BootStrapData? config =
                                   LocalStorage.getBootStrap();

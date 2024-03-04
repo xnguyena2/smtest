@@ -65,11 +65,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
         : List.from(jsonDecode(listCategoryContent));
     listCategory.addAll(allCat);
 
-    listAllProduct = flatten<BeerSubmitData>(results.map(
-      (e) {
-        return e.flatUnit();
-      },
-    ));
+    listAllProduct = results;
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
@@ -155,7 +151,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   @override
   Widget build(BuildContext context) {
     addNewProduct() {
-      showProductInfo(BeerSubmitData.createEmpty(groupID, generateUUID()));
+      showProductInfo(BeerSubmitData.createEmpty(groupID));
     }
 
     return LoadingOverlayAlt(
@@ -397,8 +393,7 @@ class __BodyContenStateState extends State<_BodyContenState> {
         if (index == listProduct.length) {
           return GestureDetector(
             onTap: () {
-              widget.showProduct(
-                  BeerSubmitData.createEmpty(groupID, generateUUID()));
+              widget.showProduct(BeerSubmitData.createEmpty(groupID));
             },
             child: Container(
               decoration: BoxDecoration(

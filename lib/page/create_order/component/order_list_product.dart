@@ -9,6 +9,7 @@ import 'package:sales_management/component/checkbox/check_box.dart';
 import 'package:sales_management/component/image_loading.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/textfield/editable_text_form_field.dart';
+import 'package:sales_management/component/textfield/text_under_line_custome.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
@@ -323,6 +324,7 @@ class _ProductItemState extends State<ProductItem> {
                                       maxLines: 1,
                                       style: headStyleSemiLarge500,
                                       keyboardType: TextInputType.number,
+                                      textInputAction: TextInputAction.done,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
                                       ],
@@ -676,40 +678,6 @@ class _ProductItemState extends State<ProductItem> {
               ),
             ),
           ),
-      ],
-    );
-  }
-}
-
-class TextUnderlineCustome extends StatelessWidget {
-  const TextUnderlineCustome({
-    super.key,
-    required this.totalPriceFormat,
-  });
-
-  final String totalPriceFormat;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.bottomCenter,
-      children: [
-        Text(
-          totalPriceFormat,
-          style: headStyleXLargehightUnderline.copyWith(
-            decorationColor: Colors.white,
-          ),
-        ),
-        Positioned(
-          bottom: -5,
-          child: Text(
-            totalPriceFormat,
-            style: headStyleXLargehightUnderline.copyWith(
-              color: Colors.transparent,
-            ),
-          ),
-        )
       ],
     );
   }

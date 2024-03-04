@@ -14,6 +14,8 @@ class EditAbleTextFormField extends StatelessWidget {
   final TapRegionCallback? onTapOutside;
   final ValueChanged<String>? onChanged;
   final String? initialValue;
+  final double? spaceBetween;
+  final TextInputAction? textInputAction;
   const EditAbleTextFormField({
     super.key,
     this.textAlign = TextAlign.start,
@@ -27,6 +29,8 @@ class EditAbleTextFormField extends StatelessWidget {
     this.onTapOutside,
     this.onChanged,
     this.initialValue,
+    this.spaceBetween,
+    this.textInputAction = TextInputAction.done,
   });
 
   @override
@@ -39,6 +43,7 @@ class EditAbleTextFormField extends StatelessWidget {
             textAlign: textAlign,
             controller: controller,
             focusNode: focusNode,
+            textInputAction: textInputAction,
             keyboardType: keyboardType,
             inputFormatters: inputFormatters,
             maxLines: maxLines,
@@ -50,6 +55,9 @@ class EditAbleTextFormField extends StatelessWidget {
                 },
             onChanged: onChanged,
           ),
+        ),
+        SizedBox(
+          width: spaceBetween,
         ),
         GestureDetector(
           onTap: () => focusNode?.requestFocus(),

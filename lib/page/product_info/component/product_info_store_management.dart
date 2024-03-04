@@ -15,6 +15,7 @@ class StoreManagement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isHaveMultiCategory = product.isHaveMultiCategory;
     return DefaultPaddingContainer(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,18 +59,20 @@ class StoreManagement extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          height: 4,
-        ),
-        InputFiledWithHeader(
-          header: 'Mã SKU',
-          hint: 'Nhập/Quét',
-          initValue: product.sku,
-          isImportance: false,
-          onChanged: (value) {
-            product.sku = value;
-          },
-        ),
+        if (!isHaveMultiCategory) ...[
+          SizedBox(
+            height: 4,
+          ),
+          InputFiledWithHeader(
+            header: 'Mã SKU',
+            hint: 'Nhập/Quét',
+            initValue: product.getSku,
+            isImportance: false,
+            onChanged: (value) {
+              product.setSku = value;
+            },
+          ),
+        ],
       ],
     ));
   }

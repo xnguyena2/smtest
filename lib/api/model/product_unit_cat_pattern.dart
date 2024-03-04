@@ -1,18 +1,21 @@
 import 'dart:convert';
 
+import 'package:sales_management/utils/utils.dart';
+
 class ProductUnitCatPattern {
   late final List<ProductUnitCatPatternItem> items;
+  late Map<String, ProductUnitIDWithName> productUnitKeyTree;
 
   ProductUnitCatPattern({
     required this.items,
+    required this.productUnitKeyTree,
   });
 
-  ProductUnitCatPattern.fromJsonString(String? json) {
+  factory ProductUnitCatPattern.fromJsonString(String? json) {
     if (json == null || json.isEmpty) {
-      items = [];
-      return;
+      return ProductUnitCatPattern(items: [], productUnitKeyTree: {});
     }
-    items = ProductUnitCatPattern.fromJson(jsonDecode(json)).items;
+    return ProductUnitCatPattern.fromJson(jsonDecode(json));
   }
 
   ProductUnitCatPattern.fromJson(Map<String, dynamic> json) {
@@ -22,11 +25,19 @@ class ProductUnitCatPattern {
         : List.from(itemsJson)
             .map((e) => ProductUnitCatPatternItem.fromJson(e))
             .toList();
+    final productJson = json['productUnitKeyTree'];
+
+    productUnitKeyTree = productJson == null
+        ? {}
+        : Map.from(productJson).map((key, value) =>
+            MapEntry(key, ProductUnitIDWithName.fromJson(value)));
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['items'] = items.map((e) => e.toJson()).toList();
+    _data['productUnitKeyTree'] =
+        productUnitKeyTree.map((key, value) => MapEntry(key, value.toJson()));
     return _data;
   }
 
@@ -49,60 +60,114 @@ class ProductUnitCatPattern {
   void delteItem(ProductUnitCatPatternItem item) {
     items.remove(item);
   }
+
+  List<ProductUnitIDWithName> rebuildTree() {
+    if (items.isEmpty) {
+      productUnitKeyTree.clear();
+      return [];
+    }
+    final newTree = <String, ProductUnitIDWithName>{};
+    final first = items[0];
+    first.items.forEach(
+      (key, value) {
+        appendTree(MapEntry(key, value), 1, newTree);
+      },
+    );
+    productUnitKeyTree.clear();
+    productUnitKeyTree = newTree;
+    return productUnitKeyTree.values.toList();
+  }
+
+  void appendTree(MapEntry<String, String> prefix, int index,
+      Map<String, ProductUnitIDWithName> newTree) {
+    if (index >= items.length || items[index].items.isEmpty) {
+      final mainKey = prefix.key;
+      final oldValue = productUnitKeyTree[mainKey];
+      final unitID = oldValue?.id ?? generateUUID();
+      newTree[mainKey] = ProductUnitIDWithName(id: unitID, name: prefix.value);
+      return;
+    }
+    final item = items[index];
+    item.items.forEach((key, value) {
+      final mainKey = '${prefix.key}<->${key}';
+      final mainValue = '${prefix.value} - ${value}';
+      appendTree(MapEntry(mainKey, mainValue), index + 1, newTree);
+    });
+  }
 }
 
 class ProductUnitCatPatternItem {
-  late String id;
+  late String name;
 
-  late final List<String> items;
+  late final Map<String, String> items;
 
   ProductUnitCatPatternItem({
-    required this.id,
+    required this.name,
     required this.items,
   });
 
   ProductUnitCatPatternItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    items = List.from(json['items']);
+    name = json['name'];
+
+    final jsonV = json['items'];
+    items = jsonV == null ? {} : Map.from(jsonV);
   }
 
   ProductUnitCatPatternItem.empty() {
-    id = '';
-    items = [];
+    name = '';
+    items = {};
   }
 
   ProductUnitCatPatternItem.categorySample() {
-    id = 'Kích thước';
-    items = [
-      'Nhỏ (S)',
-      'Vừa (M)',
-      'Lớn (L)',
-    ];
+    name = 'Kích thước';
+    items = {
+      generateUUID(): 'Nhỏ (S)',
+      generateUUID(): 'Vừa (M)',
+      generateUUID(): 'Lớn (L)',
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['name'] = name;
+    _data['items'] = items;
+    return _data;
+  }
+
+  void removeItemByKey(String key) {
+    items.remove(key);
+  }
+
+  void update(String key, String name) {
+    items[key] = name;
+  }
+
+  void addItem(String item) {
+    if (items.values.contains(item)) {
+      return;
+    }
+    items[generateUUID()] = item;
+  }
+}
+
+class ProductUnitIDWithName {
+  late String id;
+  late String name;
+
+  ProductUnitIDWithName({
+    required this.id,
+    required this.name,
+  });
+
+  ProductUnitIDWithName.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['id'] = id;
-    _data['items'] = items;
+    _data['name'] = name;
     return _data;
-  }
-
-  void removeItem(String item) {
-    items.remove(item);
-  }
-
-  void removeItemAt(int index) {
-    items.removeAt(index);
-  }
-
-  void updateAt(int index, String name) {
-    items[index] = name;
-  }
-
-  void addItem(String item) {
-    if (items.contains(item)) {
-      return;
-    }
-    items.add(item);
   }
 }

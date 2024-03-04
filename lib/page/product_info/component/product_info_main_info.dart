@@ -36,6 +36,8 @@ class _MainProductInfoState extends State<MainProductInfo> {
   late List<String> listCateSelected = product.list_categorys ?? [];
   late List<String> listCategory;
 
+  late bool isHaveMultiCategory = widget.product.isHaveMultiCategory;
+
   Future<BootStrapData?> getAllProduct() async {
     config = LocalStorage.getBootStrap();
 
@@ -72,69 +74,71 @@ class _MainProductInfoState extends State<MainProductInfo> {
                 product.name = value;
               },
             ),
-            SizedBox(
-              height: 21,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: InputFiledWithHeader(
-                    isNumberOnly: true,
-                    isMoneyFormat: true,
-                    initValue: product.getPrice.toString(),
-                    header: 'Giá bán',
-                    hint: '0.000',
-                    isImportance: true,
-                    onChanged: (value) {
-                      product.listUnit?.firstOrNull?.price =
-                          double.tryParse(value) ?? 0;
-                    },
+            if (!isHaveMultiCategory) ...[
+              SizedBox(
+                height: 21,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: InputFiledWithHeader(
+                      isNumberOnly: true,
+                      isMoneyFormat: true,
+                      initValue: product.getPrice.toString(),
+                      header: 'Giá bán',
+                      hint: '0.000',
+                      isImportance: true,
+                      onChanged: (value) {
+                        product.listUnit?.firstOrNull?.price =
+                            double.tryParse(value) ?? 0;
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: InputFiledWithHeader(
-                    isNumberOnly: true,
-                    isMoneyFormat: true,
-                    initValue: product.getBuyPrice.toString(),
-                    header: 'Giá vốn',
-                    hint: '0.000',
-                    isImportance: true,
-                    onChanged: (value) {
-                      product.listUnit?.firstOrNull?.buyPrice =
-                          double.tryParse(value) ?? 0;
-                    },
+                  SizedBox(
+                    width: 20,
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 21,
-            ),
-            InputFiledWithHeader(
-              isNumberOnly: true,
-              header: 'Giá sỉ',
-              hint: '0-0',
-              initValue:
-                  '${MoneyFormater.format(product.getWholesalePrice)}-${product.getWholesaleNumber}',
-              isImportance: false,
-              isDropDown: true,
-              onSelected: () {
-                showDefaultModal(
-                  context: context,
-                  content: ModalWholesaleSetting(
-                    onDone: (p) {
-                      product.setWholesaleNumber(p.getWholesaleNumber);
-                      product.setWholesalePrice(p.getWholesalePrice);
-                      setState(() {});
-                    },
-                    product: product.clone(),
+                  Expanded(
+                    child: InputFiledWithHeader(
+                      isNumberOnly: true,
+                      isMoneyFormat: true,
+                      initValue: product.getBuyPrice.toString(),
+                      header: 'Giá vốn',
+                      hint: '0.000',
+                      isImportance: true,
+                      onChanged: (value) {
+                        product.listUnit?.firstOrNull?.buyPrice =
+                            double.tryParse(value) ?? 0;
+                      },
+                    ),
                   ),
-                );
-              },
-            ),
+                ],
+              ),
+              SizedBox(
+                height: 21,
+              ),
+              InputFiledWithHeader(
+                isNumberOnly: true,
+                header: 'Giá sỉ',
+                hint: '0-0',
+                initValue:
+                    '${MoneyFormater.format(product.getWholesalePrice)}-${product.getWholesaleNumber}',
+                isImportance: false,
+                isDropDown: true,
+                onSelected: () {
+                  showDefaultModal(
+                    context: context,
+                    content: ModalWholesaleSetting(
+                      onDone: (p) {
+                        product.setWholesaleNumber(p.getWholesaleNumber);
+                        product.setWholesalePrice(p.getWholesalePrice);
+                        setState(() {});
+                      },
+                      product: product.clone(),
+                    ),
+                  );
+                },
+              ),
+            ],
             SizedBox(
               height: 21,
             ),
@@ -142,8 +146,8 @@ class _MainProductInfoState extends State<MainProductInfo> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Danh mục',
-                  style: headStyleSemiLarge400,
+                  'Danh mục(${listCateSelected.length})',
+                  style: headStyleSemiLarge500,
                 ),
                 SizedBox(
                   height: 7,

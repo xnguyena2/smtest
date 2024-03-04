@@ -719,6 +719,12 @@ const TextStyle subInfoStyMedium600 = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle subStatusInfoStyMedium600 = TextStyle(
+  color: Black40,
+  fontSize: 10,
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle subInfoStySmall = TextStyle(
   fontSize: 9,
 );

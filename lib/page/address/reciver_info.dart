@@ -281,6 +281,7 @@ class InputText extends StatelessWidget {
       initialValue: initialValue,
       onChanged: (value) => onChanged(value),
       keyboardType: textInputType,
+      textInputAction: TextInputAction.done,
       inputFormatters: textInputType == TextInputType.number
           ? [FilteringTextInputFormatter.digitsOnly]
           : null,

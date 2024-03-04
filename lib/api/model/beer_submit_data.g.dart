@@ -23,8 +23,6 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       beerSecondID: fields[4] as String,
       name: fields[5] as String,
       detail: fields[6] as String?,
-      sku: fields[13] as String?,
-      upc: fields[14] as String?,
       category: fields[7] as String,
       status: fields[8] as String,
       meta_search: fields[9] as String?,
@@ -38,7 +36,7 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
   @override
   void write(BinaryWriter writer, BeerSubmitData obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(13)
       ..writeByte(4)
       ..write(obj.beerSecondID)
       ..writeByte(5)
@@ -57,10 +55,6 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       ..write(obj.listUnit)
       ..writeByte(12)
       ..write(obj.list_categorys)
-      ..writeByte(13)
-      ..write(obj.sku)
-      ..writeByte(14)
-      ..write(obj.upc)
       ..writeByte(15)
       ..write(obj.unit_category_config)
       ..writeByte(0)
@@ -164,13 +158,15 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       status: fields[10] as String,
       wholesale_price: fields[11] as double?,
       wholesale_number: fields[12] as int?,
+      sku: fields[13] as String?,
+      upc: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BeerUnit obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.groupId)
       ..writeByte(1)
@@ -196,7 +192,11 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       ..writeByte(11)
       ..write(obj.wholesale_price)
       ..writeByte(12)
-      ..write(obj.wholesale_number);
+      ..write(obj.wholesale_number)
+      ..writeByte(13)
+      ..write(obj.sku)
+      ..writeByte(14)
+      ..write(obj.upc);
   }
 
   @override

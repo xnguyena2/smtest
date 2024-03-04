@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -31,24 +32,37 @@ class ModalBase extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      headerTxt,
-                      style: headStyleLargeHigh,
+                    SizedBox(
+                      width: 30,
                     ),
+                    Expanded(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        headerTxt,
+                        style: headStyleLargeHigh,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: LoadSvg(
+                        assetPath: 'svg/close.svg',
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    )
                   ],
                 ),
-                Positioned(
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: LoadSvg(
-                      assetPath: 'svg/close.svg',
-                    ),
-                  ),
-                ),
               ],
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 8),
+              color: BackgroundColorLigh,
+              child: Divider(
+                height: 1,
+              ),
             ),
             child,
           ],

@@ -126,6 +126,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                           color: Black40, width: 1.0),
                                     ),
                                   ),
+                                  textInputAction: TextInputAction.done,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,

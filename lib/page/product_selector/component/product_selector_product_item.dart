@@ -122,6 +122,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                               child: TextFormField(
                                 controller: txtController,
                                 keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly
                                 ],

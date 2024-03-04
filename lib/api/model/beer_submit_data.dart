@@ -4,8 +4,16 @@ import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/product_unit_cat_pattern.dart';
 import 'package:sales_management/api/model/result_interface.dart';
+import 'package:sales_management/utils/enum_by_name_or_null.dart';
+import 'package:sales_management/utils/utils.dart';
 
 part 'beer_submit_data.g.dart';
+
+enum ProductUnitStatus {
+  AVARIABLE,
+  NOT_FOR_SELL,
+  SOLD_OUT,
+}
 
 @HiveType(typeId: 2)
 class BeerSubmitData extends BaseEntity implements ResultInterface {
@@ -16,8 +24,6 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.beerSecondID,
     required this.name,
     this.detail,
-    this.sku,
-    this.upc,
     required this.category,
     required this.status,
     this.meta_search,
@@ -50,16 +56,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   late List<Images> images;
 
   @HiveField(11)
-  late final List<BeerUnit>? listUnit;
+  late List<BeerUnit>? listUnit;
 
   @HiveField(12)
   late List<String>? list_categorys;
-
-  @HiveField(13)
-  late String? sku;
-
-  @HiveField(14)
-  late final String? upc;
 
   @HiveField(15)
   late final String? unit_category_config;
@@ -68,8 +68,6 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
     detail = json['detail'];
-    sku = json['sku'];
-    upc = json['upc'];
     category = json['category'];
     unit_category_config = json['unit_category_config'];
     meta_search = json['meta_search'];
@@ -91,8 +89,6 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['beerSecondID'] = beerSecondID;
     _data['name'] = name;
     _data['detail'] = detail;
-    _data['sku'] = sku;
-    _data['upc'] = upc;
     _data['category'] = category;
     _data['unit_category_config'] = productUnitCatPattern.toJsonString();
     _data['meta_search'] = meta_search;
@@ -118,35 +114,19 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       listUnit: unit != null ? [unit] : null,
       meta_search: meta_search,
       list_categorys: list_categorys,
-      sku: sku,
-      upc: upc,
       unit_category_config: unit_category_config,
     );
   }
 
-  factory BeerSubmitData.createEmpty(String groupID, String productID) {
+  factory BeerSubmitData.createEmpty(String groupID) {
+    final productID = generateUUID();
     return BeerSubmitData(
       groupId: groupID,
       beerSecondID: productID,
       name: '',
       category: '',
       status: 'AVARIABLE',
-      listUnit: [
-        BeerUnit(
-          groupId: groupID,
-          beer: productID,
-          name: '',
-          price: 0,
-          buyPrice: 0,
-          discount: 0,
-          volumetric: 0,
-          weight: 0,
-          beerUnitSecondId: '',
-          status: '',
-          wholesale_price: 0,
-          wholesale_number: 0,
-        )
-      ],
+      listUnit: [BeerUnit.empty(groupID, productID, '', null)],
       list_categorys: [],
       images: [],
       unit_category_config: '',
@@ -157,6 +137,23 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
 
   void setUnitCat(ProductUnitCatPattern productUnitCatPattern) {
     this.productUnitCatPattern = productUnitCatPattern;
+    listUnit ??= [];
+    final firstUnit = listUnit?.firstOrNull;
+    final oldUnitID =
+        Map.fromEntries(listUnit!.map((e) => MapEntry(e.beerUnitSecondId, e)));
+    final newUnitID = productUnitCatPattern.rebuildTree();
+    List<BeerUnit> tempListUnit = [];
+    newUnitID.forEach((element) {
+      final name = element.name;
+      final unit = oldUnitID[element.id];
+      final newUnit = unit?.updatename(name) ??
+          BeerUnit.empty(groupId, beerSecondID, name, element.id);
+      tempListUnit.add(newUnit);
+    });
+    listUnit = tempListUnit;
+    if (listUnit!.isEmpty) {
+      listUnit = [firstUnit ?? BeerUnit.empty(groupId, beerSecondID, '', null)];
+    }
   }
 
   String get get_show_name =>
@@ -184,11 +181,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     category = toListCatTxt(cats);
   }
 
-  List<BeerSubmitData> flatUnit() {
-    return listUnit == null
-        ? [this]
-        : listUnit!.map((e) => cloneMainData(e)).toList();
-  }
+  bool get isHaveMultiCategory =>
+      listUnit?.isEmpty == false && !(listUnit?.length == 1);
 
   String? get getFristLargeImg => images.firstOrNull?.medium;
 
@@ -201,6 +195,12 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   double get getWholesalePrice => listUnit?[0].wholesale_price ?? 0;
 
   int get getWholesaleNumber => listUnit?[0].wholesale_number ?? 0;
+
+  String get getSku => listUnit?[0].sku ?? '';
+
+  set setSku(String sku) => listUnit?[0].sku = sku.isEmpty ? null : sku;
+
+  String get getUpc => listUnit?[0].upc ?? '';
 
   void setWholesalePrice(double price) {
     listUnit?[0].wholesale_price = price;
@@ -349,8 +349,11 @@ class BeerUnit {
     required this.status,
     required this.wholesale_price,
     required this.wholesale_number,
+    required this.sku,
+    required this.upc,
   }) {
     correctPrice();
+    correctStatus();
   }
   @HiveField(0)
   late final String groupId;
@@ -359,7 +362,7 @@ class BeerUnit {
   late final String beer;
 
   @HiveField(2)
-  late final String name;
+  late String name;
 
   @HiveField(3)
   late double price;
@@ -383,7 +386,7 @@ class BeerUnit {
   late final String beerUnitSecondId;
 
   @HiveField(10)
-  late final String status;
+  late String status;
 
   @HiveField(11)
   late double? wholesale_price;
@@ -391,10 +394,31 @@ class BeerUnit {
   @HiveField(12)
   late int? wholesale_number;
 
-  late double realPrice = 0;
+  @HiveField(13)
+  late String? sku;
 
-  void correctPrice() {
-    realPrice = price * (1 - discount / 100);
+  @HiveField(14)
+  late final String? upc;
+
+  factory BeerUnit.empty(
+      String groupID, String productID, String name, String? productUnitid) {
+    final productUnitID = productUnitid ?? generateUUID();
+    return BeerUnit(
+      groupId: groupID,
+      beer: productID,
+      beerUnitSecondId: productUnitID,
+      name: name,
+      price: 0,
+      buyPrice: 0,
+      discount: 0,
+      volumetric: 0,
+      weight: 0,
+      status: '',
+      wholesale_price: 0,
+      wholesale_number: 0,
+      sku: null,
+      upc: null,
+    );
   }
 
   BeerUnit.fromJson(Map<String, dynamic> json) {
@@ -413,8 +437,11 @@ class BeerUnit {
     status = json['status'];
     wholesale_price = json['wholesale_price'] as double;
     wholesale_number = json['wholesale_number'] as int;
+    sku = json['sku'];
+    upc = json['upc'];
 
     correctPrice();
+    correctStatus();
   }
 
   Map<String, dynamic> toJson() {
@@ -432,8 +459,44 @@ class BeerUnit {
     _data['status'] = status;
     _data['wholesale_price'] = wholesale_price;
     _data['wholesale_number'] = wholesale_number;
+    _data['sku'] = sku;
+    _data['upc'] = upc;
     return _data;
   }
+
+  late double realPrice = 0;
+
+  void correctPrice() {
+    realPrice = price * (1 - discount / 100);
+  }
+
+  BeerUnit updatename(String name) {
+    this.name = name;
+    return this;
+  }
+
+  void correctStatus() {
+    unitStatus = ProductUnitStatus.values.byNameOrNull(status) ??
+        ProductUnitStatus.AVARIABLE;
+  }
+
+  void changeTohide(bool isHide) {
+    unitStatus =
+        isHide ? ProductUnitStatus.NOT_FOR_SELL : ProductUnitStatus.AVARIABLE;
+    status = unitStatus.name;
+  }
+
+  void changeAvariable(bool isAvariable) {
+    unitStatus =
+        isAvariable ? ProductUnitStatus.AVARIABLE : ProductUnitStatus.SOLD_OUT;
+    status = unitStatus.name;
+  }
+
+  bool get isHide => unitStatus == ProductUnitStatus.NOT_FOR_SELL;
+
+  bool get isAvariable => unitStatus == ProductUnitStatus.AVARIABLE;
+
+  late ProductUnitStatus unitStatus;
 }
 
 @HiveType(typeId: 6)

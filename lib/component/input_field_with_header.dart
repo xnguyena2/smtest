@@ -129,6 +129,7 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                               onTapOutside: (event) {
                                 txtFocus.unfocus();
                               },
+                              textInputAction: TextInputAction.done,
                               keyboardType: widget.isNumberOnly
                                   ? TextInputType.number
                                   : null,
