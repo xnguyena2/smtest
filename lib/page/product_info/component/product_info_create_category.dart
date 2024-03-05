@@ -47,47 +47,48 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Phân loại',
               style: headStyleXLarge,
             ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    final listUnit = widget.product.listUnit;
-                    if (listUnit == null) {
-                      return;
-                    }
-                    showDefaultModal(
-                      context: context,
-                      content: ModalEditPriceWarehouseProductUnit(
-                        onDone: (category) {
-                          // widget.product.setUnitCat(category);
-                          setState(() {});
-                        },
-                        listBeerUnit: listUnit,
-                      ),
-                    );
-                  },
-                  child: LoadSvg(
-                    assetPath: 'svg/edit_pencil_line_01.svg',
-                    color: Black,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                GestureDetector(
-                  onTap: updateCatgory,
-                  child: LoadSvg(
-                      assetPath: 'svg/setting.svg',
+            if (isHaveMultiCategory)
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      final listUnit = widget.product.clone().listUnit;
+                      if (listUnit == null) {
+                        return;
+                      }
+                      showDefaultModal(
+                        context: context,
+                        content: ModalEditPriceWarehouseProductUnit(
+                          onDone: (listU) {
+                            widget.product.setListUnit(listU);
+                            setState(() {});
+                          },
+                          listBeerUnit: listUnit,
+                        ),
+                      );
+                    },
+                    child: LoadSvg(
+                      assetPath: 'svg/edit_pencil_line_01.svg',
                       color: Black,
-                      width: 20,
-                      height: 20),
-                ),
-              ],
-            ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    onTap: updateCatgory,
+                    child: LoadSvg(
+                        assetPath: 'svg/setting.svg',
+                        color: Black,
+                        width: 20,
+                        height: 20),
+                  ),
+                ],
+              ),
           ],
         ),
         SizedBox(
@@ -124,7 +125,10 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
                 if (item == null) {
                   return SizedBox();
                 }
-                return _ProductUnit(item: item);
+                return _ProductUnit(
+                    key: ValueKey(
+                        '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}'),
+                    item: item);
               },
               separatorBuilder: (context, index) => Divider(
                     color: Black40,
@@ -190,7 +194,7 @@ class _ProductUnitState extends State<_ProductUnit> {
                   height: 12,
                 ),
                 Text(
-                  widget.item.sku ?? 'SP001',
+                  widget.item.sku ?? 'SP00001',
                   style: subStyleMediumNormalLight,
                 ),
               ],

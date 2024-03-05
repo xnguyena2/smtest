@@ -178,6 +178,10 @@ double tryParseMoney(String money) {
   return double.tryParse(money.replaceAll(',', '')) ?? 0;
 }
 
+int tryParseNumber(String number) {
+  return int.tryParse(number.replaceAll(',', '')) ?? 0;
+}
+
 bool listenConnection(ConnectivityResult connectivityResult) {
   if (connectivityResult == ConnectivityResult.mobile) {
     return true;

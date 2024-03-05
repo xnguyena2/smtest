@@ -156,8 +156,11 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     }
   }
 
-  String get get_show_name =>
-      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})'.replaceAll('()', '');
+  void setListUnit(List<BeerUnit> listU) {
+    listUnit = listU;
+  }
+
+  String get get_show_name => name;
 
   void copyImg(BeerSubmitData oldProduct) {
     images.clear();
@@ -181,8 +184,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     category = toListCatTxt(cats);
   }
 
-  bool get isHaveMultiCategory =>
-      listUnit?.isEmpty == false && !(listUnit?.length == 1);
+  bool get isHaveMultiCategory => productUnitCatPattern.items.isNotEmpty;
 
   String? get getFristLargeImg => images.firstOrNull?.medium;
 
@@ -351,6 +353,9 @@ class BeerUnit {
     required this.wholesale_number,
     required this.sku,
     required this.upc,
+    required this.promotional_price,
+    required this.inventory_number,
+    required this.visible,
   }) {
     correctPrice();
     correctStatus();
@@ -400,6 +405,15 @@ class BeerUnit {
   @HiveField(14)
   late final String? upc;
 
+  @HiveField(15)
+  late double? promotional_price;
+
+  @HiveField(16)
+  late int? inventory_number;
+
+  @HiveField(17)
+  late bool? visible;
+
   factory BeerUnit.empty(
       String groupID, String productID, String name, String? productUnitid) {
     final productUnitID = productUnitid ?? generateUUID();
@@ -418,6 +432,9 @@ class BeerUnit {
       wholesale_number: 0,
       sku: null,
       upc: null,
+      promotional_price: 0,
+      inventory_number: 0,
+      visible: true,
     );
   }
 
@@ -439,6 +456,9 @@ class BeerUnit {
     wholesale_number = json['wholesale_number'] as int;
     sku = json['sku'];
     upc = json['upc'];
+    promotional_price = json['promotional_price'] as double;
+    inventory_number = json['inventory_number'] as int;
+    visible = json['visible'] == null ? true : json['visible'] as bool;
 
     correctPrice();
     correctStatus();
@@ -461,6 +481,9 @@ class BeerUnit {
     _data['wholesale_number'] = wholesale_number;
     _data['sku'] = sku;
     _data['upc'] = upc;
+    _data['promotional_price'] = promotional_price;
+    _data['inventory_number'] = inventory_number;
+    _data['visible'] = visible;
     return _data;
   }
 
@@ -481,9 +504,7 @@ class BeerUnit {
   }
 
   void changeTohide(bool isHide) {
-    unitStatus =
-        isHide ? ProductUnitStatus.NOT_FOR_SELL : ProductUnitStatus.AVARIABLE;
-    status = unitStatus.name;
+    visible = !isHide;
   }
 
   void changeAvariable(bool isAvariable) {
@@ -492,7 +513,13 @@ class BeerUnit {
     status = unitStatus.name;
   }
 
-  bool get isHide => unitStatus == ProductUnitStatus.NOT_FOR_SELL;
+  void copyConfig(BeerUnit beerUnit) {
+    price = beerUnit.price;
+    buyPrice = beerUnit.buyPrice;
+    inventory_number = beerUnit.inventory_number;
+  }
+
+  bool get isHide => visible == false;
 
   bool get isAvariable => unitStatus == ProductUnitStatus.AVARIABLE;
 

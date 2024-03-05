@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
-import 'package:sales_management/api/model/product_unit_cat_pattern.dart';
 import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/modal/modal_base.dart';
-import 'package:sales_management/component/textfield/editable_text_form_field.dart';
-import 'package:sales_management/utils/alter_dialog.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/page/product_info/component/modal_update_all_product_unit_with_same.dart';
 import 'package:sales_management/utils/constants.dart';
-import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -32,6 +30,7 @@ class ModalEditPriceWarehouseProductUnit extends StatefulWidget {
 class _ModalEditPriceWarehouseProductUnitState
     extends State<ModalEditPriceWarehouseProductUnit> {
   late List<BeerUnit> listBeerUnit = widget.listBeerUnit;
+  Key listUnitKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class _ModalEditPriceWarehouseProductUnitState
       child: Column(
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 400),
+            constraints: const BoxConstraints(maxHeight: 400),
             child: SingleChildScrollView(
               child: ColoredBox(
                 color: BackgroundColor,
@@ -56,16 +55,30 @@ class _ModalEditPriceWarehouseProductUnitState
                           isSelected: true,
                           txt: 'Sửa hàng loạt giá, tồn kho',
                           onPressed: () {
-                            setState(() {});
+                            showDefaultModal(
+                              context: context,
+                              content: ModalUpdateAllProductUnitWIthSame(
+                                onDone: (listU) {
+                                  for (var e in listBeerUnit) {
+                                    e.copyConfig(listU);
+                                  }
+                                  listUnitKey = UniqueKey();
+                                  setState(() {});
+                                },
+                                productUnit: BeerUnit.empty('groupID',
+                                    'productID', 'name', 'productUnitid'),
+                              ),
+                            );
                           },
                           padding: const EdgeInsets.symmetric(vertical: 10),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     _EditableTable(
+                      key: listUnitKey,
                       listBeerUnit: listBeerUnit,
                     ),
                   ],
@@ -73,7 +86,7 @@ class _ModalEditPriceWarehouseProductUnitState
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 4,
           ),
           BottomBar(
@@ -84,7 +97,7 @@ class _ModalEditPriceWarehouseProductUnitState
             cancel: () {
               Navigator.pop(context);
             },
-            okBtnTxt: 'Tạo',
+            okBtnTxt: 'Cập nhật',
           ),
         ],
       ),
@@ -116,13 +129,18 @@ class _EditableTable extends StatelessWidget {
                   e.buyPrice = tryParseMoney(value);
                 },
               ),
-              SizedBox(),
+              value(
+                (e.inventory_number ?? 0).toDouble(),
+                (value) {
+                  e.inventory_number = tryParseNumber(value);
+                },
+              ),
             ])
         .toList();
     listRow.insert(
       0,
       [
-        header('PHÂ LOẠI', MainAxisAlignment.start, padding_left: 12),
+        header('PHÂN LOẠI', MainAxisAlignment.start, padding_left: 12),
         header('GIÁ BÁN', MainAxisAlignment.center),
         header('GÁI VỐN', MainAxisAlignment.center),
         header('TỒN KHO', MainAxisAlignment.end, padding_right: 12)
@@ -149,11 +167,14 @@ class _EditableTable extends StatelessWidget {
                 SizedBox(
                   width: padding_left,
                 ),
-                Text(
-                  txt,
-                  style: isHeader
-                      ? headStyleBigMediumBlackLight
-                      : headStyleBigMedium,
+                Expanded(
+                  child: Text(
+                    txt,
+                    style: isHeader
+                        ? headStyleBigMediumBlackLight
+                        : headStyleBigMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 SizedBox(
                   width: padding_right,
@@ -205,21 +226,21 @@ class _EditableTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 2,
+          flex: 4,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [for (var row in data) row[0]],
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [for (var row in data) row[1]],
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [for (var row in data) row[2]],

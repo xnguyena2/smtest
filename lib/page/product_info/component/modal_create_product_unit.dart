@@ -269,7 +269,7 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
             ],
           ),
           if (isAddingNewItem) ...[
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Container(
@@ -292,13 +292,11 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
                       },
                       onChanged: (text) {
                         isTextEmpty = text.isEmpty;
-                        String txt = text;
-                        // widget.onChanged?.call(txt);
                         setState(() {});
                       },
                       maxLines: 1,
                       style: customerNameBig400,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding: EdgeInsets.zero,
                         isDense: true,
                         border: InputBorder.none,
@@ -310,6 +308,16 @@ class _ProductUnitPatternState extends State<_ProductUnitPattern> {
                         ),
                       ),
                     ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      resetEditting();
+                      setState(() {});
+                    },
+                    child: LoadSvg(assetPath: 'svg/close_circle.svg'),
+                  ),
+                  const SizedBox(
+                    width: 10,
                   ),
                   GestureDetector(
                     onTap: () {

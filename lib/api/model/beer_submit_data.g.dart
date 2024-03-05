@@ -160,13 +160,16 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       wholesale_number: fields[12] as int?,
       sku: fields[13] as String?,
       upc: fields[14] as String?,
+      promotional_price: fields[15] as double?,
+      inventory_number: fields[16] as int?,
+      visible: fields[17] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BeerUnit obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.groupId)
       ..writeByte(1)
@@ -196,7 +199,13 @@ class BeerUnitAdapter extends TypeAdapter<BeerUnit> {
       ..writeByte(13)
       ..write(obj.sku)
       ..writeByte(14)
-      ..write(obj.upc);
+      ..write(obj.upc)
+      ..writeByte(15)
+      ..write(obj.promotional_price)
+      ..writeByte(16)
+      ..write(obj.inventory_number)
+      ..writeByte(17)
+      ..write(obj.visible);
   }
 
   @override
