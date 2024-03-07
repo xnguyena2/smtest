@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -17,6 +18,7 @@ import 'package:sales_management/page/product_info/component/modal_wholesale_set
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class MainProductInfo extends StatefulWidget {
   final BeerSubmitData product;
@@ -89,8 +91,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                       hint: '0.000',
                       isImportance: true,
                       onChanged: (value) {
-                        product.listUnit?.firstOrNull?.price =
-                            double.tryParse(value) ?? 0;
+                        product.setPrice = tryParseMoney(value);
                       },
                     ),
                   ),
@@ -106,8 +107,7 @@ class _MainProductInfoState extends State<MainProductInfo> {
                       hint: '0.000',
                       isImportance: true,
                       onChanged: (value) {
-                        product.listUnit?.firstOrNull?.buyPrice =
-                            double.tryParse(value) ?? 0;
+                        product.setBuyPrice = tryParseMoney(value);
                       },
                     ),
                   ),
@@ -116,27 +116,49 @@ class _MainProductInfoState extends State<MainProductInfo> {
               SizedBox(
                 height: 21,
               ),
-              InputFiledWithHeader(
-                isNumberOnly: true,
-                header: 'Giá sỉ',
-                hint: '0-0',
-                initValue:
-                    '${MoneyFormater.format(product.getWholesalePrice)}-${product.getWholesaleNumber}',
-                isImportance: false,
-                isDropDown: true,
-                onSelected: () {
-                  showDefaultModal(
-                    context: context,
-                    content: ModalWholesaleSetting(
-                      onDone: (p) {
-                        product.setWholesaleNumber(p.getWholesaleNumber);
-                        product.setWholesalePrice(p.getWholesalePrice);
-                        setState(() {});
+              Row(
+                children: [
+                  Expanded(
+                    child: InputFiledWithHeader(
+                      isNumberOnly: true,
+                      isMoneyFormat: true,
+                      initValue: product.getPromotionPrice.toString(),
+                      header: 'Giá khuyến mãi',
+                      hint: '0.000',
+                      isImportance: true,
+                      onChanged: (value) {
+                        product.setPromotionPrice = tryParseMoney(value);
                       },
-                      product: product.clone(),
                     ),
-                  );
-                },
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: InputFiledWithHeader(
+                      isNumberOnly: true,
+                      header: 'Giá sỉ',
+                      hint: '0-0',
+                      initValue:
+                          '${MoneyFormater.format(product.getWholesalePrice)}-${product.getWholesaleNumber}',
+                      isImportance: false,
+                      isDropDown: true,
+                      onSelected: () {
+                        showDefaultModal(
+                          context: context,
+                          content: ModalWholesaleSetting(
+                            onDone: (p) {
+                              product.setWholesaleNumber(p.getWholesaleNumber);
+                              product.setWholesalePrice(p.getWholesalePrice);
+                              setState(() {});
+                            },
+                            product: product.clone(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
             SizedBox(
@@ -202,10 +224,10 @@ class _MainProductInfoState extends State<MainProductInfo> {
                         child: Row(
                           children: [
                             LoadSvg(assetPath: 'svg/plus_large.svg'),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
-                            Text(
+                            const Text(
                               'Tạo danh muc',
                               style: headStyleSemiLargeHigh500,
                             ),

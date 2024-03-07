@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/page/transaction/api/model/list_payment_transaction.dart';
 import 'package:sales_management/utils/constants.dart';
-import 'package:sales_management/utils/utils.dart';
 
 class TransactionByDate extends StatelessWidget {
   final TransactionByDateOfMonthWithOffset transaction;
@@ -36,7 +35,7 @@ class TransactionByDate extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                 decoration: BoxDecoration(
                   borderRadius: defaultBorderRadius,
                   color: Red,
@@ -46,11 +45,11 @@ class TransactionByDate extends StatelessWidget {
                   style: customerNameBigWhite600,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 14,
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                 decoration: BoxDecoration(
                   borderRadius: defaultBorderRadius,
                   color: TableHighColor,

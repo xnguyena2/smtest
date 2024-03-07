@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/component/btn/simple_switch_btn.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/typedef.dart';
 
 class SwitchCircleBtn extends StatelessWidget {
-  final bool isDisable;
+  final bool initStatus;
+  final VoidCallbackArg<bool> onChange;
   const SwitchCircleBtn({
     super.key,
-    this.isDisable = false,
+    this.initStatus = false,
+    required this.onChange,
   });
 
   @override
   Widget build(BuildContext context) {
     return SimpleSwitchBtn(
-      isDisable: isDisable,
-      padding: EdgeInsets.all(4),
-      backGroundWidget: Container(
+      isDisable: false,
+      selectedIndex: initStatus ? 1 : 0,
+      padding: const EdgeInsets.all(4),
+      backGroundWidget: const SizedBox(
         width: 45,
         height: 22,
       ),
-      onSelected: (bool) {},
-      selectedWidget: [
+      onSelected: onChange,
+      selectedWidget: const [
         CircleAvatar(
           radius: 11,
           backgroundColor: White,

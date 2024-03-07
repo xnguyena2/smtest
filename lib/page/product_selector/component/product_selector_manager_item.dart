@@ -12,7 +12,7 @@ class ProductManagerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imgUrl = productData.getFristLargeImg;
-    final name = productData.get_show_name;
+    final name = productData.name;
     final price = productData.getRealPrice;
     final isAvariable = productData.isAvariable;
 

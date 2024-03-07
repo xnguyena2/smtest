@@ -190,12 +190,12 @@ class PackageDetail extends BaseEntity {
   }
 
   void setTable(TableDetailData table) {
-    table.setPackageID = this.packageSecondId;
+    table.setPackageID = packageSecondId;
     areaId = table.areaId;
     areaName = table.detail;
     tableId = table.tableId;
     tableName = table.tableName;
-    setAction(() => setPackageId(table));
+    // setAction(() => setPackageId(table));
   }
 
   bool get isDone => status == PackageStatusType.DONE;
@@ -233,8 +233,8 @@ class PackageDetail extends BaseEntity {
     if (packageType != DeliverType.table) {
       tableId = null;
     }
-    this.beforeUpdate?.call();
-    this.beforeUpdate = null;
+    beforeUpdate?.call();
+    beforeUpdate = null;
   }
 
   void addtransaction(

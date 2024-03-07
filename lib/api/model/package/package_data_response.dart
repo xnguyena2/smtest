@@ -212,7 +212,8 @@ class PackageDataResponse extends PackageDetail {
 
   late final String localTimeTxt;
 
-  final Map<String, ProductInPackageResponse> productMap = HashMap();
+  final Map<String, Map<String, ProductInPackageResponse>> productMap =
+      HashMap();
   bool isLocal = false;
 
   PackageDataResponse clone() {
@@ -248,15 +249,17 @@ class PackageDataResponse extends PackageDetail {
       return;
     }
     if (productInPackageResponse.numberUnit <= 0) {
-      var itemRemoved = productMap.remove(productUnit.beerUnitSecondId);
+      var itemRemoved =
+          removeElementToMap(productUnit.beer, productUnit.beerUnitSecondId);
       items.remove(itemRemoved);
       return;
     }
-    if (productMap.containsKey(productUnit.beerUnitSecondId)) {
+    if (isMapContainProductUnit(productUnit)) {
       return;
     }
     items.add(productInPackageResponse);
-    productMap[productUnit.beerUnitSecondId] = productInPackageResponse;
+    addElementToMap(productUnit.beer, productUnit.beerUnitSecondId,
+        productInPackageResponse);
   }
 
   void updateProductMap() {
@@ -265,7 +268,36 @@ class PackageDataResponse extends PackageDetail {
       if (productUnit == null) {
         return;
       }
-      productMap[productUnit.beerUnitSecondId] = element;
+      addElementToMap(productUnit.beer, productUnit.beerUnitSecondId, element);
+    });
+  }
+
+  bool isMapContainProductUnit(BeerUnit productUnit) {
+    return productMap.containsKey(productUnit.beer) &&
+        productMap[productUnit.beer]!.containsKey(productUnit.beerUnitSecondId);
+  }
+
+  void addElementToMap(String productID, String productUnitID,
+      ProductInPackageResponse element) {
+    if (!productMap.containsKey(productID)) {
+      productMap[productID] = HashMap();
+    }
+    productMap[productID]?[productUnitID] = element;
+  }
+
+  ProductInPackageResponse? removeElementToMap(
+      String productID, String productUnitID) {
+    return productMap[productID]?.remove(productUnitID);
+  }
+
+  void cleanEmptyProduct() {
+    items.removeWhere((element) {
+      final isEmpty = element.numberUnit <= 0;
+      if (isEmpty) {
+        removeElementToMap(
+            element.productSecondId, element.productUnitSecondId);
+      }
+      return isEmpty;
     });
   }
 
@@ -445,7 +477,7 @@ class ProductInPackageResponse extends UserPackage {
     return _data;
   }
 
-  String get get_show_name => beerSubmitData?.get_show_name ?? 'Removed';
+  String get get_show_name => beerSubmitData?.name ?? 'Removed';
 
   double get priceDiscount =>
       (price * (1 - discountPercent / 100) - discountAmount);

@@ -75,6 +75,29 @@ class PaymentTransaction extends BaseEntity {
     return _data;
   }
 
+  String get getCategoryName =>
+      category?.replaceAll('SELLING', 'Bán hàng') ?? 'unknow';
+
+  String get getNote {
+    if (note?.startsWith('DONE-') == true ||
+        note?.startsWith('PAYMENT-') == true) {
+      final orderID = note
+              ?.replaceAll('DONE-', 'Hoàn thành đơn: ')
+              .replaceAll('PAYMENT-', 'Thanh toán đơn: ') ??
+          'unknow';
+      return orderID.split('-')[0];
+    }
+    return note ?? 'unknow';
+  }
+
+  String get getSourceMoney {
+    if (note?.startsWith('DONE-') == true ||
+        note?.startsWith('PAYMENT-') == true) {
+      return money_source ?? 'Tiền mặt';
+    }
+    return money_source ?? 'unknow';
+  }
+
   PaymentTransaction clone() {
     return PaymentTransaction.fromJson(toJson());
   }

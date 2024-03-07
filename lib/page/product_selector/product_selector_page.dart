@@ -204,16 +204,16 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                             onTap: addNewProduct,
                             child: HighBorderContainer(
                               isHight: true,
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 11, horizontal: 18),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   LoadSvg(assetPath: 'svg/plus_large.svg'),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Text(
+                                  const Text(
                                     'Tạo sản phẩm',
                                     style: headStyleSemiLargeHigh500,
                                   ),
@@ -255,6 +255,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                           );
                           return;
                         }
+                        widget.packageDataResponse?.cleanEmptyProduct();
                         widget.onUpdated(widget.packageDataResponse!);
                         Navigator.pop(context);
                       },
@@ -360,9 +361,9 @@ class __BodyContenStateState extends State<_BodyContenState> {
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final item = listProduct[index];
-        final productUnitID = item.listUnit?.firstOrNull?.beerUnitSecondId;
+        final productID = item.beerSecondID;
         return GestureDetector(
-          key: ValueKey(productUnitID),
+          key: ValueKey(productID),
           onTap: () {
             widget.showProduct(item.clone());
           },
@@ -424,14 +425,10 @@ class __BodyContenStateState extends State<_BodyContenState> {
           );
         }
         BeerSubmitData productData = listProduct[index];
-        final productUnitID =
-            productData.listUnit?.firstOrNull?.beerUnitSecondId;
+        final productID = productData.beerSecondID;
         return ProductSelectorItem(
-          key: ValueKey(productUnitID),
+          key: ValueKey(productID),
           productData: productData,
-          productInPackageResponse: productUnitID == null
-              ? null
-              : widget.packageDataResponse!.productMap[productUnitID],
           updateNumberUnit: (productInPackageResponse) {
             widget.packageDataResponse!
                 .addOrUpdateProduct(productInPackageResponse);
@@ -441,6 +438,7 @@ class __BodyContenStateState extends State<_BodyContenState> {
             widget.updateProduct(p);
             setState(() {});
           },
+          productInPackage: widget.packageDataResponse!.productMap[productID],
         );
       },
     );

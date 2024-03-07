@@ -105,7 +105,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                     if (data.category != null)
                       _TransactionDetail(
                         header: 'Mục đích',
-                        info: data.category!,
+                        info: data.getCategoryName,
                       ),
                     if (data.money_source != null) ...[
                       const SizedBox(
@@ -113,7 +113,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                       ),
                       _TransactionDetail(
                         header: 'Nguồn tiền',
-                        info: data.money_source!,
+                        info: data.getSourceMoney,
                       ),
                     ],
                     if (data.note != null) ...[
@@ -122,7 +122,7 @@ class _ModalTransactionDetailState extends State<ModalTransactionDetail> {
                       ),
                       _TransactionDetail(
                         header: 'Ghi chú',
-                        info: data.note!,
+                        info: data.getNote,
                       ),
                     ]
                   ],

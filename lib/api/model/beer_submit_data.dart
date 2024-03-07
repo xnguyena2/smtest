@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/product_unit_cat_pattern.dart';
 import 'package:sales_management/api/model/result_interface.dart';
+import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/enum_by_name_or_null.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -160,7 +161,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     listUnit = listU;
   }
 
-  String get get_show_name => name;
+  String get get_show_name =>
+      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})'.replaceAll('()', '');
 
   void copyImg(BeerSubmitData oldProduct) {
     images.clear();
@@ -192,7 +194,16 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
 
   double get getBuyPrice => listUnit?[0].buyPrice ?? 0;
 
+  set setBuyPrice(double buyPrice) => listUnit?[0].buyPrice = buyPrice;
+
   double get getPrice => listUnit?[0].price ?? 0;
+
+  set setPrice(double price) => listUnit?[0].price = price;
+
+  double get getPromotionPrice => listUnit?[0].promotional_price ?? 0;
+
+  set setPromotionPrice(double promotionPrice) =>
+      listUnit?[0].promotional_price = promotionPrice;
 
   double get getWholesalePrice => listUnit?[0].wholesale_price ?? 0;
 
@@ -203,6 +214,44 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   set setSku(String sku) => listUnit?[0].sku = sku.isEmpty ? null : sku;
 
   String get getUpc => listUnit?[0].upc ?? '';
+
+  set setUPC(String upc) => listUnit?[0].upc = upc.isEmpty ? null : upc;
+
+  int get getInventory => listUnit?[0].inventory_number ?? 0;
+
+  set setInventory(int number) => listUnit?[0].inventory_number = number;
+
+  bool get isEnableWarehouse => listUnit?[0].enable_warehouse ?? false;
+
+  String get getRangePrice {
+    if (listUnit == null || listUnit!.isEmpty) {
+      return '0';
+    }
+    double min = 0;
+    double max = 0;
+    for (final element in listUnit!) {
+      if (element.isHide || !element.isAvariable) {
+        continue;
+      }
+      final currentPrice = element.realPrice;
+      if (min == 0) {
+        min = currentPrice;
+      }
+      if (max == 0) {
+        max = currentPrice;
+      }
+      if (currentPrice > max) {
+        max = currentPrice;
+      }
+      if (currentPrice < min) {
+        min = currentPrice;
+      }
+    }
+    if (min == max) {
+      return MoneyFormater.format(min);
+    }
+    return '${MoneyFormater.format(min)} - ${MoneyFormater.format(max)}';
+  }
 
   void setWholesalePrice(double price) {
     listUnit?[0].wholesale_price = price;
@@ -250,6 +299,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       return;
     }
     status = 'SOLD_OUT';
+  }
+
+  void switcEnableWareHouse(bool isEnable) {
+    listUnit?[0].enable_warehouse = isEnable;
   }
 }
 
@@ -356,6 +409,7 @@ class BeerUnit {
     required this.promotional_price,
     required this.inventory_number,
     required this.visible,
+    required this.enable_warehouse,
   }) {
     correctPrice();
     correctStatus();
@@ -403,7 +457,7 @@ class BeerUnit {
   late String? sku;
 
   @HiveField(14)
-  late final String? upc;
+  late String? upc;
 
   @HiveField(15)
   late double? promotional_price;
@@ -413,6 +467,9 @@ class BeerUnit {
 
   @HiveField(17)
   late bool? visible;
+
+  @HiveField(18)
+  late bool? enable_warehouse;
 
   factory BeerUnit.empty(
       String groupID, String productID, String name, String? productUnitid) {
@@ -435,6 +492,7 @@ class BeerUnit {
       promotional_price: 0,
       inventory_number: 0,
       visible: true,
+      enable_warehouse: false,
     );
   }
 
@@ -459,6 +517,9 @@ class BeerUnit {
     promotional_price = json['promotional_price'] as double;
     inventory_number = json['inventory_number'] as int;
     visible = json['visible'] == null ? true : json['visible'] as bool;
+    enable_warehouse = json['enable_warehouse'] == null
+        ? false
+        : json['enable_warehouse'] as bool;
 
     correctPrice();
     correctStatus();
@@ -484,13 +545,21 @@ class BeerUnit {
     _data['promotional_price'] = promotional_price;
     _data['inventory_number'] = inventory_number;
     _data['visible'] = visible;
+    _data['enable_warehouse'] = enable_warehouse;
     return _data;
   }
 
-  late double realPrice = 0;
+  double get realPrice {
+    if (promotional_price == null || promotional_price == 0) {
+      return _realPrice;
+    }
+    return promotional_price!;
+  }
+
+  double _realPrice = 0;
 
   void correctPrice() {
-    realPrice = price * (1 - discount / 100);
+    _realPrice = price * (1 - discount / 100);
   }
 
   BeerUnit updatename(String name) {

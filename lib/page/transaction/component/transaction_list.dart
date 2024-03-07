@@ -47,6 +47,7 @@ class _ListTransactionState extends State<ListTransaction> {
       children: data
           .map(
             (e) => ExpansionPanel(
+              backgroundColor: White,
               isExpanded: expanedStatus[e.timeStamp] ?? true,
               canTapOnHeader: true,
               headerBuilder: (context, isExpanded) {
@@ -78,10 +79,14 @@ class _ListTransactionState extends State<ListTransaction> {
                 },
                 scrollDirection: Axis.vertical,
                 itemCount: e.transactions.length,
-                separatorBuilder: (BuildContext context, int index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: const Divider(
-                    color: Black40,
+                separatorBuilder: (BuildContext context, int index) =>
+                    const ColoredBox(
+                  color: White,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(
+                      color: Black40,
+                    ),
                   ),
                 ),
               ),

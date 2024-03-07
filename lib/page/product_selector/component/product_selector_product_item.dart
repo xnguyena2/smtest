@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
+import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/page/product_info/api/product_info_api.dart';
+import 'package:sales_management/page/product_selector/component/modal_select_product_unit.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
@@ -14,15 +16,17 @@ import 'package:sales_management/utils/typedef.dart';
 
 class ProductSelectorItem extends StatefulWidget {
   final BeerSubmitData productData;
-  final ProductInPackageResponse? productInPackageResponse;
   final VoidCallbackArg<ProductInPackageResponse> updateNumberUnit;
   final VoidCallbackArg<BeerSubmitData> onChanged;
+  final Map<String, ProductInPackageResponse>? productInPackage;
+  final bool isProductSelector;
   const ProductSelectorItem({
     super.key,
     required this.productData,
-    required this.productInPackageResponse,
     required this.updateNumberUnit,
     required this.onChanged,
+    required this.productInPackage,
+    this.isProductSelector = true,
   });
 
   @override
@@ -32,26 +36,57 @@ class ProductSelectorItem extends StatefulWidget {
 class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late final String? imgUrl;
   late final String name;
-  late final double price;
+  late final String rangePrice;
   bool processing = false;
-  late BeerUnit? unit;
-  late ProductInPackageResponse? productInPackage;
-  late int unitNo;
+  late List<BeerUnit>? listUnit;
+  late Map<String, ProductInPackageResponse>? mapProductInPackage;
+  ProductInPackageResponse? productInPackage;
+  int unitNo = 0;
   final TextEditingController txtController = TextEditingController();
+  final FocusNode txtFocus = FocusNode();
   late bool isAvariable;
+  late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    txtController.dispose();
+    txtFocus.dispose();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    unit = widget.productData.listUnit?.firstOrNull;
+    listUnit = widget.productData.listUnit;
     imgUrl = widget.productData.getFristLargeImg;
-    name = widget.productData.get_show_name;
-    price = widget.productData.getRealPrice;
-    productInPackage = widget.productInPackageResponse;
-    unitNo = productInPackage?.numberUnit ?? 0;
+    name = widget.productData.name;
+    rangePrice = widget.productData.getRangePrice;
+    mapProductInPackage = widget.productInPackage;
+    if (widget.isProductSelector && !widget.productData.isHaveMultiCategory) {
+      productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
+    }
+    mapProductInPackage?.values.forEach((element) {
+      unitNo += element.numberUnit;
+    });
     txtController.text = unitNo.toString();
     isAvariable = widget.productData.isAvariable;
+
+    print(unitNo);
+  }
+
+  void setNumber() {
+    widget.updateNumberUnit(productInPackage!);
+    unitNo = productInPackage!.numberUnit;
+    txtController.text = unitNo.toString();
+  }
+
+  void removeIfEmpty() {
+    if (productInPackage!.numberUnit <= 0) {
+      productInPackage!.numberUnit = 1; //set to 1 so can run remove func
+      removeItemToPackage();
+    }
   }
 
   void removeItemToPackage() {
@@ -59,9 +94,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       return;
     }
     productInPackage!.numberUnit--;
-    widget.updateNumberUnit(productInPackage!);
-    unitNo = productInPackage!.numberUnit;
-    txtController.text = unitNo.toString();
+    setNumber();
     setState(() {});
   }
 
@@ -69,18 +102,23 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     productInPackage ??= ProductInPackageResponse.fromProductData(
         beerSubmitData: widget.productData);
     productInPackage!.numberUnit++;
-    widget.updateNumberUnit(productInPackage!);
-    unitNo = productInPackage!.numberUnit;
-    txtController.text = unitNo.toString();
+    setNumber();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    showSelectUnitModal() => showDefaultModal(
+          context: context,
+          content: ModalSelectProductUnitCategory(
+            onDone: (category) {},
+            product: widget.productData,
+          ),
+        );
     return Stack(
       children: [
         GestureDetector(
-          onTap: addItemToPackage,
+          onTap: isHaveMultiCategory ? showSelectUnitModal : addItemToPackage,
           child: Container(
             decoration: BoxDecoration(
               color: White,
@@ -98,7 +136,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                unitNo > 0
+                unitNo > 0 || txtFocus.hasFocus
                     ? Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 2, vertical: 6),
@@ -113,16 +151,23 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                           children: [
                             GestureDetector(
                               child: LoadSvg(assetPath: 'svg/minus.svg'),
-                              onTap: () {
-                                removeItemToPackage();
-                              },
+                              onTap: isHaveMultiCategory
+                                  ? showSelectUnitModal
+                                  : removeItemToPackage,
                             ),
                             SizedBox(
                               width: 18,
                               child: TextFormField(
                                 controller: txtController,
+                                focusNode: txtFocus,
+                                readOnly: isHaveMultiCategory,
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.done,
+                                onTapOutside: (event) {
+                                  txtFocus.unfocus();
+                                  removeIfEmpty();
+                                  setState(() {});
+                                },
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
@@ -134,11 +179,11 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                                   }
                                   productInPackage!.numberUnit =
                                       int.tryParse(value) ?? 0;
-                                  if (productInPackage!.numberUnit <= 0) {
-                                    productInPackage!.numberUnit =
-                                        1; //set to 1 so can run remove func
-                                    removeItemToPackage();
-                                  }
+                                  // if (productInPackage!.numberUnit <= 0) {
+                                  //   productInPackage!.numberUnit =
+                                  //       1; //set to 1 so can run remove func
+                                  //   removeItemToPackage();
+                                  // }
                                 },
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -148,9 +193,9 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                addItemToPackage();
-                              },
+                              onTap: isHaveMultiCategory
+                                  ? showSelectUnitModal
+                                  : addItemToPackage,
                               child: LoadSvg(
                                 assetPath: 'svg/plus.svg',
                                 color: MainHighColor,
@@ -159,7 +204,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                           ],
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(8),
@@ -183,7 +228,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                MoneyFormater.format(price),
+                                rangePrice,
                                 style: subInfoStyLarge600,
                               ),
                             ],

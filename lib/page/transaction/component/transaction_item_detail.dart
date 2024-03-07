@@ -43,10 +43,10 @@ class TransactionDetail extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  data.category ?? 'unknow',
+                  data.getCategoryName,
                   style: headStyleBigMediumBlackLight,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4,
                 ),
                 Text(
@@ -64,11 +64,11 @@ class TransactionDetail extends StatelessWidget {
                   style:
                       isIncome ? customerNameBigHigh600 : customerNameBigRed600,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4,
                 ),
                 Text(
-                  data.money_source ?? 'unknow',
+                  data.getSourceMoney,
                   style: subInfoStyLargeLigh400,
                 ),
               ],
