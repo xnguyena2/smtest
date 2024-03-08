@@ -162,7 +162,9 @@ class _InputFiledWithHeaderState extends State<InputFiledWithHeader> {
                                   maxWidth: 20,
                                   maxHeight: 20,
                                 ),
-                                suffixIcon: widget.showClose && !isError
+                                suffixIcon: !widget.isDisable &&
+                                        widget.showClose &&
+                                        !isError
                                     ? GestureDetector(
                                         onTap: () {
                                           txtControler.text = '';

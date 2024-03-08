@@ -22,9 +22,11 @@ import 'package:sales_management/utils/utils.dart';
 
 class MainProductInfo extends StatefulWidget {
   final BeerSubmitData product;
+  final bool isForProductUnit;
   const MainProductInfo({
     super.key,
     required this.product,
+    this.isForProductUnit = false,
   });
 
   @override
@@ -32,6 +34,7 @@ class MainProductInfo extends StatefulWidget {
 }
 
 class _MainProductInfoState extends State<MainProductInfo> {
+  late final bool isForProductUnit = widget.isForProductUnit;
   late final BeerSubmitData product;
   late Future<BootStrapData?> loadConfig;
   BootStrapData? config;
@@ -68,7 +71,9 @@ class _MainProductInfoState extends State<MainProductInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputFiledWithHeader(
-              initValue: product.name,
+              initValue:
+                  isForProductUnit ? product.get_show_name : product.name,
+              isDisable: isForProductUnit,
               header: 'Tên sản phẩm',
               hint: 'Ví dụ: Mỳ hảo hảo',
               isImportance: true,
@@ -161,84 +166,86 @@ class _MainProductInfoState extends State<MainProductInfo> {
                 ],
               ),
             ],
-            SizedBox(
-              height: 21,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Danh mục(${listCateSelected.length})',
-                  style: headStyleSemiLarge500,
-                ),
-                SizedBox(
-                  height: 7,
-                ),
-                SizedBox(
-                  height: 42,
-                  child: CategorySelector(
-                    listCategory: listCategory,
-                    onChanged: (listSelected) {
-                      listCateSelected = listSelected;
-                      product.updateListCat(listCateSelected);
-                      setState(() {});
-                    },
-                    itemsSelected: listCateSelected,
-                    isFlip: true,
-                    firstWidget: LoadSvg(
-                      assetPath: 'svg/menu.svg',
-                    ),
-                    multiSelected: true,
-                    lastWidget: GestureDetector(
-                      onTap: () {
-                        showDefaultModal(
-                          context: context,
-                          content: ModalCreateCategory(
-                              onDone: (category) {
-                                listCategory.add(category.category);
-                                config?.deviceConfig?.categorys =
-                                    jsonEncode(listCategory);
-                                if (config?.deviceConfig != null) {
-                                  udpateConfig(config!.deviceConfig!)
-                                      .then((value) {
-                                    LocalStorage.setBootstrapData(config);
-                                    showNotification(
-                                        context, 'Thêm danh mục thành công!');
-                                  }).onError((error, stackTrace) {
-                                    listCategory.remove(category.category);
-                                    config?.deviceConfig?.categorys =
-                                        jsonEncode(listCategory);
-                                    showAlert(
-                                        context, 'Không thể thêm danh mục!!');
-                                  });
-                                }
-                                setState(() {});
-                              },
-                              config: CategoryContainer(category: '')),
-                        );
+            if (!isForProductUnit) ...[
+              SizedBox(
+                height: 21,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Danh mục(${listCateSelected.length})',
+                    style: headStyleSemiLarge500,
+                  ),
+                  SizedBox(
+                    height: 7,
+                  ),
+                  SizedBox(
+                    height: 42,
+                    child: CategorySelector(
+                      listCategory: listCategory,
+                      onChanged: (listSelected) {
+                        listCateSelected = listSelected;
+                        product.updateListCat(listCateSelected);
+                        setState(() {});
                       },
-                      child: HighBorderContainer(
-                        isHight: true,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 11, horizontal: 18),
-                        child: Row(
-                          children: [
-                            LoadSvg(assetPath: 'svg/plus_large.svg'),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Text(
-                              'Tạo danh muc',
-                              style: headStyleSemiLargeHigh500,
-                            ),
-                          ],
+                      itemsSelected: listCateSelected,
+                      isFlip: true,
+                      firstWidget: LoadSvg(
+                        assetPath: 'svg/menu.svg',
+                      ),
+                      multiSelected: true,
+                      lastWidget: GestureDetector(
+                        onTap: () {
+                          showDefaultModal(
+                            context: context,
+                            content: ModalCreateCategory(
+                                onDone: (category) {
+                                  listCategory.add(category.category);
+                                  config?.deviceConfig?.categorys =
+                                      jsonEncode(listCategory);
+                                  if (config?.deviceConfig != null) {
+                                    udpateConfig(config!.deviceConfig!)
+                                        .then((value) {
+                                      LocalStorage.setBootstrapData(config);
+                                      showNotification(context,
+                                          'Thêm danh mục thành công!');
+                                    }).onError((error, stackTrace) {
+                                      listCategory.remove(category.category);
+                                      config?.deviceConfig?.categorys =
+                                          jsonEncode(listCategory);
+                                      showAlert(context,
+                                          'Không thể thêm danh mục!!');
+                                    });
+                                  }
+                                  setState(() {});
+                                },
+                                config: CategoryContainer(category: '')),
+                          );
+                        },
+                        child: HighBorderContainer(
+                          isHight: true,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 11, horizontal: 18),
+                          child: Row(
+                            children: [
+                              LoadSvg(assetPath: 'svg/plus_large.svg'),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Text(
+                                'Tạo danh muc',
+                                style: headStyleSemiLargeHigh500,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              ),
+            ],
           ],
         ),
       ),

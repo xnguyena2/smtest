@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
@@ -51,26 +52,26 @@ class _StoreManagementState extends State<StoreManagement> {
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Theo dõi số lượng tồn kho',
-                style: customerNameBig400,
-              ),
-              SwitchCircleBtn(
-                initStatus: widget.product.isEnableWarehouse,
-                onChange: (bool) {
-                  widget.product.switcEnableWareHouse(bool);
-                  setState(() {});
-                },
-              )
-            ],
-          ),
-        ),
         if (!isHaveMultiCategory) ...[
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Theo dõi số lượng tồn kho',
+                  style: customerNameBig400,
+                ),
+                SwitchCircleBtn(
+                  initStatus: widget.product.isEnableWarehouse,
+                  onChange: (bool) {
+                    widget.product.switcEnableWareHouse(bool);
+                    setState(() {});
+                  },
+                )
+              ],
+            ),
+          ),
           SizedBox(
             height: 4,
           ),
@@ -104,10 +105,10 @@ class _StoreManagementState extends State<StoreManagement> {
               ),
             ],
           ),
-          if (widget.product.isEnableWarehouse) ...[
-            const SizedBox(
-              height: 10,
-            ),
+          const SizedBox(
+            height: 10,
+          ),
+          Stack(children: [
             InputFiledWithHeader(
               isNumberOnly: true,
               isMoneyFormat: true,
@@ -119,7 +120,16 @@ class _StoreManagementState extends State<StoreManagement> {
                 widget.product.setInventory = tryParseNumber(value);
               },
             ),
-          ],
+            if (!widget.product.isEnableWarehouse)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: White70,
+                    borderRadius: defaultBorderRadius,
+                  ),
+                ),
+              )
+          ]),
         ],
       ],
     ));

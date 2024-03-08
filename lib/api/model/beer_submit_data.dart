@@ -111,7 +111,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       category: category,
       status: status,
       detail: detail,
-      images: images,
+      images: images
+          .where((element) => element.tag == unit?.beerUnitSecondId)
+          .toList(),
       listUnit: unit != null ? [unit] : null,
       meta_search: meta_search,
       list_categorys: list_categorys,
@@ -340,6 +342,20 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   void switcEnableWareHouse(bool isEnable) {
     firstOrNull?.enable_warehouse = isEnable;
   }
+
+  BeerUnit? updateUnit(BeerUnit? unit) {
+    if (unit == null) {
+      return null;
+    }
+    final index = listUnit?.indexWhere(
+            (element) => element.beerUnitSecondId == unit.beerUnitSecondId) ??
+        -1;
+    if (index < 0) {
+      return null;
+    }
+    listUnit![index] = unit;
+    return unit;
+  }
 }
 
 @HiveType(typeId: 4)
@@ -368,7 +384,7 @@ class Images {
   late final String imgid;
 
   @HiveField(4)
-  late final String? tag;
+  late String? tag;
 
   @HiveField(5)
   late final String thumbnail;
@@ -390,7 +406,7 @@ class Images {
     createat = json['createat'];
     id = json['id'];
     imgid = json['imgid'];
-    tag = null;
+    tag = json['tag'];
     thumbnail = json['thumbnail'];
     medium = json['medium'];
     large = json['large'];
@@ -622,6 +638,10 @@ class BeerUnit {
     price = beerUnit.price;
     buyPrice = beerUnit.buyPrice;
     inventory_number = beerUnit.inventory_number;
+  }
+
+  BeerUnit clone() {
+    return BeerUnit.fromJson(toJson());
   }
 
   bool get isHide => visible == false;

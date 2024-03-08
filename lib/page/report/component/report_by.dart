@@ -536,14 +536,14 @@ class ReportByProductAsTable extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '${e.product_name}',
+                                  e.product_name ?? 'Đã xóa',
                                   style: headStyleMedium,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                if (e.product_unit_name?.isNotEmpty == true)
-                                  Text(
-                                    '${e.product_unit_name}',
-                                    style: subStyleMediumNormalLight,
-                                  ),
+                                Text(
+                                  e.product_unit_name ?? 'Đã xóa',
+                                  style: subStyleMediumNormalLight,
+                                ),
                               ],
                             )),
                             DataCell(

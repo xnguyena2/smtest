@@ -29,8 +29,11 @@ class _Rounded_ImgState extends State<Rounded_Img> {
     super.initState();
     isUploading = widget.images.upload == true && widget.images.content != null;
     if (isUploading) {
-      uploadFile('/beer/admin/${groupID}/${widget.images.category}/img/upload',
-              widget.images.content!,
+      final tag = widget.images.tag;
+      final path = tag == null
+          ? '/beer/admin/${groupID}/${widget.images.category}/img/upload'
+          : '/beer/admin/${groupID}/${widget.images.category}/$tag/img/upload';
+      uploadFile(path, widget.images.content!,
               onUploadProgress: onUploadProgress)
           .then((value) {
         value.content = widget.images.content;

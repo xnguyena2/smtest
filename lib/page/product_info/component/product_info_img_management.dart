@@ -8,9 +8,11 @@ import 'package:sales_management/utils/svg_loader.dart';
 
 class ImgManagement extends StatefulWidget {
   final BeerSubmitData product;
+  final bool isForProductUnit;
   const ImgManagement({
     super.key,
     required this.product,
+    this.isForProductUnit = false,
   });
 
   @override
@@ -20,6 +22,7 @@ class ImgManagement extends StatefulWidget {
 class _ImgManagementState extends State<ImgManagement> {
   late final BeerSubmitData product;
   late final List<Images> list_image;
+  late final unitID = widget.product.firstOrNull?.beerUnitSecondId;
 
   @override
   void initState() {
@@ -33,7 +36,7 @@ class _ImgManagementState extends State<ImgManagement> {
   Widget build(BuildContext context) {
     final showText = list_image.isEmpty;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
       height: 127,
       child: ListView.separated(
           scrollDirection: Axis.horizontal,
@@ -64,10 +67,10 @@ class _ImgManagementState extends State<ImgManagement> {
                         children: [
                           LoadSvg(assetPath: 'svg/add_picture.svg'),
                           if (showText) ...[
-                            SizedBox(
+                            const SizedBox(
                               width: 12,
                             ),
-                            Text(
+                            const Text(
                               'Tải ảnh lên',
                               style: headStyleXLargeHigh,
                             ),
@@ -99,10 +102,10 @@ class _ImgManagementState extends State<ImgManagement> {
                         children: [
                           LoadSvg(assetPath: 'svg/camera_add.svg'),
                           if (showText) ...[
-                            SizedBox(
+                            const SizedBox(
                               width: 12,
                             ),
-                            Text(
+                            const Text(
                               'Chụp ảnh   ',
                               style: headStyleXLargeHigh,
                             ),
@@ -115,6 +118,9 @@ class _ImgManagementState extends State<ImgManagement> {
               );
             }
             final img = list_image[index - 1];
+            if (widget.isForProductUnit) {
+              img.tag = product.firstOrNull?.beerUnitSecondId;
+            }
             return Rounded_Img(
               images: img,
               onUploadDone: (images) {
@@ -127,7 +133,7 @@ class _ImgManagementState extends State<ImgManagement> {
               },
             );
           },
-          separatorBuilder: (context, index) => SizedBox(
+          separatorBuilder: (context, index) => const SizedBox(
                 width: 10,
               ),
           itemCount: list_image.length + 1),

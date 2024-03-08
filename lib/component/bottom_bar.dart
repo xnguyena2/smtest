@@ -42,7 +42,7 @@ class BottomBar extends StatelessWidget {
     return Container(
       height: 60 + bottomPadding,
       padding: EdgeInsets.only(right: 15, left: 15, bottom: bottomPadding),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: White,
         boxShadow: [wholeShadow],
       ),
