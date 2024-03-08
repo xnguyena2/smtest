@@ -13,20 +13,27 @@ import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:sales_management/utils/utils.dart';
+
+typedef ReturnCallbac<R> = R Function();
 
 class ProductSelectorItem extends StatefulWidget {
   final BeerSubmitData productData;
   final VoidCallbackArg<ProductInPackageResponse> updateNumberUnit;
-  final VoidCallbackArg<BeerSubmitData> onChanged;
-  final Map<String, ProductInPackageResponse>? productInPackage;
+  final VoidCallbackArg<List<ProductInPackageResponse>>? updateListNumberUnit;
+  final VoidCallbackArg<BeerSubmitData>? onChanged;
+  final Map<String, ProductInPackageResponse>? mapProductInPackage;
   final bool isProductSelector;
+  final ReturnCallbackAsync<bool>? switchToAvariable;
   const ProductSelectorItem({
     super.key,
     required this.productData,
     required this.updateNumberUnit,
     required this.onChanged,
-    required this.productInPackage,
+    required this.mapProductInPackage,
     this.isProductSelector = true,
+    this.switchToAvariable,
+    this.updateListNumberUnit,
   });
 
   @override
@@ -38,14 +45,200 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late final String name;
   late final String rangePrice;
   bool processing = false;
-  late List<BeerUnit>? listUnit;
-  late Map<String, ProductInPackageResponse>? mapProductInPackage;
+  late Map<String, ProductInPackageResponse>? mapProductInPackage =
+      widget.mapProductInPackage;
   ProductInPackageResponse? productInPackage;
   int unitNo = 0;
+  late bool isAvariable;
+  bool isNullUnit = false;
+  late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+  late final bool isProductSelector = widget.isProductSelector;
+
+  Key uiKey = UniqueKey();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (!isProductSelector) {
+      isNullUnit = widget.productData.firstOrNull == null;
+    }
+    name = isProductSelector
+        ? widget.productData.name
+        : widget.productData.firstOrNull?.name ?? 'Null';
+    isAvariable = isProductSelector
+        ? widget.productData.isAvariable
+        : widget.productData.firstOrNull?.isAvariable ?? false;
+    imgUrl = isProductSelector
+        ? widget.productData.getFristLargeImg
+        : widget.productData.getUnitFristLargeImg;
+
+    productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
+    rangePrice = widget.productData.getRangePrice;
+    updatePriceAndNoUnit();
+  }
+
+  void updatePriceAndNoUnit() {
+    unitNo = 0;
+    mapProductInPackage?.values.forEach((element) {
+      unitNo += element.numberUnit;
+    });
+  }
+
+  int setNumber() {
+    if (productInPackage == null) {
+      unitNo = 0;
+      return unitNo;
+    }
+    widget.updateNumberUnit(productInPackage!);
+    unitNo = productInPackage!.numberUnit;
+    return unitNo;
+  }
+
+  int removeIfEmpty() {
+    if (productInPackage!.numberUnit <= 0) {
+      productInPackage!.numberUnit = 1; //set to 1 so can run remove func
+      removeItemToPackage();
+    }
+    return unitNo;
+  }
+
+  int removeItemToPackage() {
+    if (productInPackage == null || productInPackage!.numberUnit < 1) {
+      return 0;
+    }
+    productInPackage!.numberUnit--;
+    return setNumber();
+  }
+
+  int addItemToPackage() {
+    productInPackage ??= ProductInPackageResponse.fromProductData(
+        beerSubmitData: widget.productData);
+    productInPackage!.numberUnit++;
+    return setNumber();
+  }
+
+  void setDirectUnitNum(String numTxt) {
+    if (productInPackage == null) {
+      return;
+    }
+    productInPackage!.numberUnit = tryParseNumber(numTxt);
+    setNumber();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _switchToAvariable() async {
+      if (isNullUnit || !isProductSelector) {
+        return false;
+      }
+      await showDefaultDialog(
+          context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
+          onOk: () {
+        widget.productData.changeStatus(true);
+        LoadingOverlayAlt.of(context).show();
+        createProduct(widget.productData).then((value) {
+          LoadingOverlayAlt.of(context).hide();
+          isAvariable = widget.productData.isAvariable;
+          widget.onChanged?.call(widget.productData);
+        }).onError((error, stackTrace) {
+          LoadingOverlayAlt.of(context).hide();
+          widget.productData.changeStatus(false);
+          showAlert(
+              context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
+        });
+      }, onCancel: () {});
+      return isAvariable;
+    }
+
+    showSelectUnitModal() => showDefaultModal(
+          context: context,
+          content: ModalSelectProductUnitCategory(
+            product: widget.productData,
+            mapProductInPackage: mapProductInPackage,
+            swithAvariable: (b) async {
+              b.changeUnitStatus(b.firstOrNull, true);
+              return _switchToAvariable();
+            },
+            onDone: (Map<String, ProductInPackageResponse> maps) {
+              mapProductInPackage = maps;
+              updatePriceAndNoUnit();
+              uiKey = UniqueKey();
+              widget.updateListNumberUnit?.call(maps.values.toList());
+              setState(() {});
+            },
+          ),
+        );
+
+    return ProductSelectorItemUI(
+      key: uiKey,
+      name: name,
+      imgUrl: imgUrl,
+      rangePrice: rangePrice,
+      unitNo: unitNo,
+      addItemToPackage: addItemToPackage,
+      isHaveMultiCategory: isHaveMultiCategory,
+      removeItemToPackage: removeItemToPackage,
+      switchToAvariable: widget.switchToAvariable ?? _switchToAvariable,
+      onTxtChanged: (value) {
+        setDirectUnitNum(value);
+      },
+      onTapOutside: removeIfEmpty,
+      isAvariable: isAvariable,
+      isNullUnit: isNullUnit,
+      showSelectUnitModal: showSelectUnitModal,
+    );
+  }
+}
+
+class ProductSelectorItemUI extends StatefulWidget {
+  final int unitNo;
+  final String? imgUrl;
+  final String name;
+  final String rangePrice;
+  final ReturnCallbac<int> addItemToPackage;
+  final ReturnCallbac<int> removeItemToPackage;
+  final ReturnCallbackAsync<bool> switchToAvariable;
+  final VoidCallback showSelectUnitModal;
+  final VoidCallbackArg<String> onTxtChanged;
+  final ReturnCallbac<int> onTapOutside;
+  final bool isHaveMultiCategory;
+  final bool isAvariable;
+  final bool isNullUnit;
+
+  const ProductSelectorItemUI({
+    super.key,
+    required this.unitNo,
+    required this.imgUrl,
+    required this.name,
+    required this.rangePrice,
+    required this.addItemToPackage,
+    required this.isHaveMultiCategory,
+    required this.removeItemToPackage,
+    required this.switchToAvariable,
+    required this.onTxtChanged,
+    required this.onTapOutside,
+    required this.isAvariable,
+    required this.isNullUnit,
+    required this.showSelectUnitModal,
+  });
+
+  @override
+  State<ProductSelectorItemUI> createState() => _ProductSelectorItemUIState();
+}
+
+class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
   final TextEditingController txtController = TextEditingController();
   final FocusNode txtFocus = FocusNode();
-  late bool isAvariable;
-  late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+  late int unitNo = widget.unitNo;
+  late bool isAvariable = widget.isAvariable;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    txtController.text = unitNo.toString();
+  }
 
   @override
   void dispose() {
@@ -55,70 +248,34 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     txtFocus.dispose();
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    listUnit = widget.productData.listUnit;
-    imgUrl = widget.productData.getFristLargeImg;
-    name = widget.productData.name;
-    rangePrice = widget.productData.getRangePrice;
-    mapProductInPackage = widget.productInPackage;
-    if (widget.isProductSelector && !widget.productData.isHaveMultiCategory) {
-      productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
-    }
-    mapProductInPackage?.values.forEach((element) {
-      unitNo += element.numberUnit;
-    });
-    txtController.text = unitNo.toString();
-    isAvariable = widget.productData.isAvariable;
+  late final onAddItem = widget.isHaveMultiCategory
+      ? widget.showSelectUnitModal
+      : () {
+          unitNo = widget.addItemToPackage();
+          txtController.text = unitNo.toString();
+          setState(() {});
+        };
 
-    print(unitNo);
-  }
-
-  void setNumber() {
-    widget.updateNumberUnit(productInPackage!);
-    unitNo = productInPackage!.numberUnit;
-    txtController.text = unitNo.toString();
-  }
+  late final onRemoveItem = widget.isHaveMultiCategory
+      ? widget.showSelectUnitModal
+      : () {
+          unitNo = widget.removeItemToPackage();
+          txtController.text = unitNo.toString();
+          setState(() {});
+        };
 
   void removeIfEmpty() {
-    if (productInPackage!.numberUnit <= 0) {
-      productInPackage!.numberUnit = 1; //set to 1 so can run remove func
-      removeItemToPackage();
-    }
-  }
-
-  void removeItemToPackage() {
-    if (productInPackage == null || productInPackage!.numberUnit < 1) {
-      return;
-    }
-    productInPackage!.numberUnit--;
-    setNumber();
-    setState(() {});
-  }
-
-  void addItemToPackage() {
-    productInPackage ??= ProductInPackageResponse.fromProductData(
-        beerSubmitData: widget.productData);
-    productInPackage!.numberUnit++;
-    setNumber();
+    unitNo = widget.onTapOutside();
+    txtController.text = unitNo.toString();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    showSelectUnitModal() => showDefaultModal(
-          context: context,
-          content: ModalSelectProductUnitCategory(
-            onDone: (category) {},
-            product: widget.productData,
-          ),
-        );
     return Stack(
       children: [
         GestureDetector(
-          onTap: isHaveMultiCategory ? showSelectUnitModal : addItemToPackage,
+          onTap: onAddItem,
           child: Container(
             decoration: BoxDecoration(
               color: White,
@@ -126,11 +283,11 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
               borderRadius: defaultBorderRadius,
               border: unitNo > 0 ? tableHighBorder : defaultBorder,
               image: DecorationImage(
-                image: (imgUrl == null
+                image: (widget.imgUrl == null
                     ? const AssetImage(
                         'assets/images/shop_logo.png',
                       )
-                    : NetworkImage(imgUrl!)) as ImageProvider,
+                    : NetworkImage(widget.imgUrl!)) as ImageProvider,
               ),
             ),
             child: Column(
@@ -150,41 +307,27 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
+                              onTap: onRemoveItem,
                               child: LoadSvg(assetPath: 'svg/minus.svg'),
-                              onTap: isHaveMultiCategory
-                                  ? showSelectUnitModal
-                                  : removeItemToPackage,
                             ),
                             SizedBox(
                               width: 18,
                               child: TextFormField(
                                 controller: txtController,
                                 focusNode: txtFocus,
-                                readOnly: isHaveMultiCategory,
+                                readOnly: widget.isHaveMultiCategory,
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.done,
                                 onTapOutside: (event) {
                                   txtFocus.unfocus();
                                   removeIfEmpty();
-                                  setState(() {});
                                 },
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
                                 maxLines: 1,
                                 style: headStyleLarge,
-                                onChanged: (value) {
-                                  if (productInPackage == null) {
-                                    return;
-                                  }
-                                  productInPackage!.numberUnit =
-                                      int.tryParse(value) ?? 0;
-                                  // if (productInPackage!.numberUnit <= 0) {
-                                  //   productInPackage!.numberUnit =
-                                  //       1; //set to 1 so can run remove func
-                                  //   removeItemToPackage();
-                                  // }
-                                },
+                                onChanged: widget.onTxtChanged,
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   isDense: true,
@@ -193,9 +336,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: isHaveMultiCategory
-                                  ? showSelectUnitModal
-                                  : addItemToPackage,
+                              onTap: onAddItem,
                               child: LoadSvg(
                                 assetPath: 'svg/plus.svg',
                                 color: MainHighColor,
@@ -220,7 +361,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                       child: Column(
                         children: [
                           Text(
-                            name,
+                            widget.name,
                             style: subInfoStyLarge400,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -228,7 +369,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                rangePrice,
+                                widget.rangePrice,
                                 style: subInfoStyLarge600,
                               ),
                             ],
@@ -242,33 +383,21 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
             ),
           ),
         ),
-        if (!isAvariable)
+        if (!isAvariable || widget.isNullUnit)
           Positioned.fill(
             child: GestureDetector(
               onTap: () {
-                showDefaultDialog(context, 'Xác nhận thay đổi!',
-                    'Sản phẩm đã có hàng lại?', onOk: () {
-                  widget.productData.changeStatus(true);
-                  LoadingOverlayAlt.of(context).show();
-                  createProduct(widget.productData).then((value) {
-                    LoadingOverlayAlt.of(context).hide();
-                    isAvariable = widget.productData.isAvariable;
-                    widget.onChanged(widget.productData);
-                    setState(() {});
-                  }).onError((error, stackTrace) {
-                    LoadingOverlayAlt.of(context).hide();
-                    widget.productData.changeStatus(false);
-                    showAlert(context,
-                        'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
-                  });
-                }, onCancel: () {});
+                widget.switchToAvariable().then((value) {
+                  isAvariable = value;
+                  setState(() {});
+                });
               },
               child: Container(
                 decoration: BoxDecoration(
                   color: White70,
                   borderRadius: defaultBorderRadius,
                 ),
-                child: Center(
+                child: const Center(
                   child: Text('Hết hàng'),
                 ),
               ),

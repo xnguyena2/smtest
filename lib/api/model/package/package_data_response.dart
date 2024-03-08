@@ -237,14 +237,21 @@ class PackageDataResponse extends PackageDetail {
     updatePrice();
   }
 
+  void addOrUpdateListProduct(
+      List<ProductInPackageResponse> productInPackageResponse) {
+    productInPackageResponse.forEach((element) {
+      _addProduct(element);
+    });
+    updatePrice();
+  }
+
   void addOrUpdateProduct(ProductInPackageResponse productInPackageResponse) {
     _addProduct(productInPackageResponse);
     updatePrice();
   }
 
   void _addProduct(ProductInPackageResponse productInPackageResponse) {
-    final productUnit =
-        productInPackageResponse.beerSubmitData?.listUnit?.firstOrNull;
+    final productUnit = productInPackageResponse.beerSubmitData?.firstOrNull;
     if (productUnit == null) {
       return;
     }
@@ -264,7 +271,7 @@ class PackageDataResponse extends PackageDetail {
 
   void updateProductMap() {
     items.forEach((element) {
-      final productUnit = element.beerSubmitData?.listUnit?.firstOrNull;
+      final productUnit = element.beerSubmitData?.firstOrNull;
       if (productUnit == null) {
         return;
       }
@@ -457,10 +464,10 @@ class ProductInPackageResponse extends UserPackage {
             createat: null,
             productSecondId: beerSubmitData?.beerSecondID ?? '',
             productUnitSecondId:
-                beerSubmitData?.listUnit?.firstOrNull?.beerUnitSecondId ?? '',
+                beerSubmitData?.firstOrNull?.beerUnitSecondId ?? '',
             numberUnit: 0,
-            price: beerSubmitData?.listUnit?.firstOrNull?.realPrice ?? 0.0,
-            buyPrice: beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0.0,
+            price: beerSubmitData?.firstOrNull?.realPrice ?? 0.0,
+            buyPrice: beerSubmitData?.firstOrNull?.buyPrice ?? 0.0,
             discountAmount: 0.0,
             discountPercent: 0.0);
 
@@ -477,7 +484,13 @@ class ProductInPackageResponse extends UserPackage {
     return _data;
   }
 
-  String get get_show_name => beerSubmitData?.name ?? 'Removed';
+  String get get_show_name {
+    final unitName = beerSubmitData?.firstOrNull?.name;
+    if (unitName == null || unitName.isEmpty) {
+      return beerSubmitData?.name ?? 'Unknow';
+    }
+    return '${beerSubmitData?.name}(${unitName})';
+  }
 
   double get priceDiscount =>
       (price * (1 - discountPercent / 100) - discountAmount);
@@ -485,7 +498,7 @@ class ProductInPackageResponse extends UserPackage {
   double get totalPriceDiscount => numberUnit * priceDiscount;
 
   double get totalCost =>
-      numberUnit * (beerSubmitData?.listUnit?.firstOrNull?.buyPrice ?? 0);
+      numberUnit * (beerSubmitData?.firstOrNull?.buyPrice ?? 0);
 
   String get priceDiscountFormat => MoneyFormater.format(priceDiscount);
 

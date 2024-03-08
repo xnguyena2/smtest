@@ -103,7 +103,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     return BeerSubmitData.fromJson(toJson());
   }
 
-  BeerSubmitData cloneMainData(BeerUnit? unit) {
+  BeerSubmitData cloneMainDataWithoutUnitCatConfig(BeerUnit? unit) {
     return BeerSubmitData(
       groupId: groupId,
       beerSecondID: beerSecondID,
@@ -115,7 +115,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       listUnit: unit != null ? [unit] : null,
       meta_search: meta_search,
       list_categorys: list_categorys,
-      unit_category_config: unit_category_config,
+      unit_category_config: null,
     );
   }
 
@@ -139,7 +139,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   void setUnitCat(ProductUnitCatPattern productUnitCatPattern) {
     this.productUnitCatPattern = productUnitCatPattern;
     listUnit ??= [];
-    final firstUnit = listUnit?.firstOrNull;
+    final firstUnit = firstOrNull;
     final oldUnitID =
         Map.fromEntries(listUnit!.map((e) => MapEntry(e.beerUnitSecondId, e)));
     final newUnitID = productUnitCatPattern.rebuildTree();
@@ -162,7 +162,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   }
 
   String get get_show_name =>
-      '$name(${listUnit?.firstOrNull?.name ?? 'Removed'})'.replaceAll('()', '');
+      '$name(${firstOrNull?.name ?? 'Removed'})'.replaceAll('()', '');
 
   void copyImg(BeerSubmitData oldProduct) {
     images.clear();
@@ -186,42 +186,63 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     category = toListCatTxt(cats);
   }
 
+  List<BeerSubmitData> flatUnit() {
+    return listUnit == null
+        ? [this]
+        : listUnit!.map((e) => cloneMainDataWithoutUnitCatConfig(e)).toList();
+  }
+
+  BeerUnit? get firstOrNull => listUnit?.firstOrNull;
+
   bool get isHaveMultiCategory => productUnitCatPattern.items.isNotEmpty;
 
   String? get getFristLargeImg => images.firstOrNull?.medium;
 
-  double get getRealPrice => listUnit?[0].realPrice ?? 0;
+  double get getRealPrice => firstOrNull?.realPrice ?? 0;
 
-  double get getBuyPrice => listUnit?[0].buyPrice ?? 0;
+  double get getBuyPrice => firstOrNull?.buyPrice ?? 0;
 
-  set setBuyPrice(double buyPrice) => listUnit?[0].buyPrice = buyPrice;
+  set setBuyPrice(double buyPrice) => firstOrNull?.buyPrice = buyPrice;
 
-  double get getPrice => listUnit?[0].price ?? 0;
+  double get getPrice => firstOrNull?.price ?? 0;
 
-  set setPrice(double price) => listUnit?[0].price = price;
+  set setPrice(double price) => firstOrNull?.price = price;
 
-  double get getPromotionPrice => listUnit?[0].promotional_price ?? 0;
+  double get getPromotionPrice => firstOrNull?.promotional_price ?? 0;
 
   set setPromotionPrice(double promotionPrice) =>
-      listUnit?[0].promotional_price = promotionPrice;
+      firstOrNull?.promotional_price = promotionPrice;
 
-  double get getWholesalePrice => listUnit?[0].wholesale_price ?? 0;
+  double get getWholesalePrice => firstOrNull?.wholesale_price ?? 0;
 
-  int get getWholesaleNumber => listUnit?[0].wholesale_number ?? 0;
+  int get getWholesaleNumber => firstOrNull?.wholesale_number ?? 0;
 
-  String get getSku => listUnit?[0].sku ?? '';
+  String get getSku => firstOrNull?.sku ?? '';
 
-  set setSku(String sku) => listUnit?[0].sku = sku.isEmpty ? null : sku;
+  set setSku(String sku) => firstOrNull?.sku = sku.isEmpty ? null : sku;
 
-  String get getUpc => listUnit?[0].upc ?? '';
+  String get getUpc => firstOrNull?.upc ?? '';
 
-  set setUPC(String upc) => listUnit?[0].upc = upc.isEmpty ? null : upc;
+  set setUPC(String upc) => firstOrNull?.upc = upc.isEmpty ? null : upc;
 
-  int get getInventory => listUnit?[0].inventory_number ?? 0;
+  int get getInventory => firstOrNull?.inventory_number ?? 0;
 
-  set setInventory(int number) => listUnit?[0].inventory_number = number;
+  set setInventory(int number) => firstOrNull?.inventory_number = number;
 
-  bool get isEnableWarehouse => listUnit?[0].enable_warehouse ?? false;
+  bool get isEnableWarehouse => firstOrNull?.enable_warehouse ?? false;
+
+  String? get getUnitFristLargeImg {
+    final firstUnitID = firstOrNull?.beerUnitSecondId;
+    if (firstUnitID == null) {
+      return null;
+    }
+    for (var img in images) {
+      if (img.tag != null && img.tag == firstUnitID) {
+        return img.medium;
+      }
+    }
+    return null;
+  }
 
   String get getRangePrice {
     if (listUnit == null || listUnit!.isEmpty) {
@@ -254,16 +275,27 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   }
 
   void setWholesalePrice(double price) {
-    listUnit?[0].wholesale_price = price;
+    firstOrNull?.wholesale_price = price;
   }
 
   void setWholesaleNumber(int no) {
-    listUnit?[0].wholesale_number = no;
+    firstOrNull?.wholesale_number = no;
   }
 
   bool isContainCategory(List<String> listCat) {
     for (String cat in listCat) {
       if (category.contains(cat)) return true;
+    }
+    return false;
+  }
+
+  bool isContainUnitCategory(List<String> listCat) {
+    final unit = firstOrNull;
+    if (unit == null) {
+      return false;
+    }
+    for (String cat in listCat) {
+      if (unit.name.contains(cat)) return true;
     }
     return false;
   }
@@ -301,8 +333,12 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     status = 'SOLD_OUT';
   }
 
+  void changeUnitStatus(BeerUnit? unit, bool st) {
+    unit?.changeAvariable(st);
+  }
+
   void switcEnableWareHouse(bool isEnable) {
-    listUnit?[0].enable_warehouse = isEnable;
+    firstOrNull?.enable_warehouse = isEnable;
   }
 }
 

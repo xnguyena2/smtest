@@ -31,9 +31,9 @@ class PackageResult {
         (previousValue, element) =>
             previousValue +
             element.numberUnit *
-                (element.beerSubmitData.listUnit?[0].price ?? 0) *
+                (element.beerSubmitData.firstOrNull?.price ?? 0) *
                 (1 -
-                    (element.beerSubmitData.listUnit?[0].discount ?? 0) / 100));
+                    (element.beerSubmitData.firstOrNull?.discount ?? 0) / 100));
   }
 
   Map<String, dynamic> toJson() {

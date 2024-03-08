@@ -438,7 +438,12 @@ class __BodyContenStateState extends State<_BodyContenState> {
             widget.updateProduct(p);
             setState(() {});
           },
-          productInPackage: widget.packageDataResponse!.productMap[productID],
+          mapProductInPackage:
+              widget.packageDataResponse!.productMap[productID],
+          updateListNumberUnit: (datas) {
+            widget.packageDataResponse!.addOrUpdateListProduct(datas);
+            context.read<ProductProvider>().justRefresh();
+          },
         );
       },
     );
