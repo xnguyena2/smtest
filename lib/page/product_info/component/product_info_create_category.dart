@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
@@ -11,6 +12,7 @@ import 'package:sales_management/component/textfield/editable_text_form_field.da
 import 'package:sales_management/component/textfield/text_under_line_custome.dart';
 import 'package:sales_management/page/product_info/component/modal_create_product_unit.dart';
 import 'package:sales_management/page/product_info/component/modal_edit_price_warehouse_product_unit.dart';
+import 'package:sales_management/page/product_info/component/product_data_provider.dart';
 import 'package:sales_management/page/product_unit_info/product_unit_info.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -36,6 +38,7 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
           content: ModalCreateProductUnit(
             onDone: (category) {
               widget.product.setUnitCat(category);
+              context.read<ProductDataProvider>().justRefresh();
               setState(() {});
             },
             productUnitCatPattern: widget.product.productUnitCatPattern.clone(),
@@ -126,8 +129,6 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
                 if (item == null) {
                   return SizedBox();
                 }
-                print(
-                    '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}-${item.isAvariable}-${item.isHide}');
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(

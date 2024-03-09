@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
@@ -15,6 +16,7 @@ import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/product_info/api/model/category_container.dart';
 import 'package:sales_management/page/product_info/component/modal_create_category.dart';
 import 'package:sales_management/page/product_info/component/modal_wholesale_setting.dart';
+import 'package:sales_management/page/product_info/component/product_data_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
@@ -41,8 +43,6 @@ class _MainProductInfoState extends State<MainProductInfo> {
   late List<String> listCateSelected = product.list_categorys ?? [];
   late List<String> listCategory;
 
-  late bool isHaveMultiCategory = widget.product.isHaveMultiCategory;
-
   Future<BootStrapData?> getAllProduct() async {
     config = LocalStorage.getBootStrap();
 
@@ -64,6 +64,8 @@ class _MainProductInfoState extends State<MainProductInfo> {
 
   @override
   Widget build(BuildContext context) {
+    bool isHaveMultiCategory =
+        context.watch<ProductDataProvider>().getData.isHaveMultiCategory;
     return FetchAPI<BootStrapData?>(
       future: loadConfig,
       successBuilder: (BootStrapData? data) => DefaultPaddingContainer(

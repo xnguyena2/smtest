@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/component/btn/switch_big_btn.dart';
 import 'package:sales_management/component/btn/switch_circle_btn.dart';
 import 'package:sales_management/component/input_field_with_header.dart';
 import 'package:sales_management/component/layout/default_padding_container.dart';
+import 'package:sales_management/page/product_info/component/product_data_provider.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -25,7 +27,8 @@ class StoreManagement extends StatefulWidget {
 class _StoreManagementState extends State<StoreManagement> {
   @override
   Widget build(BuildContext context) {
-    bool isHaveMultiCategory = widget.product.isHaveMultiCategory;
+    bool isHaveMultiCategory =
+        context.watch<ProductDataProvider>().getData.isHaveMultiCategory;
     return DefaultPaddingContainer(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

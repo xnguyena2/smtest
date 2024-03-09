@@ -263,7 +263,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     double min = 0;
     double max = 0;
     for (final element in listUnit!) {
-      if (element.isHide) {
+      if (element.isHide && isHaveMultiCategory) {
         continue;
       }
       final currentPrice = element.realPrice;
@@ -295,7 +295,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     double minOriginPrice = 0;
     double maxOriginPrice = 0;
     for (final element in listUnit!) {
-      if (element.isHide) {
+      if (element.isHide && isHaveMultiCategory) {
         continue;
       }
       final currentPrice = element.realPrice;
