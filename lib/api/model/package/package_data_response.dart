@@ -491,6 +491,8 @@ class ProductInPackageResponse extends UserPackage {
     return '${beerSubmitData?.name}(${unitName})';
   }
 
+  bool get isTempPackageItem => packageSecondId == 'set at backend';
+
   double get priceDiscount =>
       (price * (1 - discountPercent / 100) - discountAmount);
 

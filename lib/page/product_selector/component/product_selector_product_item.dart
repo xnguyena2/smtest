@@ -58,6 +58,11 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     rangePrice = widget.productData.getRangePrice;
     inventoryNum = widget.productData.getTotalInventory;
     updatePriceAndNoUnit();
+
+    //if it alredy save in server mean inventory alredy sub
+    if (productInPackage?.isTempPackageItem == false) {
+      inventoryNum += unitNo;
+    }
   }
 
   void updatePriceAndNoUnit() {
