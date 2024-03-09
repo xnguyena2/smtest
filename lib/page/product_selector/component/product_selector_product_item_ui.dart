@@ -115,7 +115,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 2, vertical: 6),
                         margin:
-                            const EdgeInsets.only(top: 12, left: 6, right: 6),
+                            const EdgeInsets.only(top: 10, left: 6, right: 6),
                         decoration: BoxDecoration(
                             color: White,
                             borderRadius: defaultSquareBorderRadius,

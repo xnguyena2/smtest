@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/btn/round_btn.dart';
@@ -292,9 +293,12 @@ class _ProductItemState extends State<ProductItem> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                productName,
-                                style: headStyleXLarge,
+                              Expanded(
+                                child: Text(
+                                  productName,
+                                  style: headStyleXLarge,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           ),

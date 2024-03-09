@@ -12,18 +12,23 @@ class Guide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> futures = [
+      'Thêm phân loại(ví dụ kích thước, màu sắc,..) cho sản từng sản phẩm. Đẽ dàng lựa chọn khi bán hàng!',
+      'Thêm số lượng hàng hóa trong kho và tự động kiểm kê khi bán hàng!',
+      'Sửa một số lỗi khi chọn bàn, tạo đơn hàng,..'
+    ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: Column(
         children: [
           header(
-            title: 'Hướng dẫn sử dụng',
+            title: 'Có gì mới trong bản cập nhật?',
             titleImg: 'svg/guide.svg',
             endChild: LoadSvg(assetPath: 'svg/close.svg'),
           ),
           Container(
             margin: EdgeInsets.only(top: 10),
-            height: 250,
+            padding: EdgeInsets.only(bottom: 30),
             decoration: BoxDecoration(
               borderRadius: defaultBorderRadius,
               image: const DecorationImage(
@@ -36,9 +41,9 @@ class Guide extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.all(10),
               itemBuilder: (context, index) {
-                return guideItem(index + 1, 'Thêm sản phẩm mới.');
+                return guideItem(index + 1, futures[index]);
               },
-              itemCount: 3,
+              itemCount: futures.length,
               separatorBuilder: (context, index) => const SizedBox(
                 height: 10,
               ),
@@ -51,7 +56,6 @@ class Guide extends StatelessWidget {
 
   Container guideItem(int index, String header) {
     return Container(
-      height: 40,
       padding: const EdgeInsets.all(10),
       decoration:
           BoxDecoration(borderRadius: defaultBorderRadius, color: White),
@@ -70,6 +74,8 @@ class Guide extends StatelessWidget {
           Expanded(
             child: Text(
               header,
+              overflow: TextOverflow.visible,
+              softWrap: true,
               style: subInfoStyLarge400,
             ),
           ),

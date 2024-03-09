@@ -220,6 +220,7 @@ class PrintContent extends StatelessWidget {
                               Text(
                                 '${e.key + 1}. ${e.value.get_show_name}',
                                 style: customerNameBig400,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 MoneyFormater.format(e.value.price),

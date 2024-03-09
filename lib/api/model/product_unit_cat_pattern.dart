@@ -96,9 +96,12 @@ class ProductUnitCatPattern {
   }
 
   int get getTotalCateNum {
-    int total = 0;
+    if (items.isEmpty) {
+      return 0;
+    }
+    int total = 1;
     items.forEach((element) {
-      total += element.items.length;
+      total *= element.items.length;
     });
     return total;
   }

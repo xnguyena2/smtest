@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
@@ -8,7 +7,6 @@ import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/compoment/order_list.dart';
 import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/api/report_api.dart';
-import 'package:sales_management/utils/constants.dart';
 
 import '../compoment/guide.dart';
 import '../compoment/main_function.dart';
@@ -59,8 +57,8 @@ class Management extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Guide(),
-                  MainFunction(),
+                  const Guide(),
+                  const MainFunction(),
                   FetchAPI<ListDateBenifitDataResult>(
                     future: getReportOfCurrentMonthByDate(),
                     successBuilder: (ListDateBenifitDataResult) {

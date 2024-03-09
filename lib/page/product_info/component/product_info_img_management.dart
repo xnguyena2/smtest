@@ -33,6 +33,13 @@ class _ImgManagementState extends State<ImgManagement> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final showText = list_image.isEmpty;
     return Container(

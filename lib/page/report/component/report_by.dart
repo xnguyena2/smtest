@@ -534,6 +534,7 @@ class ReportByProductAsTable extends StatelessWidget {
                           cells: <DataCell>[
                             DataCell(Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   e.product_name ?? 'Đã xóa',

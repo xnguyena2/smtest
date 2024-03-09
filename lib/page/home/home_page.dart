@@ -2,24 +2,18 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
-import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/flash/flash.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/home/compoment/bottom_bar.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
-import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/page/transaction/income_outcome.dart';
 import 'package:sales_management/page/home/child/management.dart';
-import 'package:sales_management/page/report/report_page.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
-import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
 import '../../utils/svg_loader.dart';

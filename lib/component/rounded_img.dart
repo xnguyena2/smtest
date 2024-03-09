@@ -45,6 +45,13 @@ class _Rounded_ImgState extends State<Rounded_Img> {
     }
   }
 
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   double progress = 0;
   void onUploadProgress(double value) {
     progress = value / 1.5;
