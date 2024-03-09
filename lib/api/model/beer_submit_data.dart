@@ -191,7 +191,10 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   List<BeerSubmitData> flatUnit() {
     return listUnit == null
         ? [this]
-        : listUnit!.map((e) => cloneMainDataWithoutUnitCatConfig(e)).toList();
+        : listUnit!
+            .where((element) => !element.isHide)
+            .map((e) => cloneMainDataWithoutUnitCatConfig(e))
+            .toList();
   }
 
   BeerUnit? get firstOrNull => listUnit?.firstOrNull;
@@ -246,6 +249,13 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     return null;
   }
 
+  String? get getUnitFristLargeOrDefaultImg {
+    if (firstOrNull?.name == null || firstOrNull?.name.isEmpty == true) {
+      return getFristLargeImg;
+    }
+    return getUnitFristLargeImg;
+  }
+
   String get getRangePrice {
     if (listUnit == null || listUnit!.isEmpty) {
       return '0';
@@ -253,7 +263,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     double min = 0;
     double max = 0;
     for (final element in listUnit!) {
-      if (element.isHide || !element.isAvariable) {
+      if (element.isHide) {
         continue;
       }
       final currentPrice = element.realPrice;
@@ -275,6 +285,71 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     }
     return '${MoneyFormater.format(min)} - ${MoneyFormater.format(max)}';
   }
+
+  List<String> get getRangePriceWithOriginPrice {
+    if (listUnit == null || listUnit!.isEmpty) {
+      return ['0'];
+    }
+    double min = 0;
+    double max = 0;
+    double minOriginPrice = 0;
+    double maxOriginPrice = 0;
+    for (final element in listUnit!) {
+      if (element.isHide) {
+        continue;
+      }
+      final currentPrice = element.realPrice;
+      final originPrice = element.getOriginPrice;
+      if (min == 0) {
+        min = currentPrice;
+        minOriginPrice = originPrice;
+      }
+      if (max == 0) {
+        max = currentPrice;
+        maxOriginPrice = originPrice;
+      }
+      if (currentPrice > max) {
+        max = currentPrice;
+        maxOriginPrice = originPrice;
+      }
+      if (currentPrice < min) {
+        min = currentPrice;
+        minOriginPrice = originPrice;
+      }
+    }
+    final maxx =
+        minOriginPrice > maxOriginPrice ? minOriginPrice : maxOriginPrice;
+    if (min == max) {
+      return [
+        MoneyFormater.format(min),
+        if (maxx > min) MoneyFormater.format(maxx)
+      ];
+    }
+    return [
+      '${MoneyFormater.format(min)} - ${MoneyFormater.format(max)}',
+      if (maxx > max) MoneyFormater.format(maxx)
+    ];
+  }
+
+  int get getTotalInventory {
+    if (listUnit == null || listUnit!.isEmpty) {
+      return 0;
+    }
+    int numInventory = 0;
+    for (final element in listUnit!) {
+      if (element.isHide || !element.isAvariable) {
+        continue;
+      }
+      if (!element.isHide &&
+          element.isAvariable &&
+          element.enable_warehouse == true) {
+        numInventory += element.inventory_number ?? 0;
+      }
+    }
+    return numInventory;
+  }
+
+  int get getTotalCateNum => productUnitCatPattern.getTotalCateNum;
 
   void setWholesalePrice(double price) {
     firstOrNull?.wholesale_price = price;
@@ -607,6 +682,8 @@ class BeerUnit {
     }
     return promotional_price!;
   }
+
+  double get getOriginPrice => _realPrice;
 
   double _realPrice = 0;
 

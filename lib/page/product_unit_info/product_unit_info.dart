@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
-import 'package:sales_management/component/bottom_bar.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/page/product_info/api/product_info_api.dart';
-import 'package:sales_management/page/product_info/component/product_info_create_category.dart';
 import 'package:sales_management/page/product_info/component/product_info_img_management.dart';
 import 'package:sales_management/page/product_info/component/product_info_main_info.dart';
 import 'package:sales_management/page/product_info/component/product_info_store_management.dart';
-import 'package:sales_management/page/product_unit_info/component/product_info_bar.dart';
-import 'package:sales_management/utils/alter_dialog.dart';
+import 'package:sales_management/page/product_unit_info/component/product_unit_info_bar.dart';
+import 'package:sales_management/page/product_unit_info/component/product_unit_info_hide.dart';
 import 'package:sales_management/utils/constants.dart';
-import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 
 class ProductUnitInfo extends StatelessWidget {
@@ -70,6 +66,13 @@ class ProductUnitInfoBody extends StatelessWidget {
                   height: 14,
                 ),
                 StoreManagement(
+                  product: product,
+                  isForProductUnit: true,
+                ),
+                SizedBox(
+                  height: 14,
+                ),
+                ProductUnitInfoHide(
                   product: product,
                 ),
                 SizedBox(

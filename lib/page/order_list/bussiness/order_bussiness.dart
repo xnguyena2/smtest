@@ -18,46 +18,33 @@ Future<ResponseResult> _invokeFunc(RequestStorage request) {
   PackageAndTransactionPara productPackgeWithTransaction =
       PackageAndTransactionPara.fromJson(jsonDecode(request.body));
   return _updatePackageWithTransactions(
-      productPackgeWithTransaction.packageDataResponse,
-      paymentTransaction: productPackgeWithTransaction.transation);
+      productPackgeWithTransaction.packageDataResponse);
 }
 
 Future<void> _storage_updatePackageWithTransactions(
-    PackageDataResponse packageDataResponse,
-    {PaymentTransaction? paymentTransaction}) {
+    PackageDataResponse packageDataResponse) {
   final body = bodyEncode(PackageAndTransactionPara(
-      packageDataResponse: packageDataResponse,
-      transation: paymentTransaction));
+      packageDataResponse: packageDataResponse, transation: null));
   return LocalStorage.addRequest(
       RequestType.POST_C, funcName, packageDataResponse.packageSecondId, body);
 }
 
 Future<ResponseResult> _updatePackageWithTransactions(
-    PackageDataResponse packageDataResponse,
-    {PaymentTransaction? paymentTransaction}) {
+    PackageDataResponse packageDataResponse) {
   packageDataResponse.runPendingAction();
   final productWithPackge =
       ProductPackage.fromPackageDataResponse(packageDataResponse);
-  if (paymentTransaction == null) {
-    return updatePackage(productWithPackge);
-  }
-  return updatePackageWithTransaction(ProductPackgeWithTransaction(
-      productPackage: productWithPackge, transation: paymentTransaction));
+  return updatePackage(productWithPackge);
 }
 
 Future<PackageDataResponse> _sendOrStoreOrderWithTransaction(
-    PackageDataResponse packageDataResponse,
-    {PaymentTransaction? paymentTransaction}) {
+    PackageDataResponse packageDataResponse) {
   if (haveInteret) {
-    return _updatePackageWithTransactions(packageDataResponse,
-            paymentTransaction: paymentTransaction)
-        .then((value) {
+    return _updatePackageWithTransactions(packageDataResponse).then((value) {
       return packageDataResponse;
     });
   }
-  return _storage_updatePackageWithTransactions(packageDataResponse,
-          paymentTransaction: paymentTransaction)
-      .then(
+  return _storage_updatePackageWithTransactions(packageDataResponse).then(
     (value) => LocalStorage.putOrderPakage(packageDataResponse).then(
       (value) {
         packageDataResponse.swithLocalStatus(true);
@@ -72,10 +59,9 @@ Future<PackageDataResponse> prePayOrder(
   if (!haveInteret && !isTempOrder) {
     return Future.error('Yêu cầu internet mới thực hiện được!');
   }
-  final paymentTransaction = packageDataResponse.addtransaction(value,
-      'Tiền mặt', 'Thanh toán trước đơn: ${packageDataResponse.getID}');
-  return _sendOrStoreOrderWithTransaction(packageDataResponse,
-          paymentTransaction: paymentTransaction)
+  packageDataResponse.addtransaction(value, 'Tiền mặt',
+      'Thanh toán trước đơn: ${packageDataResponse.getID}');
+  return _sendOrStoreOrderWithTransaction(packageDataResponse)
       .onError((error, stackTrace) {
     packageDataResponse.removeLastestTransaction();
     return packageDataResponse;
@@ -88,9 +74,7 @@ Future<PackageDataResponse> doneOrder(
     return Future.error('Yêu cầu internet mới thực hiện được!');
   }
   final transaction = packageDataResponse.makeDone();
-  return _sendOrStoreOrderWithTransaction(packageDataResponse,
-          paymentTransaction: transaction)
-      .then(
+  return _sendOrStoreOrderWithTransaction(packageDataResponse).then(
     (value) {
       refreshBootStrap();
       return value;
@@ -119,7 +103,10 @@ Future<PackageDataResponse> updateOrderPackage(
   if (!haveInteret && !isTempOrder) {
     return Future.error('Yêu cầu internet mới thực hiện được!');
   }
-  return _sendOrStoreOrderWithTransaction(packageDataResponse);
+  return _sendOrStoreOrderWithTransaction(packageDataResponse).then((valuex) {
+    refreshBootStrap();
+    return Future.delayed(Duration(seconds: 1)).then((value) => valuex);
+  });
 }
 
 Future<ResponseResult> returnOrder(

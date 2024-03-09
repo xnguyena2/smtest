@@ -11,7 +11,7 @@ import 'package:sales_management/component/textfield/editable_text_form_field.da
 import 'package:sales_management/component/textfield/text_under_line_custome.dart';
 import 'package:sales_management/page/product_info/component/modal_create_product_unit.dart';
 import 'package:sales_management/page/product_info/component/modal_edit_price_warehouse_product_unit.dart';
-import 'package:sales_management/page/product_unit_info/product_info.dart';
+import 'package:sales_management/page/product_unit_info/product_unit_info.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/utils.dart';
@@ -126,6 +126,8 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
                 if (item == null) {
                   return SizedBox();
                 }
+                print(
+                    '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}-${item.isAvariable}-${item.isHide}');
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -144,8 +146,11 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
                   },
                   child: _ProductUnit(
                     key: ValueKey(
-                        '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}'),
+                        '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}-${item.isAvariable}-${item.isHide}'),
                     item: item,
+                    onRefresh: () {
+                      setState(() {});
+                    },
                   ),
                 );
               },
@@ -161,9 +166,11 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
 }
 
 class _ProductUnit extends StatefulWidget {
+  final VoidCallback onRefresh;
   const _ProductUnit({
     super.key,
     required this.item,
+    required this.onRefresh,
   });
 
   final BeerUnit item;
@@ -261,7 +268,7 @@ class _ProductUnitState extends State<_ProductUnit> {
                   GestureDetector(
                     onTap: () {
                       item.changeTohide(!item.isHide);
-                      setState(() {});
+                      widget.onRefresh();
                     },
                     child: LoadSvg(
                         assetPath:

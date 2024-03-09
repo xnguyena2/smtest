@@ -5,7 +5,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/bottom_bar_done_select_product.dart';
 import 'package:sales_management/component/category_selector.dart';
 import 'package:sales_management/component/modal/modal_base.dart';
-import 'package:sales_management/page/product_selector/component/product_selector_product_item.dart';
+import 'package:sales_management/page/product_selector/component/product_unit_selector_product_item.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
@@ -15,12 +15,14 @@ class ModalSelectProductUnitCategory extends StatefulWidget {
   final Map<String, ProductInPackageResponse>? mapProductInPackage;
   final VoidCallbackArg<Map<String, ProductInPackageResponse>> onDone;
   final ReturnCallbackArgAsync<BeerSubmitData, bool> swithAvariable;
+  final VoidCallback onRefreshData;
   const ModalSelectProductUnitCategory({
     super.key,
     required this.onDone,
     required this.product,
     this.mapProductInPackage,
     required this.swithAvariable,
+    required this.onRefreshData,
   });
 
   @override
@@ -46,6 +48,8 @@ class _ModalSelectProductUnitCategoryState
 
   double totalPrice = 0;
   int numItem = 0;
+
+  bool mustRefreshData = false;
 
   void updatePrice() {
     totalPrice = 0;
@@ -141,8 +145,12 @@ class _ModalSelectProductUnitCategoryState
           BottomBarDoneSelectProduct(
             numItem: numItem,
             done: () {
-              widget.onDone(mapProductInPackage);
               Navigator.pop(context);
+
+              widget.onDone(mapProductInPackage);
+              if (mustRefreshData) {
+                widget.onRefreshData();
+              }
             },
             totalPriceFormat: MoneyFormater.format(totalPrice),
           ),
@@ -169,9 +177,8 @@ class _ModalSelectProductUnitCategoryState
           return const SizedBox();
         }
         final productPackage = mapProductInPackage[productUnitID];
-        return ProductSelectorItem(
+        return ProductUnitSelectorItem(
           key: ValueKey(productUnitID),
-          isProductSelector: false,
           productData: productData,
           updateNumberUnit: (productInPackageResponse) {
             addOrUpdateProduct(productInPackageResponse);
@@ -179,7 +186,10 @@ class _ModalSelectProductUnitCategoryState
           onChanged: null,
           mapProductInPackage:
               productPackage == null ? null : {productUnitID: productPackage},
-          switchToAvariable: () => swithAvariable(productData),
+          switchToAvariable: () {
+            mustRefreshData = true;
+            return swithAvariable(productData);
+          },
         );
       },
     );

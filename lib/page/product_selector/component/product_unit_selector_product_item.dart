@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
-import 'package:sales_management/component/loading_overlay_alt.dart';
-import 'package:sales_management/component/modal/simple_modal.dart';
-import 'package:sales_management/page/product_info/api/product_info_api.dart';
-import 'package:sales_management/page/product_selector/component/modal_select_product_unit.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item_ui.dart';
-import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
 
-class ProductSelectorItem extends StatefulWidget {
+class ProductUnitSelectorItem extends StatefulWidget {
   final BeerSubmitData productData;
   final VoidCallbackArg<ProductInPackageResponse> updateNumberUnit;
   final VoidCallbackArg<List<ProductInPackageResponse>>? updateListNumberUnit;
   final VoidCallbackArg<BeerSubmitData>? onChanged;
   final Map<String, ProductInPackageResponse>? mapProductInPackage;
-  const ProductSelectorItem({
+  final ReturnCallbackAsync<bool> switchToAvariable;
+  const ProductUnitSelectorItem({
     super.key,
     required this.productData,
     required this.updateNumberUnit,
     required this.onChanged,
     required this.mapProductInPackage,
+    required this.switchToAvariable,
     this.updateListNumberUnit,
   });
 
   @override
-  State<ProductSelectorItem> createState() => _ProductSelectorItemState();
+  State<ProductUnitSelectorItem> createState() =>
+      _ProductUnitSelectorItemState();
 }
 
-class _ProductSelectorItemState extends State<ProductSelectorItem> {
+class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
   late final String? imgUrl;
   late final String name;
   late final String rangePrice;
@@ -41,6 +39,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   int unitNo = 0;
   int inventoryNum = 0;
   late bool isAvariable;
+  bool isNullUnit = false;
   late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
 
   Key uiKey = UniqueKey();
@@ -49,10 +48,10 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    name = widget.productData.name;
-    isAvariable = widget.productData.isAvariable;
-    imgUrl = widget.productData.getFristLargeImg;
+    isNullUnit = widget.productData.firstOrNull == null;
+    name = widget.productData.firstOrNull?.name ?? 'Null';
+    isAvariable = widget.productData.firstOrNull?.isAvariable ?? false;
+    imgUrl = widget.productData.getUnitFristLargeImg;
 
     productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
     rangePrice = widget.productData.getRangePrice;
@@ -74,7 +73,6 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     }
     widget.updateNumberUnit(productInPackage!);
     unitNo = productInPackage!.numberUnit;
-    setState(() {});
     return unitNo;
   }
 
@@ -111,48 +109,6 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
 
   @override
   Widget build(BuildContext context) {
-    _switchToAvariable({bool isRunOnchange = true}) async {
-      await showDefaultDialog(
-          context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
-          onOk: () {
-        widget.productData.changeStatus(true);
-        LoadingOverlayAlt.of(context).show();
-        createProduct(widget.productData).then((value) {
-          LoadingOverlayAlt.of(context).hide();
-          isAvariable = widget.productData.isAvariable;
-          if (isRunOnchange) {
-            widget.onChanged?.call(widget.productData);
-          }
-          setState(() {});
-        }).onError((error, stackTrace) {
-          LoadingOverlayAlt.of(context).hide();
-          widget.productData.changeStatus(false);
-          showAlert(
-              context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
-        });
-      }, onCancel: () {});
-      return isAvariable;
-    }
-
-    showSelectUnitModal() => showDefaultModal(
-          context: context,
-          content: ModalSelectProductUnitCategory(
-            product: widget.productData,
-            mapProductInPackage: mapProductInPackage,
-            swithAvariable: (b) async {
-              b.changeUnitStatus(b.firstOrNull, true);
-              return _switchToAvariable(isRunOnchange: false);
-            },
-            onDone: (Map<String, ProductInPackageResponse> maps) {
-              mapProductInPackage = maps;
-              updatePriceAndNoUnit();
-              uiKey = UniqueKey();
-              widget.updateListNumberUnit?.call(maps.values.toList());
-              setState(() {});
-            },
-            onRefreshData: () => widget.onChanged?.call(widget.productData),
-          ),
-        );
     return ProductSelectorItemUI(
       key: uiKey,
       name: name,
@@ -162,14 +118,16 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       addItemToPackage: addItemToPackage,
       isHaveMultiCategory: isHaveMultiCategory,
       removeItemToPackage: removeItemToPackage,
-      switchToAvariable: _switchToAvariable,
+      switchToAvariable: widget.switchToAvariable,
       onTxtChanged: (value) {
         setDirectUnitNum(value);
       },
       onTapOutside: removeIfEmpty,
       isAvariable: isAvariable,
-      isNullUnit: false,
-      showSelectUnitModal: showSelectUnitModal,
+      isNullUnit: isNullUnit,
+      showSelectUnitModal: () {
+        showAlert(context, 'Không hỗ trợ');
+      },
       inventoryNum: inventoryNum - unitNo,
     );
   }

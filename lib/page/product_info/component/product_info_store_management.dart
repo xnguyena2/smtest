@@ -11,9 +11,11 @@ import 'package:sales_management/utils/utils.dart';
 
 class StoreManagement extends StatefulWidget {
   final BeerSubmitData product;
+  final bool isForProductUnit;
   const StoreManagement({
     super.key,
     required this.product,
+    this.isForProductUnit = false,
   });
 
   @override
@@ -44,8 +46,17 @@ class _StoreManagementState extends State<StoreManagement> {
               SwitchBigBtn(
                 secondTxt: 'Còn hàng',
                 firstTxt: 'Hết hàng',
-                selectedIndex: this.widget.product.isAvariable ? 1 : 0,
+                selectedIndex: (widget.isForProductUnit
+                        ? widget.product.firstOrNull?.isAvariable ?? false
+                        : widget.product.isAvariable)
+                    ? 1
+                    : 0,
                 onChanged: (status) {
+                  if (widget.isForProductUnit) {
+                    widget.product
+                        .changeUnitStatus(widget.product.firstOrNull, status);
+                    return;
+                  }
                   widget.product.changeStatus(status);
                 },
               )

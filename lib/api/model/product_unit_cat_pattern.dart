@@ -94,6 +94,14 @@ class ProductUnitCatPattern {
       appendTree(MapEntry(mainKey, mainValue), index + 1, newTree);
     });
   }
+
+  int get getTotalCateNum {
+    int total = 0;
+    items.forEach((element) {
+      total += element.items.length;
+    });
+    return total;
+  }
 }
 
 class ProductUnitCatPatternItem {

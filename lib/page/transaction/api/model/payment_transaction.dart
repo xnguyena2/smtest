@@ -82,7 +82,8 @@ class PaymentTransaction extends BaseEntity {
     if (note?.startsWith('DONE-') == true ||
         note?.startsWith('PAYMENT-') == true) {
       final orderID = note
-              ?.replaceAll('DONE-', 'Hoàn thành đơn: ')
+              ?.toUpperCase()
+              .replaceAll('DONE-', 'Hoàn thành đơn: ')
               .replaceAll('PAYMENT-', 'Thanh toán đơn: ') ??
           'unknow';
       return orderID.split('-')[0];

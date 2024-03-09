@@ -73,6 +73,8 @@ const Color textSubLightColor = Color(0xFF404040);
 const Color searchBorderColor = Color(0xFFD7D7D7);
 const Color searchBackgroundColor = Color(0xFFF3F3F3);
 
+const Color wareHouseBoxBackground = Color(0x7826B074);
+
 final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
 
 final BorderRadius bigRoundBorderRadius = BorderRadius.circular(20);
@@ -82,6 +84,8 @@ final BorderRadius defaultSquareBorderRadius = BorderRadius.circular(5);
 final BorderRadius floatBottomBorderRadius = BorderRadius.circular(24);
 
 final Border defaultBorder = Border.all(color: searchBorderColor);
+
+final Border whiteBorder = Border.all(color: White);
 
 final Border lightBorder = Border.all(color: Black40);
 

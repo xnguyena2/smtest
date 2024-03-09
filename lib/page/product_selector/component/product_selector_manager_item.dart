@@ -13,7 +13,9 @@ class ProductManagerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final imgUrl = productData.getFristLargeImg;
     final name = productData.name;
-    final price = productData.getRealPrice;
+    final rangePriceWithOrgPrice = productData.getRangePriceWithOriginPrice;
+    final inventoryNum = productData.getTotalInventory;
+    final totalCateNum = productData.getTotalCateNum;
     final isAvariable = productData.isAvariable;
 
     return Container(
@@ -48,7 +50,7 @@ class ProductManagerItem extends StatelessWidget {
                             color: White70,
                             borderRadius: defaultBorderRadius,
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               'Hết hàng',
                               style: subInfoStyMedium400,
@@ -58,11 +60,11 @@ class ProductManagerItem extends StatelessWidget {
                       : null,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 18,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                padding: const EdgeInsets.only(top: 2, bottom: 2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,11 +74,54 @@ class ProductManagerItem extends StatelessWidget {
                       name,
                       style: headStyleSemiLarge500,
                     ),
-                    Text(
-                      MoneyFormater.format(price),
-                      style: isAvariable
-                          ? headStyleSemiLargeHigh500
-                          : headStyleSemiLargeLigh500,
+                    Row(
+                      children: [
+                        if (inventoryNum > 0)
+                          Text(
+                            'Có thể bán: ${inventoryNum}',
+                            style: headStyleMediumNormalLight,
+                          ),
+                        if (inventoryNum > 0 && totalCateNum > 0)
+                          const SizedBox(
+                            height: 12,
+                            child: VerticalDivider(),
+                          ),
+                        if (totalCateNum > 0) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 8),
+                            decoration: BoxDecoration(
+                                borderRadius: defaultBorderRadius,
+                                color: BackgroundHigh),
+                            child: Text(
+                              '$totalCateNum phân loại',
+                              style: subInfoStyLargeLigh400,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          rangePriceWithOrgPrice.isNotEmpty
+                              ? rangePriceWithOrgPrice.first
+                              : 'unknow',
+                          style: isAvariable
+                              ? headStyleSemiLargeHigh500
+                              : headStyleSemiLargeLigh500,
+                        ),
+                        if (rangePriceWithOrgPrice.length > 1) ...[
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            rangePriceWithOrgPrice[1],
+                            style: headStyleSemiLargeVeryLigh500.copyWith(
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                        ]
+                      ],
                     ),
                   ],
                 ),

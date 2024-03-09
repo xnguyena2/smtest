@@ -177,7 +177,8 @@ class _ProductItemState extends State<ProductItem> {
     // TODO: implement initState
     super.initState();
     productInPackageResponse = widget.productInPackageResponse;
-    imgUrl = productInPackageResponse.beerSubmitData?.getFristLargeImg;
+    imgUrl =
+        productInPackageResponse.beerSubmitData?.getUnitFristLargeOrDefaultImg;
     unitNo = productInPackageResponse.numberUnit;
     noUnitTxtController.text = unitNo.toString();
     if (productInPackageResponse.discountPercent != 0 ||

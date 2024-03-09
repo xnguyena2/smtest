@@ -409,8 +409,7 @@ class PackageDataResponse extends PackageDetail {
 
   PaymentTransaction? makeDone() {
     donePayment();
-    if (payment < finalPrice) {
-      print('payment: $payment, finalPrice: $finalPrice');
+    if (finalPrice > payment) {
       return addtransaction(
           finalPrice - payment, 'Tiền mặt', 'Hoàn thành đơn: ${getID}');
     }
