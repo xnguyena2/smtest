@@ -21,6 +21,7 @@ class ProductSelectorItemUI extends StatefulWidget {
   final bool isAvariable;
   final bool isNullUnit;
   final int inventoryNum;
+  final bool isEnableWarehouse;
 
   const ProductSelectorItemUI({
     super.key,
@@ -38,6 +39,7 @@ class ProductSelectorItemUI extends StatefulWidget {
     required this.isNullUnit,
     required this.showSelectUnitModal,
     required this.inventoryNum,
+    required this.isEnableWarehouse,
   });
 
   @override
@@ -92,7 +94,9 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: onAddItem,
+          onTap: (widget.isEnableWarehouse && widget.inventoryNum > 0)
+              ? onAddItem
+              : null,
           child: Container(
             decoration: BoxDecoration(
               color: White,
@@ -153,7 +157,10 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: onAddItem,
+                              onTap: (widget.isEnableWarehouse &&
+                                      widget.inventoryNum > 0)
+                                  ? onAddItem
+                                  : null,
                               child: LoadSvg(
                                 assetPath: 'svg/plus.svg',
                                 color: MainHighColor,
@@ -165,11 +172,11 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                     : const SizedBox(),
                 Column(
                   children: [
-                    if (widget.inventoryNum > 0)
+                    if (widget.isEnableWarehouse)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 1, horizontal: 8),
-                        margin: EdgeInsets.only(bottom: 2),
+                        margin: const EdgeInsets.only(bottom: 2),
                         decoration: BoxDecoration(
                             color: wareHouseBoxBackground,
                             border: whiteBorder,
@@ -200,7 +207,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                           sigmaY: 4.0,
                         ),
                         child: Container(
-                          color: Color.fromRGBO(214, 214, 214, 0.40),
+                          color: const Color.fromRGBO(214, 214, 214, 0.40),
                           child: Column(
                             children: [
                               Text(

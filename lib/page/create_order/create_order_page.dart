@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
@@ -26,7 +25,6 @@ import 'package:sales_management/page/product_selector/component/provider_produc
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/typedef.dart';
-import 'package:sales_management/utils/utils.dart';
 
 import '../../utils/constants.dart';
 
@@ -168,8 +166,7 @@ class CreateOrderPage extends StatelessWidget {
                                       ),
                                     );
                                   }).onError((error, stackTrace) {
-                                    showAlert(
-                                        context, 'Không thể cập nhật!');
+                                    showAlert(context, error.toString());
                                     LoadingOverlayAlt.of(context).hide();
                                   });
                                 },
@@ -206,8 +203,7 @@ class CreateOrderPage extends StatelessWidget {
                                       LoadingOverlayAlt.of(context).hide();
                                       Navigator.pop(context);
                                     }).onError((error, stackTrace) {
-                                      showAlert(
-                                          context, 'Không thể cập nhật!');
+                                      showAlert(context, error.toString());
                                       LoadingOverlayAlt.of(context).hide();
                                     });
                                   },

@@ -14,6 +14,7 @@ void showAlert(BuildContext context, String msg) {
   final snackBar = SnackBar(
     content: Text(msg),
     backgroundColor: Red,
+    duration: const Duration(seconds: 6),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

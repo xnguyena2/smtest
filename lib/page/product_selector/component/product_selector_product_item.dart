@@ -43,6 +43,8 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   late bool isAvariable;
   late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
 
+  late final bool isEnableWarehouse = widget.productData.isEnableWarehouse;
+
   Key uiKey = UniqueKey();
 
   @override
@@ -176,6 +178,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       isNullUnit: false,
       showSelectUnitModal: showSelectUnitModal,
       inventoryNum: inventoryNum - unitNo,
+      isEnableWarehouse: isEnableWarehouse,
     );
   }
 }

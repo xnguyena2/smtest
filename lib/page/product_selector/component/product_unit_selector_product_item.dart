@@ -41,6 +41,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
   late bool isAvariable;
   bool isNullUnit = false;
   late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+  late final bool isEnableWarehouse = widget.productData.isEnableWarehouse;
 
   Key uiKey = UniqueKey();
 
@@ -134,6 +135,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
         showAlert(context, 'Không hỗ trợ');
       },
       inventoryNum: inventoryNum - unitNo,
+      isEnableWarehouse: isEnableWarehouse,
     );
   }
 }

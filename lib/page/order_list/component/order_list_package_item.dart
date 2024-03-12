@@ -267,7 +267,7 @@ class PackageItemDetail extends StatelessWidget {
                               LoadingOverlayAlt.of(context).hide();
                             }).catchError(
                               (error, stackTrace) {
-                                showAlert(context, 'Lỗi hệ thống!');
+                                showAlert(context, error.toString());
                                 LoadingOverlayAlt.of(context).hide();
                               },
                             );

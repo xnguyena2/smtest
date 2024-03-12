@@ -328,7 +328,7 @@ class _TotalPriceState extends State<TotalPrice> {
                         LoadingOverlayAlt.of(context).hide();
                         context.read<ProductProvider>().justRefresh();
                         widget.onUpdate();
-                        showAlert(context, 'Lỗi hệ thống!');
+                        showAlert(context, error.toString());
                       },
                     );
                   },

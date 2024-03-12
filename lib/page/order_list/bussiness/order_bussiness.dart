@@ -73,7 +73,7 @@ Future<PackageDataResponse> doneOrder(
   if (!haveInteret && !isTempOrder) {
     return Future.error('Yêu cầu internet mới thực hiện được!');
   }
-  final transaction = packageDataResponse.makeDone();
+  packageDataResponse.makeDone();
   return _sendOrStoreOrderWithTransaction(packageDataResponse).then(
     (value) {
       refreshBootStrap();

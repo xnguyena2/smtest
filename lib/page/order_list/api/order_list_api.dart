@@ -101,9 +101,12 @@ Future<ResponseResult> updatePackage(ProductPackage productPackage) async {
   if (response.statusCode == 200) {
     debugPrint(response.body, wrapWidth: 1024);
     return ResponseResult.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  } else if (response.statusCode == 500) {
+    return Future.error(
+        'Mốt số sản phẩm bị hết hàng hoặc só lượng kho không đủ, bạn nên trả/hủy đơn và kiểm tra lại kho hàng!!');
   } else {
     // throw Exception('Failed to load data');
-    return Future.error('Failed to load data!!');
+    return Future.error('Không thể cập nhật!!');
   }
 }
 
