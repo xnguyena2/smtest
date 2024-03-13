@@ -64,9 +64,9 @@ String getDateinWeekofTimeStampToLocal(String? timeStamp) {
   if (timeStamp == null || timeStamp.isEmpty) {
     return 'unknow';
   }
-  DateTime dt = DateFormat("y-MM-dd").parse(timeStamp).toLocal();
+  DateTime dt = stringToDateTime(timeStamp).toLocal();
   // String locale = Localizations.localeOf(context).languageCode;
-  return DateFormat.EEEE('vi').format(dt);
+  return DateFormat.EEEE('vi').format(DateTime(dt.year, dt.month, dt.day));
 }
 
 int extractTimeStamp(String local_time) {
@@ -81,9 +81,9 @@ int extractHourTimeStamp(String local_time) {
   return ts;
 }
 
-int extractTimeStampToLocal(String local_time) {
-  DateTime dt = DateFormat("y-MM-dd").parse(local_time).toLocal();
-  int ts = (dt.millisecondsSinceEpoch).floor();
+int extractOnlyDateTimeStampToLocal(String server_time) {
+  DateTime dt = stringToDateTime(server_time).toLocal();
+  int ts = (DateTime(dt.year, dt.month, dt.day).millisecondsSinceEpoch).floor();
   return ts;
 }
 

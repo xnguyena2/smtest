@@ -499,7 +499,7 @@ class ReportByProductAsTable extends StatelessWidget {
                       )),
                       const DataCell(
                         Text(
-                          'SỐ LƯỢNG',
+                          'S.L',
                           style: subInfoStyLarge400,
                         ),
                       ),

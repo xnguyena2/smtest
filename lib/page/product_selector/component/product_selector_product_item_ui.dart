@@ -94,7 +94,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: (widget.isEnableWarehouse && widget.inventoryNum > 0)
+          onTap: (!widget.isEnableWarehouse || widget.inventoryNum > 0)
               ? onAddItem
               : null,
           child: Container(
@@ -157,7 +157,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: (widget.isEnableWarehouse &&
+                              onTap: (!widget.isEnableWarehouse ||
                                       widget.inventoryNum > 0)
                                   ? onAddItem
                                   : null,

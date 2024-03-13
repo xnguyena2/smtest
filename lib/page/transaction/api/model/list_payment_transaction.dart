@@ -25,7 +25,7 @@ class ListPaymentTransactionDataResult {
 
   void calcData() {
     Map<int, TransactionByDateOfMonthWithOffset> resultMaped =
-        Map<int, TransactionByDateOfMonthWithOffset>();
+        <int, TransactionByDateOfMonthWithOffset>{};
 
     listResult.forEach((element) {
       if (element.transaction_type == TType.INCOME) {
@@ -36,7 +36,7 @@ class ListPaymentTransactionDataResult {
       }
       int ts = element.createat == null
           ? 0
-          : extractTimeStampToLocal(element.createat!);
+          : extractOnlyDateTimeStampToLocal(element.createat!);
       var currentDate = resultMaped[ts];
       if (currentDate == null) {
         resultMaped[ts] =
@@ -72,7 +72,7 @@ class ListPaymentTransactionDataResult {
       }
       int ts = element.createat == null
           ? 0
-          : extractTimeStampToLocal(element.createat!);
+          : extractOnlyDateTimeStampToLocal(element.createat!);
       var currentDate = resultMaped[ts];
       if (currentDate == null) {
         resultMaped[ts] =
@@ -136,7 +136,7 @@ class ListPaymentTransactionDataResult {
   void updateTransaction(PaymentTransaction transaction) {
     int new_ts = transaction.createat == null
         ? 0
-        : extractTimeStampToLocal(transaction.createat!);
+        : extractOnlyDateTimeStampToLocal(transaction.createat!);
     int index = listResult.indexWhere((element) =>
         element.transaction_second_id == transaction.transaction_second_id);
     if (index >= 0) {
@@ -156,7 +156,7 @@ class ListPaymentTransactionDataResult {
       PaymentTransaction transaction, PaymentTransaction oldTransaction) {
     int old_ts = oldTransaction.createat == null
         ? 0
-        : extractTimeStampToLocal(oldTransaction.createat!);
+        : extractOnlyDateTimeStampToLocal(oldTransaction.createat!);
     TransactionByDateOfMonthWithOffset? ListTransaction = null;
     for (var element in listResultFlat) {
       if (element.timeStamp == old_ts) {

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/report/report_page.dart';
 
@@ -119,7 +116,7 @@ class WidgetContent extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        const Row(
                           children: [
                             SizedBox(width: 8.5),
                             Text(
@@ -139,7 +136,7 @@ class WidgetContent extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: NavigationNext(
+                              child: const NavigationNext(
                                 title: 'Báo cáo lãi lỗ',
                                 assetPath: 'svg/small_chart.svg',
                               ),
