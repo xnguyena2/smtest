@@ -223,7 +223,7 @@ class PrintContent extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                MoneyFormater.format(e.value.price),
+                                MoneyFormater.format(e.value.priceDiscount),
                                 style: customerNameBig400,
                               ),
                             ],

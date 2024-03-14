@@ -406,6 +406,13 @@ const TextStyle headStyleSemiLargeVeryLigh500 = TextStyle(
   color: Black40,
   fontWeight: FontWeight.w500,
   fontSize: 15,
+  decoration: TextDecoration.lineThrough,
+);
+
+const TextStyle headStyleSemiLargeVeryLigh500LineThrough = TextStyle(
+  color: Black40,
+  fontWeight: FontWeight.w500,
+  fontSize: 15,
 );
 
 const TextStyle headStyleSemiLarge400 = TextStyle(

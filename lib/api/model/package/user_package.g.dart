@@ -29,6 +29,7 @@ class UserPackageAdapter extends TypeAdapter<UserPackage> {
       buyPrice: fields[10] as double,
       discountAmount: fields[11] as double,
       discountPercent: fields[12] as double,
+      discountPromotional: fields[16] as double?,
       note: fields[13] as String?,
       status: fields[14] as String?,
     );
@@ -37,7 +38,7 @@ class UserPackageAdapter extends TypeAdapter<UserPackage> {
   @override
   void write(BinaryWriter writer, UserPackage obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(4)
       ..write(obj.packageSecondId)
       ..writeByte(5)
@@ -60,6 +61,8 @@ class UserPackageAdapter extends TypeAdapter<UserPackage> {
       ..write(obj.note)
       ..writeByte(14)
       ..write(obj.status)
+      ..writeByte(16)
+      ..write(obj.discountPromotional)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)

@@ -43,13 +43,17 @@ class PackageDataResponseAdapter extends TypeAdapter<PackageDataResponse> {
       progress: fields[23] as Progress?,
       items: (fields[26] as List).cast<ProductInPackageResponse>(),
       buyer: fields[27] as BuyerData?,
+      discountPromotional: fields[28] as double?,
+      discountByPoint: fields[29] as double?,
+      additionalFee: fields[30] as double?,
+      additionalConfig: fields[31] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PackageDataResponse obj) {
     writer
-      ..writeByte(26)
+      ..writeByte(30)
       ..writeByte(26)
       ..write(obj.items)
       ..writeByte(27)
@@ -96,6 +100,14 @@ class PackageDataResponseAdapter extends TypeAdapter<PackageDataResponse> {
       ..write(obj.progress)
       ..writeByte(24)
       ..write(obj.status)
+      ..writeByte(28)
+      ..write(obj.discountPromotional)
+      ..writeByte(29)
+      ..write(obj.discountByPoint)
+      ..writeByte(30)
+      ..write(obj.additionalFee)
+      ..writeByte(31)
+      ..write(obj.additionalConfig)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)
@@ -139,6 +151,7 @@ class ProductInPackageResponseAdapter
       buyPrice: fields[10] as double,
       discountAmount: fields[11] as double,
       discountPercent: fields[12] as double,
+      discountPromotional: fields[16] as double?,
       note: fields[13] as String?,
       status: fields[14] as String?,
       beerSubmitData: fields[15] as BeerSubmitData?,
@@ -148,7 +161,7 @@ class ProductInPackageResponseAdapter
   @override
   void write(BinaryWriter writer, ProductInPackageResponse obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(15)
       ..write(obj.beerSubmitData)
       ..writeByte(4)
@@ -173,6 +186,8 @@ class ProductInPackageResponseAdapter
       ..write(obj.note)
       ..writeByte(14)
       ..write(obj.status)
+      ..writeByte(16)
+      ..write(obj.discountPromotional)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)

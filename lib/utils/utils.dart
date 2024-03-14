@@ -194,3 +194,17 @@ bool listenConnection(ConnectivityResult connectivityResult) {
   }
   return false;
 }
+
+double castToDouble(dynamic value) {
+  if (value == null) {
+    return 0;
+  }
+  return value as double;
+}
+
+int castToInt(dynamic value) {
+  if (value == null) {
+    return 0;
+  }
+  return value as int;
+}

@@ -159,6 +159,10 @@ class PackageDataResponse extends PackageDetail {
     required super.progress,
     required this.items,
     required this.buyer,
+    required super.discountPromotional,
+    required super.discountByPoint,
+    required super.additionalFee,
+    required super.additionalConfig,
   }) : localTimeTxt = formatLocalDateTimeOfDateTime(DateTime.now().toUtc());
 
   @HiveField(26)
@@ -186,6 +190,10 @@ class PackageDataResponse extends PackageDetail {
           shipPrice: 0.0,
           status: PackageStatusType.CREATE,
           packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
+          discountPromotional: 0,
+          discountByPoint: 0,
+          additionalFee: 0,
+          additionalConfig: null,
         ) {
     items = [];
     buyer = null;
@@ -311,6 +319,7 @@ class PackageDataResponse extends PackageDetail {
   void cleanBuyer() {
     buyer = null;
     point = 0;
+    discountByPoint = 0;
   }
 
   void updateBuyer(AddressData addressData) {
@@ -329,14 +338,20 @@ class PackageDataResponse extends PackageDetail {
   void applyPoint(int point, double discount) {
     discountPercent = 0;
     discountAmount += discount;
+    discountByPoint = discount;
     this.point = -point;
   }
 
   void updatePrice() {
-    price = items.fold(0,
-        (previousValue, element) => previousValue + element.totalPriceDiscount);
-    cost = items.fold(
-        0, (previousValue, element) => previousValue + element.totalCost);
+    price = 0;
+    cost = 0;
+    double discountPromotional = 0;
+    for (var element in items) {
+      price += element.totalPriceDiscount;
+      cost += element.totalCost;
+      discountPromotional += element.totalDiscountPromotional;
+    }
+    this.discountPromotional = discountPromotional;
   }
 
   int get totalNumIems {
@@ -448,6 +463,7 @@ class ProductInPackageResponse extends UserPackage {
     required super.buyPrice,
     required super.discountAmount,
     required super.discountPercent,
+    required super.discountPromotional,
     required super.note,
     required super.status,
     required this.beerSubmitData,
@@ -456,19 +472,23 @@ class ProductInPackageResponse extends UserPackage {
   ProductInPackageResponse.fromProductData({
     required this.beerSubmitData,
   }) : super(
-            id: 0,
-            groupId: 'set at backend',
-            deviceId: 'set at backend',
-            packageSecondId: 'set at backend',
-            createat: null,
-            productSecondId: beerSubmitData?.beerSecondID ?? '',
-            productUnitSecondId:
-                beerSubmitData?.firstOrNull?.beerUnitSecondId ?? '',
-            numberUnit: 0,
-            price: beerSubmitData?.firstOrNull?.realPrice ?? 0.0,
-            buyPrice: beerSubmitData?.firstOrNull?.buyPrice ?? 0.0,
-            discountAmount: 0.0,
-            discountPercent: 0.0);
+          id: 0,
+          groupId: 'set at backend',
+          deviceId: 'set at backend',
+          packageSecondId: 'set at backend',
+          createat: null,
+          productSecondId: beerSubmitData?.beerSecondID ?? '',
+          productUnitSecondId:
+              beerSubmitData?.firstOrNull?.beerUnitSecondId ?? '',
+          numberUnit: 0,
+          price: beerSubmitData?.firstOrNull?.realPrice ?? 0.0,
+          buyPrice: beerSubmitData?.firstOrNull?.buyPrice ?? 0.0,
+          discountAmount: 0.0,
+          discountPercent: 0.0,
+          discountPromotional: 0,
+          note: null,
+          status: null,
+        );
 
   ProductInPackageResponse.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -509,10 +529,25 @@ class ProductInPackageResponse extends UserPackage {
 
   double get getPrice => beerSubmitData?.getPrice ?? 0;
 
+  double get getOrgRealPrice => beerSubmitData?.getRealPrice ?? 0;
+
   bool get isWholesaleMode =>
       getWholesaleNumber > 0 && numberUnit >= getWholesaleNumber;
 
   bool get isApplyWholesaleMode => price == getWholesalePrice;
+
+  double get totalDiscountPromotional {
+    if (beerSubmitData == null) {
+      return 0;
+    }
+    final promotionalPrice = beerSubmitData!.getPromotionPrice;
+    final currentPrice = priceDiscount;
+    if (currentPrice == promotionalPrice) {
+      discountPromotional = beerSubmitData!.getPrice - currentPrice;
+      return discountPromotional! * numberUnit;
+    }
+    return 0;
+  }
 }
 
 @HiveType(typeId: 22)

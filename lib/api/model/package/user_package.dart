@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/utils/utils.dart';
 
 part 'user_package.g.dart';
 
@@ -39,6 +40,9 @@ class UserPackage extends BaseEntity {
   @HiveField(14)
   late String? status;
 
+  @HiveField(16)
+  late double? discountPromotional;
+
   UserPackage({
     required int id,
     required String groupId,
@@ -52,8 +56,9 @@ class UserPackage extends BaseEntity {
     required this.buyPrice,
     required this.discountAmount,
     required this.discountPercent,
-    this.note,
-    this.status,
+    required this.discountPromotional,
+    required this.note,
+    required this.status,
   }) : super(id: id, groupId: groupId, createat: createat);
 
   UserPackage.fromProductInPackageResponse(
@@ -73,6 +78,7 @@ class UserPackage extends BaseEntity {
     discountPercent = productInPackageResponse.discountPercent;
     note = productInPackageResponse.note;
     status = productInPackageResponse.status;
+    discountPromotional = productInPackageResponse.discountPromotional;
   }
 
   UserPackage.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -85,6 +91,7 @@ class UserPackage extends BaseEntity {
     buyPrice = json['buy_price'] as double;
     discountAmount = json['discount_amount'] as double;
     discountPercent = json['discount_percent'] as double;
+    discountPromotional = castToDouble(json['discount_promotional']);
     note = json['note'];
     status = json['status'];
   }
@@ -100,6 +107,7 @@ class UserPackage extends BaseEntity {
     _data['buy_price'] = buyPrice;
     _data['discount_amount'] = discountAmount;
     _data['discount_percent'] = discountPercent;
+    _data['discount_promotional'] = discountPromotional;
     _data['note'] = note;
     _data['status'] = status;
     return _data;

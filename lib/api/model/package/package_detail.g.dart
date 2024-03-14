@@ -27,11 +27,15 @@ class PackageDetailAdapter extends TypeAdapter<PackageDetail> {
       payment: fields[14] as double,
       discountAmount: fields[15] as double,
       discountPercent: fields[16] as double,
+      discountPromotional: fields[28] as double?,
+      discountByPoint: fields[29] as double?,
       shipPrice: fields[17] as double,
       cost: fields[18] as double,
       profit: fields[19] as double,
       point: fields[20] as int,
       packageType: fields[11] as DeliverType,
+      additionalFee: fields[30] as double?,
+      additionalConfig: fields[31] as String?,
       areaId: fields[7] as String?,
       areaName: fields[8] as String?,
       tableId: fields[9] as String?,
@@ -47,7 +51,7 @@ class PackageDetailAdapter extends TypeAdapter<PackageDetail> {
   @override
   void write(BinaryWriter writer, PackageDetail obj) {
     writer
-      ..writeByte(24)
+      ..writeByte(28)
       ..writeByte(4)
       ..write(obj.packageSecondId)
       ..writeByte(5)
@@ -90,6 +94,14 @@ class PackageDetailAdapter extends TypeAdapter<PackageDetail> {
       ..write(obj.progress)
       ..writeByte(24)
       ..write(obj.status)
+      ..writeByte(28)
+      ..write(obj.discountPromotional)
+      ..writeByte(29)
+      ..write(obj.discountByPoint)
+      ..writeByte(30)
+      ..write(obj.additionalFee)
+      ..writeByte(31)
+      ..write(obj.additionalConfig)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)

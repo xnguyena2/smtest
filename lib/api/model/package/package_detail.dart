@@ -8,6 +8,7 @@ import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
 import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/utils.dart';
 
 part 'package_detail.g.dart';
 
@@ -106,6 +107,18 @@ class PackageDetail extends BaseEntity {
   @HiveField(24)
   late PackageStatusType? status;
 
+  @HiveField(28)
+  late double? discountPromotional;
+
+  @HiveField(29)
+  late double? discountByPoint;
+
+  @HiveField(30)
+  late double? additionalFee;
+
+  @HiveField(31)
+  late String? additionalConfig;
+
   PackageDetail({
     required int? id,
     required String groupId,
@@ -117,11 +130,15 @@ class PackageDetail extends BaseEntity {
     required this.payment,
     required this.discountAmount,
     required this.discountPercent,
+    required this.discountPromotional,
+    required this.discountByPoint,
     required this.shipPrice,
     required this.cost,
     required this.profit,
     required this.point,
     required this.packageType,
+    required this.additionalFee,
+    required this.additionalConfig,
     this.areaId,
     this.areaName,
     this.tableId,
@@ -152,7 +169,7 @@ class PackageDetail extends BaseEntity {
     shipPrice = json['ship_price'] as double;
     cost = json['cost'] as double;
     profit = json['profit'] as double;
-    point = json['point'] == null ? 0 : json['point'] as int;
+    point = castToInt(json['point']);
     note = json['note'];
     image = json['image'];
     progress = json['progress'] == null
@@ -161,6 +178,10 @@ class PackageDetail extends BaseEntity {
     status = PackageStatusType.values.firstWhere(
         (element) => element.name == json['status'],
         orElse: () => PackageStatusType.CREATE);
+    discountPromotional = castToDouble(json['discount_promotional']);
+    discountByPoint = castToDouble(json['discount_by_point']);
+    additionalFee = castToDouble(json['additional_fee']);
+    additionalConfig = json['additional_config'];
   }
 
   Map<String, dynamic> toJson() {
@@ -186,6 +207,10 @@ class PackageDetail extends BaseEntity {
     _data['image'] = image;
     _data['progress'] = progress?.toJsonString();
     _data['status'] = status?.name;
+    _data['discount_promotional'] = discountPromotional;
+    _data['discount_by_point'] = discountByPoint;
+    _data['additional_fee'] = additionalFee;
+    _data['additional_config'] = additionalConfig;
     return _data;
   }
 

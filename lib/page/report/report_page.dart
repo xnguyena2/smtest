@@ -132,7 +132,8 @@ class _ReportPageState extends State<ReportPage> {
                             datas: {
                               'Tổng giá bán':
                                   MoneyFormater.format(totalPrice),
-                              'Giảm giá': MoneyFormater.format(totalDiscount),
+                              'Chiết khấu':
+                                  '-${MoneyFormater.format(totalDiscount)}',
                               'Phí vận chuyển':
                                   MoneyFormater.format(totalShipPrice),
                             },

@@ -195,6 +195,18 @@ class _ProductItemState extends State<ProductItem> {
         MoneyFormater.format(productInPackageResponse.price);
   }
 
+  void resetToDiscountPrice() {
+    itemPriceTxtController.text =
+        MoneyFormater.format(productInPackageResponse.priceDiscount);
+  }
+
+  void resetDiscount() {
+    productInPackageResponse.discountAmount = 0;
+    productInPackageResponse.discountPercent = 0;
+    isDiscountPercent = false;
+    discountTxtController.text = '0';
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -492,34 +504,54 @@ class _ProductItemState extends State<ProductItem> {
                                         ),
                                       ],
                                     ),
-                                    Expanded(
-                                      child: EditAbleTextFormField(
-                                        controller: itemPriceTxtController,
-                                        focusNode: priceFocus,
-                                        textAlign: TextAlign.right,
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          CurrencyInputFormatter(),
-                                        ],
-                                        maxLines: 1,
-                                        style: customerNameBigHight,
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          isDense: true,
-                                          border: InputBorder.none,
+                                    Row(
+                                      children: [
+                                        if (productInPackageResponse
+                                                    .discountAmount >
+                                                0 ||
+                                            productInPackageResponse
+                                                    .discountPercent >
+                                                0)
+                                          Text(
+                                            MoneyFormater.format(
+                                                productInPackageResponse.price),
+                                            style:
+                                                headStyleSemiLargeVeryLigh500,
+                                          ),
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                        onTapOutside: (event) {
-                                          priceFocus.unfocus();
-                                        },
-                                        onChanged: (value) {
-                                          productInPackageResponse.price =
-                                              tryParseMoney(value);
-                                          widget.onRefreshData();
-                                          setState(() {});
-                                        },
-                                      ),
+                                        IntrinsicWidth(
+                                          child: EditAbleTextFormField(
+                                            controller: itemPriceTxtController,
+                                            focusNode: priceFocus,
+                                            textAlign: TextAlign.right,
+                                            keyboardType: TextInputType.number,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              CurrencyInputFormatter(),
+                                            ],
+                                            maxLines: 1,
+                                            style: customerNameBigHight,
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              isDense: true,
+                                              border: InputBorder.none,
+                                            ),
+                                            onTapOutside: (event) {
+                                              priceFocus.unfocus();
+                                            },
+                                            onChanged: (value) {
+                                              productInPackageResponse.price =
+                                                  tryParseMoney(value);
+                                              resetDiscount();
+                                              widget.onRefreshData();
+                                              setState(() {});
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),
@@ -537,6 +569,7 @@ class _ProductItemState extends State<ProductItem> {
                                           width: 18,
                                         ),
                                         SwitchBtn(
+                                          key: ValueKey(isDiscountPercent),
                                           firstTxt: 'VND',
                                           secondTxt: '%',
                                           enableIndex:
@@ -556,6 +589,7 @@ class _ProductItemState extends State<ProductItem> {
                                                   .discountPercent = 0;
                                             }
                                             discountTxtController.text = '0';
+                                            resetToDiscountPrice();
                                             widget.onRefreshData();
                                             setState(() {});
                                           },
@@ -595,6 +629,7 @@ class _ProductItemState extends State<ProductItem> {
                                                     .discountAmount =
                                                 tryParseMoney(value);
                                           }
+                                          resetToDiscountPrice();
                                           widget.onRefreshData();
                                           setState(() {});
                                         },

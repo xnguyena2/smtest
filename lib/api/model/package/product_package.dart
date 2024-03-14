@@ -26,6 +26,10 @@ class ProductPackage extends PackageDetail {
           profit: 0.0,
           point: 0,
           packageType: haveTable ? DeliverType.table : DeliverType.takeaway,
+          discountPromotional: 0,
+          discountByPoint: 0,
+          additionalFee: 0,
+          additionalConfig: null,
         );
 
   ProductPackage.fromPackageDataResponse(
@@ -54,6 +58,10 @@ class ProductPackage extends PackageDetail {
           image: packageDataResponse.image,
           progress: packageDataResponse.progress,
           status: packageDataResponse.status,
+          discountPromotional: packageDataResponse.discountPromotional,
+          discountByPoint: packageDataResponse.discountByPoint,
+          additionalFee: packageDataResponse.additionalFee,
+          additionalConfig: packageDataResponse.additionalConfig,
         ) {
     buyer = packageDataResponse.buyer;
     productUnits = packageDataResponse.items;
