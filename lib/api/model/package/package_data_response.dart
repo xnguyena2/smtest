@@ -411,15 +411,18 @@ class PackageDataResponse extends PackageDetail {
   ) {
     super.addtransaction(payment, type, detail);
     return PaymentTransaction(
-        groupId: groupId,
-        transaction_second_id: null,
-        packageSecondId: packageSecondId,
-        amount: payment,
-        category: 'Bán hàng',
-        money_source: 'Tiền mặt',
-        device_id: deviceId,
-        note: detail,
-        transaction_type: TType.INCOME);
+      groupId: groupId,
+      transaction_second_id: null,
+      packageSecondId: packageSecondId,
+      amount: payment,
+      category: 'Bán hàng',
+      money_source: 'Tiền mặt',
+      device_id: deviceId,
+      note: detail,
+      transaction_type: TType.INCOME,
+      action_id: packageSecondId,
+      action_type: ActionType.PAYMENT_ORDER,
+    );
   }
 
   PaymentTransaction? makeDone() {

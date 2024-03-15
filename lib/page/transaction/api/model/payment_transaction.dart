@@ -4,6 +4,8 @@ import 'package:sales_management/utils/utils.dart';
 
 enum TType { INCOME, OUTCOME }
 
+enum ActionType { PAYMENT_ORDER, USER_PROPOSE }
+
 class PaymentTransaction extends BaseEntity {
   PaymentTransaction({
     required String groupId,
@@ -12,6 +14,8 @@ class PaymentTransaction extends BaseEntity {
     required this.category,
     required this.money_source,
     required this.transaction_type,
+    required this.action_id,
+    required this.action_type,
     this.note,
     this.status,
     this.packageSecondId,
@@ -21,6 +25,8 @@ class PaymentTransaction extends BaseEntity {
   late double amount;
   late String? device_id;
   late String? packageSecondId;
+  late String? action_id;
+  late ActionType? action_type;
   late String? note;
   late String? category;
   late String? money_source;
@@ -41,6 +47,9 @@ class PaymentTransaction extends BaseEntity {
     transaction_type = type;
     status = null;
 
+    action_id = null;
+    action_type = null;
+
     onlyTime = formatLocalDateTimeOnlyTime(createat);
   }
 
@@ -53,6 +62,10 @@ class PaymentTransaction extends BaseEntity {
     note = json['note'];
     category = json['category'];
     money_source = json['money_source'];
+    action_id = json['action_id'];
+    action_type = ActionType.values.firstWhere(
+        (element) => element.name == json['action_type'],
+        orElse: () => ActionType.USER_PROPOSE);
     transaction_type = TType.values.firstWhere(
         (element) => element.name == json['transaction_type'],
         orElse: () => TType.INCOME);
