@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
 
+enum HeaderReportType { MAIN, SUB }
+
+class ReportItem {
+  final HeaderReportType reportType;
+
+  final String header;
+  final String value;
+
+  ReportItem(
+      {required this.reportType, required this.header, required this.value});
+}
+
 class ReportAsTable extends StatelessWidget {
   final String header;
-  final Map<String, String> datas;
+  final List<ReportItem> datas;
   const ReportAsTable({
     super.key,
     required this.datas,
@@ -49,14 +61,26 @@ class ReportAsTable extends StatelessWidget {
               DataColumn(label: SizedBox()),
               DataColumn(label: SizedBox()),
             ],
-            rows: datas.entries
+            rows: datas
                 .map(
                   (e) => DataRow(
                     cells: <DataCell>[
-                      DataCell(Text(
-                        e.key,
-                        style: subInfoStyLarge400,
-                      )),
+                      DataCell(
+                        Row(
+                          children: [
+                            if (e.reportType == HeaderReportType.SUB)
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            Text(
+                              e.header,
+                              style: e.reportType == HeaderReportType.SUB
+                                  ? subInfoStyLargeLigh400
+                                  : subInfoStyLarge400,
+                            ),
+                          ],
+                        ),
+                      ),
                       DataCell(
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,

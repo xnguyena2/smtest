@@ -35,7 +35,7 @@ class PackageDetailAdapter extends TypeAdapter<PackageDetail> {
       point: fields[20] as int,
       packageType: fields[11] as DeliverType,
       additionalFee: fields[30] as double?,
-      additionalConfig: fields[31] as String?,
+      additionalConfig: fields[31] as AdditionalFeeConfig?,
       areaId: fields[7] as String?,
       areaName: fields[8] as String?,
       tableId: fields[9] as String?,
@@ -151,6 +151,77 @@ class ProgressAdapter extends TypeAdapter<Progress> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ProgressAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class AdditionalFeeConfigAdapter extends TypeAdapter<AdditionalFeeConfig> {
+  @override
+  final int typeId = 23;
+
+  @override
+  AdditionalFeeConfig read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AdditionalFeeConfig(
+      items: (fields[0] as List).cast<AdditionalFeeItem>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AdditionalFeeConfig obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.items);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AdditionalFeeConfigAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class AdditionalFeeItemAdapter extends TypeAdapter<AdditionalFeeItem> {
+  @override
+  final int typeId = 24;
+
+  @override
+  AdditionalFeeItem read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AdditionalFeeItem(
+      amount: fields[0] as double,
+      isDiscountPercent: fields[1] as bool,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AdditionalFeeItem obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.amount)
+      ..writeByte(1)
+      ..write(obj.isDiscountPercent);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AdditionalFeeItemAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

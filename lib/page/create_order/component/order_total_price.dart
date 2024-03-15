@@ -42,6 +42,11 @@ class _TotalPriceState extends State<TotalPrice> {
   final FocusNode shipFocus = FocusNode();
   late bool isEditting = !data.isDone;
 
+  late bool isAdditionalFeeDiscountPercent = widget.data.isAdditionalFeePercent;
+  final TextEditingController additionalFeeTxtController =
+      TextEditingController();
+  final FocusNode additionalFeeFocus = FocusNode();
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -50,6 +55,8 @@ class _TotalPriceState extends State<TotalPrice> {
     discountFocus.dispose();
     shipTxtController.dispose();
     shipFocus.dispose();
+    additionalFeeTxtController.dispose();
+    additionalFeeFocus.dispose();
   }
 
   @override
@@ -60,7 +67,18 @@ class _TotalPriceState extends State<TotalPrice> {
 
     setDiscount();
 
+    additionalFeeTxtController.text =
+        MoneyFormater.format(widget.data.getAdditionalFeeValue);
+
     shipTxtController.text = MoneyFormater.format(data.shipPrice);
+
+    additionalFeeFocus.addListener(() {
+      if (additionalFeeFocus.hasFocus) {
+        additionalFeeTxtController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: additionalFeeTxtController.text.length);
+      }
+    });
 
     discountFocus.addListener(() {
       if (discountFocus.hasFocus) {
@@ -90,7 +108,7 @@ class _TotalPriceState extends State<TotalPrice> {
   Widget build(BuildContext context) {
     PackageDataResponse data = context.watch<ProductProvider>().getPackage!;
     double discount = context.watch<DiscountProvider>().getDiscount!;
-    if (discount > 0) {
+    if (discount != 0) {
       setDiscount();
       context.read<DiscountProvider>().clean();
     }
@@ -158,8 +176,7 @@ class _TotalPriceState extends State<TotalPrice> {
               ],
             ),
             if (isEditting)
-              SizedBox(
-                width: 80,
+              Expanded(
                 child: EditAbleTextFormField(
                   textAlign: TextAlign.right,
                   controller: discountTxtController,
@@ -197,13 +214,13 @@ class _TotalPriceState extends State<TotalPrice> {
             else
               Text(
                 isDiscountPercent
-                    ? data.discountPercent.toString()
+                    ? '${MoneyFormater.format(data.discountPercent)}%'
                     : MoneyFormater.format(data.discountAmount),
                 style: headStyleXXLarge,
               ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 12,
         ),
         Row(
@@ -215,8 +232,7 @@ class _TotalPriceState extends State<TotalPrice> {
                   isEditting ? headStyleSemiLargeLigh500 : headStyleXLargeLigh,
             ),
             if (isEditting)
-              SizedBox(
-                width: 140,
+              Expanded(
                 child: EditAbleTextFormField(
                   textAlign: TextAlign.right,
                   controller: shipTxtController,
@@ -246,6 +262,89 @@ class _TotalPriceState extends State<TotalPrice> {
             else
               Text(
                 MoneyFormater.format(data.shipPrice),
+                style: headStyleXXLarge,
+              ),
+          ],
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Phụ phí',
+                  style: isEditting
+                      ? headStyleSemiLargeLigh500
+                      : headStyleXLargeLigh,
+                ),
+                const SizedBox(
+                  width: 18,
+                ),
+                SwitchBtn(
+                  isEnable: isEditting,
+                  firstTxt: 'VND',
+                  secondTxt: '%',
+                  enableIndex: isAdditionalFeeDiscountPercent ? 1 : 0,
+                  onChanged: (index) {
+                    if (index == 0) {
+                      isAdditionalFeeDiscountPercent = false;
+                    } else {
+                      isAdditionalFeeDiscountPercent = true;
+                    }
+                    data.setAdditionalFee(0, isAdditionalFeeDiscountPercent);
+                    additionalFeeTxtController.text = '0';
+                    context.read<ProductProvider>().justRefresh();
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            if (isEditting)
+              Expanded(
+                child: EditAbleTextFormField(
+                  textAlign: TextAlign.right,
+                  controller: additionalFeeTxtController,
+                  focusNode: additionalFeeFocus,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    if (isAdditionalFeeDiscountPercent) ...[
+                      LengthLimitingTextInputFormatter(2),
+                      FilteringTextInputFormatter.deny(RegExp(r'^0+')),
+                    ] else
+                      CurrencyInputFormatter(),
+                  ],
+                  maxLines: 1,
+                  style: headStyleXLargeHigh,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    border: InputBorder.none,
+                  ),
+                  onTapOutside: (event) {
+                    additionalFeeFocus.unfocus();
+                  },
+                  onChanged: (value) {
+                    if (isAdditionalFeeDiscountPercent) {
+                      data.setAdditionalFee(double.tryParse(value) ?? 0,
+                          isAdditionalFeeDiscountPercent);
+                    } else {
+                      data.setAdditionalFee(
+                          tryParseMoney(value), isAdditionalFeeDiscountPercent);
+                    }
+                    context.read<ProductProvider>().justRefresh();
+                    setState(() {});
+                  },
+                ),
+              )
+            else
+              Text(
+                isAdditionalFeeDiscountPercent
+                    ? '${MoneyFormater.format(data.getAdditionalFeeValue)}%'
+                    : MoneyFormater.format(data.getAdditionalFeeValue),
                 style: headStyleXXLarge,
               ),
           ],

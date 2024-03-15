@@ -570,6 +570,12 @@ const TextStyle headStyleMediumWhiteLigh500 = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle headStyleMediumWhiteSuperLight500 = TextStyle(
+  color: Black40,
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle headStyleMedium500 = TextStyle(
   fontSize: 13,
   fontWeight: FontWeight.w500,

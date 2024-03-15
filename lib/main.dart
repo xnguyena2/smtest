@@ -31,7 +31,7 @@ import 'package:sales_management/page/login_by_qr/login_by_qr.dart';
 import 'package:sales_management/page/order_list/order_list_page.dart';
 import 'package:sales_management/page/product_info/product_info.dart';
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
-import 'package:sales_management/page/report/report_page.dart';
+import 'package:sales_management/page/report/report_selling_tab.dart';
 import 'package:sales_management/page/store_info/store_info_page.dart';
 import 'package:sales_management/utils/storage_provider.dart';
 import 'package:sales_management/utils/utils.dart';
@@ -74,6 +74,8 @@ Future<void> setupHiveDB() async {
   Hive.registerAdapter(ProductInPackageResponseAdapter());
   Hive.registerAdapter(BuyerDataAdapter());
   Hive.registerAdapter(UserPackageAdapter());
+  Hive.registerAdapter(AdditionalFeeItemAdapter());
+  Hive.registerAdapter(AdditionalFeeConfigAdapter());
 
   await LocalStorage.openBox();
 }

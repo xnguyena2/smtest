@@ -46,7 +46,7 @@ class PackageDataResponseAdapter extends TypeAdapter<PackageDataResponse> {
       discountPromotional: fields[28] as double?,
       discountByPoint: fields[29] as double?,
       additionalFee: fields[30] as double?,
-      additionalConfig: fields[31] as String?,
+      additionalConfig: fields[31] as AdditionalFeeConfig?,
     );
   }
 

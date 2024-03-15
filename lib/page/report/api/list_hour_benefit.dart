@@ -8,17 +8,23 @@ class ListHourBenifitDataResult implements ListReportInterface {
   ListHourBenifitDataResult({
     required this.listResult,
   });
-  late final List<BenifitByHoursOfDate> listResult;
+  late final List<BenifitByDateHour> listResult;
   late final List<BenifitByHourOfDateWithOffset> listResultFlat;
   ListHourBenifitDataResult.fromJson(Map<String, dynamic> json) {
     listResult = json['list_result'] == null
         ? []
         : List.from(json['list_result'])
-            .map((e) => BenifitByHoursOfDate.fromJson(e))
+            .map((e) => BenifitByDateHour.fromJson(e))
             .toList();
   }
   int first = 0;
   int last = 0;
+
+  double totalSellingRevenue = 0;
+  double totalSellingCost = 0;
+
+  double totalIncome = 0;
+  double totalOutCome = 0;
 
   double totalPrice = 0;
   double totalRevenue = 0;
@@ -26,6 +32,10 @@ class ListHourBenifitDataResult implements ListReportInterface {
   double totalProfit = 0;
   double totalShipPrice = 0;
   double totalDiscount = 0;
+  double totalDiscountPromotional = 0;
+  double totalDiscountByPoint = 0;
+  double totalReturnPrice = 0;
+  double totalAdditionalFee = 0;
   int numberBuyer = 0;
   int numOrder = 0;
 
@@ -34,12 +44,11 @@ class ListHourBenifitDataResult implements ListReportInterface {
     last = extractHourTimeStamp(to);
 
     Map<int, BenifitByHourOfDateWithOffset> resultMaped =
-        Map<int, BenifitByHourOfDateWithOffset>();
-    numOrder = listResult.fold(
-        numberBuyer, (previousValue, element) => previousValue + element.count);
-    numberBuyer = listResult.fold(
-        0, (previousValue, element) => previousValue + element.buyer);
-    listResult.forEach((element) {
+        <int, BenifitByHourOfDateWithOffset>{};
+
+    for (var element in listResult) {
+      numOrder += element.count;
+      numberBuyer += element.buyer;
       totalPrice += element.price;
       totalRevenue += element.revenue;
       totalCost += element.cost;
@@ -48,7 +57,7 @@ class ListHourBenifitDataResult implements ListReportInterface {
       totalDiscount += element.discount;
       int ts = extractHourTimeStamp(element.localTime);
       resultMaped[ts] = BenifitByHourOfDateWithOffset(0, ts, data: element);
-    });
+    }
     int offset = 0;
     for (int i = first; i <= last; i += 3600000) {
       var p = resultMaped[i];
@@ -57,13 +66,20 @@ class ListHourBenifitDataResult implements ListReportInterface {
           resultMaped[i] = BenifitByHourOfDateWithOffset(
             offset,
             i,
-            data: BenifitByHoursOfDate(
+            data: BenifitByDateHour(
               localTime: timeHourStampToServerFormat(i),
               revenue: 0,
               profit: 0,
               cost: 0,
               count: 0,
               buyer: 0,
+              discount_promotional: 0,
+              discount_by_point: 0,
+              return_price: 0,
+              additional_fee: 0,
+              price: 0,
+              ship_price: 0,
+              discount: 0,
             ),
           );
         }
@@ -82,12 +98,6 @@ class ListHourBenifitDataResult implements ListReportInterface {
   String getTimeStampFrom({required int offset}) {
     final ts = first + offset * 3600000;
     return timeStampToHourFormat(ts);
-  }
-
-  @override
-  List<ReportInterface> getListResult() {
-    // TODO: implement getListResult
-    return listResult;
   }
 
   @override

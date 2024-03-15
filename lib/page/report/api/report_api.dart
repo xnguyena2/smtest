@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:sales_management/api/http.dart';
@@ -8,6 +9,8 @@ import 'package:sales_management/page/report/api/list_date_benefit.dart';
 import 'package:sales_management/page/report/api/list_hour_benefit.dart';
 import 'package:sales_management/page/report/api/list_order_benefit.dart';
 import 'package:sales_management/page/report/api/list_product_benefit.dart';
+import 'package:sales_management/page/report/api/model/benifit_of_order_and_payment_transaction_by_date.dart';
+import 'package:sales_management/page/report/api/model/benifit_of_order_and_payment_transaction_by_hour.dart';
 import 'package:sales_management/page/report/api/model/count_order_by_date.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
@@ -54,9 +57,67 @@ Future<ListHourBenifitDataResult> getReportOfToDay(
 
   print(response.statusCode);
   if (response.statusCode == 200) {
-    debugPrint(response.body, wrapWidth: 1024);
+    // debugPrint(response.body, wrapWidth: 1024);
     final result = ListHourBenifitDataResult.fromJson(
       {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
+    );
+    if (fillAll) {
+      result.fillAllEmpty(from, to, false);
+    }
+    return result;
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<BenifitOfOrderAndPaymentTransactionByDate>
+    getBenifitOfCurrentMonthByDate(
+        {String? start, String? end, bool fillAll = true}) async {
+  String from = start ?? getFirstDateTimeOfCurrentMonth();
+  String to = end ?? getCurrentDateTimeNow();
+  final request =
+      PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
+
+  // print(request.toJson());
+
+  final response = await postC(
+      '/packageorderstatistic/admin/getfinalbenifitbydate', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // log(response.body);
+
+    final result = BenifitOfOrderAndPaymentTransactionByDate.fromJson(
+      jsonDecode(utf8.decode(response.bodyBytes)),
+    );
+    if (fillAll) {
+      result.fillAllEmpty(from, to, false);
+    }
+    return result;
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
+Future<BenifitOfOrderAndPaymentTransactionByHour> getBenifitOfToDay(
+    {String? start, String? end, bool fillAll = true}) async {
+  String from = start ?? getFirstDateTimeOfCurrentMonth();
+  String to = end ?? getCurrentDateTimeNow();
+  final request =
+      PackageID.currentMonth(groupID, from: from, to: to, status: 'DONE');
+
+  // print(request.toJson());
+
+  final response = await postC(
+      '/packageorderstatistic/admin/getfinalbenifitbyhour', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    debugPrint(response.body, wrapWidth: 1024);
+    final result = BenifitOfOrderAndPaymentTransactionByHour.fromJson(
+      jsonDecode(utf8.decode(response.bodyBytes)),
     );
     if (fillAll) {
       result.fillAllEmpty(from, to, false);

@@ -12,12 +12,14 @@ class MonthlyReport extends StatefulWidget {
   final EdgeInsetsGeometry? margin;
   final bool enableShowReportPageBtn;
   final ListReportInterface? listResult;
+  final bool isShowOnlyProfit;
   const MonthlyReport({
     super.key,
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
     this.enableShowReportPageBtn = true,
     this.margin,
     this.listResult,
+    this.isShowOnlyProfit = false,
   });
 
   @override
@@ -32,7 +34,7 @@ class _MonthlyReportState extends State<MonthlyReport> {
     'Đơn hàng',
     'Khách hàng'
   ];
-  String dropdownValue = list.first;
+  late String dropdownValue = widget.isShowOnlyProfit ? list[1] : list.first;
   List<BarChartGroupData> get rawProfitBarGroups => widget.listResult == null
       ? []
       : widget.listResult!
@@ -43,7 +45,7 @@ class _MonthlyReportState extends State<MonthlyReport> {
                 barRods: [
                   BarChartRodData(
                     toY: e.data.profit,
-                    color: TableHighColor,
+                    color: e.data.profit > 0 ? TableHighColor : AlertColor,
                     width: 7,
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
@@ -338,29 +340,30 @@ class _MonthlyReportState extends State<MonthlyReport> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    const Text(
-                      'Báo cáo theo',
-                      style: headStyleLargeBlackLigh,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    DropDownCustome(
-                      list: list,
-                      onChanged: (value) {
-                        dropdownValue = value;
-                        showingTooltip = -1;
-                        showingBarGroups = groupBarsData1;
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+                if (!widget.isShowOnlyProfit)
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      const Text(
+                        'Báo cáo theo',
+                        style: headStyleLargeBlackLigh,
+                      ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      DropDownCustome(
+                        list: list,
+                        onChanged: (value) {
+                          dropdownValue = value;
+                          showingTooltip = -1;
+                          showingBarGroups = groupBarsData1;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 widget.enableShowReportPageBtn
                     ? GestureDetector(
                         onTap: () {
@@ -371,7 +374,7 @@ class _MonthlyReportState extends State<MonthlyReport> {
                             ),
                           );
                         },
-                        child: NavigationNext(
+                        child: const NavigationNext(
                           title: 'Xem chi tiết',
                           assetPath: 'svg/small_chart.svg',
                         ),

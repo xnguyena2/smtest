@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:sales_management/api/model/base_entity.dart';
 import 'package:sales_management/api/model/package/transaction.dart';
 import 'package:sales_management/page/table/api/model/area_table.dart';
-import 'package:sales_management/page/table/api/table_api.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
 
@@ -117,7 +116,7 @@ class PackageDetail extends BaseEntity {
   late double? additionalFee;
 
   @HiveField(31)
-  late String? additionalConfig;
+  late AdditionalFeeConfig? additionalConfig;
 
   PackageDetail({
     required int? id,
@@ -181,7 +180,9 @@ class PackageDetail extends BaseEntity {
     discountPromotional = castToDouble(json['discount_promotional']);
     discountByPoint = castToDouble(json['discount_by_point']);
     additionalFee = castToDouble(json['additional_fee']);
-    additionalConfig = json['additional_config'];
+    additionalConfig = json['additional_config'] == null
+        ? AdditionalFeeConfig(items: [])
+        : AdditionalFeeConfig.fromJson(jsonDecode(json['additional_config']));
   }
 
   Map<String, dynamic> toJson() {
@@ -210,7 +211,7 @@ class PackageDetail extends BaseEntity {
     _data['discount_promotional'] = discountPromotional;
     _data['discount_by_point'] = discountByPoint;
     _data['additional_fee'] = additionalFee;
-    _data['additional_config'] = additionalConfig;
+    _data['additional_config'] = additionalConfig?.toJsonString();
     return _data;
   }
 
@@ -239,14 +240,53 @@ class PackageDetail extends BaseEntity {
 
   String get priceFormat => MoneyFormater.format(price);
 
-  double get finalPrice =>
-      price * (1 - discountPercent / 100) - discountAmount + shipPrice;
+  double get finalPrice {
+    final firstfinalPrice =
+        price * (1 - discountPercent / 100) - discountAmount + shipPrice;
+    if (isAdditionalFeePercent) {
+      additionalFee = firstfinalPrice * getAdditionalFeeValue / 100;
+    }
+    return firstfinalPrice + (additionalFee ?? 0);
+  }
 
   String get finalPriceFormat => MoneyFormater.format(finalPrice);
 
   double get orderDiscount => price * (discountPercent / 100) + discountAmount;
 
   String get orderDiscountFormat => MoneyFormater.format(orderDiscount);
+
+  bool get isAdditionalFeePercent {
+    final firstDiscount = additionalConfig?.items.firstOrNull;
+    if (firstDiscount == null) {
+      return false;
+    }
+    return firstDiscount.isDiscountPercent;
+  }
+
+  double get getAdditionalFeeValue {
+    final firstDiscount = additionalConfig?.items.firstOrNull;
+    if (firstDiscount == null) {
+      return 0;
+    }
+    return firstDiscount.amount;
+  }
+
+  void setAdditionalFee(double amount, bool isPercent) {
+    additionalFee = 0;
+    if (isPercent) {
+      additionalFee = finalPrice * (amount / 100);
+    } else {
+      additionalFee = amount;
+    }
+    additionalConfig ??= AdditionalFeeConfig(items: []);
+    if (additionalConfig!.items.isEmpty) {
+      additionalConfig?.items
+          .add(AdditionalFeeItem(amount: amount, isDiscountPercent: isPercent));
+      return;
+    }
+    additionalConfig?.items.first.amount = amount;
+    additionalConfig?.items.first.isDiscountPercent = isPercent;
+  }
 
   VoidCallback? beforeUpdate;
 
@@ -330,6 +370,73 @@ class Progress {
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['transaction'] = transaction?.map((e) => e.toJson()).toList();
+    return _data;
+  }
+
+  String toJsonString() {
+    return jsonEncode(this);
+  }
+}
+
+@HiveType(typeId: 23)
+class AdditionalFeeConfig {
+  @HiveField(0)
+  late List<AdditionalFeeItem> items;
+
+  AdditionalFeeConfig({
+    required this.items,
+  });
+
+  void addFee(double amount, bool is_discount_percent) {
+    items.add(
+      AdditionalFeeItem(amount: amount, isDiscountPercent: is_discount_percent),
+    );
+  }
+
+  void clean() {
+    return items.clear();
+  }
+
+  AdditionalFeeConfig.fromJson(Map<String, dynamic> json) {
+    final listP = json['items'];
+    items = listP == null
+        ? []
+        : List.from(listP).map((e) => AdditionalFeeItem.fromJson(e)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['items'] = items.map((e) => e.toJson()).toList();
+    return _data;
+  }
+
+  String toJsonString() {
+    return jsonEncode(this);
+  }
+}
+
+@HiveType(typeId: 24)
+class AdditionalFeeItem {
+  @HiveField(0)
+  late double amount;
+
+  @HiveField(1)
+  late bool isDiscountPercent;
+
+  AdditionalFeeItem({
+    required this.amount,
+    required this.isDiscountPercent,
+  });
+
+  AdditionalFeeItem.fromJson(Map<String, dynamic> json) {
+    amount = castToDouble(json['amount']);
+    isDiscountPercent = json['is_discount_percent'] as bool;
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['amount'] = amount;
+    _data['is_discount_percent'] = isDiscountPercent;
     return _data;
   }
 

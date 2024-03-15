@@ -107,14 +107,16 @@ class _CustomerInfoState extends State<CustomerInfo> {
                         if (!isDone && buyer != null)
                           GestureDetector(
                             onTap: () {
-                              widget.data.cleanBuyer();
+                              context.read<DiscountProvider>().updateValue =
+                                  widget.data.cleanBuyer();
+                              updateBuyer();
                               setState(() {});
                             },
                             child: LoadSvg(assetPath: 'svg/close_circle.svg'),
                           ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     Text(

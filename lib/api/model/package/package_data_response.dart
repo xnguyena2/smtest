@@ -241,6 +241,7 @@ class PackageDataResponse extends PackageDetail {
 
   void updateListProductItem(PackageDataResponse package) {
     items = package.items;
+    productMap.clear();
     updateProductMap();
     updatePrice();
   }
@@ -316,10 +317,18 @@ class PackageDataResponse extends PackageDetail {
     });
   }
 
-  void cleanBuyer() {
+  double cleanBuyer() {
+    double decreaseDiscount = 0;
     buyer = null;
     point = 0;
+    if (discountByPoint != null) {
+      if (discountByPoint! > 0 && discountAmount > discountByPoint!) {
+        decreaseDiscount = discountByPoint!;
+        discountAmount -= discountByPoint!;
+      }
+    }
     discountByPoint = 0;
+    return decreaseDiscount;
   }
 
   void updateBuyer(AddressData addressData) {
