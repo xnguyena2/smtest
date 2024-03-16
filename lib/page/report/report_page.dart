@@ -5,20 +5,23 @@ import 'package:sales_management/page/report/report_selling_tab.dart';
 import 'package:sales_management/utils/constants.dart';
 
 class ReportPage extends StatelessWidget {
+  final int initialIndex;
   ReportPage({
     super.key,
+    this.initialIndex = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       top: false,
       bottom: false,
       child: Scaffold(
         appBar: ReportBar(),
         body: DefaultTabController(
+          initialIndex: initialIndex,
           length: 2,
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ColoredBox(

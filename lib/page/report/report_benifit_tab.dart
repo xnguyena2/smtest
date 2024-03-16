@@ -143,12 +143,12 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                             reportType: HeaderReportType.SUB,
                             header: 'Khuyến mãi',
                             value:
-                                '-${MoneyFormater.format(ListDateBenifitDataResult.totalDiscountPromotional)}',
+                                '- ${MoneyFormater.format(ListDateBenifitDataResult.totalDiscountPromotional)}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Chiết khấu',
-                            value: '-${MoneyFormater.format(
+                            value: '- ${MoneyFormater.format(
                               ListDateBenifitDataResult.totalDiscount -
                                   ListDateBenifitDataResult
                                       .totalDiscountByPoint,
@@ -157,14 +157,14 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Giảm gái từ điểm',
-                            value: '-${MoneyFormater.format(
+                            value: '- ${MoneyFormater.format(
                               ListDateBenifitDataResult.totalDiscountByPoint,
                             )}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Hoàn trả',
-                            value: '-${MoneyFormater.format(
+                            value: '- ${MoneyFormater.format(
                               ListDateBenifitDataResult.totalReturnPrice,
                             )}',
                           ),

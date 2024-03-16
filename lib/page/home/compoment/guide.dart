@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sales_management/page/home/compoment/header.dart';
+import 'package:sales_management/page/report/report_page.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -13,14 +14,49 @@ class Guide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> futures = [
-      'Thêm phân loại(ví dụ kích thước, màu sắc,..) cho sản từng sản phẩm. Đẽ dàng lựa chọn khi bán hàng!',
-      'Thêm số lượng hàng hóa trong kho và tự động kiểm kê khi bán hàng!',
-      'Sửa một số lỗi khi chọn bàn, tạo đơn hàng,..'
+      'Thêm báo cáo LÃI LỖ giúp bạn biết được lợi nhuận thực tế báo nhiêu!!!!. Báo cáo lãi lỗ cực kỳ chi tiết!',
+      'Thêm khoảng phụ phí cho đơn ví dụ VAT,...',
+      'Sửa một số lỗi khi thay đổi sản phẩm trong giỏ hàng,..'
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: Column(
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReportPage(
+                          initialIndex: 1,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 38, 176, 116),
+                      borderRadius: bigRoundBorderRadius,
+                      boxShadow: [defaultShadow],
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Bạn chưa biết tháng này lãi hay lỗ????',
+                        style: headStyleSemiLargeWhite500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 12,
+          ),
           header(
             title: 'Có gì mới trong bản cập nhật?',
             titleImg: 'svg/guide.svg',
