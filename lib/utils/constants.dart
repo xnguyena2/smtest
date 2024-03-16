@@ -105,6 +105,13 @@ const BoxShadow defaultShadow = BoxShadow(
   offset: Offset(0, 2),
 );
 
+const BoxShadow lightShadow = BoxShadow(
+  color: borderColorLight,
+  blurRadius: 1,
+  offset: Offset(0, 1),
+  spreadRadius: 1,
+);
+
 const BoxShadow wholeShadow = BoxShadow(
   color: ShowdownColor,
   blurRadius: 4,
@@ -468,6 +475,12 @@ const TextStyle headStyleBigMediumHigh = TextStyle(
   color: TableHighColor,
   fontSize: 14,
   fontWeight: FontWeight.w400,
+);
+
+const TextStyle headStyleSmallLargeMainHigh = TextStyle(
+  color: MainHighColor,
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
 );
 
 const TextStyle headStyleSmallLargeHigh = TextStyle(

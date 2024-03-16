@@ -37,17 +37,44 @@ class Guide extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 38, 176, 116),
-                      borderRadius: bigRoundBorderRadius,
-                      boxShadow: [defaultShadow],
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 12,
                     ),
-                    child: const Center(
-                      child: Text(
-                        'Bạn chưa biết tháng này lãi hay lỗ????',
-                        style: headStyleSemiLargeWhite500,
-                      ),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: defaultBorderRadius,
+                      boxShadow: [lightShadow],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Bạn chưa biết tháng này lãi hay lỗ????',
+                              style: headStyleSmallLarge,
+                            ),
+                            LoadSvg(assetPath: 'svg/close.svg'),
+                          ],
+                        ),
+                        Divider(
+                          color: Black15,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Xem báo cáo lãi/lỗ thật chi tiết nào!!!',
+                              style: headStyleSmallLargeMainHigh,
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            LoadSvg(assetPath: 'svg/small_chart.svg'),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -55,12 +82,25 @@ class Guide extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 12,
+            height: 18,
           ),
-          header(
-            title: 'Có gì mới trong bản cập nhật?',
-            titleImg: 'svg/guide.svg',
-            endChild: LoadSvg(assetPath: 'svg/close.svg'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Có gì mới trong bản cập nhật?',
+                    style: headStyleSmallLarge,
+                  ),
+                  LoadSvg(assetPath: 'svg/guide.svg'),
+                ],
+              ),
+              LoadSvg(assetPath: 'svg/close.svg'),
+            ],
+          ),
+          SizedBox(
+            height: 2,
           ),
           Container(
             margin: EdgeInsets.only(top: 10),
