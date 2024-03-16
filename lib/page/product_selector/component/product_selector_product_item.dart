@@ -58,13 +58,12 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
 
     productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
     rangePrice = widget.productData.getRangePrice;
+    updateVentoryAndUnitNo();
+  }
+
+  void updateVentoryAndUnitNo() {
     inventoryNum = widget.productData.getTotalInventory;
     updatePriceAndNoUnit();
-
-    //if it alredy save in server mean inventory alredy sub
-    if (productInPackage?.isTempPackageItem == false) {
-      inventoryNum += unitNo;
-    }
   }
 
   void updatePriceAndNoUnit() {
@@ -177,8 +176,9 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       isAvariable: isAvariable,
       isNullUnit: false,
       showSelectUnitModal: showSelectUnitModal,
-      inventoryNum: inventoryNum - unitNo,
-      isEnableWarehouse: isEnableWarehouse,
+      inventoryNum: inventoryNum,
+      isEnableWarehouse: (isHaveMultiCategory && inventoryNum > 0) ||
+          (!isHaveMultiCategory && isEnableWarehouse),
     );
   }
 }

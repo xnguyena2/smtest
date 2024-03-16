@@ -56,6 +56,10 @@ class ListHourBenifitDataResult implements ListReportInterface {
       totalProfit += element.profit;
       totalShipPrice += element.ship_price;
       totalDiscount += element.discount;
+      totalDiscountPromotional += element.discount_promotional;
+      totalDiscountByPoint += element.discount_by_point;
+      totalReturnPrice += element.return_price;
+      totalAdditionalFee += element.additional_fee;
       int ts = extractHourTimeStamp(element.localTime);
       resultMaped[ts] = BenifitByHourOfDateWithOffset(0, ts, data: element);
     }

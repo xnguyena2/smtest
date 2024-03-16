@@ -56,13 +56,12 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
 
     productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
     rangePrice = widget.productData.getRangePrice;
+    updateVentoryAndUnitNo();
+  }
+
+  void updateVentoryAndUnitNo() {
     inventoryNum = widget.productData.getTotalInventory;
     updatePriceAndNoUnit();
-
-    //if it alredy save in server mean inventory alredy sub
-    if (productInPackage?.isTempPackageItem == false) {
-      inventoryNum += unitNo;
-    }
   }
 
   void updatePriceAndNoUnit() {
@@ -124,7 +123,13 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
       addItemToPackage: addItemToPackage,
       isHaveMultiCategory: isHaveMultiCategory,
       removeItemToPackage: removeItemToPackage,
-      switchToAvariable: widget.switchToAvariable,
+      switchToAvariable: () {
+        return widget.switchToAvariable().then((value) {
+          updateVentoryAndUnitNo();
+          setState(() {});
+          return value;
+        });
+      },
       onTxtChanged: (value) {
         setDirectUnitNum(value);
       },
@@ -134,7 +139,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
       showSelectUnitModal: () {
         showAlert(context, 'Không hỗ trợ');
       },
-      inventoryNum: inventoryNum - unitNo,
+      inventoryNum: inventoryNum,
       isEnableWarehouse: isEnableWarehouse,
     );
   }

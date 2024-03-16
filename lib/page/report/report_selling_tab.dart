@@ -120,6 +120,7 @@ class _ReportSellingTabState extends State<ReportSellingTab> {
                             reportType: HeaderReportType.MAIN,
                             header: 'Chưa thanh toán',
                             value: MoneyFormater.format(totalPrice +
+                                ListDateBenifitDataResult.totalAdditionalFee +
                                 totalShipPrice -
                                 totalDiscount -
                                 totalRevenue),

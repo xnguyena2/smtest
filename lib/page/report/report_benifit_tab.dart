@@ -156,7 +156,7 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
-                            header: 'Giảm gái từ điểm',
+                            header: 'Giảm giá từ điểm',
                             value: '- ${MoneyFormater.format(
                               ListDateBenifitDataResult.totalDiscountByPoint,
                             )}',

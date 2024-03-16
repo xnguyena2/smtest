@@ -322,7 +322,7 @@ class PackageDataResponse extends PackageDetail {
     buyer = null;
     point = 0;
     if (discountByPoint != null) {
-      if (discountByPoint! > 0 && discountAmount > discountByPoint!) {
+      if (discountByPoint! > 0 && discountAmount >= discountByPoint!) {
         decreaseDiscount = discountByPoint!;
         discountAmount -= discountByPoint!;
       }
