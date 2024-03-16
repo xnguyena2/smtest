@@ -147,7 +147,7 @@ class _ProductCreateCategoryState extends State<ProductCreateCategory> {
                   },
                   child: _ProductUnit(
                     key: ValueKey(
-                        '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}-${item.isAvariable}-${item.isHide}'),
+                        '${item.beerUnitSecondId}-${item.price}-${item.buyPrice}-${item.isAvariable}-${item.isHide}-${item.getInventoryNo}'),
                     item: item,
                     onRefresh: () {
                       setState(() {});
@@ -187,6 +187,8 @@ class _ProductUnitState extends State<_ProductUnit> {
 
   late final TextEditingController unitPrice =
       TextEditingController(text: MoneyFormater.format(widget.item.price));
+
+  late final iventoryNo = widget.item.getInventoryNo;
 
   final FocusNode priceFocus = FocusNode();
   final FocusNode buyPriceFocus = FocusNode();
@@ -249,7 +251,11 @@ class _ProductUnitState extends State<_ProductUnit> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          item.isAvariable ? 'Còn hàng' : 'hết hàng',
+                          iventoryNo > 0
+                              ? 'Còn: $iventoryNo'
+                              : item.isAvariable
+                                  ? 'Còn hàng'
+                                  : 'hết hàng',
                           style: subStyleMediumNormalLight,
                         ),
                         GestureDetector(
@@ -263,7 +269,7 @@ class _ProductUnitState extends State<_ProductUnit> {
                         ),
                       ],
                     ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   GestureDetector(

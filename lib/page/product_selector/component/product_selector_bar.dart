@@ -19,7 +19,7 @@ class ProductSelectorBar extends BarXLarge {
       decoration: BoxDecoration(color: White, boxShadow: [defaultShadow]),
       child: Header(
         onBackPressed: onBackPressed,
-        title: 'Bán hàng',
+        title: 'Sản phẩm',
         funcWidget: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
           child: Row(

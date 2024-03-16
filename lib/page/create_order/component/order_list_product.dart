@@ -110,7 +110,7 @@ class _ListProductState extends State<ListProduct> {
                 final item = data.items[index];
                 return ProductItem(
                   key: ValueKey(
-                      '${item.productSecondId + item.productUnitSecondId}${item.numberUnit}'),
+                      '${item.hashCode}-${item.productSecondId + item.productUnitSecondId}-${item.numberUnit}'),
                   isEditting: !isDone,
                   productInPackageResponse: item,
                   updateNumberUnit: (productInPackageResponse) {
@@ -249,7 +249,7 @@ class _ProductItemState extends State<ProductItem> {
   void applyItemPrice(bool value) {
     productInPackageResponse.price = value
         ? productInPackageResponse.getWholesalePrice
-        : productInPackageResponse.getPrice;
+        : productInPackageResponse.getOrgRealPrice;
     itemPriceTxtController.text =
         MoneyFormater.format(productInPackageResponse.price);
   }

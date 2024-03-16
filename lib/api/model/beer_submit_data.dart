@@ -725,6 +725,13 @@ class BeerUnit {
 
   bool get isAvariable => unitStatus == ProductUnitStatus.AVARIABLE;
 
+  int get getInventoryNo {
+    if (!isHide && isAvariable && enable_warehouse == true) {
+      return inventory_number ?? 0;
+    }
+    return 0;
+  }
+
   late ProductUnitStatus unitStatus;
 }
 
