@@ -117,7 +117,7 @@ class ProductManagerItem extends StatelessWidget {
                           ),
                           Text(
                             rangePriceWithOrgPrice[1],
-                            style: headStyleSemiLargeVeryLigh500,
+                            style: headStyleSemiLargeVeryLigh500LineThrough,
                           ),
                         ]
                       ],

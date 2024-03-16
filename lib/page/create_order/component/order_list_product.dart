@@ -516,7 +516,7 @@ class _ProductItemState extends State<ProductItem> {
                                             MoneyFormater.format(
                                                 productInPackageResponse.price),
                                             style:
-                                                headStyleSemiLargeVeryLigh500,
+                                                headStyleSemiLargeVeryLigh500LineThrough,
                                           ),
                                         const SizedBox(
                                           width: 10,

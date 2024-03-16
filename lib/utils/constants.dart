@@ -6,7 +6,7 @@ const String host =
 
 const String Seperate = '<=>';
 
-const String appVersion = '1.9.0';
+const String appVersion = '1.10.0';
 
 String storeName = 'trumbien store';
 String groupID = 'trumbien_store';
@@ -406,13 +406,13 @@ const TextStyle headStyleSemiLargeVeryLigh500 = TextStyle(
   color: Black40,
   fontWeight: FontWeight.w500,
   fontSize: 15,
-  decoration: TextDecoration.lineThrough,
 );
 
 const TextStyle headStyleSemiLargeVeryLigh500LineThrough = TextStyle(
   color: Black40,
   fontWeight: FontWeight.w500,
   fontSize: 15,
+  decoration: TextDecoration.lineThrough,
 );
 
 const TextStyle headStyleSemiLarge400 = TextStyle(

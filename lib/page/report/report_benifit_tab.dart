@@ -222,9 +222,9 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                                 (e) => ReportItem(
                                   reportType: HeaderReportType.SUB,
                                   header: e.category ?? 'unknow',
-                                  value: MoneyFormater.format(
+                                  value: '- ${MoneyFormater.format(
                                     e.cost,
-                                  ),
+                                  )}',
                                 ),
                               )
                               .toList(),
