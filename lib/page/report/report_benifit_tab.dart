@@ -91,12 +91,6 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                       const SizedBox(
                         height: 15,
                       ),
-                      const SizedBox(
-                        width: 100,
-                        child: Divider(
-                          color: Black15,
-                        ),
-                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
