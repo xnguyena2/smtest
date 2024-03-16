@@ -326,6 +326,24 @@ class PrintContent extends StatelessWidget {
                   ],
                 ),
               ],
+              if (data.additionalFee != null && data.additionalFee! > 0) ...[
+                SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Phụ phí',
+                      style: headStyleXLarge400,
+                    ),
+                    Text(
+                      '${MoneyFormater.format(data.additionalFee!)} đ',
+                      style: headStyleXLarge400,
+                    )
+                  ],
+                ),
+              ],
               SizedBox(
                 height: 8,
               ),

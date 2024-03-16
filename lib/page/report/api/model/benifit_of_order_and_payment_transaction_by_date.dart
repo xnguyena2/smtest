@@ -1,3 +1,4 @@
+import 'package:sales_management/component/interface/item_report_category_item_interface.dart';
 import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/component/interface/report_with_offset_interface.dart';
 import 'package:sales_management/page/home/api/model/benifit_by_date_of_month.dart';
@@ -91,6 +92,16 @@ class BenifitOfOrderAndPaymentTransactionByDate implements ListReportInterface {
       resultMaped[ts] = BenifitByDateOfMonthWithOffset(0, ts, data: element);
     }
 
+    totalReturnPrice = return_price;
+
+    totalSellingRevenue =
+        totalPrice + totalShipPrice + totalAdditionalFee - totalDiscount;
+
+    totalSellingCost = totalCost;
+
+    print(
+        'totalSellingRevenue: $totalSellingRevenue, totalSellingCost: $totalSellingCost, calcProfit: ${totalSellingRevenue - totalSellingCost}, totalProfit: $totalProfit');
+
     for (var element in benifit_by_date_transaction) {
       totalIncome += element.revenue;
       totalOutCome += element.cost;
@@ -106,14 +117,6 @@ class BenifitOfOrderAndPaymentTransactionByDate implements ListReportInterface {
         benifit.data.profit += element.revenue - element.cost;
       }
     }
-
-    totalSellingRevenue = totalPrice + totalShipPrice + totalAdditionalFee;
-
-    totalSellingCost = totalDiscount + totalCost;
-
-    print(
-        'totalSellingRevenue: $totalSellingRevenue, totalSellingCost: $totalSellingCost, calcProfit: ${totalSellingRevenue - totalSellingCost}, totalProfit: $totalProfit');
-
     int offset = 0;
     for (int i = first; i <= last; i += 86400000) {
       var p = resultMaped[i];
@@ -160,5 +163,10 @@ class BenifitOfOrderAndPaymentTransactionByDate implements ListReportInterface {
   List<ReportWithOffset> getListResultFlat() {
     // TODO: implement getListResultFlat
     return listResultFlat;
+  }
+
+  @override
+  List<ItemReportCategoryItemInterface> getListCategory() {
+    return benifit_by_category_transaction;
   }
 }

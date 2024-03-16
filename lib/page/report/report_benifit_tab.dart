@@ -4,9 +4,7 @@ import 'package:sales_management/component/interface/list_report_interface.dart'
 import 'package:sales_management/page/home/compoment/monthly_report.dart';
 import 'package:sales_management/page/report/api/report_api.dart';
 import 'package:sales_management/page/report/component/report_as_table.dart';
-import 'package:sales_management/page/report/component/report_bar.dart';
 import 'package:sales_management/page/report/component/report_benifit_main_info.dart';
-import 'package:sales_management/page/report/component/report_main_info.dart';
 import 'package:sales_management/page/report/component/report_time_selector.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/utils.dart';
@@ -69,14 +67,7 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
           child: FetchAPI<ListReportInterface>(
             future: _loadData,
             successBuilder: (ListDateBenifitDataResult) {
-              double totalPrice = ListDateBenifitDataResult.totalPrice;
-              double totalRevenue = ListDateBenifitDataResult.totalRevenue;
-              double totalCost = ListDateBenifitDataResult.totalCost;
-              double totalProfit = ListDateBenifitDataResult.totalProfit;
-              double totalDiscount = ListDateBenifitDataResult.totalDiscount;
               double totalShipPrice = ListDateBenifitDataResult.totalShipPrice;
-              int numOrder = ListDateBenifitDataResult.numOrder;
-              int numbuyer = ListDateBenifitDataResult.numberBuyer;
               final totalSellingMoney =
                   ListDateBenifitDataResult.totalSellingRevenue;
               final totalSellingCost =
@@ -99,6 +90,12 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                       ),
                       const SizedBox(
                         height: 15,
+                      ),
+                      const SizedBox(
+                        width: 100,
+                        child: Divider(
+                          color: Black15,
+                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,12 +128,17 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                           ReportItem(
                             reportType: HeaderReportType.MAIN,
                             header: 'Doanh thu bán hàng (1)',
-                            value: MoneyFormater.format(totalRevenue),
+                            value: MoneyFormater.format(
+                                ListDateBenifitDataResult.totalSellingRevenue),
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Tổng bán ra',
-                            value: MoneyFormater.format(totalPrice),
+                            value: MoneyFormater.format(
+                                ListDateBenifitDataResult.totalPrice +
+                                    ListDateBenifitDataResult
+                                        .totalDiscountPromotional +
+                                    ListDateBenifitDataResult.totalReturnPrice),
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
@@ -146,36 +148,108 @@ class _ReportBenifitTabtate extends State<ReportBenifitTab> {
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Khuyến mãi',
-                            value: MoneyFormater.format(
-                                ListDateBenifitDataResult
-                                    .totalDiscountPromotional),
+                            value:
+                                '-${MoneyFormater.format(ListDateBenifitDataResult.totalDiscountPromotional)}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Chiết khấu',
-                            value: MoneyFormater.format(
-                              ListDateBenifitDataResult.totalDiscount,
-                            ),
+                            value: '-${MoneyFormater.format(
+                              ListDateBenifitDataResult.totalDiscount -
+                                  ListDateBenifitDataResult
+                                      .totalDiscountByPoint,
+                            )}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Giảm gái từ điểm',
-                            value: MoneyFormater.format(
+                            value: '-${MoneyFormater.format(
                               ListDateBenifitDataResult.totalDiscountByPoint,
-                            ),
+                            )}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
-                            header: 'Hoàn trả BUG',
-                            value: MoneyFormater.format(
+                            header: 'Hoàn trả',
+                            value: '-${MoneyFormater.format(
                               ListDateBenifitDataResult.totalReturnPrice,
-                            ),
+                            )}',
                           ),
                           ReportItem(
                             reportType: HeaderReportType.SUB,
                             header: 'Phụ thu',
                             value: MoneyFormater.format(
                               ListDateBenifitDataResult.totalAdditionalFee,
+                            ),
+                          ),
+                          ReportItem(
+                            reportType: HeaderReportType.MAIN,
+                            header: 'Giá vốn bán hàng (2)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalCost,
+                            ),
+                          ),
+                          ReportItem(
+                            reportType: HeaderReportType.MAIN,
+                            header: 'Lợi nhuận gộp (3 = 1 - 2)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalRevenue -
+                                  ListDateBenifitDataResult.totalCost,
+                            ),
+                          ),
+                          ReportItem(
+                            reportType: HeaderReportType.MAIN,
+                            header: 'Doanh thu khác (4)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalIncome,
+                            ),
+                          ),
+                          ...ListDateBenifitDataResult.getListCategory()
+                              .where((element) => element.revenue > 0)
+                              .map(
+                                (e) => ReportItem(
+                                  reportType: HeaderReportType.SUB,
+                                  header: e.category ?? 'unknow',
+                                  value: MoneyFormater.format(
+                                    e.revenue,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          ReportItem(
+                            reportType: HeaderReportType.MAIN,
+                            header: 'Chi phí khác (5)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalOutCome,
+                            ),
+                          ),
+                          ...ListDateBenifitDataResult.getListCategory()
+                              .where((element) => element.cost > 0)
+                              .map(
+                                (e) => ReportItem(
+                                  reportType: HeaderReportType.SUB,
+                                  header: e.category ?? 'unknow',
+                                  value: MoneyFormater.format(
+                                    e.cost,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          ReportItem(
+                            reportType: HeaderReportType.MAIN,
+                            header: 'Lợi nhuận khác (6 = 4 - 5)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalIncome -
+                                  ListDateBenifitDataResult.totalOutCome,
+                            ),
+                          ),
+                          ReportItem(
+                            reportType: HeaderReportType.IMPORTANCE,
+                            header: 'Lợi nhuận (7 = 3 + 6)',
+                            value: MoneyFormater.format(
+                              ListDateBenifitDataResult.totalRevenue -
+                                  ListDateBenifitDataResult.totalCost +
+                                  ListDateBenifitDataResult.totalIncome -
+                                  ListDateBenifitDataResult.totalOutCome,
                             ),
                           ),
                         ],

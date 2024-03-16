@@ -1,6 +1,7 @@
+import 'package:sales_management/component/interface/item_report_category_item_interface.dart';
 import 'package:sales_management/utils/utils.dart';
 
-class BenifitByPaymentTransaction {
+class BenifitByPaymentTransaction implements ItemReportCategoryItemInterface {
   BenifitByPaymentTransaction({
     required this.category,
     required this.revenue,

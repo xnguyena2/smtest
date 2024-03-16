@@ -1,3 +1,4 @@
+import 'package:sales_management/component/interface/item_report_category_item_interface.dart';
 import 'package:sales_management/component/interface/list_report_interface.dart';
 import 'package:sales_management/component/interface/report_interface.dart';
 import 'package:sales_management/component/interface/report_with_offset_interface.dart';
@@ -104,6 +105,11 @@ class ListHourBenifitDataResult implements ListReportInterface {
   List<ReportWithOffset> getListResultFlat() {
     // TODO: implement getListResultFlat
     return listResultFlat;
+  }
+
+  @override
+  List<ItemReportCategoryItemInterface> getListCategory() {
+    return [];
   }
 }
 

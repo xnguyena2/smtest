@@ -1,7 +1,10 @@
+import 'package:sales_management/component/interface/item_report_category_item_interface.dart';
 import 'package:sales_management/component/interface/report_with_offset_interface.dart';
 
 abstract interface class ListReportInterface {
   List<ReportWithOffset> getListResultFlat();
+
+  List<ItemReportCategoryItemInterface> getListCategory();
 
   String getTimeStampFrom({required int offset});
   int get first;

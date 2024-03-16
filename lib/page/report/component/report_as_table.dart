@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sales_management/utils/constants.dart';
 
-enum HeaderReportType { MAIN, SUB }
+enum HeaderReportType { IMPORTANCE, MAIN, SUB }
 
 class ReportItem {
   final HeaderReportType reportType;
@@ -74,9 +74,11 @@ class ReportAsTable extends StatelessWidget {
                               ),
                             Text(
                               e.header,
-                              style: e.reportType == HeaderReportType.SUB
-                                  ? subInfoStyLargeLigh400
-                                  : subInfoStyLarge400,
+                              style: e.reportType == HeaderReportType.IMPORTANCE
+                                  ? subInfoStyLarge600
+                                  : e.reportType == HeaderReportType.SUB
+                                      ? subInfoStyLargeLigh400
+                                      : subInfoStyLarge400,
                             ),
                           ],
                         ),
@@ -87,7 +89,9 @@ class ReportAsTable extends StatelessWidget {
                           children: [
                             Text(
                               e.value,
-                              style: headStyleMedium,
+                              style: e.reportType == HeaderReportType.IMPORTANCE
+                                  ? headStyleMedium600
+                                  : headStyleMedium,
                             ),
                           ],
                         ),

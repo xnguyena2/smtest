@@ -115,7 +115,7 @@ class ReportBenifitMainInfo extends StatelessWidget {
                     height: 0,
                   ),
                   _ReportIteam(
-                    title: 'số dư',
+                    title: 'Lợi nhuận khác',
                     value: MoneyFormater.format(
                         totalIncomeMoney - totalOutComeMoney),
                     isAlignLeft: true,

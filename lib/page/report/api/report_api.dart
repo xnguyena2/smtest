@@ -115,7 +115,7 @@ Future<BenifitOfOrderAndPaymentTransactionByHour> getBenifitOfToDay(
 
   print(response.statusCode);
   if (response.statusCode == 200) {
-    debugPrint(response.body, wrapWidth: 1024);
+    // debugPrint(response.body, wrapWidth: 1024);
     final result = BenifitOfOrderAndPaymentTransactionByHour.fromJson(
       jsonDecode(utf8.decode(response.bodyBytes)),
     );
