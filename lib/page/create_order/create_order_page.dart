@@ -6,6 +6,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/btn/approve_btn.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
+import 'package:sales_management/helper/backup_services.dart';
 import 'package:sales_management/page/create_order/component/create_order_bar.dart';
 import 'package:sales_management/page/create_order/component/order_progress.dart';
 import 'package:sales_management/component/bottom_bar.dart';
@@ -28,7 +29,7 @@ import 'package:sales_management/utils/typedef.dart';
 
 import '../../utils/constants.dart';
 
-class CreateOrderPage extends StatelessWidget {
+class CreateOrderPage extends StatefulWidget {
   final String? packageID;
   final PackageDataResponse data;
   final VoidCallbackArg<PackageDataResponse> onUpdated;
@@ -44,13 +45,36 @@ class CreateOrderPage extends StatelessWidget {
   });
 
   @override
+  State<CreateOrderPage> createState() => _CreateOrderPageState();
+}
+
+class _CreateOrderPageState extends State<CreateOrderPage> {
+  bool isShouldRestoreFromBackup = true;
+  BackUpServices backUpServices = BackUpServices();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    backUpServices.backupInventoryNum();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (isShouldRestoreFromBackup) {
+      backUpServices.restore();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: BackgroundColor,
       child: FetchAPI<PackageDataResponse>(
-        future: packageID != null
-            ? getPackage(PackageID.fromPackageID(packageID!))
-            : Future.value(data),
+        future: widget.packageID != null
+            ? getPackage(PackageID.fromPackageID(widget.packageID!))
+            : Future.value(widget.data),
         successBuilder: (data) {
           return LoadingOverlayAlt(
             child: MultiProvider(
@@ -79,8 +103,9 @@ class CreateOrderPage extends StatelessWidget {
                                 'Đơn này người mua trả lại?',
                                 onOk: () {
                                   LoadingOverlayAlt.of(context).show();
-                                  returnOrder(data, isTempOrder).then((value) {
-                                    onDelete(data);
+                                  returnOrder(data, widget.isTempOrder)
+                                      .then((value) {
+                                    widget.onDelete(data);
                                     Navigator.pop(context);
                                     LoadingOverlayAlt.of(context).hide();
                                   }).onError((error, stackTrace) {
@@ -95,8 +120,11 @@ class CreateOrderPage extends StatelessWidget {
                     ),
                     body: CreateOrderBody(
                       data: data,
-                      onUpdated: () => onUpdated(data),
-                      isTempOrder: isTempOrder,
+                      onUpdated: () {
+                        isShouldRestoreFromBackup = false;
+                        widget.onUpdated(data);
+                      },
+                      isTempOrder: widget.isTempOrder,
                     ),
                     bottomNavigationBar: data.isLocal
                         ? BottomBar(
@@ -114,7 +142,7 @@ class CreateOrderPage extends StatelessWidget {
                                   LoadingOverlayAlt.of(context).show();
 
                                   syncOrderPackage(data).then((value) {
-                                    onUpdated(data);
+                                    widget.onUpdated(data);
                                     LoadingOverlayAlt.of(context).hide();
                                     Navigator.pop(context);
                                   }).catchError(
@@ -135,7 +163,7 @@ class CreateOrderPage extends StatelessWidget {
                                 onOk: () {
                                   LoadingOverlayAlt.of(context).show();
                                   removeLocalOrder(data).then((value) {
-                                    onDelete(data);
+                                    widget.onDelete(data);
                                     Navigator.pop(context);
                                     LoadingOverlayAlt.of(context).hide();
                                   }).catchError(
@@ -154,8 +182,10 @@ class CreateOrderPage extends StatelessWidget {
                             : BottomBar(
                                 done: () {
                                   LoadingOverlayAlt.of(context).show();
-                                  doneOrder(data, isTempOrder).then((value) {
-                                    onUpdated(data);
+                                  doneOrder(data, widget.isTempOrder)
+                                      .then((value) {
+                                    isShouldRestoreFromBackup = false;
+                                    widget.onUpdated(data);
                                     LoadingOverlayAlt.of(context).hide();
                                     Navigator.pushReplacement(
                                       context,
@@ -177,9 +207,10 @@ class CreateOrderPage extends StatelessWidget {
                                     'Bạn có chắc muốn hủy đơn?',
                                     onOk: () {
                                       LoadingOverlayAlt.of(context).show();
-                                      cancelOrderPackage(data, isTempOrder)
+                                      cancelOrderPackage(
+                                              data, widget.isTempOrder)
                                           .then((value) {
-                                        onDelete(data);
+                                        widget.onDelete(data);
                                         Navigator.pop(context);
                                         LoadingOverlayAlt.of(context).hide();
                                       }).onError((error, stackTrace) {
@@ -197,9 +228,10 @@ class CreateOrderPage extends StatelessWidget {
                                   backgroundColor: HighColor,
                                   onPressed: () {
                                     LoadingOverlayAlt.of(context).show();
-                                    updateOrderPackage(data, isTempOrder)
+                                    updateOrderPackage(data, widget.isTempOrder)
                                         .then((value) {
-                                      onUpdated(data);
+                                      isShouldRestoreFromBackup = false;
+                                      widget.onUpdated(data);
                                       LoadingOverlayAlt.of(context).hide();
                                       Navigator.pop(context);
                                     }).onError((error, stackTrace) {

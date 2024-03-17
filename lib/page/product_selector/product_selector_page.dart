@@ -23,7 +23,6 @@ import 'package:sales_management/page/product_selector/component/provider_produc
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
-import 'package:sales_management/utils/utils.dart';
 
 import '../../component/category_selector.dart';
 
@@ -53,7 +52,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   late List<BeerSubmitData> listAllProduct;
   late List<String> listCategory;
 
-  late final isProductSelector = widget.packageDataResponse != null;
+  late final isProductSelectorForOrder = widget.packageDataResponse != null;
 
   void loadDataFrom({required BootStrapData config}) {
     final results = config.products;
@@ -177,7 +176,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                   context.read<SearchProvider>().updateValue = searchTxt;
                 },
               ),
-              floatingActionButton: isProductSelector
+              floatingActionButton: isProductSelectorForOrder
                   ? null
                   : FloatingActionButton.small(
                       elevation: 2,
@@ -237,7 +236,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                   );
                 },
               ),
-              bottomNavigationBar: isProductSelector
+              bottomNavigationBar: isProductSelectorForOrder
                   ? ProductSelectorBottomBar(
                       done: () {
                         if (widget.firstSelectProductWhenCreateOrder) {
