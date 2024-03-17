@@ -135,7 +135,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
 
   @override
   Widget build(BuildContext context) {
-    _switchToAvariable({bool isRunOnchange = true}) async {
+    switchProductToAvariable() async {
       await showDefaultDialog(
           context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
           onOk: () {
@@ -144,9 +144,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
         createProduct(widget.productData).then((value) {
           LoadingOverlayAlt.of(context).hide();
           isAvariable = widget.productData.isAvariable;
-          if (isRunOnchange) {
-            widget.onChanged?.call(widget.productData);
-          }
+          widget.onChanged?.call(widget.productData);
           setState(() {});
         }).onError((error, stackTrace) {
           LoadingOverlayAlt.of(context).hide();
@@ -156,6 +154,28 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
         });
       }, onCancel: () {});
       return isAvariable;
+    }
+
+    switchProductUnitToAvariable(BeerSubmitData productUnit) async {
+      bool isUnitAvariable = false;
+      await showDefaultDialog(
+          context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
+          onOk: () {
+        isUnitAvariable = true;
+        productUnit.changeUnitStatus(productUnit.firstOrNull, isUnitAvariable);
+        LoadingOverlayAlt.of(context).show();
+        createProduct(widget.productData).then((value) {
+          LoadingOverlayAlt.of(context).hide();
+        }).onError((error, stackTrace) {
+          LoadingOverlayAlt.of(context).hide();
+          isUnitAvariable = false;
+          productUnit.changeUnitStatus(
+              productUnit.firstOrNull, isUnitAvariable);
+          showAlert(
+              context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
+        });
+      }, onCancel: () {});
+      return isUnitAvariable;
     }
 
     showSelectUnitModal() async {
@@ -190,10 +210,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
             content: ModalSelectProductUnitCategory(
               product: widget.productData,
               mapProductInPackage: clone,
-              swithAvariable: (b) async {
-                b.changeUnitStatus(b.firstOrNull, true);
-                return _switchToAvariable(isRunOnchange: false);
-              },
+              swithAvariable: switchProductUnitToAvariable,
               onDone: (Map<String, ProductInPackageResponse> maps) {
                 shouldRestore = false;
                 mapProductInPackage = maps;
@@ -220,7 +237,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       addItemToPackage: addItemToPackage,
       isHaveMultiCategory: isHaveMultiCategory,
       removeItemToPackage: removeItemToPackage,
-      switchToAvariable: _switchToAvariable,
+      switchToAvariable: switchProductToAvariable,
       onTxtChanged: (value) {
         setDirectUnitNum(value);
       },
