@@ -149,7 +149,6 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     );
   }
 
-  bool isShouldRestoreFromBackup = true;
   BackUpServices? backUpServices;
 
   @override
@@ -162,9 +161,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    if (isShouldRestoreFromBackup) {
-      backUpServices?.restore();
-    }
+    backUpServices?.restore();
   }
 
   @override
@@ -274,7 +271,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                           );
                           return;
                         }
-                        isShouldRestoreFromBackup = false;
+                        backUpServices?.enableRestore(false);
                         widget.packageDataResponse?.cleanEmptyProduct();
                         widget.onUpdated(widget.packageDataResponse!);
                         Navigator.pop(context);

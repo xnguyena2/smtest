@@ -9,12 +9,18 @@ class BackUpServices {
 
   final Map<String, int> inventoryImg = {};
 
+  bool isShouldRestoreFromBackup = true;
+
   List<BeerSubmitData>? _getAllProduct() {
     BootStrapData? config = LocalStorage.getBootStrap();
     if (config == null) {
       return null;
     }
     return config.products;
+  }
+
+  void enableRestore(bool isEnable) {
+    isShouldRestoreFromBackup = isEnable;
   }
 
   void backupInventoryNum() {
@@ -37,7 +43,7 @@ class BackUpServices {
   }
 
   void restore() {
-    if (listAllProduct == null) {
+    if (listAllProduct == null && !isShouldRestoreFromBackup) {
       return;
     }
     for (var element in listAllProduct!) {

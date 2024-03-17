@@ -49,7 +49,6 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class _CreateOrderPageState extends State<CreateOrderPage> {
-  bool isShouldRestoreFromBackup = true;
   BackUpServices backUpServices = BackUpServices();
   @override
   void initState() {
@@ -62,9 +61,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    if (isShouldRestoreFromBackup) {
-      backUpServices.restore();
-    }
+    backUpServices.restore();
   }
 
   @override
@@ -121,7 +118,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     body: CreateOrderBody(
                       data: data,
                       onUpdated: () {
-                        isShouldRestoreFromBackup = false;
+                        //correct way is we should create new backup because this point user save his order so we must save create new backup also
+                        backUpServices.enableRestore(false);
                         widget.onUpdated(data);
                       },
                       isTempOrder: widget.isTempOrder,
@@ -184,7 +182,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   LoadingOverlayAlt.of(context).show();
                                   doneOrder(data, widget.isTempOrder)
                                       .then((value) {
-                                    isShouldRestoreFromBackup = false;
+                                    backUpServices.enableRestore(false);
                                     widget.onUpdated(data);
                                     LoadingOverlayAlt.of(context).hide();
                                     Navigator.pushReplacement(
@@ -230,7 +228,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     LoadingOverlayAlt.of(context).show();
                                     updateOrderPackage(data, widget.isTempOrder)
                                         .then((value) {
-                                      isShouldRestoreFromBackup = false;
+                                      backUpServices.enableRestore(false);
                                       widget.onUpdated(data);
                                       LoadingOverlayAlt.of(context).hide();
                                       Navigator.pop(context);
