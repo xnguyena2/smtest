@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
+import 'package:sales_management/api/model/package/package_detail.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/page/order_list/bussiness/order_bussiness.dart';
@@ -85,16 +86,22 @@ class OrderListPage extends StatelessWidget {
 
 class Body extends StatelessWidget {
   final VoidCallback addNewOrder;
-  final _LoadMoreTrigger _loadMoreTrigger = _LoadMoreTrigger();
+
   Body({
     super.key,
     required this.addNewOrder,
   });
 
+  late final _LoadMoreTrigger _loadMoreAllWorkingTrigger =
+      _LoadMoreTrigger(loadMoreActionStep: _LoadMoreWrokingOrder());
+
+  late final _LoadMoreTrigger _loadMoreAllProcessingTrigger =
+      _LoadMoreTrigger(loadMoreActionStep: _LoadMoreProcessingOrder());
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -126,6 +133,13 @@ class Body extends StatelessWidget {
                   height: 35,
                   child: SizedBox(
                     width: 200,
+                    child: Center(child: Text('Đang xử lý')),
+                  ),
+                ),
+                Tab(
+                  height: 35,
+                  child: SizedBox(
+                    width: 200,
                     child: Center(child: Text('Chờ xác nhận')),
                   ),
                 ),
@@ -133,24 +147,24 @@ class Body extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                if (_loadMoreTrigger.canLoadMore() &&
-                    scrollInfo.metrics.axis == Axis.vertical &&
-                    scrollInfo.metrics.pixels /
-                            scrollInfo.metrics.maxScrollExtent >
-                        0.8) {
-                  _loadMoreTrigger.loadMore((result) {
-                    context.read<NewOrderProvider>().updateValue =
-                        result.getList;
-                  });
-                }
-                return true;
-              },
-              child: TabBarView(
-                children: [
-                  FetchAPI<ListPackageDetailResult>(
-                    future: _loadMoreTrigger.firstLoad(),
+            child: TabBarView(
+              children: [
+                NotificationListener<ScrollNotification>(
+                  onNotification: (scrollInfo) {
+                    if (_loadMoreAllWorkingTrigger.canLoadMore() &&
+                        scrollInfo.metrics.axis == Axis.vertical &&
+                        scrollInfo.metrics.pixels /
+                                scrollInfo.metrics.maxScrollExtent >
+                            0.8) {
+                      _loadMoreAllWorkingTrigger.loadMore((result) {
+                        context.read<NewOrderProvider>().updateValue =
+                            result.getList;
+                      });
+                    }
+                    return true;
+                  },
+                  child: FetchAPI<ListPackageDetailResult>(
+                    future: _loadMoreAllWorkingTrigger.firstLoad(),
                     successBuilder: (data) {
                       context.read<NewOrderProvider>().setValue = data;
                       return OrderListAllPackageTab(
@@ -158,11 +172,44 @@ class Body extends StatelessWidget {
                       );
                     },
                   ),
-                  const Center(
-                    child: Text('Chưa có đơn nào!'),
-                  ),
-                ],
-              ),
+                ),
+                MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(
+                      create: (_) => NewOrderProvider(),
+                    )
+                  ],
+                  child: Builder(builder: (context) {
+                    return NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (_loadMoreAllProcessingTrigger.canLoadMore() &&
+                            scrollInfo.metrics.axis == Axis.vertical &&
+                            scrollInfo.metrics.pixels /
+                                    scrollInfo.metrics.maxScrollExtent >
+                                0.8) {
+                          _loadMoreAllProcessingTrigger.loadMore((result) {
+                            context.read<NewOrderProvider>().updateValue =
+                                result.getList;
+                          });
+                        }
+                        return true;
+                      },
+                      child: FetchAPI<ListPackageDetailResult>(
+                        future: _loadMoreAllProcessingTrigger.firstLoad(),
+                        successBuilder: (data) {
+                          context.read<NewOrderProvider>().setValue = data;
+                          return OrderListAllPackageTab(
+                            createNewOrder: addNewOrder,
+                          );
+                        },
+                      ),
+                    );
+                  }),
+                ),
+                const Center(
+                  child: Text('Chưa có đơn nào!'),
+                ),
+              ],
             ),
           ),
         ],
@@ -172,6 +219,56 @@ class Body extends StatelessWidget {
 }
 
 class _LoadMoreTrigger {
+  _LoadMoreActionStep _loadMoreActionStep;
+
+  _LoadMoreTrigger({required _LoadMoreActionStep loadMoreActionStep})
+      : _loadMoreActionStep = loadMoreActionStep;
+
+  void switchAction(_LoadMoreActionStep newStep) {
+    _loadMoreActionStep = newStep;
+  }
+
+  void reset() {
+    _loadMoreActionStep.reset();
+  }
+
+  bool canLoadMore() {
+    return _loadMoreActionStep.canLoadMore();
+  }
+
+  Future<ListPackageDetailResult> firstLoad() {
+    return _loadMoreActionStep.firstLoad();
+  }
+
+  void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
+    _loadMoreActionStep.loadMore().then(onDone);
+  }
+}
+
+abstract interface class _LoadMoreActionStep {
+  void reset();
+  bool canLoadMore();
+  Future<ListPackageDetailResult> firstLoad();
+  Future<ListPackageDetailResult> loadMore();
+}
+
+class _LoadMoreNothingOrder implements _LoadMoreActionStep {
+  void reset() {}
+
+  bool canLoadMore() {
+    return false;
+  }
+
+  Future<ListPackageDetailResult> firstLoad() {
+    return Future(() => ListPackageDetailResult(listResult: []));
+  }
+
+  Future<ListPackageDetailResult> loadMore() {
+    return Future(() => ListPackageDetailResult(listResult: []));
+  }
+}
+
+class _LoadMoreWrokingOrder implements _LoadMoreActionStep {
   bool loading = false;
   bool _canLoadMore = true;
   int currentID = 0;
@@ -179,6 +276,7 @@ class _LoadMoreTrigger {
   void reset() {
     loading = false;
     _canLoadMore = true;
+    currentID = 0;
   }
 
   bool canLoadMore() {
@@ -186,6 +284,8 @@ class _LoadMoreTrigger {
   }
 
   Future<ListPackageDetailResult> firstLoad() {
+    reset();
+    print('first load');
     return getAllWorkingOrderPackge(groupID, id: currentID, size: 10)
         .then((value) {
       _canLoadMore = !value.isEmpty;
@@ -196,15 +296,74 @@ class _LoadMoreTrigger {
     });
   }
 
-  void loadMore(VoidCallbackArg<ListPackageDetailResult> onDone) {
+  Future<ListPackageDetailResult> loadMore() {
+    print('load more');
     loading = true;
-    getAllWorkingOrderPackge(groupID, id: currentID, size: 10).then((value) {
+    return getAllWorkingOrderPackge(groupID, id: currentID, size: 10)
+        .then((value) {
       currentID = value.currentID;
-      onDone(value);
       _canLoadMore = !value.isEmpty;
       loading = false;
+      return value;
     }).onError((error, stackTrace) {
       loading = false;
+      return ListPackageDetailResult(listResult: []);
     });
+  }
+}
+
+class _LoadMoreProcessingOrder implements _LoadMoreActionStep {
+  bool loading = false;
+  bool _canLoadMore = true;
+  int currentID = 0;
+
+  void reset() {
+    loading = false;
+    _canLoadMore = true;
+    currentID = 0;
+  }
+
+  bool canLoadMore() {
+    return _canLoadMore && loading == false;
+  }
+
+  Future<ListPackageDetailResult> firstLoad() {
+    reset();
+    print('first load');
+    return getAllOrderPackgeStatus(
+            id: currentID,
+            size: 10,
+            groupID: groupID,
+            status: PackageStatusType.CREATE.name)
+        .then(
+      (value) {
+        _canLoadMore = !value.isEmpty;
+        currentID = value.currentID;
+        return value;
+      },
+    );
+  }
+
+  Future<ListPackageDetailResult> loadMore() {
+    print('load more');
+    loading = true;
+    return getAllOrderPackgeStatus(
+            groupID: groupID,
+            status: PackageStatusType.CREATE.name,
+            id: currentID,
+            size: 10)
+        .then(
+      (value) {
+        currentID = value.currentID;
+        _canLoadMore = !value.isEmpty;
+        loading = false;
+        return value;
+      },
+    ).onError(
+      (error, stackTrace) {
+        loading = false;
+        return ListPackageDetailResult(listResult: []);
+      },
+    );
   }
 }

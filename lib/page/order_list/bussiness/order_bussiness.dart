@@ -190,3 +190,16 @@ Future<ListPackageDetailResult> getAllWorkingOrderPackge(String groupID,
   }
   return Future.value(ListPackageDetailResult(listResult: []));
 }
+
+Future<ListPackageDetailResult> getAllOrderPackgeStatus(
+    {required String groupID,
+    required String status,
+    int id = 0,
+    int page = 0,
+    int size = 1000}) {
+  if (haveInteret) {
+    return getAllByStatusPackage(
+        id: id, size: 10, groupID: groupID, status: status);
+  }
+  return Future.value(ListPackageDetailResult(listResult: []));
+}

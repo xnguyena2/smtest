@@ -56,6 +56,38 @@ Future<ListPackageDetailResult> getAllWorkingPackage(String groupID,
   }
 }
 
+Future<ListPackageDetailResult> getAllByStatusPackage({
+  required String groupID,
+  required String status,
+  int id = 0,
+  int page = 0,
+  int size = 1000,
+}) async {
+  final request = PackageID(
+    page: page,
+    size: size,
+    packageSecondId: id == 0 ? '' : id.toString(),
+    group_id: groupID,
+    deviceId: '',
+    from: '',
+    to: '',
+    status: status,
+  );
+
+  final response = await postC('/package/getbygroupstatus', request);
+
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // debugPrint(response.body, wrapWidth: 1024);
+    return ListPackageDetailResult.fromJson(
+      {"list_result": jsonDecode(utf8.decode(response.bodyBytes))},
+    );
+  } else {
+    // throw Exception('Failed to load data');
+    return Future.error('Failed to load data!!');
+  }
+}
+
 Future<PackageDataResponse> getPackage(PackageID packageID) async {
   final request = packageID;
 
