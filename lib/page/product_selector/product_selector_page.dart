@@ -11,6 +11,7 @@ import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/adapt/fetch_api.dart';
 import 'package:sales_management/component/high_border_container.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
+import 'package:sales_management/helper/backup_services.dart';
 import 'package:sales_management/page/create_order/create_order_page.dart';
 import 'package:sales_management/page/home/api/model/bootstrap.dart';
 import 'package:sales_management/page/order_list/provider/search_provider.dart';
@@ -65,6 +66,13 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     listCategory.addAll(allCat);
 
     listAllProduct = results;
+
+//backup inventory
+    if (isProductSelectorForOrder) {
+      backUpServices ??= BackUpServices(listAllProduct: listAllProduct);
+      backUpServices!.backupInventoryNum();
+    }
+
     listAllProduct.sort(
       (a, b) => a.name.compareTo(b.name),
     );
@@ -141,10 +149,22 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     );
   }
 
+  bool isShouldRestoreFromBackup = true;
+  BackUpServices? backUpServices;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (isShouldRestoreFromBackup) {
+      backUpServices?.restore();
+    }
   }
 
   @override
@@ -254,6 +274,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                           );
                           return;
                         }
+                        isShouldRestoreFromBackup = false;
                         widget.packageDataResponse?.cleanEmptyProduct();
                         widget.onUpdated(widget.packageDataResponse!);
                         Navigator.pop(context);
@@ -296,7 +317,7 @@ class __BodyContenStateState extends State<_BodyContenState> {
   late List<BeerSubmitData> listProductOfCat;
   List<String> listCateSelected = ['Tất cả'];
 
-  late final isProductSelector = widget.packageDataResponse != null;
+  late final isProductSelectorForOrder = widget.packageDataResponse != null;
 
   @override
   void initState() {
@@ -346,7 +367,10 @@ class __BodyContenStateState extends State<_BodyContenState> {
               firstWidget: LoadSvg(assetPath: 'svg/grid_horizontal.svg'),
               isFlip: false,
             ),
-            if (isProductSelector) selectProduct() else listAllProductInfo(),
+            if (isProductSelectorForOrder)
+              selectProduct()
+            else
+              listAllProductInfo(),
           ],
         ),
       ),

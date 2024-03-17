@@ -15,6 +15,7 @@ import 'package:sales_management/page/product_selector/component/provider_produc
 import 'package:sales_management/page/product_selector/product_selector_page.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/constants.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
 import 'package:sales_management/utils/utils.dart';
@@ -235,6 +236,7 @@ class _ProductItemState extends State<ProductItem> {
   }
 
   void itemPackageChagneNo() {
+    updateInventory(unitNo - productInPackageResponse.numberUnit);
     widget.updateNumberUnit(productInPackageResponse);
     unitNo = productInPackageResponse.numberUnit;
     noUnitTxtController.text = unitNo.toString();
@@ -244,6 +246,22 @@ class _ProductItemState extends State<ProductItem> {
       return;
     }
     setState(() {});
+  }
+
+  void updateInventory(int offset) {
+    if (productInPackageResponse.beerSubmitData?.isEnableWarehouse != true) {
+      return;
+    }
+    final currentInventory =
+        productInPackageResponse.beerSubmitData?.getInventory;
+    if (currentInventory == null) {
+      return;
+    }
+    productInPackageResponse.beerSubmitData?.setInventory =
+        currentInventory + offset;
+    if (currentInventory + offset < 0) {
+      showAlert(context, 'Trong kho không đủ số lượng!');
+    }
   }
 
   void applyItemPrice(bool value) {

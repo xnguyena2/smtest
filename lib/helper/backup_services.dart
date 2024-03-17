@@ -5,6 +5,8 @@ import 'package:sales_management/page/home/api/model/bootstrap.dart';
 class BackUpServices {
   List<BeerSubmitData>? listAllProduct;
 
+  BackUpServices({this.listAllProduct});
+
   final Map<String, int> inventoryImg = {};
 
   List<BeerSubmitData>? _getAllProduct() {
@@ -16,8 +18,8 @@ class BackUpServices {
   }
 
   void backupInventoryNum() {
-    inventoryImg.clear();
-    listAllProduct = _getAllProduct();
+    // inventoryImg.clear();
+    listAllProduct ??= _getAllProduct();
     if (listAllProduct == null) {
       return;
     }
@@ -27,7 +29,9 @@ class BackUpServices {
         continue;
       }
       for (var e in listUnit) {
-        inventoryImg[e.beerUnitSecondId] = e.getInventoryNo;
+        if (!inventoryImg.containsKey(e.beerUnitSecondId)) {
+          inventoryImg[e.beerUnitSecondId] = e.getInventoryNo;
+        }
       }
     }
   }
