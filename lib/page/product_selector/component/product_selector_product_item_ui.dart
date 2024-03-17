@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:sales_management/utils/utils.dart';
 
 class ProductSelectorItemUI extends StatefulWidget {
   final int unitNo;
@@ -96,7 +97,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
         GestureDetector(
           onTap: (!widget.isEnableWarehouse ||
                   widget.isHaveMultiCategory ||
-                  widget.inventoryNum > unitNo)
+                  widget.inventoryNum > 0)
               ? onAddItem
               : null,
           child: Container(
@@ -150,7 +151,14 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                                 ],
                                 maxLines: 1,
                                 style: headStyleLarge,
-                                onChanged: widget.onTxtChanged,
+                                onChanged: (value) {
+                                  int num = tryParseNumber(value);
+                                  if (num > widget.inventoryNum) {
+                                    txtController.text = '${widget.unitNo}';
+                                    return;
+                                  }
+                                  widget.onTxtChanged(value);
+                                },
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   isDense: true,
@@ -161,7 +169,7 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                             GestureDetector(
                               onTap: (!widget.isEnableWarehouse ||
                                       widget.isHaveMultiCategory ||
-                                      widget.inventoryNum > unitNo)
+                                      widget.inventoryNum > 0)
                                   ? onAddItem
                                   : null,
                               child: LoadSvg(

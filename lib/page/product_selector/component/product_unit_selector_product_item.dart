@@ -61,14 +61,17 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
 
   void updateVentoryAndUnitNo() {
     inventoryNum = widget.productData.getTotalInventory;
-    updatePriceAndNoUnit();
-  }
-
-  void updatePriceAndNoUnit() {
     unitNo = 0;
     mapProductInPackage?.values.forEach((element) {
       unitNo += element.numberUnit;
     });
+  }
+
+  void updateInventory(int offset) {
+    if (widget.productData.isEnableWarehouse) {
+      inventoryNum = widget.productData.getInventory + offset;
+      widget.productData.setInventory = inventoryNum;
+    }
   }
 
   int setNumber() {
@@ -94,6 +97,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
       return 0;
     }
     productInPackage!.numberUnit--;
+    updateInventory(1);
     return setNumber();
   }
 
@@ -101,6 +105,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
     productInPackage ??= ProductInPackageResponse.fromProductData(
         beerSubmitData: widget.productData);
     productInPackage!.numberUnit++;
+    updateInventory(-1);
     return setNumber();
   }
 
@@ -108,7 +113,12 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
     if (productInPackage == null) {
       return;
     }
-    productInPackage!.numberUnit = tryParseNumber(numTxt);
+    final newNum = tryParseNumber(numTxt);
+    if (!isHaveMultiCategory) {
+      final currentNum = productInPackage!.numberUnit;
+      updateInventory(currentNum - newNum);
+    }
+    productInPackage!.numberUnit = newNum;
     setNumber();
   }
 

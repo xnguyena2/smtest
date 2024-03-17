@@ -515,6 +515,10 @@ class ProductInPackageResponse extends UserPackage {
     return _data;
   }
 
+  ProductInPackageResponse clone() {
+    return ProductInPackageResponse.fromJson(toJson());
+  }
+
   String get get_show_name {
     final unitName = beerSubmitData?.firstOrNull?.name;
     if (unitName == null || unitName.isEmpty) {

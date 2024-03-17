@@ -3,6 +3,7 @@ import 'package:sales_management/api/model/beer_submit_data.dart';
 import 'package:sales_management/api/model/package/package_data_response.dart';
 import 'package:sales_management/component/loading_overlay_alt.dart';
 import 'package:sales_management/component/modal/simple_modal.dart';
+import 'package:sales_management/helper/backup_restore.dart';
 import 'package:sales_management/page/product_info/api/product_info_api.dart';
 import 'package:sales_management/page/product_selector/component/modal_select_product_unit.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item_ui.dart';
@@ -41,7 +42,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   int unitNo = 0;
   int inventoryNum = 0;
   late bool isAvariable;
-  late final bool isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+  late final bool isHaveMultiCategory;
 
   late final bool isEnableWarehouse = widget.productData.isEnableWarehouse;
 
@@ -56,21 +57,27 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     isAvariable = widget.productData.isAvariable;
     imgUrl = widget.productData.getFristLargeImg;
 
-    productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
+    isHaveMultiCategory = widget.productData.isHaveMultiCategory;
+    if (!isHaveMultiCategory) {
+      productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
+    }
     rangePrice = widget.productData.getRangePrice;
-    updateVentoryAndUnitNo();
+    updateInVentoryAndUnitNo();
   }
 
-  void updateVentoryAndUnitNo() {
+  void updateInVentoryAndUnitNo() {
     inventoryNum = widget.productData.getTotalInventory;
-    updatePriceAndNoUnit();
-  }
-
-  void updatePriceAndNoUnit() {
     unitNo = 0;
     mapProductInPackage?.values.forEach((element) {
       unitNo += element.numberUnit;
     });
+  }
+
+  void updateInventory(int offset) {
+    if (widget.productData.isEnableWarehouse) {
+      inventoryNum = widget.productData.getInventory + offset;
+      widget.productData.setInventory = inventoryNum;
+    }
   }
 
   int setNumber() {
@@ -97,6 +104,9 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       return 0;
     }
     productInPackage!.numberUnit--;
+    if (!isHaveMultiCategory) {
+      updateInventory(1);
+    }
     return setNumber();
   }
 
@@ -104,6 +114,9 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     productInPackage ??= ProductInPackageResponse.fromProductData(
         beerSubmitData: widget.productData);
     productInPackage!.numberUnit++;
+    if (!isHaveMultiCategory) {
+      updateInventory(-1);
+    }
     return setNumber();
   }
 
@@ -111,7 +124,12 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     if (productInPackage == null) {
       return;
     }
-    productInPackage!.numberUnit = tryParseNumber(numTxt);
+    final newNum = tryParseNumber(numTxt);
+    if (!isHaveMultiCategory) {
+      final currentNum = productInPackage!.numberUnit;
+      updateInventory(currentNum - newNum);
+    }
+    productInPackage!.numberUnit = newNum;
     setNumber();
   }
 
@@ -140,25 +158,59 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
       return isAvariable;
     }
 
-    showSelectUnitModal() => showDefaultModal(
-          context: context,
-          content: ModalSelectProductUnitCategory(
-            product: widget.productData,
-            mapProductInPackage: mapProductInPackage,
-            swithAvariable: (b) async {
-              b.changeUnitStatus(b.firstOrNull, true);
-              return _switchToAvariable(isRunOnchange: false);
-            },
-            onDone: (Map<String, ProductInPackageResponse> maps) {
-              mapProductInPackage = maps;
-              updatePriceAndNoUnit();
-              uiKey = UniqueKey();
-              widget.updateListNumberUnit?.call(maps.values.toList());
-              setState(() {});
-            },
-            onRefreshData: () => widget.onChanged?.call(widget.productData),
-          ),
-        );
+    showSelectUnitModal() async {
+      BackupRestore action = BackupRestore<List<BeerUnit>?, Map<String, int>?>(
+        backup: (listBeerUnit) {
+          final backupInventoryNum = listBeerUnit == null
+              ? null
+              : Map.fromEntries(listBeerUnit.map(
+                  (e) => MapEntry(e.beerUnitSecondId, e.getInventoryNo),
+                ));
+          return backupInventoryNum;
+        },
+        restore: (img) {
+          if (widget.productData.listUnit != null) {
+            for (var element in widget.productData.listUnit!) {
+              final value = img![element.beerUnitSecondId];
+              if (value == null) {
+                continue;
+              }
+              element.inventory_number = value;
+            }
+          }
+        },
+        mainAction: () async {
+          bool shouldRestore = true;
+          final clone = mapProductInPackage == null
+              ? null
+              : Map.fromEntries(mapProductInPackage!.entries
+                  .map((e) => MapEntry(e.key, e.value.clone())));
+          await showDefaultModal(
+            context: context,
+            content: ModalSelectProductUnitCategory(
+              product: widget.productData,
+              mapProductInPackage: clone,
+              swithAvariable: (b) async {
+                b.changeUnitStatus(b.firstOrNull, true);
+                return _switchToAvariable(isRunOnchange: false);
+              },
+              onDone: (Map<String, ProductInPackageResponse> maps) {
+                shouldRestore = false;
+                mapProductInPackage = maps;
+                updateInVentoryAndUnitNo();
+                uiKey = UniqueKey();
+                widget.updateListNumberUnit?.call(maps.values.toList());
+                setState(() {});
+              },
+              onRefreshData: () => widget.onChanged?.call(widget.productData),
+            ),
+          );
+          return shouldRestore;
+        },
+      );
+      action.action(widget.productData.listUnit);
+    }
+
     return ProductSelectorItemUI(
       key: uiKey,
       name: name,
