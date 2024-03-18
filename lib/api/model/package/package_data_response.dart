@@ -230,6 +230,25 @@ class PackageDataResponse extends PackageDetail {
     return cl;
   }
 
+  PackageDataResponse cloneSyncWithLocalProductData() {
+    final cl = clone();
+
+    if (status != PackageStatusType.CREATE) {
+      return cl;
+    }
+    Map<String, BeerSubmitData?> mapProduct = Map.fromEntries(
+        items.map((e) => MapEntry(e.productSecondId, e.beerSubmitData)));
+    for (var element in cl.items) {
+      final listUnit = mapProduct[element.productSecondId]?.listUnit;
+      if (listUnit == null) {
+        continue;
+      }
+      element.beerSubmitData?.setListUnit(listUnit);
+    }
+
+    return cl;
+  }
+
   void swithLocalStatus(bool isLocal) {
     this.isLocal = isLocal;
   }

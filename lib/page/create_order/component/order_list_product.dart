@@ -81,7 +81,8 @@ class _ListProductState extends State<ListProduct> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductSelectorPage(
-                              packageDataResponse: data.clone(),
+                              packageDataResponse:
+                                  data.cloneSyncWithLocalProductData(),
                               onUpdated: (PackageDataResponse) {
                                 data.updateListProductItem(PackageDataResponse);
                               },

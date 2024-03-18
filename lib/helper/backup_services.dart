@@ -1,6 +1,5 @@
-import 'package:sales_management/api/local_storage/local_storage.dart';
 import 'package:sales_management/api/model/beer_submit_data.dart';
-import 'package:sales_management/page/home/api/model/bootstrap.dart';
+import 'package:sales_management/helper/local_query.dart';
 
 class BackUpServices {
   List<BeerSubmitData>? listAllProduct;
@@ -11,21 +10,13 @@ class BackUpServices {
 
   bool isShouldRestoreFromBackup = true;
 
-  List<BeerSubmitData>? _getAllProduct() {
-    BootStrapData? config = LocalStorage.getBootStrap();
-    if (config == null) {
-      return null;
-    }
-    return config.products;
-  }
-
   void enableRestore(bool isEnable) {
     isShouldRestoreFromBackup = isEnable;
   }
 
   void backupInventoryNum() {
     // inventoryImg.clear();
-    listAllProduct ??= _getAllProduct();
+    listAllProduct ??= getAllProduct();
     if (listAllProduct == null) {
       return;
     }
@@ -43,7 +34,7 @@ class BackUpServices {
   }
 
   void restore() {
-    if (listAllProduct == null && !isShouldRestoreFromBackup) {
+    if (listAllProduct == null || !isShouldRestoreFromBackup) {
       return;
     }
     for (var element in listAllProduct!) {
