@@ -165,7 +165,7 @@ class _PrinterPageState extends State<PrinterPage> {
     // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
-    final generator = Generator(PaperSize.mm58, profile);
+    final generator = Generator(PaperSize.mm80, profile);
     bytes += generator.setGlobalCodeTable('CP1252');
     // bytes += generator.text('Test Print',
     //     styles: const PosStyles(align: PosAlign.center));
@@ -175,7 +175,8 @@ class _PrinterPageState extends State<PrinterPage> {
     final Uint8List imgBytes = widget.capturedImage;
     final img.Image image = img.decodePng(imgBytes)!;
     print('image data length: ${image.data?.length}');
-    generator.image(image);
+    bytes +=
+        generator.image(image); // for old printer generator.imageRaster(image);
 
     return _printEscPos(bytes, generator);
   }
