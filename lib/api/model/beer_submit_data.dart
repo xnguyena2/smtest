@@ -32,6 +32,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     required this.listUnit,
     required this.list_categorys,
     required this.unit_category_config,
+    required this.visible_web,
   }) : productUnitCatPattern =
             ProductUnitCatPattern.fromJsonString(unit_category_config);
 
@@ -65,6 +66,9 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
   @HiveField(15)
   late final String? unit_category_config;
 
+  @HiveField(16)
+  late bool? visible_web;
+
   BeerSubmitData.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     beerSecondID = json['beerSecondID'];
     name = json['name'];
@@ -73,6 +77,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     unit_category_config = json['unit_category_config'];
     meta_search = json['meta_search'];
     status = json['status'];
+    visible_web =
+        json['visible_web'] == null ? false : json['visible_web'] as bool;
     images = json['images'] == null
         ? []
         : List.from(json['images']).map((e) => Images.fromJson(e)).toList();
@@ -94,6 +100,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     _data['unit_category_config'] = productUnitCatPattern.toJsonString();
     _data['meta_search'] = meta_search;
     _data['status'] = status;
+    _data['visible_web'] = visible_web;
     _data['images'] = images.map((e) => e.toJson()).toList();
     _data['listUnit'] = listUnit?.map((e) => e.toJson()).toList();
     return _data;
@@ -118,6 +125,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       meta_search: meta_search,
       list_categorys: list_categorys,
       unit_category_config: null,
+      visible_web: visible_web,
     );
   }
 
@@ -133,6 +141,7 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
       list_categorys: [],
       images: [],
       unit_category_config: '',
+      visible_web: true,
     );
   }
 

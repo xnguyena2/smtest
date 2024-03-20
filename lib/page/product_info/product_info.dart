@@ -11,6 +11,7 @@ import 'package:sales_management/page/product_info/component/product_info_create
 import 'package:sales_management/page/product_info/component/product_info_img_management.dart';
 import 'package:sales_management/page/product_info/component/product_info_main_info.dart';
 import 'package:sales_management/page/product_info/component/product_info_store_management.dart';
+import 'package:sales_management/page/product_info/component/product_info_web_setting.dart';
 import 'package:sales_management/page/product_info/component/product_more_setting.dart';
 import 'package:sales_management/page/product_selector/component/provider_product.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
@@ -82,6 +83,12 @@ class ProductInfoBody extends StatelessWidget {
                     height: 14,
                   ),
                   StoreManagement(
+                    product: product,
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  WebSetting(
                     product: product,
                   ),
                   const SizedBox(

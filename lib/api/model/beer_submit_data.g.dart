@@ -30,13 +30,14 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       listUnit: (fields[11] as List?)?.cast<BeerUnit>(),
       list_categorys: (fields[12] as List?)?.cast<String>(),
       unit_category_config: fields[15] as String?,
+      visible_web: fields[16] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BeerSubmitData obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(4)
       ..write(obj.beerSecondID)
       ..writeByte(5)
@@ -57,6 +58,8 @@ class BeerSubmitDataAdapter extends TypeAdapter<BeerSubmitData> {
       ..write(obj.list_categorys)
       ..writeByte(15)
       ..write(obj.unit_category_config)
+      ..writeByte(16)
+      ..write(obj.visible_web)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)

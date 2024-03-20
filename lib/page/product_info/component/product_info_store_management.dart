@@ -34,7 +34,7 @@ class _StoreManagementState extends State<StoreManagement> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Quảng lý tồn kho',
+          'Quản lý tồn kho',
           style: headStyleXLarge,
         ),
         Padding(
