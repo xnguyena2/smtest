@@ -53,11 +53,14 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
   late int unitNo = widget.unitNo;
   late bool isAvariable = widget.isAvariable;
 
+  late bool isWarehouseEmpty = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     txtController.text = unitNo.toString();
+    checkWarehouseEmpty();
   }
 
   @override
@@ -66,6 +69,11 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
     super.dispose();
     txtController.dispose();
     txtFocus.dispose();
+  }
+
+  void checkWarehouseEmpty() {
+    isWarehouseEmpty =
+        widget.isEnableWarehouse && widget.inventoryNum == 0 && unitNo == 0;
   }
 
   late final onAddItem = widget.isHaveMultiCategory
@@ -246,12 +254,16 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
             ),
           ),
         ),
-        if (!isAvariable || widget.isNullUnit)
+        if (isWarehouseEmpty || !isAvariable || widget.isNullUnit)
           Positioned.fill(
             child: GestureDetector(
               onTap: () {
                 widget.switchToAvariable().then((value) {
-                  isAvariable = value;
+                  if (isWarehouseEmpty) {
+                    checkWarehouseEmpty();
+                  } else {
+                    isAvariable = value;
+                  }
                   setState(() {});
                 });
               },

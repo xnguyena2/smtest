@@ -6,6 +6,7 @@ import 'package:sales_management/component/modal/simple_modal.dart';
 import 'package:sales_management/helper/backup_restore.dart';
 import 'package:sales_management/page/product_info/api/product_info_api.dart';
 import 'package:sales_management/page/product_selector/component/modal_select_product_unit.dart';
+import 'package:sales_management/page/product_selector/component/modal_update_inventory.dart';
 import 'package:sales_management/page/product_selector/component/product_selector_product_item_ui.dart';
 import 'package:sales_management/utils/alter_dialog.dart';
 import 'package:sales_management/utils/snack_bar.dart';
@@ -136,10 +137,32 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   @override
   Widget build(BuildContext context) {
     switchProductToAvariable() async {
+      bool isOkPressed = false;
       await showDefaultDialog(
           context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
-          onOk: () {
-        widget.productData.changeStatus(true);
+          onOk: () async {
+        isOkPressed = true;
+      }, onCancel: () {});
+      if (isOkPressed) {
+        if (widget.productData.isEnableWarehouse &&
+            widget.productData.getInventory <= 0) {
+          var inventoryNum = widget.productData.getInventory;
+          await showDefaultModal(
+            context: context,
+            content: ModalUpdateInventory(
+              onDone: (inventoryNo) {
+                inventoryNum = inventoryNo;
+              },
+              inventoryNum: inventoryNum,
+            ),
+          );
+          if (inventoryNum <= 0) {
+            return false;
+          }
+          widget.productData.setInventory = inventoryNum;
+        } else {
+          widget.productData.changeStatus(true);
+        }
         LoadingOverlayAlt.of(context).show();
         createProduct(widget.productData).then((value) {
           LoadingOverlayAlt.of(context).hide();
@@ -152,20 +175,45 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
           showAlert(
               context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
         });
-      }, onCancel: () {});
+      }
       return isAvariable;
     }
 
     switchProductUnitToAvariable(BeerSubmitData productUnit) async {
       bool isUnitAvariable = false;
+      bool isOkPressed = false;
       await showDefaultDialog(
           context, 'Xác nhận thay đổi!', 'Sản phẩm đã có hàng lại?',
-          onOk: () {
-        isUnitAvariable = true;
-        productUnit.changeUnitStatus(productUnit.firstOrNull, isUnitAvariable);
+          onOk: () async {
+        isOkPressed = true;
+      }, onCancel: () {});
+      if (isOkPressed) {
+        if (widget.productData.isEnableWarehouse &&
+            widget.productData.getInventory <= 0) {
+          var inventoryNum = widget.productData.getInventory;
+          await showDefaultModal(
+            context: context,
+            content: ModalUpdateInventory(
+              onDone: (inventoryNo) {
+                inventoryNum = inventoryNo;
+              },
+              inventoryNum: inventoryNum,
+            ),
+          );
+          if (inventoryNum <= 0) {
+            return false;
+          }
+          widget.productData.setInventory = inventoryNum;
+          isUnitAvariable = true;
+        } else {
+          isUnitAvariable = true;
+          productUnit.changeUnitStatus(
+              productUnit.firstOrNull, isUnitAvariable);
+        }
         LoadingOverlayAlt.of(context).show();
-        createProduct(widget.productData).then((value) {
+        await createProduct(widget.productData).then((value) {
           LoadingOverlayAlt.of(context).hide();
+          widget.onChanged?.call(widget.productData);
         }).onError((error, stackTrace) {
           LoadingOverlayAlt.of(context).hide();
           isUnitAvariable = false;
@@ -174,7 +222,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
           showAlert(
               context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
         });
-      }, onCancel: () {});
+      }
       return isUnitAvariable;
     }
 
@@ -219,7 +267,6 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
                 widget.updateListNumberUnit?.call(maps.values.toList());
                 setState(() {});
               },
-              onRefreshData: () => widget.onChanged?.call(widget.productData),
             ),
           );
           return shouldRestore;

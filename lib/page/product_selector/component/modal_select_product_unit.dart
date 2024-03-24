@@ -15,14 +15,12 @@ class ModalSelectProductUnitCategory extends StatefulWidget {
   final Map<String, ProductInPackageResponse>? mapProductInPackage;
   final VoidCallbackArg<Map<String, ProductInPackageResponse>> onDone;
   final ReturnCallbackArgAsync<BeerSubmitData, bool> swithAvariable;
-  final VoidCallback onRefreshData;
   const ModalSelectProductUnitCategory({
     super.key,
     required this.onDone,
     required this.product,
     this.mapProductInPackage,
     required this.swithAvariable,
-    required this.onRefreshData,
   });
 
   @override
@@ -48,8 +46,6 @@ class _ModalSelectProductUnitCategoryState
 
   double totalPrice = 0;
   int numItem = 0;
-
-  bool mustRefreshData = false;
 
   void updatePrice() {
     totalPrice = 0;
@@ -148,9 +144,6 @@ class _ModalSelectProductUnitCategoryState
               Navigator.pop(context);
 
               widget.onDone(mapProductInPackage);
-              if (mustRefreshData) {
-                widget.onRefreshData();
-              }
             },
             totalPriceFormat: MoneyFormater.format(totalPrice),
           ),
@@ -187,7 +180,6 @@ class _ModalSelectProductUnitCategoryState
           mapProductInPackage:
               productPackage == null ? null : {productUnitID: productPackage},
           switchToAvariable: () {
-            mustRefreshData = true;
             return swithAvariable(productData);
           },
         );

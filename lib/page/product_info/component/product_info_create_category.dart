@@ -189,6 +189,7 @@ class _ProductUnitState extends State<_ProductUnit> {
       TextEditingController(text: MoneyFormater.format(widget.item.price));
 
   late final iventoryNo = widget.item.getInventoryNo;
+  late final isEnableWarehouse = widget.item.enable_warehouse == true;
 
   final FocusNode priceFocus = FocusNode();
   final FocusNode buyPriceFocus = FocusNode();
@@ -251,11 +252,13 @@ class _ProductUnitState extends State<_ProductUnit> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          iventoryNo > 0
-                              ? 'Còn: $iventoryNo'
+                          isEnableWarehouse
+                              ? (iventoryNo > 0
+                                  ? 'Còn: $iventoryNo'
+                                  : 'Hết hàng')
                               : item.isAvariable
                                   ? 'Còn hàng'
-                                  : 'hết hàng',
+                                  : 'Hết hàng',
                           style: subStyleMediumNormalLight,
                         ),
                         GestureDetector(

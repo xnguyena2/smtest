@@ -127,7 +127,7 @@ class _StoreManagementState extends State<StoreManagement> {
               isNumberOnly: true,
               isMoneyFormat: true,
               header: 'Tồn kho',
-              hint: 'Nhập/Quét',
+              hint: 'Sổ lượng tồn kho',
               initValue: widget.product.getInventory.toString(),
               isImportance: false,
               onChanged: (value) {

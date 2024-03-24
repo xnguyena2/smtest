@@ -135,6 +135,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
       removeItemToPackage: removeItemToPackage,
       switchToAvariable: () {
         return widget.switchToAvariable().then((value) {
+          uiKey = UniqueKey();
           updateVentoryAndUnitNo();
           setState(() {});
           return value;
