@@ -67,5 +67,11 @@
 	<string>Our app need Location to scan and connect to printer</string>  
 	<key>NSLocationWhenInUseUsageDescription</key>  
 	<string>Our app need Location to scan and connect to printer</string>
+	
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>sms</string>
+	<string>tel</string>
+	</array>
 </dict>
 </plist>

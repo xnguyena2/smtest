@@ -52,6 +52,7 @@ const Color HighColor = Color(0xFF0080A9);
 const Color HighColor15 = Color(0x260080A9);
 const Color MainHighColor = Color(0xFF0080A9);
 const Color TableHighColor = Color(0xFF26B074);
+const Color TableHighColor15 = Color.fromARGB(39, 38, 176, 116);
 const Color TableHighBGColor = Color(0xFF239A66);
 const Color TableHeaderBGColor = Color(0xFFE4E4E4);
 const Color TransaprentColor = Colors.transparent;
@@ -511,6 +512,12 @@ const TextStyle headStyleSmallLarge = TextStyle(
   color: Black,
   fontSize: 14,
   fontWeight: FontWeight.w500,
+);
+
+const TextStyle headStyleLargeMainHigh = TextStyle(
+  color: MainHighColor,
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
 );
 
 const TextStyle headStyleLargeRed = TextStyle(

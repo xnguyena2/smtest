@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sales_management/page/home/compoment/header.dart';
 import 'package:sales_management/page/report/report_page.dart';
+import 'package:sales_management/utils/snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/svg_loader.dart';
@@ -14,14 +17,86 @@ class Guide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> futures = [
-      'Thêm báo cáo LÃI LỖ giúp bạn biết được lợi nhuận thực tế báo nhiêu!!!!. Báo cáo lãi lỗ cực kỳ chi tiết!',
-      'Thêm khoảng phụ phí cho đơn ví dụ VAT,...',
+      'Thêm website cho shop bán hàng online!',
+      'Sửa lỗi máy in, sao không shop nào report lỗi này hết vậy?????',
       'Sửa một số lỗi khi thay đổi sản phẩm trong giỏ hàng,..'
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: Column(
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: TableHighColor15,
+                    borderRadius: defaultBorderRadius,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      LoadSvg(assetPath: 'svg/web.svg'),
+                      Column(
+                        children: [
+                          Text(
+                            'Bạn cần một website???',
+                            style: headStyleLargeHigh,
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri _url =
+                                  Uri.parse('https://0935871569.sodientu.com/');
+
+                              if (!await launchUrl(_url)) {
+                                showAlert(context, 'Could not launch $_url');
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 12),
+                              decoration: BoxDecoration(
+                                  border: lightBorder,
+                                  borderRadius: defaultBorderRadius),
+                              child: Row(
+                                children: [
+                                  LoadSvg(assetPath: 'svg/web_link.svg'),
+                                  Text(
+                                    'https://0935871569.sodientu.com/',
+                                    style: headStyleLargeMainHigh,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            'Đây là trang web của một shop trong hệ thống.\nHãy liên hệ với chúng tôi để có một trang như vậy!!',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            softWrap: true,
+                            style: subInfoStyLarge400,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 18,
+          ),
           Row(
             children: [
               Expanded(
@@ -42,7 +117,7 @@ class Guide extends StatelessWidget {
                       horizontal: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: White,
                       borderRadius: defaultBorderRadius,
                       boxShadow: [lightShadow],
                     ),
