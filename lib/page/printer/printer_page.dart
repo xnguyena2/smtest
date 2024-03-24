@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_pos_printer_platform_image_3_sdt/flutter_pos_printer_platform_image_3_sdt.dart';
 import 'package:image/image.dart' as img;
+import 'package:sales_management/component/checkbox/check_box.dart';
 import 'package:sales_management/page/printer/component/printer_bar.dart';
+import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/snack_bar.dart';
 
 class PrinterPage extends StatefulWidget {
@@ -39,6 +41,8 @@ class _PrinterPageState extends State<PrinterPage> {
   final _ipController = TextEditingController();
   final _portController = TextEditingController();
   BluetoothPrinter? selectedPrinter;
+  bool isOldModel = true;
+  bool is80 = true;
 
   @override
   void initState() {
@@ -159,13 +163,21 @@ class _PrinterPageState extends State<PrinterPage> {
     setState(() {});
   }
 
+  img.Image resizeImage(img.Image image, double ratio) {
+    img.Image resized = img.copyResize(image,
+        width: (image.width * ratio).toInt(),
+        height: (image.height * ratio).toInt());
+    return resized;
+  }
+
   Future<bool> _printReceiveTest() async {
     List<int> bytes = [];
 
     // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
-    final generator = Generator(PaperSize.mm80, profile);
+    final generator =
+        Generator(is80 ? PaperSize.mm80 : PaperSize.mm58, profile);
     bytes += generator.setGlobalCodeTable('CP1252');
     // bytes += generator.text('Test Print',
     //     styles: const PosStyles(align: PosAlign.center));
@@ -173,10 +185,13 @@ class _PrinterPageState extends State<PrinterPage> {
     // bytes += generator.text('Product 2');
 
     final Uint8List imgBytes = widget.capturedImage;
-    final img.Image image = img.decodePng(imgBytes)!;
+    img.Image image = img.decodePng(imgBytes)!;
+    if (!is80) {
+      image = resizeImage(image, 0.7);
+    }
+    print('is80: $is80, isOldModel: $isOldModel');
     print('image data length: ${image.data?.length}');
-    bytes +=
-        generator.image(image); // for old printer generator.imageRaster(image);
+    bytes += isOldModel ? generator.imageRaster(image) : generator.image(image);
 
     return _printEscPos(bytes, generator);
   }
@@ -270,7 +285,7 @@ class _PrinterPageState extends State<PrinterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PrinterBar(),
+      appBar: const PrinterBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.zero,
         child: Column(
@@ -313,6 +328,77 @@ class _PrinterPageState extends State<PrinterPage> {
                   ),
                 ],
               ),
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 8,
+                ),
+                SmallCheckBox(
+                  isChecked: is80,
+                  onChanged: (value) {
+                    is80 = value;
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        is80 = !is80;
+                      });
+                    },
+                    child: const Text(
+                      'Khổ 80mm? (không check là khổ 58mm)',
+                      style: headStyleSmallLarge,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 8,
+                ),
+                SmallCheckBox(
+                  isChecked: isOldModel,
+                  onChanged: (value) {
+                    isOldModel = value;
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isOldModel = !isOldModel;
+                      });
+                    },
+                    child: const Text(
+                      'Máy in công nghệ cũ(máy TQ, hoặc mua dưới 500k....)',
+                      style: headStyleSmallLarge,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+              ],
             ),
             DropdownButtonFormField<PrinterType>(
               padding: EdgeInsets.zero,

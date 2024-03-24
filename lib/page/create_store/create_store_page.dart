@@ -147,9 +147,7 @@ class _CreateStorePageState extends State<CreateStorePage> {
                                       isChecked: isChecked,
                                       onChanged: (value) {
                                         isChecked = value;
-                                        setState(() {
-                                          isChecked = !isChecked;
-                                        });
+                                        setState(() {});
                                       },
                                     ),
                                     const SizedBox(
