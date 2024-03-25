@@ -78,7 +78,7 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
     );
   }
 
-  Future<BootStrapData?> getAllProduct(Box<dynamic> box) async {
+  Future<BootStrapData?> getAllProduct(Box<dynamic>? box) async {
     BootStrapData? config = LocalStorage.getBootStrap(box);
     if (config == null) {
       return null;
@@ -207,10 +207,9 @@ class _ProductSelectorPageState extends State<ProductSelectorPage> {
                         color: White,
                       ),
                     ),
-              body: ValueListenableBuilder<Box>(
-                valueListenable: LocalStorage.getListenBootStrapKey(),
-                builder: (context, value, child) {
-                  loadConfig = getAllProduct(value);
+              body: Builder(
+                builder: (context) {
+                  loadConfig = getAllProduct(null);
                   return FetchAPI<BootStrapData?>(
                     future: loadConfig, //getall(),
                     successBuilder: (BootStrapData? data) {
