@@ -154,6 +154,7 @@ class ReportByBuyerAsTable extends StatelessWidget {
               ),
               child: DataTable(
                 horizontalMargin: 12,
+                columnSpacing: 18,
                 headingRowHeight: 0,
                 headingTextStyle: subInfoStyLarge400,
                 decoration: const BoxDecoration(
@@ -314,6 +315,7 @@ class ReportByStaffAsTable extends StatelessWidget {
               ),
               child: DataTable(
                 horizontalMargin: 12,
+                columnSpacing: 18,
                 headingTextStyle: subInfoStyLarge400,
                 headingRowHeight: 0,
                 decoration: const BoxDecoration(
@@ -468,119 +470,122 @@ class ReportByProductAsTable extends StatelessWidget {
                   endIndent: 0,
                 ),
               ),
-              child: DataTable(
-                horizontalMargin: 12,
-                headingTextStyle: subInfoStyLarge400,
-                headingRowHeight: 0,
-                decoration: const BoxDecoration(
-                  color: White,
-                ),
-                dividerThickness: 0,
-                border: TableBorder.symmetric(
-                    inside:
-                        const BorderSide(width: 1.5, color: BackgroundColor)),
-                columns: [
-                  const DataColumn(label: SizedBox()),
-                  const DataColumn(label: SizedBox()),
-                  const DataColumn(label: SizedBox()),
-                  if (isShowProfit) const DataColumn(label: SizedBox()),
-                ],
-                rows: [
-                  DataRow(
-                    cells: <DataCell>[
-                      const DataCell(Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'SẢN PHẨM',
-                            style: subInfoStyLarge400,
-                          ),
-                        ],
-                      )),
-                      const DataCell(
-                        Text(
-                          'S.L',
-                          style: subInfoStyLarge400,
-                        ),
-                      ),
-                      const DataCell(
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+              child: FittedBox(
+                child: DataTable(
+                  horizontalMargin: 12,
+                  columnSpacing: 18,
+                  headingTextStyle: subInfoStyLarge400,
+                  headingRowHeight: 0,
+                  decoration: const BoxDecoration(
+                    color: White,
+                  ),
+                  dividerThickness: 0,
+                  border: TableBorder.symmetric(
+                      inside:
+                          const BorderSide(width: 1.5, color: BackgroundColor)),
+                  columns: [
+                    const DataColumn(label: SizedBox()),
+                    const DataColumn(label: SizedBox()),
+                    const DataColumn(label: SizedBox()),
+                    if (isShowProfit) const DataColumn(label: SizedBox()),
+                  ],
+                  rows: [
+                    DataRow(
+                      cells: <DataCell>[
+                        const DataCell(Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'D.THU',
+                              'SẢN PHẨM',
                               style: subInfoStyLarge400,
                             ),
                           ],
+                        )),
+                        const DataCell(
+                          Text(
+                            'S.L',
+                            style: subInfoStyLarge400,
+                          ),
                         ),
-                      ),
-                      if (isShowProfit)
                         const DataCell(
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                'L.NHUẬN',
+                                'D.THU',
                                 style: subInfoStyLarge400,
                               ),
                             ],
                           ),
                         ),
-                    ],
-                  ),
-                  ...ListProductBenifitDataResult.listResult
-                      .map(
-                        (e) => DataRow(
-                          cells: <DataCell>[
-                            DataCell(Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        if (isShowProfit)
+                          const DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  e.product_name ?? 'Đã xóa',
-                                  style: headStyleMedium,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  e.product_unit_name ?? 'Đã xóa',
-                                  style: subStyleMediumNormalLight,
+                                  'L.NHUẬN',
+                                  style: subInfoStyLarge400,
                                 ),
                               ],
-                            )),
-                            DataCell(
-                              Text(
-                                e.number_unit.toString(),
-                                style: headStyleMedium,
-                              ),
                             ),
-                            DataCell(
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                          ),
+                      ],
+                    ),
+                    ...ListProductBenifitDataResult.listResult
+                        .map(
+                          (e) => DataRow(
+                            cells: <DataCell>[
+                              DataCell(Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    MoneyFormater.format(e.revenue),
+                                    e.product_name ?? 'Đã xóa',
                                     style: headStyleMedium,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    e.product_unit_name ?? 'Đã xóa',
+                                    style: subStyleMediumNormalLight,
                                   ),
                                 ],
+                              )),
+                              DataCell(
+                                Text(
+                                  e.number_unit.toString(),
+                                  style: headStyleMedium,
+                                ),
                               ),
-                            ),
-                            if (isShowProfit)
                               DataCell(
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      MoneyFormater.format(e.profit),
+                                      MoneyFormater.format(e.revenue),
                                       style: headStyleMedium,
                                     ),
                                   ],
                                 ),
                               ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ],
+                              if (isShowProfit)
+                                DataCell(
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        MoneyFormater.format(e.profit),
+                                        style: headStyleMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ],
+                ),
               ),
             ),
           ],
@@ -625,6 +630,7 @@ class ReportByOrderAsTable extends StatelessWidget {
               ),
               child: DataTable(
                 horizontalMargin: 12,
+                columnSpacing: 18,
                 headingTextStyle: subInfoStyLarge400,
                 headingRowHeight: 0,
                 decoration: const BoxDecoration(
@@ -770,6 +776,7 @@ class ReportByDayAsTable extends StatelessWidget {
               ),
               child: DataTable(
                 horizontalMargin: 12,
+                columnSpacing: 18,
                 headingTextStyle: subInfoStyLarge400,
                 headingRowHeight: 0,
                 decoration: const BoxDecoration(

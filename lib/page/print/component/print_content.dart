@@ -164,8 +164,11 @@ class PrintContent extends StatelessWidget {
           ),
           DataTable(
             horizontalMargin: 0,
+            columnSpacing: 18,
             headingTextStyle: subInfoStyLarge400,
             headingRowHeight: 0,
+            dataRowMinHeight: 50,
+            dataRowMaxHeight: 50,
             decoration: const BoxDecoration(
               color: White,
             ),
@@ -217,10 +220,16 @@ class PrintContent extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '${e.key + 1}. ${e.value.get_show_name}',
-                                style: customerNameBig400,
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+                                  Text(
+                                    '${e.key + 1}. ${e.value.get_show_name}',
+                                    style: customerNameBig400,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 4,
                               ),
                               Text(
                                 MoneyFormater.format(e.value.priceDiscount),
