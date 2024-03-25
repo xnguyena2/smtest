@@ -12,8 +12,10 @@ import 'package:sales_management/page/address/reciver_info.dart';
 import 'package:sales_management/page/product_selector/component/provider_discount.dart';
 import 'package:sales_management/utils/constants.dart';
 import 'package:sales_management/utils/debouncer.dart';
+import 'package:sales_management/utils/snack_bar.dart';
 import 'package:sales_management/utils/svg_loader.dart';
 import 'package:sales_management/utils/typedef.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomerInfo extends StatefulWidget {
   final PackageDataResponse data;
@@ -119,9 +121,30 @@ class _CustomerInfoState extends State<CustomerInfo> {
                     const SizedBox(
                       height: 2,
                     ),
-                    Text(
-                      buyer?.phoneNumber ?? '',
-                      style: headStyleSemiLargeLigh500,
+                    GestureDetector(
+                      onTap: () async {
+                        final phone = buyer?.phoneNumber;
+                        if (phone == null || phone.isEmpty) {
+                          return;
+                        }
+                        final Uri _url = Uri(path: phone, scheme: 'tel');
+
+                        if (!await launchUrl(_url)) {
+                          showAlert(context, 'Could not make call $_url');
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            buyer?.phoneNumber ?? '',
+                            style: headStyleSemiLargeLigh500,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          LoadSvg(assetPath: 'svg/phone_flip.svg'),
+                        ],
+                      ),
                     ),
                   ],
                 ),
