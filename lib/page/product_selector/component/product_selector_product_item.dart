@@ -55,7 +55,6 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
     super.initState();
 
     name = widget.productData.name;
-    isAvariable = widget.productData.isAvariable;
     imgUrl = widget.productData.getFristLargeImg;
 
     isHaveMultiCategory = widget.productData.isHaveMultiCategory;
@@ -67,6 +66,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
   }
 
   void updateInVentoryAndUnitNo() {
+    isAvariable = widget.productData.isAvariable;
     inventoryNum = widget.productData.getTotalInventory;
     unitNo = 0;
     mapProductInPackage?.values.forEach((element) {
@@ -168,6 +168,8 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
           LoadingOverlayAlt.of(context).hide();
           isAvariable = widget.productData.isAvariable;
           widget.onChanged?.call(widget.productData);
+          updateInVentoryAndUnitNo();
+          uiKey = UniqueKey();
           setState(() {});
         }).onError((error, stackTrace) {
           LoadingOverlayAlt.of(context).hide();

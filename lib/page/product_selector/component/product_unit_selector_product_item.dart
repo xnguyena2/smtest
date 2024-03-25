@@ -55,10 +55,10 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
 
     productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
     rangePrice = widget.productData.getRangePrice;
-    updateVentoryAndUnitNo();
+    updateInVentoryAndUnitNo();
   }
 
-  void updateVentoryAndUnitNo() {
+  void updateInVentoryAndUnitNo() {
     isAvariable = widget.productData.firstOrNull?.isAvariable ?? false;
     inventoryNum = widget.productData.getTotalInventory;
     unitNo = 0;
@@ -136,7 +136,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
       switchToAvariable: () {
         return widget.switchToAvariable().then((value) {
           uiKey = UniqueKey();
-          updateVentoryAndUnitNo();
+          updateInVentoryAndUnitNo();
           setState(() {});
           return value;
         });
