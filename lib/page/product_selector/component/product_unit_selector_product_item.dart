@@ -51,7 +51,6 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
     super.initState();
     isNullUnit = widget.productData.firstOrNull == null;
     name = widget.productData.firstOrNull?.name ?? 'Null';
-    isAvariable = widget.productData.firstOrNull?.isAvariable ?? false;
     imgUrl = widget.productData.getUnitFristLargeImg;
 
     productInPackage = mapProductInPackage?.entries.firstOrNull?.value;
@@ -60,6 +59,7 @@ class _ProductUnitSelectorItemState extends State<ProductUnitSelectorItem> {
   }
 
   void updateVentoryAndUnitNo() {
+    isAvariable = widget.productData.firstOrNull?.isAvariable ?? false;
     inventoryNum = widget.productData.getTotalInventory;
     unitNo = 0;
     mapProductInPackage?.values.forEach((element) {

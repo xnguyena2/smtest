@@ -456,7 +456,6 @@ class __BodyContenStateState extends State<_BodyContenState> {
           },
           onChanged: (p) {
             widget.updateProduct(p);
-            setState(() {});
           },
           mapProductInPackage:
               widget.packageDataResponse!.productMap[productID],

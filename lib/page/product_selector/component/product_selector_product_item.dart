@@ -188,9 +188,8 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
         isOkPressed = true;
       }, onCancel: () {});
       if (isOkPressed) {
-        if (widget.productData.isEnableWarehouse &&
-            widget.productData.getInventory <= 0) {
-          var inventoryNum = widget.productData.getInventory;
+        if (productUnit.isEnableWarehouse && productUnit.getInventory <= 0) {
+          var inventoryNum = productUnit.getInventory;
           await showDefaultModal(
             context: context,
             content: ModalUpdateInventory(
@@ -203,12 +202,11 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
           if (inventoryNum <= 0) {
             return false;
           }
-          widget.productData.setInventory = inventoryNum;
+          productUnit.setInventory = inventoryNum;
           isUnitAvariable = true;
         } else {
           isUnitAvariable = true;
-          productUnit.changeUnitStatus(
-              productUnit.firstOrNull, isUnitAvariable);
+          productUnit.changeFirstUnitStatus(isUnitAvariable);
         }
         LoadingOverlayAlt.of(context).show();
         await createProduct(widget.productData).then((value) {
@@ -217,8 +215,7 @@ class _ProductSelectorItemState extends State<ProductSelectorItem> {
         }).onError((error, stackTrace) {
           LoadingOverlayAlt.of(context).hide();
           isUnitAvariable = false;
-          productUnit.changeUnitStatus(
-              productUnit.firstOrNull, isUnitAvariable);
+          productUnit.changeFirstUnitStatus(isUnitAvariable);
           showAlert(
               context, 'Lỗi hệ thống không thể cập nhật sản phẩm!!!');
         });

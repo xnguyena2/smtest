@@ -264,7 +264,6 @@ class _ProductSelectorItemUIState extends State<ProductSelectorItemUI> {
                   } else {
                     isAvariable = value;
                   }
-                  setState(() {});
                 });
               },
               child: Container(

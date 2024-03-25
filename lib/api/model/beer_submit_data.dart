@@ -419,8 +419,8 @@ class BeerSubmitData extends BaseEntity implements ResultInterface {
     status = 'SOLD_OUT';
   }
 
-  void changeUnitStatus(BeerUnit? unit, bool st) {
-    unit?.changeAvariable(st);
+  void changeFirstUnitStatus(bool st) {
+    firstOrNull?.changeAvariable(st);
   }
 
   void switcEnableWareHouse(bool isEnable) {

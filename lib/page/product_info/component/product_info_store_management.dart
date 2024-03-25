@@ -56,8 +56,7 @@ class _StoreManagementState extends State<StoreManagement> {
                     : 0,
                 onChanged: (status) {
                   if (widget.isForProductUnit) {
-                    widget.product
-                        .changeUnitStatus(widget.product.firstOrNull, status);
+                    widget.product.changeFirstUnitStatus(status);
                     return;
                   }
                   widget.product.changeStatus(status);
