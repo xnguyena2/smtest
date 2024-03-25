@@ -142,7 +142,9 @@ class _CustomerInfoState extends State<CustomerInfo> {
                           SizedBox(
                             width: 8,
                           ),
-                          LoadSvg(assetPath: 'svg/phone_flip.svg'),
+                          if (buyer?.phoneNumber != null &&
+                              buyer?.phoneNumber?.isNotEmpty == true)
+                            LoadSvg(assetPath: 'svg/phone_flip.svg'),
                         ],
                       ),
                     ),
